@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "title": "Magasins",
+        "icon": "fas fa-shop",
+        "display": "shops"
+    },
+    {
+        "id": 2,
+        "title": "Catégories",
+        "icon": "fas fa-list",
+        "display": "categories"
+    },
+    {
+        "id": 3,
+        "title": "Utilisateurs",
+        "icon": "fas fa-user",
+        "display": "utilisateurs"
+    }
+]

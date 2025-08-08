@@ -1,0 +1,157 @@
+// import templatesServiceInstance from '@/services/TemplatesServices';
+import { TemplateType } from '@/types/TemplatesType';
+import { _getTemplates } from '@/utils/apiFunctions';
+import React from 'react';
+import { Container, Table, Spinner, Col, Row, Image } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
+
+export default function ModelsPage() {
+  const [models, setModels] = React.useState<TemplateType[]>([]);
+  // const [selectedModel, setSelectedModel] = React.useState<TemplateType | null>(null);
+  // const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  // const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
+  // const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
+
+
+  React.useEffect(() => {
+    _getTemplates(setModels);
+  }, []);
+
+  // const handleShowAddModal = () => {
+  //   setSelectedModel(null);
+  //   setShowAddEditModal(true);
+  // };
+
+  // const handleShowEditModal = (model: TemplateType) => {
+  //   // setSelectedModel(model);
+  //   setShowAddEditModal(true);
+  // };
+
+  // const handleCloseAddEditModal = () => {
+  //   setShowAddEditModal(false);
+  //   setSelectedModel(null);
+  //   _getTemplates(setModels);
+  // };
+
+  // const handleShowDeleteModal = (model: TemplateType) => {
+  //   // setSelectedModel(model);
+  //   setShowDeleteModal(true);
+  // };
+
+  // const handleCloseDeleteModal = () => {
+  //   setShowDeleteModal(false);
+  //   setSelectedModel(null);
+  // };
+
+  // const handleDeleteModel = async () => {
+  //   if (!selectedModel) return;
+  //   setIsLoading(true);
+  //   try {
+
+  //     const response = await templatesServiceInstance.deleteTemplate(selectedModel.id);
+  //     if (response &&response.ok) {
+  //       handleCloseDeleteModal();
+  //       _getTemplates(setModels);
+  //     } else {
+  //       console.error("Erreur lors de la suppression du modèle");
+  //     }
+  //   } catch (err) {
+  //     console.error("Erreur lors de la suppression du modèle:", err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const modalAddEditModelProps = { show: showAddEditModal, handleClose: handleCloseAddEditModal, modelData: selectedModel };
+  // const modalDeleteModelProps = { show: showDeleteModal, handleClose: handleCloseDeleteModal, modelName: selectedModel?.name, handleDelete: handleDeleteModel, isLoading };
+
+  
+
+  return (
+    <Container fluid className='relative p-0'>
+      <Row
+        className='bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 '
+      >
+        <Col xs={2} sm={1} className='pt-2'>
+          <Link to='/tableau-de-bord' className='text-muted'>
+            <i className='fa-solid fa-circle-arrow-left fs-3'></i>
+          </Link>
+        </Col>
+        <Col xs={8} sm={10}>
+          <h3 className='pt-3 pb-2 mb-0'>Gestion des Modèles</h3>
+        </Col>
+        <Col xs={2} sm={1}></Col>
+      </Row>
+      <Container>
+        {models.length === 0 ? (
+          <div className='text-center py-5'>
+            <Spinner animation='border' role='status'>
+              <span className='visually-hidden'>Chargement...</span>
+            </Spinner>
+          </div>
+        ) : (
+          <Table striped hover responsive='sm' className=' shadow'>
+            <thead className='sticky-sm-top '>
+              <tr>
+                <th className='py-3'>ID</th>
+                <th className='py-3'>Nom</th>
+                <th className='py-3'>Miniature</th>
+                <th className='py-3'>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {models.map((model) => (
+                <tr key={model.id} className='align-middle'>
+                  <td>{model.id}</td>
+                  <td>{model.name}</td>
+                  <td>
+                    <Image
+                      src={`http://localhost:8081/uploads/miniatures/${model.categoryId}/${model.image}`}
+                      alt={model.name}
+                      width={100}
+                      height={100}
+                    />
+                  </td>
+                  <td>
+                    {/* <Dropdown>
+                      <Dropdown.Toggle
+                        variant='transparent'
+                        id={`dropdown-model-${model.id}`}
+                        className='border-0 no-chevron'
+                      >
+                        <b>
+                          <i className='fa-solid fa-ellipsis-vertical'></i>
+                        </b>
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu align='end'>
+                        <Dropdown.Item onClick={() => handleShowEditModal(model)}>
+                          <i className='fa fa-pencil me-2'></i> Modifier
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => handleShowDeleteModal(model)}
+                          className='text-danger'
+                        >
+                          <i className='fa-solid fa-trash me-2'></i> Supprimer
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown> */}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Container>
+      {/* <Button variant='primary' className='rounded-pill fab' onClick={handleShowAddModal}>
+        <strong>+</strong> <span>Ajouter un modèle</span>
+      </Button> */}
+
+      {/* ModalAddEditModel à créer et à intégrer */}
+      {/* <ModalAddEditModel {...modalAddEditModelProps} /> */}
+
+      {/* ModalDeleteModel à créer et à intégrer */}
+      {/* <ModalDeleteModel {...modalDeleteModelProps} /> */}
+    </Container>
+  )
+}   

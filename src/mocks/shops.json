@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "Carrefour",
+    "cover": "/images/carrefour.svg"
+  },
+  {
+    "id": 2,
+    "name": "Media Nui",
+    "cover": "/images/media-nui.svg"
+  }
+]

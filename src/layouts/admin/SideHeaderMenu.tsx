@@ -1,0 +1,77 @@
+import { UserDataType } from '@/stores/userDataStore'
+import useStoreApp from '@/stores/storeApp'
+import userDataStore from '@/stores/userDataStore'
+import React from 'react'
+import { Container } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import Drawer from 'rsuite/esm/Drawer'
+import headerMenuItems from '@/data/headerMenuItems.json'
+
+export const SideHeaderMenu = ({
+  sideHeaderMenuProps,
+}: {
+  sideHeaderMenuProps: {
+    open: boolean
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setTitleHeader: React.Dispatch<React.SetStateAction<string>>
+  }
+}) => {
+  /* States
+   *******************************************************************************************/
+
+  const { open, setOpen, setTitleHeader } = sideHeaderMenuProps
+  const resetStore = useStoreApp((state) => state.resetAll)
+  const authLogout = userDataStore((state: UserDataType) => state.authLogout)
+  const userRole = userDataStore((state: UserDataType) => state.role)
+  /* Functions
+   *******************************************************************************************/
+  const handleClick = (title: string) => {
+    resetStore()
+    setOpen(false)
+    setTitleHeader(title)
+  }
+
+  const handleClickLogout = () => {
+    resetStore()
+    setOpen(false)
+    authLogout()
+    sessionStorage.removeItem('token')
+  }
+
+  return (
+    <Drawer size='xs' open={open} onClose={() => setOpen(false)} className='drawer-menu'>
+      <Drawer.Header className=''>
+        <Drawer.Title>Menu</Drawer.Title>
+        <Drawer.Actions></Drawer.Actions>
+      </Drawer.Header>
+      <Drawer.Body className='bg-light ps-2 pe-0'>
+        {headerMenuItems
+          .filter((item) => !item.roles || item.roles.includes(userRole))
+          .map((item) => (
+            <Container key={item.id} className='menu-link py-3 rounded-start'>
+              <Link
+                to={item.href}
+                onClick={() => handleClick(item.title)}
+                className='d-flex align-items-center text-decoration-none text-muted'
+              >
+                <i className={`${item.icon} me-2 fs-5`}></i>
+                {item.title}
+              </Link>
+            </Container>
+          ))}
+        <Container className=' log-out  py-3 px-0 border-top'>
+          <Container className=' menu-link py-3 rounded-start'>
+            <Link
+              to='/login'
+              onClick={() => handleClickLogout()}
+              className='d-flex align-items-center text-decoration-none text-muted'
+            >
+              <i className='fas fa-sign-out-alt me-2 fs-3'></i>
+              Déconnexion
+            </Link>
+          </Container>
+        </Container>
+      </Drawer.Body>
+    </Drawer>
+  )
+}

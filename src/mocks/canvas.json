@@ -1,0 +1,137 @@
+[
+    {   "id": 1,
+        "name": "Bon plan",
+        "canvas": [
+          
+            {
+                "type": "header",
+                "top": 0,
+                "left": 0,
+                "width": 500,
+                "height": 125,
+                "src": "/src/assets/images/bonPlan.png",
+                "backgroundColor": "#EB0023"
+            },
+            {
+                "type": "background-color",
+                "top": 125,
+                "left": 0,
+                "width": 500,
+                "height": 375,
+                "background-color": "#ffea00"
+            }
+           
+        ]
+    },
+    {   "id": 2,
+        "name": "Best deal",
+        "canvas": [
+            {
+                "type": "header",
+                "top": 0,
+                "left": 0,
+                "width": 500,
+                "height": 125,
+                "src": "/src/assets/images/bestDeal.png",
+                "backgroundColor": "#000000"
+            },
+            {
+                "type": "background-color",
+                "top": 125,
+                "left": 0,
+                "width": 500,
+                "height": 375,
+                "backgroundColor": "#ffea00"
+            }
+        ]
+    },
+    {   "id": 3,
+        "name": "Fin de série",
+        "canvas": [
+           
+            {
+                "type": "header",
+                "top": 0,
+                "left": 0,
+                "width": 500,
+                "height": 125,
+                "src": "/src/assets/images/finDeSerie.png",
+                "backgroundColor": "#EB0023"
+            },
+            {
+                "type": "background-color",
+                "top": 125,
+                "left": 0,
+                "width": 500,
+                "height": 375,
+                "backgroundColor": "#ffea00"
+            }
+        ]
+    },
+    {   "id": 4,
+        "name": "Fin de série",
+        "canvas": [
+            {
+                "type": "header",
+                "top": 0,
+                "left": 0,
+                "width": 500,
+                "height": 125,
+                "src": "/src/assets/images/finDeSerie.png",
+                "backgroundColor": "#000000"
+            },
+            {
+                "type": "background-color",
+                "top": 125,
+                "left": 0,
+                "width": 500,
+                "height": 375,
+                "backgroundColor": "#ffea00"
+            }
+        ]
+    },
+    {   "id": 5,
+        "name": "4+2",
+        "canvas": [
+            {
+                "type": "header",
+                "top": 0,
+                "left": 0,
+                "width": 500,
+                "height": 125,
+                "src": "/src/assets/images/4+2.png",
+                "backgroundColor": "#EB0023"
+            },
+            {
+                "type": "background-color",
+                "top": 125,
+                "left": 0,
+                "width": 500,
+                "height": 375,
+                "backgroundColor": "#ffea00"
+            }
+        ]
+    },
+    {   "id": 6,
+        "name": "-50% sur le 2ème",
+        "canvas": [
+            {
+                "type": "header",
+                "top": 0,
+                "left": 0,
+                "width": 500,
+                "height": 125,
+                "src": "/src/assets/images/50Sur2.png",
+                "backgroundColor": "#EB0023"
+            },
+            {
+                "type": "background-color",
+                "top": 125,
+                "left": 0,
+                "width": 500,
+                "height": 375,
+                "backgroundColor": "#ffea00"
+            }
+        ]
+    }
+]

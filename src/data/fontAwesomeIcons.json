@@ -1,0 +1,146 @@
+[
+    {
+        "name": "Étoile",
+        "value": "fa fa-star"
+    },
+    {
+        "name": "Pourcent",
+        "value": "fa fa-percent"
+    },
+    {
+        "name": "Cœur",
+        "value": "fa fa-heart"
+    },
+    {
+        "name": "Panier",
+        "value": "fa fa-shopping-cart"
+    },
+    {
+        "name": "Cadeau",
+        "value": "fa fa-gift"
+    },
+    {
+        "name": "Couverts",
+        "value": "fa fa-cutlery"
+    },
+    {
+        "name": "Café",
+        "value": "fa fa-coffee"
+    },
+    {
+        "name": "Pomme",
+        "value": "fa fa-apple"
+    },
+    {
+        "name": "Feuille",
+        "value": "fa fa-leaf"
+    },
+    {
+        "name": "Éclair",
+        "value": "fa fa-bolt"
+    },
+    {
+        "name": "Voiture",
+        "value": "fa fa-car"
+    },
+    {
+        "name": "Vélo",
+        "value": "fa fa-bicycle"
+    },
+    {
+        "name": "Livre",
+        "value": "fa fa-book"
+    },
+    {
+        "name": "Musique",
+        "value": "fa fa-music"
+    },
+    {
+        "name": "Film",
+        "value": "fa fa-film"
+    },
+    {
+        "name": "Caméra",
+        "value": "fa fa-camera"
+    },
+    {
+        "name": "Manette",
+        "value": "fa fa-gamepad"
+    },
+    {
+        "name": "Arbre",
+        "value": "fa fa-tree"
+    },
+    {
+        "name": "Cube",
+        "value": "fa fa-cube"
+    },
+    {
+        "name": "Cubes",
+        "value": "fa fa-cubes"
+    },
+    {
+        "name": "Trophée",
+        "value": "fa fa-trophy"
+    },
+    {
+        "name": "Parapluie",
+        "value": "fa fa-umbrella"
+    },
+    {
+        "name": "Sac de courses",
+        "value": "fa fa-shopping-bag"
+    },
+    {
+        "name": "Carte bancaire",
+        "value": "fa fa-credit-card"
+    },
+    {
+        "name": "Pierre précieuse",
+        "value": "fa fa-gem"
+    },
+    {
+        "name": "Gâteau d'anniversaire",
+        "value": "fa fa-birthday-cake"
+    },
+    {
+        "name": "Cloche",
+        "value": "fa fa-bell"
+    },
+    {
+        "name": "Certificat",
+        "value": "fa fa-certificate"
+    },
+    {
+        "name": "Canapé",
+        "value": "fa fa-couch"
+    },
+    {
+        "name": "Cuisse de poulet",
+        "value": "fa fa-drumstick-bite"
+    },
+    {
+        "name": "Poisson",
+        "value": "fa fa-fish"
+    },
+    {
+        "name": "Glace",
+        "value": "fa fa-ice-cream"
+    },
+    {
+        "name": "Citron",
+        "value": "fa fa-lemon"
+    },
+    {
+        "name": "Part de pizza",
+        "value": "fa fa-pizza-slice"
+    },
+    {
+        "name": "Jeune pousse",
+        "value": "fa fa-seedling"
+    },
+    {
+        "name": "T-shirt",
+        "value": "fa fa-tshirt"
+    }
+]

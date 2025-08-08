@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "name": "100x150",
+    "height": 150,
+    "width": 100,
+    "helper_dimensions": "petit(100x150)",
+    "orientation": "portrait"
+  },
+  {
+    "id": 2,
+    "name": "150x100",
+    "height": 100,
+    "width": 150,
+    "helper_dimensions": "petit(150x100)",
+    "orientation": "paysage"
+  },
+  {
+    "id": 4,
+    "name": "150x150",
+    "height": 150,
+    "width": 150,
+    "helper_dimensions": "petit_carre(150x150)",
+    "orientation": null
+  },
+  {
+    "id": 5,
+    "name": "200x200",
+    "height": 200,
+    "width": 200,
+    "helper_dimensions": "moyen_carre(200x200)",
+    "orientation": null
+  },
+  {
+    "id": 6,
+    "name": "200x40",
+    "height": 40,
+    "width": 200,
+    "helper_dimensions": "reglette(200x40)",
+    "orientation": null
+  },
+  {
+    "id": 7,
+    "name": "297x420",
+    "height": 420,
+    "width": 297,
+    "helper_dimensions": "A4_A3(297x420)",
+    "orientation": "portrait"
+  },
+  {
+    "id": 8,
+    "name": "420x297",
+    "height": 297,
+    "width": 420,
+    "helper_dimensions": "A4_A3(297x420)",
+    "orientation": "paysage"
+  },
+  {
+    "id": 9,
+    "name": "600x600",
+    "height": 600,
+    "width": 600,
+    "helper_dimensions": "grand_carre(600x600)",
+    "orientation": null
+  },
+  {
+    "id": 10,
+    "name": "600x1200",
+    "height": 1200,
+    "width": 600,
+    "helper_dimensions": "grand(600x1200)",
+    "orientation": null
+  },
+  {
+    "id": 11,
+    "name": "1200x1200",
+    "height": 1200,
+    "width": 1200,
+    "helper_dimensions": "tres_grand_carre(1200x1200)",
+    "orientation": null
+  },
+  {
+    "id": 12,
+    "name": "1200x1600",
+    "height": 1600,
+    "width": 1200,
+    "helper_dimensions": "tres_grand(1200x1600)",
+    "orientation": null
+  }
+]

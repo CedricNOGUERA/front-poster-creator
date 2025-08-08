@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Bon plan",
+    "image": "src/assets/images/bonPlan.png",
+    "icon": "fas fa-gift",
+    "shopIds": [1],
+    "canvasId": 1
+  },
+  {
+    "id": 2,
+    "name": "Best Deal",
+    "icon": "fas fa-award",
+    "image": "src/assets/images/bestDeal.png",
+    "shopIds": [2],
+    "canvasId": 2
+  },
+  {
+    "id": 3,
+    "name": "Fin de série",
+    "icon": "fas fa-bolt",
+    "image": "src/assets/images/FinDeSerie.png",
+    "shopIds": [1],
+    "canvasId": 3
+  },
+  {
+    "id": 4,
+    "name": "Fin de série",
+    "icon": "fas fa-bolt",
+    "image": "src/assets/images/FinDeSerie.png",
+    "shopIds": [2],
+    "canvasId": 4
+  },
+  {
+    "id": 5,
+    "name": "4+2",
+    "icon": "fas fa-bolt",
+    "image": "src/assets/images/4+2.png",
+    "shopIds": [1],
+    "canvasId": 5
+  },
+  {
+    "id": 6,
+    "name": "-50% sur le 2ème",
+    "icon": "fas fa-bolt",
+    "image": "src/assets/images/50Sur2.png",
+    "shopIds": [1],
+    "canvasId": 5
+  }
+]

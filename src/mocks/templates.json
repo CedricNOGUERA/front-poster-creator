@@ -1,0 +1,100 @@
+[
+  {
+    "id": 1,
+    "name": "Standard",
+    "image": "/images/bp-std.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 2,
+    "name": "Prix barré",
+    "image": "/images/bp-pb.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 3,
+    "name": "PPN - Produit de première nécessité",
+    "image": "/images/bp-ppn.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 4,
+    "name": "Carte de Fidélité",
+    "image": "/images/bp-fid.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 5,
+    "name": "BRI - Bon de remise immédiat",
+    "image": "/images/bp-bri.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 6,
+    "name": "BRI - Bon de remise immédiat sur le second produit",
+    "image": "/images/bp-bri-2.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 7,
+    "name": "Produit gratuit",
+    "image": "/images/bp-gratuit.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 8,
+    "name": "Remise supplémentaire avec carte de fidélité",
+    "image": "/images/bp-sup-fid.png",
+    "categoryId": 1,
+    "shopIds": [1]
+  },
+  {
+    "id": 9,
+    "name": "Carrefour - Fin de série - Modèle standard",
+    "image": "/images/crf-fs-std.png",
+    "categoryId": 3,
+    "shopIds": [1]
+  },
+  {
+    "id": 10,
+    "name": "Carrefour - Fin de série - Modèle avec prix barré",
+    "image": "/images/crf-fs-pb.png",
+    "categoryId": 3,
+    "shopIds": [1]
+  },
+  {
+    "id": 11,
+    "name": "Média Nui - Best Deal - Prix standard",
+    "image": "/images/mn-bd-std.png",
+    "categoryId": 2,
+    "shopIds": [2]
+  },
+  {
+    "id": 12,
+    "name": "Média Nui - Best Deal - Prix barré",
+    "image": "/images/mn-bd-pb.png",
+    "categoryId": 2,
+    "shopIds": [2]
+  },
+  {
+    "id": 13,
+    "name": "Média Nui - Fin de série - Prix standard",
+    "image": "/images/mn-fs-std.png",
+    "categoryId": 3,
+    "shopIds": [2]
+  },
+  {
+    "id": 14,
+    "name": "Média Nui - Fin de série - Prix barré",
+    "image": "/images/mn-fs-pb.png",
+    "categoryId": 3,
+    "shopIds": [2]
+  }
+]

@@ -1,0 +1,32 @@
+body{
+  font-family: "Mulish", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  /* overflow: hidden !important; */
+}
+
+p{
+  margin-bottom: 0;
+}
+
+.text-primary{
+  color: #254f9a !important;
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+.bg-opac{
+  background-color: rgba(37, 79, 154, 0.1);
+}
+
+.overflow-hidden{
+  overflow: hidden !important;
+}
+
+
+/* .bg-salmon{
+  background-color: #fcb3aa;
+} */

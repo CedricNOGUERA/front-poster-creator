@@ -1,0 +1,142 @@
+import { ModalGenericDelete } from '@/components/ui/Modals'
+import { ModalAddUser} from '@/components/users/ModalUser'
+import UsersServices from '@/services/UsersServices'
+import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { UserType } from '@/types/UserType'
+import { _getAllUsers } from '@/utils/apiFunctions'
+import React from 'react'
+import { Button, Container, Dropdown, Table } from 'react-bootstrap'
+
+export default function UserManager() {
+  /* States
+   *******************************************************************************************/
+  const userRole = userDataStore((state: UserDataType) => state.role)
+  const userCompany = userDataStore((state: UserDataType) => state.company)
+  const [users, setUsers] = React.useState<UserType[]>([])
+  const [showAdd, setShowAdd] = React.useState<boolean>(false)
+  const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
+  const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [showDelete, setShowDelete] = React.useState<boolean>(false)
+
+  /* UseEffect
+   *******************************************************************************************/
+  React.useEffect(() => {
+    _getAllUsers(setUsers)
+  }, [])
+
+  /* Functions
+   *******************************************************************************************/
+  const handleCloseDelete = () => setShowDelete(false);
+  const handleShowDelete = () => setShowDelete(true);
+
+  const handleCloseAdd = () => {
+    setShowAdd(false);
+    setSelectedUser(null);
+  }
+  const handleShowAdd = () => {
+    setSelectedUser(null); 
+    setShowAdd(true);
+  }
+
+  const handleShowEdit = (user: UserType) => {
+    setSelectedUser(user);
+    setShowAdd(true);
+  }
+
+  
+  const deleteUser = async (id: number) => {
+      setIsLoading(true)
+    try{
+        const response =  await UsersServices.deleteUser(id)
+        if(response.ok){
+            handleCloseAdd()
+            _getAllUsers(setUsers)
+        }
+    }catch(error){
+        console.log(error)
+    }finally{
+        setIsLoading(false)
+    }
+  }
+
+  const modalGenericDeleteProps = { show: showDelete, handleClose: handleCloseDelete, selectedId: selectedUserId, handleDelete: deleteUser, title: 'l\'utilisateur', isLoading }
+
+  return (
+    <Container fluid className='p-0'>
+      <h3 className='py-3'>Gestion des utilisateurs</h3>
+      <Container>
+        <Table striped hover responsive='sm' className='shadow'>
+          <thead className='sticky-sm-top '>
+            <tr>
+              <th>Société</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user: UserType) => {
+              if (
+                userRole === 'admin' &&
+                user.role === 'super_admin' &&
+                user.company.nameCompany !== userCompany.nameCompany
+              ) {
+                return null
+              }
+              return (
+                <tr key={user.id}>
+                  <td>{user.company.nameCompany}</td>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
+                  <td>
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant='transparent'
+                        id='dropdown-basic'
+                        className='border-0 no-chevron'
+                      >
+                        <b>
+                          <i className='fa-solid fa-ellipsis-vertical  text-'></i>
+                        </b>
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu align='end'>
+                        <Dropdown.Item
+                          onClick={() => {
+                            handleShowEdit(user)
+                          }}
+                        >
+                          <i className='fa fa-pencil'></i> Modifier
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => {
+                            setSelectedUserId(user.id)
+                            handleShowDelete()
+                          }}
+                        >
+                          <i className='fa-solid fa-trash'></i> Supprimer
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </Table>
+      </Container>
+      <Button variant='primary' className='rounded-pill fab' onClick={handleShowAdd}>
+        <strong>+</strong> <span>Ajouter un utilisateur</span>
+      </Button>
+      <ModalAddUser
+        showAdd={showAdd}
+        handleCloseAdd={handleCloseAdd}
+        userDataToEdit={selectedUser}
+        setUsers={setUsers}
+      />
+      <ModalGenericDelete modalGenericDeleteProps={modalGenericDeleteProps} />
+    </Container>
+  )
+}
