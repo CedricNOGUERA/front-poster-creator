@@ -14,91 +14,163 @@ import { TemplateType } from "@/types/TemplatesType";
 import { UserType } from "@/types/UserType";
 import React from "react";
 
-
-
 ///////////////////////
 //Auth
 ///////////////////////
 
 export const _registerUser = async (registerFormData: UserType) => {
-  const response = await authServiceInstance.register(registerFormData)
-  return response
-}
+  const response = await authServiceInstance.register(registerFormData);
+  return response;
+};
 
-
-export const _getMe = async (authLogin: (id: number, email: string, name: string, company: { idCompany: number, nameCompany: string }, role: 'super_admin' | 'admin' | 'user') => void) => {
-  const response = await UsersServices.getMe()
-  const data = await response.json()
-  authLogin(data.id, data.email, data.name, data.company, data.role)
-  return response
-}
-
+export const _getMe = async (
+  authLogin: (
+    id: number,
+    email: string,
+    name: string,
+    company: { idCompany: number; nameCompany: string },
+    role: "super_admin" | "admin" | "user"
+  ) => void
+) => {
+  const response = await UsersServices.getMe();
+  const data = await response.json();
+  authLogin(data.id, data.email, data.name, data.company, data.role);
+  return response;
+};
 
 ///////////////////////
 //shop
 ///////////////////////
 
-export const _getAllShops = async(setShops: React.Dispatch<React.SetStateAction<ShopType[]>>) => {
-  try{
-    await shopServiceInstance.getShops(setShops)
-  }catch(error){
-    console.log(error)
+export const _getAllShops = async (
+  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>
+) => {
+  try {
+    await shopServiceInstance.getShops(setShops);
+  } catch (error) {
+    console.log(error);
   }
-}
+};
 
 ///////////////////////
 //canvas
 ///////////////////////
 
 export const _getCanvas = (
-    setCanvasData: React.Dispatch<React.SetStateAction<Canvastype[]>>
-  ) => {
-    fetch('http://localhost:8081/api/canvas')
-      .then((res) => res.json())
-      .then((data) => {
-        setCanvasData(data)
-      })
-      .catch((err) => console.error('Erreur lors du fetch des catégories', err))
-}
+  setCanvasData: React.Dispatch<React.SetStateAction<Canvastype[]>>
+) => {
+  fetch(`${import.meta.env.VITE_API_URL}/api/canvas`)
+    .then((res) => res.json())
+    .then((data) => {
+      setCanvasData(data);
+    })
+    .catch((err) => console.error("Erreur lors du fetch des catégories", err));
+};
 
-export const _getCanvasById = async (id: number, setCanvas: React.Dispatch<React.SetStateAction<Canvastype>>, setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,toggleShow: () => void) => {
-
+export const _getCanvasById = async (
+  id: number,
+  setCanvas: React.Dispatch<React.SetStateAction<Canvastype>>,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  toggleShow: () => void
+) => {
   try {
-    const response = await fetch(`http://localhost:8081/api/canvas/${id}`);
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/canvas/${id}`
+    );
 
     if (!response.ok) {
-
-        setToastData({
-          bg: "danger",
-          position: "top-end",
-          delay: 3000,
-          icon: "fa fa-circle-xmark",
-          message: "Erreur " + response.status + ". Une erreur est survenue lors de la récupération du canvas."
-  
-        })
-        toggleShow()
+      setToastData({
+        bg: "danger",
+        position: "top-end",
+        delay: 3000,
+        icon: "fa fa-circle-xmark",
+        message:
+          "Erreur " +
+          response.status +
+          ". Une erreur est survenue lors de la récupération du canvas.",
+      });
+      toggleShow();
       throw new Error(`Erreur HTTP : ${response.status}`);
-    }else{
-      
-          const data = await response.json();
-      
-          setCanvas(data);
-        }
-    
+    } else {
+      const data = await response.json();
 
+      setCanvas(data);
+    }
   } catch (err) {
-    console.error('Erreur lors du fetch des canvas', err);
+    console.error("Erreur lors du fetch des canvas", err);
   }
-}
+};
 
-export const _addCanvas =  async (newCanvas: Canvastype, setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,toggleShow: () => void) => {
+export const _addCanvas = async (
+  newCanvas: Canvastype,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  toggleShow: () => void
+) => {
   try {
-    const response = await fetch('http://localhost:8081/api/add-canvas', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newCanvas),
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/add-canvas`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCanvas),
+      }
+    );
+
+    if (!response.ok) {
+      setToastData({
+        bg: "danger",
+        position: "top-end",
+        delay: 3000,
+        icon: "fa fa-circle-xmark",
+        message:
+          "Erreur " +
+          response.status +
+          ". Une erreur est survenue lors de la création du canvas.",
+      });
+      toggleShow();
+      throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+    //   const data = await response.json();
+
+    setToastData({
+      bg: "success",
+      position: "top-end",
+      delay: 3000,
+      icon: "fa fa-check-circle",
+      message: "Canvas créé avec succès !",
+    });
+    toggleShow();
+  } catch (err) {
+    console.error("Erreur lors du fetch des canvas", err);
+    setToastData({
+      bg: "danger",
+      position: "top-end",
+      delay: 3000,
+      icon: "fa fa-circle-xmark",
+      message: `Erreur réseau : ${
+        err instanceof Error ? err.message : "Inconnue"
+      }`,
+    });
+    toggleShow();
+  }
+};
+
+export const _uploadPicture = async (
+  file: File | null,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  toggleShow: () => void
+) => {
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("image", file); // "image" correspond à upload.single('image') dans le serveur
+
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+      method: "POST",
+      body: formData,
     });
 
     if (!response.ok) {
@@ -107,129 +179,93 @@ export const _addCanvas =  async (newCanvas: Canvastype, setToastData: React.Dis
         position: "top-end",
         delay: 3000,
         icon: "fa fa-circle-xmark",
-        message: "Erreur " + response.status + ". Une erreur est survenue lors de la création du canvas."
-      })
-      toggleShow()
-      throw new Error(`Erreur HTTP : ${response.status}`);
-    } 
-    //   const data = await response.json();
-    
-        setToastData({
-            bg: "success",
-            position: "top-end",
-            delay: 3000,
-            icon: "fa fa-check-circle",
-            message: "Canvas créé avec succès !"
-        })
-        toggleShow()
-  } catch (err) {
-    console.error('Erreur lors du fetch des canvas', err);
-    setToastData({
-        bg: 'danger',
-        position: 'top-end',
-        delay: 3000,
-        icon: 'fa fa-circle-xmark',
-        message: `Erreur réseau : ${err instanceof Error ? err.message : 'Inconnue'}`,
+        message:
+          "Erreur " +
+          response.status +
+          ". Une erreur est survenue lors du téléchargement de l'image.",
       });
       toggleShow();
-  }
-}
-
-export const _uploadPicture =  async (file: File | null, setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,toggleShow: () => void) => {
-
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('image', file); // "image" correspond à upload.single('image') dans le serveur
-  
-    try {
-      const response = await fetch('http://localhost:8081/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-  
-      if (!response.ok) {
-        setToastData({
-          bg: "danger",
-          position: "top-end",
-          delay: 3000,
-          icon: "fa fa-circle-xmark",
-          message: "Erreur " + response.status + ". Une erreur est survenue lors du téléchargement de l'image."
-        })
-        toggleShow()
-        throw new Error(`Erreur HTTP : ${response.status}`);
-      } 
-      //   const data = await response.json();
-      
-          setToastData({
-              bg: "success",
-              position: "top-end",
-              delay: 3000,
-              icon: "fa fa-check-circle",
-              message: "Image téléchargée avec succès !"
-          })
-          toggleShow()
-          
-    } catch (err) {
-      console.error('Erreur lors du fetch des canvas', err);
-      setToastData({
-          bg: 'danger',
-          position: 'top-end',
-          delay: 3000,
-          icon: 'fa fa-circle-xmark',
-          message: `Erreur réseau : ${err instanceof Error ? err.message : 'Inconnue'}`,
-        });
-        toggleShow();
+      throw new Error(`Erreur HTTP : ${response.status}`);
     }
-}
+    //   const data = await response.json();
+
+    setToastData({
+      bg: "success",
+      position: "top-end",
+      delay: 3000,
+      icon: "fa fa-check-circle",
+      message: "Image téléchargée avec succès !",
+    });
+    toggleShow();
+  } catch (err) {
+    console.error("Erreur lors du fetch des canvas", err);
+    setToastData({
+      bg: "danger",
+      position: "top-end",
+      delay: 3000,
+      icon: "fa fa-circle-xmark",
+      message: `Erreur réseau : ${
+        err instanceof Error ? err.message : "Inconnue"
+      }`,
+    });
+    toggleShow();
+  }
+};
 
 ///////////////////////
 //model
 ///////////////////////
 
-export const _getModels = async(setModel: React.Dispatch<React.SetStateAction<ModelType[]>>) => {
+export const _getModels = async (
+  setModel: React.Dispatch<React.SetStateAction<ModelType[]>>
+) => {
   try {
-  const response = await modelsServiceInstance.getModels()
-  const result =  await response.json()
-  setModel(result)
-  return result
-
-  }catch(error) {
-    console.log(error)
-    alert("Une erreur s'est produit lors de la récupération des models")
+    const response = await modelsServiceInstance.getModels();
+    const result = await response.json();
+    setModel(result);
+    return result;
+  } catch (error) {
+    console.log(error);
+    alert("Une erreur s'est produit lors de la récupération des models");
   }
-}
+};
 
-export const _getModelsLength = async(setModelLength: React.Dispatch<React.SetStateAction<number>>) => {
+export const _getModelsLength = async (
+  setModelLength: React.Dispatch<React.SetStateAction<number>>
+) => {
   try {
-  const response = await modelsServiceInstance.getModels()
-  const result =  await response.json()
-  setModelLength(result.length)
-  // return result.length
-
-  }catch(error) {
-    console.log(error)
+    const response = await modelsServiceInstance.getModels();
+    const result = await response.json();
+    setModelLength(result.length);
+    // return result.length
+  } catch (error) {
+    console.log(error);
   }
-}
+};
 
 ///////////////////////
 //template
 ///////////////////////
 
-export const _getTemplates = async(setTemplates: React.Dispatch<React.SetStateAction<TemplateType[]>>) => {
-  await templatesServiceInstance.getTemplates(setTemplates)
+export const _getTemplates = async (
+  setTemplates: React.Dispatch<React.SetStateAction<TemplateType[]>>
+) => {
+  await templatesServiceInstance.getTemplates(setTemplates);
+};
+export const _getTemplate = async (
+  setTemplates: React.Dispatch<React.SetStateAction<TemplateType[]>>,
+  categoryId: number
+) => {
+  await templatesServiceInstance.getTemplate(setTemplates, categoryId);
+};
 
-}
-export const _getTemplate = async(setTemplates: React.Dispatch<React.SetStateAction<TemplateType[]>>, categoryId: number) => {
-  await templatesServiceInstance.getTemplate(setTemplates, categoryId)
-
-}
-
-export const _getTemplateLength = async(setTemplateLength: React.Dispatch<React.SetStateAction<number>>) => {
-  const response = await fetch('http://localhost:8081/api/templates')
-  const result = await response.json()
-  setTemplateLength(result.length)
-}
+export const _getTemplateLength = async (
+  setTemplateLength: React.Dispatch<React.SetStateAction<number>>
+) => {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/templates`);
+  const result = await response.json();
+  setTemplateLength(result.length);
+};
 
 ///////////////////////
 //category
@@ -243,208 +279,243 @@ export const _getCategories = async (
 ) => {
   setFeedBackState({
     isLoading: true,
-    loadingMessage: 'Chargement des catégories...',
+    loadingMessage: "Chargement des catégories...",
     isError: false,
-    errorMessage: '',
-  })
+    errorMessage: "",
+  });
   try {
-    const categories = await categoriesServiceInstance.getCategories(setCat)
+    const categories = await categoriesServiceInstance.getCategories(setCat);
     if (!categories.ok) {
       setToastData({
-        bg: 'danger',
-        position: 'top-end',
+        bg: "danger",
+        position: "top-end",
         delay: 3000,
-        icon: 'fa fa-check-circle',
+        icon: "fa fa-check-circle",
         message:
-          'Erreur ' +
+          "Erreur " +
           categories.status +
-          '. Une erreur est survenue lors de la récupération des catégories.',
-      })
-      toggleShow()
-      throw new Error(`Erreur HTTP : ${categories.status}`)
+          ". Une erreur est survenue lors de la récupération des catégories.",
+      });
+      toggleShow();
+      throw new Error(`Erreur HTTP : ${categories.status}`);
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     setToastData({
-      bg: 'danger',
-      position: 'top-end',
+      bg: "danger",
+      position: "top-end",
       delay: 4000,
-      icon: 'fa fa-circle-xmark',
+      icon: "fa fa-circle-xmark",
       message:
-        'Une erreur est survenue lors de la récupération des catégories. Vérifiez votre connexion internet.',
-    })
-    toggleShow()
-  }finally{
+        "Une erreur est survenue lors de la récupération des catégories. Vérifiez votre connexion internet.",
+    });
+    toggleShow();
+  } finally {
     setFeedBackState({
       isLoading: false,
-      loadingMessage: '',
+      loadingMessage: "",
       isError: false,
-      errorMessage: '',
-    })
+      errorMessage: "",
+    });
   }
-}
+};
 
-export const _getCategoryById = async(id: number, setCategory: React.Dispatch<React.SetStateAction<CategoriesType>>) => {
-
-  try{
-
-    const response = await categoriesServiceInstance.getCategoryById(id, setCategory)
-    return response
-  }catch(error){
-    console.log(error)
+export const _getCategoryById = async (
+  id: number,
+  setCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
+) => {
+  try {
+    const response = await categoriesServiceInstance.getCategoryById(
+      id,
+      setCategory
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
   }
-}
+};
 
-export const _getCategoryPictures = async (categoryId: number, setSideBarData: React.Dispatch<React.SetStateAction<SideBarDataType[]>>, shopId: number, setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>) => {
-  const API_URL = import.meta.env.VITE_API_URL
+export const _getCategoryPictures = async (
+  categoryId: number,
+  setSideBarData: React.Dispatch<React.SetStateAction<SideBarDataType[]>>,
+  shopId: number,
+  setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
+) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   setFeedBackState({
     isLoading: true,
-    loadingMessage: '',
+    loadingMessage: "",
     isError: false,
-    errorMessage: '',
-  })
-  try{
-    const result = await categoriesServiceInstance.getPicturesByCategory(categoryId)
-    const data = await result.json()
+    errorMessage: "",
+  });
+  try {
+    const result = await categoriesServiceInstance.getPicturesByCategory(
+      categoryId
+    );
+    const data = await result.json();
     // console.log(data)
-    if(data){
+    if (data) {
       const pictures = data?.images.map((item: SideBarDataType) => {
         return {
           idShop: shopId,
           category: categoryId,
           image: `${API_URL}${item}`,
-        }
-      })
-      setSideBarData(pictures)
+        };
+      });
+      setSideBarData(pictures);
     }
-  }catch (error) {
-    console.log(error)
-  }finally{
+  } catch (error) {
+    console.log(error);
+  } finally {
     setFeedBackState({
       isLoading: false,
-      loadingMessage: '',
+      loadingMessage: "",
       isError: false,
-      errorMessage: '',
-    })
+      errorMessage: "",
+    });
   }
-}
+};
 
-export const _handleUploadFile = async (file: File, setFile: React.Dispatch<React.SetStateAction<File | null>>, setSideBarData: React.Dispatch<React.SetStateAction<SideBarDataType[]>>, categoryId: number, setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>, toggleShow: () => void, shopId: number) => {
-  if ((file && file?.type === 'image/png') || file?.type === 'image/jpeg') {
-    console.log('Uploading file...')
+export const _handleUploadFile = async (
+  file: File,
+  setFile: React.Dispatch<React.SetStateAction<File | null>>,
+  setSideBarData: React.Dispatch<React.SetStateAction<SideBarDataType[]>>,
+  categoryId: number,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  toggleShow: () => void,
+  shopId: number
+) => {
+  if ((file && file?.type === "image/png") || file?.type === "image/jpeg") {
+    console.log("Uploading file...");
 
-    const formData = new FormData()
-    formData.append('images', file)
+    const formData = new FormData();
+    formData.append("images", file);
 
     try {
-      const result = await categoriesServiceInstance.uploadPicture(formData, categoryId)
-      console.log(result)
+      const result = await categoriesServiceInstance.uploadPicture(
+        formData,
+        categoryId
+      );
+      console.log(result);
       if (result.ok) {
         setToastData({
-          bg: 'success',
-          position: 'top-end',
+          bg: "success",
+          position: "top-end",
           delay: 4000,
-          icon: 'fa fa-check-circle',
-          message: 'Image ajoutée avec succès',
-        })
-        toggleShow()
-
+          icon: "fa fa-check-circle",
+          message: "Image ajoutée avec succès",
+        });
+        toggleShow();
       }
       if (!result.ok) {
-        throw new Error('Erreur lors de l\'upload de l\'image')
+        throw new Error("Erreur lors de l'upload de l'image");
       }
       setToastData({
-        bg: 'success',
-        position: 'top-end',
+        bg: "success",
+        position: "top-end",
         delay: 4000,
-        icon: 'fa fa-check-circle',
-        message: 'Image ajoutée avec succès',
-      })
-      toggleShow()
+        icon: "fa fa-check-circle",
+        message: "Image ajoutée avec succès",
+      });
+      toggleShow();
 
       setSideBarData((prev) => [
         ...prev,
         {
           idShop: shopId,
           category: categoryId,
-          image: `http://localhost:8081/uploads/categories/images/${categoryId}/${file?.name}`,
+          image: `${
+            import.meta.env.VITE_API_URL
+          }/uploads/categories/images/${categoryId}/${file?.name}`,
         },
-      ])
-      console.log('fetch')
+      ]);
+      console.log("fetch");
     } catch (error) {
-      console.error(error)
+      console.error(error);
       setToastData({
-        bg: 'danger',
-        position: 'top-end',
+        bg: "danger",
+        position: "top-end",
         delay: 4000,
-        icon: 'fa fa-circle-xmark',
+        icon: "fa fa-circle-xmark",
         message: "Une erreur est survenue lors de l'ajout de l'image.",
-      })
-      toggleShow()
+      });
+      toggleShow();
     } finally {
-      setFile(null)
+      setFile(null);
     }
   } else {
     setToastData({
-      bg: 'danger',
-      position: 'top-end',
+      bg: "danger",
+      position: "top-end",
       delay: 6000,
-      icon: 'fa fa-exclamation-circle',
-      message: "Erreur de type d'image, veuillez choisir une image au format png ou jpeg",
-    })
-    toggleShow()
-    setFile(null)
+      icon: "fa fa-exclamation-circle",
+      message:
+        "Erreur de type d'image, veuillez choisir une image au format png ou jpeg",
+    });
+    toggleShow();
+    setFile(null);
   }
-}
+};
 
-export  const _handleDeleteImg = async(index: number | null, sideBarData: SideBarDataType[], setSideBarData: React.Dispatch<React.SetStateAction<SideBarDataType[]>>, setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>, toggleShow: () => void, categoryId: number) => {
+export const _handleDeleteImg = async (
+  index: number | null,
+  sideBarData: SideBarDataType[],
+  setSideBarData: React.Dispatch<React.SetStateAction<SideBarDataType[]>>,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  toggleShow: () => void,
+  categoryId: number
+) => {
   const imageUrl = sideBarData[index!].image;
-try {
-  const url = new URL(imageUrl);
-  const pathnameParts = url.pathname.split('/');
-  const pictureName = pathnameParts[pathnameParts.length - 1];
-    const result = await categoriesServiceInstance.deletePictureCategory(categoryId, pictureName) 
-   
-    if (result.ok) {
-    setSideBarData((prev) => prev.filter((_, i) => i !== index))
-    setToastData({
-      bg: 'success',
-      position: 'top-end',
-      delay: 4000,
-      icon: 'fa fa-check-circle',
-      message: 'Image supprimée avec succès',
-    })
-    toggleShow()
-  }else{
-    setToastData({
-      bg: 'danger',
-      position: 'top-end',
-      delay: 4000,
-      icon: 'fa fa-circle-xmark',
-      message: `Une erreur est survenue lors de la suppression de l'image. Erreur ${result.status}`,
-    })
-    toggleShow()
-  }
+  try {
+    const url = new URL(imageUrl);
+    const pathnameParts = url.pathname.split("/");
+    const pictureName = pathnameParts[pathnameParts.length - 1];
+    const result = await categoriesServiceInstance.deletePictureCategory(
+      categoryId,
+      pictureName
+    );
 
-  }catch (error) {
-    console.log(error)
+    if (result.ok) {
+      setSideBarData((prev) => prev.filter((_, i) => i !== index));
+      setToastData({
+        bg: "success",
+        position: "top-end",
+        delay: 4000,
+        icon: "fa fa-check-circle",
+        message: "Image supprimée avec succès",
+      });
+      toggleShow();
+    } else {
+      setToastData({
+        bg: "danger",
+        position: "top-end",
+        delay: 4000,
+        icon: "fa fa-circle-xmark",
+        message: `Une erreur est survenue lors de la suppression de l'image. Erreur ${result.status}`,
+      });
+      toggleShow();
+    }
+  } catch (error) {
+    console.log(error);
     setToastData({
-      bg: 'danger',
-      position: 'top-end',
+      bg: "danger",
+      position: "top-end",
       delay: 4000,
-      icon: 'fa fa-circle-xmark',
+      icon: "fa fa-circle-xmark",
       message: "Une erreur est survenue lors de la suppression de l'image.",
-    })
-    toggleShow()
+    });
+    toggleShow();
   }
-}
+};
 
 ///////////////////////
 //user
 ///////////////////////
 
-export const _getAllUsers = async (setUsers: React.Dispatch<React.SetStateAction<UserType[]>>) => {
-  const response = await UsersServices.getAllUsers()
-  const data = await response.json()
-  setUsers(data)
-}
+export const _getAllUsers = async (
+  setUsers: React.Dispatch<React.SetStateAction<UserType[]>>
+) => {
+  const response = await UsersServices.getAllUsers();
+  const data = await response.json();
+  setUsers(data);
+};

@@ -1,10 +1,9 @@
 // import templatesServiceInstance from '@/services/TemplatesServices';
-import { TemplateType } from '@/types/TemplatesType';
-import { _getTemplates } from '@/utils/apiFunctions';
-import React from 'react';
-import { Container, Table, Spinner, Col, Row, Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-
+import { TemplateType } from "@/types/TemplatesType";
+import { _getTemplates } from "@/utils/apiFunctions";
+import React from "react";
+import { Col, Container, Image, Row, Spinner, Table } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 export default function ModelsPage() {
   const [models, setModels] = React.useState<TemplateType[]>([]);
@@ -12,7 +11,6 @@ export default function ModelsPage() {
   // const [isLoading, setIsLoading] = React.useState<boolean>(false);
   // const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   // const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
-
 
   React.useEffect(() => {
     _getTemplates(setModels);
@@ -66,48 +64,46 @@ export default function ModelsPage() {
   // const modalAddEditModelProps = { show: showAddEditModal, handleClose: handleCloseAddEditModal, modelData: selectedModel };
   // const modalDeleteModelProps = { show: showDeleteModal, handleClose: handleCloseDeleteModal, modelName: selectedModel?.name, handleDelete: handleDeleteModel, isLoading };
 
-  
-
   return (
-    <Container fluid className='relative p-0'>
-      <Row
-        className='bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 '
-      >
-        <Col xs={2} sm={1} className='pt-2'>
-          <Link to='/tableau-de-bord' className='text-muted'>
-            <i className='fa-solid fa-circle-arrow-left fs-3'></i>
+    <Container fluid className="relative p-0">
+      <Row className="bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 ">
+        <Col xs={2} sm={1} className="pt-2">
+          <Link to="/tableau-de-bord" className="text-muted">
+            <i className="fa-solid fa-circle-arrow-left fs-3"></i>
           </Link>
         </Col>
         <Col xs={8} sm={10}>
-          <h3 className='pt-3 pb-2 mb-0'>Gestion des Modèles</h3>
+          <h3 className="pt-3 pb-2 mb-0">Gestion des Modèles</h3>
         </Col>
         <Col xs={2} sm={1}></Col>
       </Row>
       <Container>
         {models.length === 0 ? (
-          <div className='text-center py-5'>
-            <Spinner animation='border' role='status'>
-              <span className='visually-hidden'>Chargement...</span>
+          <div className="text-center py-5">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Chargement...</span>
             </Spinner>
           </div>
         ) : (
-          <Table striped hover responsive='sm' className=' shadow'>
-            <thead className='sticky-sm-top '>
+          <Table striped hover responsive="sm" className=" shadow">
+            <thead className="sticky-sm-top ">
               <tr>
-                <th className='py-3'>ID</th>
-                <th className='py-3'>Nom</th>
-                <th className='py-3'>Miniature</th>
-                <th className='py-3'>Actions</th>
+                <th className="py-3">ID</th>
+                <th className="py-3">Nom</th>
+                <th className="py-3">Miniature</th>
+                <th className="py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               {models.map((model) => (
-                <tr key={model.id} className='align-middle'>
+                <tr key={model.id} className="align-middle">
                   <td>{model.id}</td>
                   <td>{model.name}</td>
                   <td>
                     <Image
-                      src={`http://localhost:8081/uploads/miniatures/${model.categoryId}/${model.image}`}
+                      src={`${
+                        import.meta.env.VITE_API_URL
+                      }/uploads/miniatures/${model.categoryId}/${model.image}`}
                       alt={model.name}
                       width={100}
                       height={100}
@@ -153,5 +149,5 @@ export default function ModelsPage() {
       {/* ModalDeleteModel à créer et à intégrer */}
       {/* <ModalDeleteModel {...modalDeleteModelProps} /> */}
     </Container>
-  )
-}   
+  );
+}
