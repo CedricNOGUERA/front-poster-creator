@@ -2,17 +2,19 @@ import { ModalGenericDelete } from '@/components/ui/Modals'
 import { ModalAddUser} from '@/components/users/ModalUser'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { ShopType } from '@/types/ShopType'
 import { UserType } from '@/types/UserType'
-import { _getAllUsers } from '@/utils/apiFunctions'
+import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
 import React from 'react'
 import { Button, Container, Dropdown, Table } from 'react-bootstrap'
 
 export default function UserManager() {
   /* States
    *******************************************************************************************/
-  const userRole = userDataStore((state: UserDataType) => state.role)
-  const userCompany = userDataStore((state: UserDataType) => state.company)
+  // const userRole = userDataStore((state: UserDataType) => state.role)
+  const userCompany = userDataStore((state: UserDataType) => state.company )
   const [users, setUsers] = React.useState<UserType[]>([])
+  const [shops, setShops] = React.useState<ShopType[]>([])
   const [showAdd, setShowAdd] = React.useState<boolean>(false)
   const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
@@ -23,6 +25,7 @@ export default function UserManager() {
    *******************************************************************************************/
   React.useEffect(() => {
     _getAllUsers(setUsers)
+    _getAllShops(setShops)
   }, [])
 
   /* Functions
@@ -61,7 +64,6 @@ export default function UserManager() {
   }
 
   const modalGenericDeleteProps = { show: showDelete, handleClose: handleCloseDelete, selectedId: selectedUserId, handleDelete: deleteUser, title: 'l\'utilisateur', isLoading }
-
   return (
     <Container fluid className='p-0'>
       <h3 className='py-3'>Gestion des utilisateurs</h3>
@@ -77,53 +79,55 @@ export default function UserManager() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user: UserType) => {
-              if (
-                userRole === 'admin' &&
-                user.role === 'super_admin' &&
-                user.company.nameCompany !== userCompany.nameCompany
-              ) {
-                return null
-              }
-              return (
-                <tr key={user.id}>
-                  <td>{user.company.nameCompany}</td>
-                  <td>{user.name}</td>
-                  <td>{user.email}</td>
-                  <td>{user.role}</td>
-                  <td>
-                    <Dropdown>
-                      <Dropdown.Toggle
-                        variant='transparent'
-                        id='dropdown-basic'
-                        className='border-0 no-chevron'
-                      >
-                        <b>
-                          <i className='fa-solid fa-ellipsis-vertical  text-'></i>
-                        </b>
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu align='end'>
-                        <Dropdown.Item
-                          onClick={() => {
-                            handleShowEdit(user)
-                          }}
-                        >
-                          <i className='fa fa-pencil'></i> Modifier
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => {
-                            setSelectedUserId(user.id)
-                            handleShowDelete()
-                          }}
-                        >
-                          <i className='fa-solid fa-trash'></i> Supprimer
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </td>
-                </tr>
+            {users
+              .filter((user) =>
+                user.company.some((item) =>
+                  userCompany.some((uc) => uc.idCompany === item.idCompany)
+                )
               )
-            })}
+              .map((user: UserType) => {
+                const companyLength = user.company?.length
+                const shopLength = shops?.length
+                const companylist = companyLength === shopLength ? "Tous les magasins" : user.company.map((item) => item.nameCompany).join(', ')
+                return (
+                  <tr key={user.id}>
+                    <td>{companylist}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                    <td>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          variant='transparent'
+                          id='dropdown-basic'
+                          className='border-0 no-chevron'
+                        >
+                          <b>
+                            <i className='fa-solid fa-ellipsis-vertical  text-'></i>
+                          </b>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu align='end'>
+                          <Dropdown.Item
+                            onClick={() => {
+                              handleShowEdit(user)
+                            }}
+                          >
+                            <i className='fa fa-pencil'></i> Modifier
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => {
+                              setSelectedUserId(user.id)
+                              handleShowDelete()
+                            }}
+                          >
+                            <i className='fa-solid fa-trash'></i> Supprimer
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </td>
+                  </tr>
+                )
+              })}
           </tbody>
         </Table>
       </Container>

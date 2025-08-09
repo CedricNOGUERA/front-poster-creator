@@ -1,7 +1,7 @@
 import { SideBarDataType } from "@/components/DragDropComponents/SideBar";
 import authServiceInstance from "@/services/AuthService";
 import categoriesServiceInstance from "@/services/CategoriesServices";
-import modelsServiceInstance from "@/services/ModelsServices";
+import modelsServiceInstance from "@/services/modelsServices";
 import shopServiceInstance from "@/services/ShopsServices";
 import templatesServiceInstance from "@/services/TemplatesServices";
 import UsersServices from "@/services/UsersServices";

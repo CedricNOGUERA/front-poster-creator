@@ -73,7 +73,6 @@ export default function CategorySelectorDrag({title} : Props) {
    *******************************************************************************************/
 React.useEffect(() => {
   _getCategories(setCat, setToastData, toggleShow, setFeedBackState)
-
   _getAllShops(setshopData)
 }, [setToastData, toggleShow])
 

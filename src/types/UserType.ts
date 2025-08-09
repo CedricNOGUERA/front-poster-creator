@@ -11,6 +11,6 @@ export interface UserType {
   company: {
     idCompany: number
     nameCompany: string
-  }
+  }[]
   role: 'super_admin' | 'admin' | 'user'
 }

@@ -24,7 +24,7 @@ import { _getCategoryById, _getModels } from '@/utils/apiFunctions'
 import { useOutletContext } from 'react-router-dom'
 import ComponentEditor from './DragDropComponents/ComponentEditor'
 import { ModalUpdateModel } from './ui/Modals'
-import modelsServiceInstance from '@/services/ModelsServices'
+import modelsServiceInstance from '@/services/modelsServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { ModelType } from '@/types/modelType'
 

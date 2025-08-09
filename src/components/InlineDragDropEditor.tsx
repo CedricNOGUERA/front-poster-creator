@@ -26,7 +26,7 @@ import { useOutletContext } from 'react-router-dom'
 import ComponentEditor from './DragDropComponents/ComponentEditor'
 import { ModalValidateModel } from './ui/Modals'
 import * as htmlToImage from 'html-to-image'
-import modelsServiceInstance from '@/services/ModelsServices'
+import modelsServiceInstance from '@/services/modelsServices'
 import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
@@ -142,7 +142,7 @@ export default function InlineDragDropEditor() {
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, storeApp, maxPreviewHeight, h])
-
+  console.log(selectedCategory.canvas)
   /* Functions
    *******************************************************************************************/
 
