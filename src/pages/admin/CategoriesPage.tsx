@@ -12,6 +12,7 @@ import TableLoader from '@/components/ui/squeleton/TableLoader';
 import { _getAllShops } from '@/utils/apiFunctions';
 import TableHeader from '@/components/ui/table/TableHeader';
 import MenuDrop from '@/components/ui/table/MenuDrop';
+import userDataStore, { UserDataType } from '@/stores/userDataStore';
 interface ContextSideBarType {
     toggleShow: () => void
     setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -21,6 +22,9 @@ interface ContextSideBarType {
   }
 
 export default function CategoriesPage() {
+  const API_URL = import.meta.env.VITE_API_URL
+  const userRole = userDataStore((state: UserDataType) => state.role)
+  const userData = userDataStore((state: UserDataType) => state)
 
   const {toggleShow, setToastData, shops, feedBackState, setFeedBackState} = useOutletContext<ContextSideBarType>()
   const columnsData = ['ID', 'Nom', 'Image', 'Magasins', 'Actions']
@@ -40,16 +44,32 @@ export default function CategoriesPage() {
   useEffect(() => {
     _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
     _getAllShops(setShopData);
-  }, []);
+  }, [setFeedBackState, setToastData]);
+
+
 
 
   const categorieDisplay = (categories: CategoriesType[]) => {
-    return categories.map((category) => (
+    return categories
+    .filter((item) => {
+      if(userRole === "super_admin"){
+        return true
+      }
+      if(userRole === "admin"){
+
+        return item.shopIds.some((shopId) => 
+          userData.company.some((comp) => 
+            shopId === comp.idCompany
+      )
+        )
+      }
+    })
+    .map((category) => (
       <tr key={category.id}>
         <td>{category.id}</td>
         <td>{category.name}</td>
         <td className='bg-secondary'>
-          <Image src={category.image} alt={category.name} width={100} />
+          <Image src={API_URL + category.image} alt={category.name} width={100} />
         </td>
         <td>
           {category.shopIds.map((shop: number, indx: number) => (

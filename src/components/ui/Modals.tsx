@@ -9,6 +9,7 @@ import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentT
 import { _getTemplates, _handleDeleteImg } from '@/utils/apiFunctions'
 import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
 import { TemplateType } from '@/types/TemplatesType'
+const API_URL = import.meta.env.VITE_API_URL
 
 export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteType}) {
     const { showDelete, handleCloseDelete, selectedIndex, sideBarData, setSideBarData, setToastData, toggleShow, categoryId } = modalDeleteProps
@@ -427,7 +428,7 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
             <Form.Label className=''>
               Image actuelle
               <span className='bg-secondary ms-2 p-2'>
-                <Image src={formData?.image || 'no-picture'} alt={formData?.name || 'no-picture'} width={100} />
+                <Image src={API_URL + formData?.image || 'no-picture'} alt={formData?.name || 'no-picture'} width={100} />
               </span>
             </Form.Label>
             <Form.Control
@@ -447,7 +448,7 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
                     const headerItem = firstItem as HeaderComponentType;
                     if (headerItem.srcRglt) {
           
-                      return <Image src={headerItem.srcRglt} alt={formData.name || 'Header Reglette'} width={20} />;
+                      return <Image src={API_URL + headerItem.srcRglt} alt={formData.name || 'Header Reglette'} width={20} />;
                     }
                   }
                   return <span className='text-danger'>Aucune image réglette</span>;

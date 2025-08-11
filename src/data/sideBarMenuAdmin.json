@@ -3,18 +3,21 @@
         "id": 1,
         "title": "Magasins",
         "icon": "fas fa-shop",
-        "display": "shops"
+        "display": "shops",
+        "role": ["super_admin"]
     },
     {
         "id": 2,
         "title": "Catégories",
         "icon": "fas fa-list",
-        "display": "categories"
+        "display": "categories",
+        "role": ["super_admin", "admin"]
     },
     {
         "id": 3,
         "title": "Utilisateurs",
         "icon": "fas fa-user",
-        "display": "utilisateurs"
+        "display": "utilisateurs",
+        "role": ["super_admin", "admin"]
     }
 ]

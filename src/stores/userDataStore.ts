@@ -8,13 +8,13 @@ export type UserDataType = {
   company: {
     idCompany: number
     nameCompany: string
-  }
+  }[]
   role: 'super_admin' | 'admin' | 'user'
   authLogin: (
     id: number,
     email: string,
     name: string,
-    company: { idCompany: number; nameCompany: string },
+    company: { idCompany: number; nameCompany: string }[],
     role: 'super_admin' | 'admin' | 'user'
   ) => void
   authLogout: () => void
@@ -27,10 +27,7 @@ const userDataStore = create(
       id: 0,
       email: '',
       name: '',
-      company: {
-        idCompany: 0,
-        nameCompany: '',
-      },
+      company: [],
       role: 'user',
 
       authLogin: (
@@ -40,7 +37,7 @@ const userDataStore = create(
         company: {
           idCompany: number
           nameCompany: string
-        },
+        }[],
         role: 'super_admin' | 'admin' | 'user'
       ) =>
         set(() => ({
@@ -55,10 +52,7 @@ const userDataStore = create(
           id: 0,
           email: '',
           name: '',
-          company: {
-            idCompany: 0,
-            nameCompany: '',
-          },
+          company: [],
           role: 'user',
         })),
     }),

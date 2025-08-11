@@ -7,6 +7,9 @@ import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
 import { UserType } from '@/types/UserType'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { TagPicker } from 'rsuite'
+
+interface CompanyType { idCompany: number; nameCompany: string }
 
 export const AddUserForm = ({
   titleButton,
@@ -25,10 +28,7 @@ export const AddUserForm = ({
   const [name, setName] = React.useState<string>('')
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
-  const [company, setCompany] = React.useState<{ idCompany: number; nameCompany: string }>({
-    idCompany: 0,
-    nameCompany: '',
-  })
+  const [company, setCompany] = React.useState<CompanyType[]>([])
   const [role, setRole] = React.useState<'super_admin' | 'admin' | 'user'>('user')
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const [shopData, setshopData] = React.useState<ShopType[]>([])
@@ -46,11 +46,13 @@ export const AddUserForm = ({
     if (initialData) {
       setName(initialData.name || '')
       setEmail(initialData.email || '')
-      setCompany(initialData.company || { idCompany: 0, nameCompany: '' })
+      setCompany(initialData.company || [])
       setRole(initialData.role || 'user')
       setPassword('')
     }
   }, [initialData])
+
+  const shopList = shopData.map((item: ShopType) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -115,7 +117,9 @@ export const AddUserForm = ({
       {error && <Alert variant='danger'>{error}</Alert>}
       {success && <Alert variant='success'>{success}</Alert>}
       <Form.Group className='mb-3' controlId='formBasicName'>
-        <Form.Label>Name</Form.Label>
+        <Form.Label>
+          Prénom<span className='text-danger'>*</span>
+        </Form.Label>
         <Form.Control
           type='text'
           placeholder='Saisissez votre nom'
@@ -125,7 +129,9 @@ export const AddUserForm = ({
         />
       </Form.Group>
       <Form.Group className='mb-3' controlId='formBasicEmail'>
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>
+          Email<span className='text-danger'>*</span>
+        </Form.Label>
         <Form.Control
           type='email'
           placeholder='Saisissez votre email'
@@ -134,50 +140,49 @@ export const AddUserForm = ({
           required
         />
       </Form.Group>
-      <Form.Group className='mb-3' controlId='formBasicCompany'>
-        <Form.Label>Company</Form.Label>
-        <Form.Select
-          value={company.idCompany}
-          onChange={(e) => {
-            const selectedShop = shopData.find((shop) => shop.id === parseInt(e.target.value))
-            setCompany({
-              idCompany: parseInt(e.target.value),
-              nameCompany: (selectedShop && selectedShop.name) || '',
-            })
+      <Form.Group className='mb-3' controlId='categoryShops'>
+        <Form.Label>
+          Magasins<span className='text-danger'>*</span>
+        </Form.Label>
+        <TagPicker
+          data={shopList}
+          style={{ width: '100%' }}
+          placeholder='Sélectionnez le ou les magasins'
+          onChange={(values: number[]) => {
+            const selectedCompanies = shopList.filter((shop) => values.includes(shop.value))
+            const selectedShop = selectedCompanies.map((item) => ({
+              nameCompany: item.label,
+              idCompany: item.value,
+            }))
+            setCompany([...selectedShop])
           }}
-        >
-          <option value=''>Sélectionné une entreprise</option>
-          {shopData?.map((shop: ShopType, index: number) => {
-            if(userStoreData.company.nameCompany !== shop.name && userStoreData.role !== 'super_admin'){
-              return null
-            }
-            return(
-            <option key={index} value={shop.id}>
-              {shop.name}
-            </option>
-          )})}
-        </Form.Select>
+        />
       </Form.Group>
       <Form.Group className='mb-3' controlId='formBasicRole'>
-        <Form.Label>Role</Form.Label>
+        <Form.Label>
+          Role<span className='text-danger'>*</span>
+        </Form.Label>
         <Form.Select
           value={role}
           onChange={(e) => setRole(e.target.value as 'super_admin' | 'admin' | 'user')}
         >
           <option value=''>Sélectionné un rôle</option>
           {roles?.map((role: string, index: number) => {
-            if(userStoreData.role !== 'super_admin' && role === 'super_admin'){
+            if (userStoreData.role !== 'super_admin' && role === 'super_admin') {
               return null
             }
-            return(
-            <option key={index} value={role}>
-              {role}
-            </option>
-          )})}
+            return (
+              <option key={index} value={role}>
+                {role}
+              </option>
+            )
+          })}
         </Form.Select>
       </Form.Group>
       <Form.Group className='mb-3' controlId='formBasicPassword'>
-        <Form.Label>Mot de passe</Form.Label>
+        <Form.Label>
+          Mot de passe<span className='text-danger'>*</span>
+        </Form.Label>
         <InputGroup className='mb-3'>
           <Form.Control
             type={showPassword ? 'text' : 'password'}
@@ -203,11 +208,16 @@ export const AddUserForm = ({
       </Form.Group>
       <div className={handleCloseAdd ? 'text-end' : 'text-center'}>
         {handleCloseAdd && (
-        <Button variant='secondary' onClick={handleCloseAdd} className='me-2'>
-          Annuler
-        </Button>
+          <Button variant='secondary' onClick={handleCloseAdd} className='me-2'>
+            Annuler
+          </Button>
         )}
-        <Button variant='primary' type='submit' className={handleCloseAdd ? '' : 'w-100'} disabled={loading}>
+        <Button
+          variant='primary'
+          type='submit'
+          className={handleCloseAdd ? '' : 'w-100'}
+          disabled={loading}
+        >
           {loading ? <Spinner size='sm' animation='border' variant='light' /> : titleButton}
         </Button>
       </div>

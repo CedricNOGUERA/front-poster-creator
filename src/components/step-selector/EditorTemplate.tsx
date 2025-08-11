@@ -138,6 +138,8 @@ export const EditorTemplate = () => {
     setModelId(selectedSchema?.id ?? 0)
   }
 
+  console.log(canvasData)
+
   const getPageDimensions = async () => {
     const selectedDimension = dimensions.find((d) => d.id === storeApp.dimensionId)
     setPageHeight(selectedDimension?.height ?? 0)
@@ -219,6 +221,9 @@ export const EditorTemplate = () => {
   const updateModelProps = {
     canvasData, setIsUpdating, previewStyle, modelId, setModels
   }
+
+  const API_URL = import.meta.env.VITE_API_URL
+  
 
   /* Render
    *******************************************************************************************/
@@ -383,7 +388,7 @@ export const EditorTemplate = () => {
                         }}
                       >
                         <img
-                          src={headerComp.src ? headerComp.src : undefined}
+                          src={headerComp.src ? API_URL + headerComp.src : undefined}
                           alt=''
                           style={{
                             maxWidth: '100%',
@@ -406,7 +411,7 @@ export const EditorTemplate = () => {
                         }}
                       >
                         <img
-                          src={imgComp?.src ?? ''}
+                          src={imgComp?.src ? API_URL + imgComp?.src : ''}
                           alt={imgComp?.src ?? ''}
                           style={{
                             width: `${imgComp.width ?? 0}px`,
