@@ -3,7 +3,16 @@ import React from 'react'
 import { Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
 import { useOutletContext } from 'react-router-dom'
 import { TagPicker } from 'rsuite'
-import { ContextModalValidateModelType, ModalAddCategoryType, ModalDeleteType, ModalValidateModelType, ModalGenericDeletePropsType, ModalAddShopType, ModalAddEditCategoryType, ModalUpdateModelType } from '@/types/ModalType'
+import {
+  ContextModalValidateModelType,
+  ModalAddCategoryType,
+  ModalDeleteType,
+  ModalValidateModelType,
+  ModalGenericDeletePropsType,
+  ModalAddShopType,
+  ModalAddEditCategoryType,
+  ModalUpdateModelType,
+} from '@/types/ModalType'
 import { ShopType } from '@/types/ShopType'
 import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
 import { _getTemplates, _handleDeleteImg } from '@/utils/apiFunctions'
@@ -11,8 +20,17 @@ import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
 import { TemplateType } from '@/types/TemplatesType'
 const API_URL = import.meta.env.VITE_API_URL
 
-export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteType}) {
-    const { showDelete, handleCloseDelete, selectedIndex, sideBarData, setSideBarData, setToastData, toggleShow, categoryId } = modalDeleteProps
+export function ModalDelete({ modalDeleteProps }: { modalDeleteProps: ModalDeleteType }) {
+  const {
+    showDelete,
+    handleCloseDelete,
+    selectedIndex,
+    sideBarData,
+    setSideBarData,
+    setToastData,
+    toggleShow,
+    categoryId,
+  } = modalDeleteProps
   return (
     <Modal show={showDelete} onHide={handleCloseDelete}>
       <Modal.Header closeButton>
@@ -20,10 +38,7 @@ export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteTy
           <i className='fa-solid fa-circle-xmark me-2 text-danger'></i>Suppression d'image
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        Etes sûr de vouloir supprimer cette image ?
-      
-      </Modal.Body>
+      <Modal.Body>Etes sûr de vouloir supprimer cette image ?</Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={handleCloseDelete}>
           Annuler
@@ -31,7 +46,14 @@ export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteTy
         <Button
           variant='danger'
           onClick={() => {
-            _handleDeleteImg(selectedIndex, sideBarData, setSideBarData, setToastData, toggleShow, categoryId)
+            _handleDeleteImg(
+              selectedIndex,
+              sideBarData,
+              setSideBarData,
+              setToastData,
+              toggleShow,
+              categoryId
+            )
             handleCloseDelete()
           }}
         >
@@ -42,11 +64,15 @@ export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteTy
   )
 }
 
-export function ModalValidateModel({modalValidateModelProps}: {modalValidateModelProps: ModalValidateModelType}) {
-  
-    const { showValidateModel, handleCloseValidateModel, addModel,  imageName, setImageName } = modalValidateModelProps
-    const {  feedBackState } = useOutletContext<ContextModalValidateModelType>()
-    const [templates, setTemplates] = React.useState<TemplateType[]>([]);
+export function ModalValidateModel({
+  modalValidateModelProps,
+}: {
+  modalValidateModelProps: ModalValidateModelType
+}) {
+  const { showValidateModel, handleCloseValidateModel, addModel, imageName, setImageName } =
+    modalValidateModelProps
+  const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
+  const [templates, setTemplates] = React.useState<TemplateType[]>([])
 
   /* UseEffect
    *******************************************************************************************/
@@ -112,14 +138,16 @@ export function ModalValidateModel({modalValidateModelProps}: {modalValidateMode
     </Modal>
   )
 }
-export function ModalUpdateModel({modalUpdateModelProps}: {modalUpdateModelProps: ModalUpdateModelType}) {
-  
-    const { showUpdateModel, handleCloseUpdateModel, updateModel } = modalUpdateModelProps
-    const {  feedBackState } = useOutletContext<ContextModalValidateModelType>()
+export function ModalUpdateModel({
+  modalUpdateModelProps,
+}: {
+  modalUpdateModelProps: ModalUpdateModelType
+}) {
+  const { showUpdateModel, handleCloseUpdateModel, updateModel } = modalUpdateModelProps
+  const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
 
   /* UseEffect
    *******************************************************************************************/
-
 
   return (
     <Modal show={showUpdateModel} onHide={handleCloseUpdateModel}>
@@ -152,11 +180,30 @@ export function ModalUpdateModel({modalUpdateModelProps}: {modalUpdateModelProps
   )
 }
 
-export function ModalAddCategory({modalAddCategoryProps}: {modalAddCategoryProps: ModalAddCategoryType}){
+export function ModalAddCategory({
+  modalAddCategoryProps,
+}: {
+  modalAddCategoryProps: ModalAddCategoryType
+}) {
+  const {
+    showAdd,
+    handleCloseAdd,
+    handleSubmit,
+    formData,
+    setFormData,
+    setFile,
+    setImgRglt,
+    feedBackState,
+    shopData,
+    validated,
+    fieldErrors,
+    validateField,
+  } = modalAddCategoryProps
 
-  const {showAdd, handleCloseAdd, handleSubmit, formData, setFormData, setFile, setImgRglt, feedBackState, shopData, validated, fieldErrors, validateField} = modalAddCategoryProps
-
-  const shopList = shopData.map((item: ShopType) => ({ label: item.name, value: String(item.id) }));
+  const shopList = shopData.map((item: ShopType) => ({
+    label: item.name,
+    value: String(item.id),
+  }))
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
@@ -210,9 +257,8 @@ export function ModalAddCategory({modalAddCategoryProps}: {modalAddCategoryProps
               </Dropdown.Toggle>
               <Dropdown.Menu className='w-100'>
                 <Dropdown.Item
-                
                   onClick={() =>
-                    setFormData((prev) => ({ ...prev, icon: { name: "", value: "" } }))
+                    setFormData((prev) => ({ ...prev, icon: { name: '', value: '' } }))
                   }
                 >
                   Annuler
@@ -228,28 +274,6 @@ export function ModalAddCategory({modalAddCategoryProps}: {modalAddCategoryProps
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            {/* <div className='d-flex flex-wrap gap-2'>
-              {fontAwesomeIcons.map((icon) => (
-                <button
-                  type='button'
-                  key={icon.name}
-                  className={`btn btn-light d-flex flex-column align-items-center p-2 ${
-                    formData.icon.name === icon.name ? 'border border-primary' : ''
-                  }`}
-                  style={{ width: 70, height: 70 }}
-                  onClick={() => setFormData((prev) => ({ ...prev, icon }))}
-                >
-                  <i className={icon.value + ' fs-3'}></i>
-                  <span style={{ fontSize: 10 }}>{icon.name}</span>
-                </button>
-              ))}
-            </div> */}
-            {/* {formData.icon && formData.icon.value && (
-              <div className='mt-2'>
-                <i className={formData.icon.value + ' fs-5'}></i>
-                <span className='ms-2'>{formData.icon.name}</span>
-              </div>
-            )} */}
           </Form.Group>
           <Form.Group controlId='formFile' className='mb-3'>
             <Form.Label className=''>Ajouter une image(header)</Form.Label>
@@ -378,12 +402,27 @@ export function ModalAddCategory({modalAddCategoryProps}: {modalAddCategoryProps
   )
 }
 
-export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditCategoryProps: ModalAddEditCategoryType}){
+export function ModalAddEditCategory({
+  modalAddEditCategoryProps,
+}: {
+  modalAddEditCategoryProps: ModalAddEditCategoryType
+}) {
+  const {
+    showAdd,
+    handleCloseAdd,
+    handleSubmit,
+    formData,
+    setFormData,
+    setFile,
+    setImgRglt,
+    feedBackState,
+    shopData,
+  } = modalAddEditCategoryProps
 
-  const {showAdd, handleCloseAdd, handleSubmit, formData, setFormData, setFile, setImgRglt, feedBackState, shopData} = modalAddEditCategoryProps
-
-  const shopList = shopData.map((item: ShopType) => ({ label: item.name, value: String(item.id) }));
-
+  const shopList = shopData.map((item: ShopType) => ({
+    label: item.name,
+    value: String(item.id),
+  }))
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
@@ -411,10 +450,44 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
           </Form.Group>
           <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
             <Form.Label>Icone</Form.Label>
-            <Form.Control
+            <Dropdown>
+              <Dropdown.Toggle
+                variant='transparente'
+                id='catIcon'
+                className='w-100 text-start border'
+              >
+                {formData.icon && formData.icon.value ? (
+                  <>
+                    <i className={formData.icon.value + ' fs-5 text-primary'}></i>
+                    <span className='ms-2'>{formData.icon.name}</span>
+                  </>
+                ) : (
+                  'Sélectionnez une icone'
+                )}
+              </Dropdown.Toggle>
+              <Dropdown.Menu className='w-100'>
+                <Dropdown.Item
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, icon: { name: '', value: '' } }))
+                  }
+                >
+                  Annuler
+                </Dropdown.Item>
+                {fontAwesomeIcons.map((icon) => (
+                  <Dropdown.Item
+                    key={icon.name}
+                    onClick={() => setFormData((prev) => ({ ...prev, icon }))}
+                  >
+                    <i className={icon.value + ' fs-5 me-2 text-primary'}></i>
+                    <span style={{ fontSize: 15 }}>{icon.name}</span>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            {/* <Form.Control
               type='text'
               placeholder="Saisissez le nom de l'icone"
-              value={formData?.icon || ''}
+              value={formData?.icon.name || ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((prev) => ({
                   ...prev,
@@ -422,13 +495,17 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
                 }))
               }
               required
-            />
+            /> */}
           </Form.Group>
           <Form.Group controlId='formFile' className='mb-3'>
             <Form.Label className=''>
               Image actuelle
               <span className='bg-secondary ms-2 p-2'>
-                <Image src={API_URL + formData?.image || 'no-picture'} alt={formData?.name || 'no-picture'} width={100} />
+                <Image
+                  src={API_URL + formData?.image || 'no-picture'}
+                  alt={formData?.name || 'no-picture'}
+                  width={100}
+                />
               </span>
             </Form.Label>
             <Form.Control
@@ -443,15 +520,20 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
               Image actuelle (<b>mode réglette</b>)
               <span className='bg-secondary ms-2 p-2'>
                 {(() => {
-                  const firstItem = formData?.canvas?.[0];
+                  const firstItem = formData?.canvas?.[0]
                   if (firstItem && firstItem.type === 'header') {
-                    const headerItem = firstItem as HeaderComponentType;
+                    const headerItem = firstItem as HeaderComponentType
                     if (headerItem.srcRglt) {
-          
-                      return <Image src={API_URL + headerItem.srcRglt} alt={formData.name || 'Header Reglette'} width={20} />;
+                      return (
+                        <Image
+                          src={API_URL + headerItem.srcRglt}
+                          alt={formData.name || 'Header Reglette'}
+                          width={20}
+                        />
+                      )
                     }
                   }
-                  return <span className='text-danger'>Aucune image réglette</span>;
+                  return <span className='text-danger'>Aucune image réglette</span>
                 })()}
               </span>
             </Form.Label>
@@ -468,20 +550,34 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
               type='color'
               className='w-100'
               value={
-                formData?.canvas?.[0] && (formData.canvas[0].type === 'header' || formData.canvas[0].type === 'background-color')
-                  ? (formData.canvas[0] as HeaderComponentType | BackgroundComponentType).backgroundColor 
-                  :  "#000000"
+                formData?.canvas?.[0] &&
+                (formData.canvas[0].type === 'header' ||
+                  formData.canvas[0].type === 'background-color')
+                  ? (formData.canvas[0] as HeaderComponentType | BackgroundComponentType)
+                      .backgroundColor
+                  : '#000000'
               }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prevData) => {
                   const newCanvas = prevData.canvas.map((item, index) => {
-                    if (index === 0 && (item.type === 'header' || item.type === 'background-color')) {
-                      return { ...item, backgroundColor: e.target.value } as HeaderComponentType | BackgroundComponentType;
+                    if (
+                      index === 0 &&
+                      (item.type === 'header' || item.type === 'background-color')
+                    ) {
+                      return { ...item, backgroundColor: e.target.value } as
+                        | HeaderComponentType
+                        | BackgroundComponentType
                     }
-                    return item;
-                  });
-                  return { ...prevData, canvas: newCanvas, backgroundColorHeader: prevData.canvas?.[0]?.type === 'header' || prevData.canvas?.[0]?.type === 'background-color' &&  e.target.value };
-                });
+                    return item
+                  })
+                  return {
+                    ...prevData,
+                    canvas: newCanvas,
+                    backgroundColorHeader:
+                      prevData.canvas?.[0]?.type === 'header' ||
+                      (prevData.canvas?.[0]?.type === 'background-color' && e.target.value),
+                  }
+                })
               }}
             />
           </Form.Group>
@@ -491,20 +587,28 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
               type='color'
               className='w-100'
               value={
-                formData?.canvas?.[1] && (formData.canvas[1].type === 'background-color')
+                formData?.canvas?.[1] && formData.canvas[1].type === 'background-color'
                   ? (formData.canvas[1] as BackgroundComponentType).backgroundColor
-                  : "#000000"
+                  : '#000000'
               }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prevData) => {
                   const newCanvas = prevData.canvas.map((item, index) => {
                     if (index === 1 && item.type === 'background-color') {
-                      return { ...item, backgroundColor: e.target.value } as BackgroundComponentType;
+                      return {
+                        ...item,
+                        backgroundColor: e.target.value,
+                      } as BackgroundComponentType
                     }
-                    return item;
-                  });
-                  return { ...prevData, canvas: newCanvas, backgroundColorBody: prevData.canvas?.[1]?.type === 'background-color' && e.target.value };
-                });
+                    return item
+                  })
+                  return {
+                    ...prevData,
+                    canvas: newCanvas,
+                    backgroundColorBody:
+                      prevData.canvas?.[1]?.type === 'background-color' && e.target.value,
+                  }
+                })
               }}
             />
           </Form.Group>
@@ -527,7 +631,7 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
             onClick={() => {
               setFormData({
                 name: '',
-                icon: '',
+                icon: { name: '', value: '' },
                 image: '',
                 imageRglt: '',
                 // backgroundColorHeader: '#ff0000',
@@ -553,114 +657,118 @@ export function ModalAddEditCategory({modalAddEditCategoryProps}: {modalAddEditC
   )
 }
 
-export function ModalAddShop({modalAddShopProps}: {modalAddShopProps: ModalAddShopType}){
+export function ModalAddShop({ modalAddShopProps }: { modalAddShopProps: ModalAddShopType }) {
+  const {
+    showAdd,
+    handleCloseAdd,
+    handleSubmit,
+    formData,
+    setFormData,
+    setFile,
+    feedBackState,
+  } = modalAddShopProps
 
-  const {showAdd, handleCloseAdd, handleSubmit, formData, setFormData, setFile, feedBackState} = modalAddShopProps
-
-  return(
+  return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
-        <Form onSubmit={handleSubmit}>
-          <Modal.Header closeButton>
-            <Modal.Title className='text-primary'>
-              <i className='fa fa-shop fs-'></i> &nbsp;Ajouter un nouveau
-              magasin
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-              <Form.Label>Nom</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Saissisez le nom du magasin'
-                value={formData?.name || ''}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
-                }
-                required
-              />
-            </Form.Group>
+      <Form onSubmit={handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title className='text-primary'>
+            <i className='fa fa-shop fs-'></i> &nbsp;Ajouter un nouveau magasin
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Saissisez le nom du magasin'
+              value={formData?.name || ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              required
+            />
+          </Form.Group>
 
-            <Form.Group controlId='formFile' className='mb-3'>
-              <Form.Label className=''>Ajouter une image</Form.Label>
-              <Form.Control
-                type='file'
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  _handleFileChange(e, setFile)
-                }
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant='secondary'
-                onClick={() => {
-                  handleCloseAdd()
-                  setFile(null)
-                  setFormData({
-                    name: '',
-                    image: '',
-                  })
-                }}
-            >
-              Annuler
-            </Button>
-            <Button
-              variant='success'
-              type='submit'
-              disabled={feedBackState.isLoading}
-              // onClick={handleSubmit}
-            >
-              {feedBackState.isLoading ? (
-                <>
-                  <Spinner size='sm' /> {feedBackState.loadingMessage}
-                </>
-              ) : (
-                <span>Ajouter</span>
-              )}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    
+          <Form.Group controlId='formFile' className='mb-3'>
+            <Form.Label className=''>Ajouter une image</Form.Label>
+            <Form.Control
+              type='file'
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                _handleFileChange(e, setFile)
+              }
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              handleCloseAdd()
+              setFile(null)
+              setFormData({
+                name: '',
+                image: '',
+              })
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant='success'
+            type='submit'
+            disabled={feedBackState.isLoading}
+            // onClick={handleSubmit}
+          >
+            {feedBackState.isLoading ? (
+              <>
+                <Spinner size='sm' /> {feedBackState.loadingMessage}
+              </>
+            ) : (
+              <span>Ajouter</span>
+            )}
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
   )
 }
 
-export function ModalGenericDelete({modalGenericDeleteProps}: {modalGenericDeleteProps: ModalGenericDeletePropsType}) {
-  const { show, handleClose, selectedId, handleDelete, title, isLoading } = modalGenericDeleteProps
-return (
-  <Modal show={show} onHide={handleClose}>
-    <Modal.Header closeButton>
-      <Modal.Title>
-        <i className='fa-solid fa-circle-xmark me-2 text-danger'></i>Supprimer {title}
-      </Modal.Title>
-    </Modal.Header>
-    <Modal.Body>
-      Etes sûr de vouloir supprimer {title} ?
-    
-    </Modal.Body>
-    <Modal.Footer>
-      <Button variant='secondary' onClick={handleClose}>
-        Annuler
-      </Button>
-      <Button
-        variant='danger'
-        onClick={() => {
-          if(selectedId) {
-            handleDelete(selectedId)
-            handleClose()
-          }
-        }}
-        disabled={isLoading}
-      >
-          {isLoading ? <Spinner size="sm" animation="border" variant="light" /> : "Valider"}
-        
-
-      </Button>
-    </Modal.Footer>
-  </Modal>
-)
+export function ModalGenericDelete({
+  modalGenericDeleteProps,
+}: {
+  modalGenericDeleteProps: ModalGenericDeletePropsType
+}) {
+  const { show, handleClose, selectedId, handleDelete, title, isLoading } =
+    modalGenericDeleteProps
+  return (
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <i className='fa-solid fa-circle-xmark me-2 text-danger'></i>Supprimer {title}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>Etes sûr de vouloir supprimer {title} ?</Modal.Body>
+      <Modal.Footer>
+        <Button variant='secondary' onClick={handleClose}>
+          Annuler
+        </Button>
+        <Button
+          variant='danger'
+          onClick={() => {
+            if (selectedId) {
+              handleDelete(selectedId)
+              handleClose()
+            }
+          }}
+          disabled={isLoading}
+        >
+          {isLoading ? <Spinner size='sm' animation='border' variant='light' /> : 'Valider'}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
 }
-

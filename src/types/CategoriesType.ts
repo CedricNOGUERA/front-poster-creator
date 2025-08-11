@@ -5,7 +5,7 @@ export type CategoriesType = {
   name: string
   image: string
   imageRglt: string | null
-  icon: string
+  icon: {"name": string, "value": string}
   shopIds: number[]
   canvasId: number
   canvas: ComponentTypeMulti[]
