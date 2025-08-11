@@ -28,7 +28,6 @@ interface ContextCategorySelectorDragType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
 }
 
-const API_URL = import.meta.env.VITE_API_URL
 
 export default function CategorySelectorDrag({title} : Props) {
   /* States
@@ -192,10 +191,10 @@ React.useEffect(() => {
     const nextId = lastId + 1
 
     const imageName = file?.name
-      ? `${API_URL}/uploads/categories/headerPictures/${nextId}/${file?.name}`
+      ? `/uploads/categories/headerPictures/${nextId}/${file?.name}`
       : null
     const imageRgltName = imgRglt?.name
-      ? `${API_URL}/uploads/categories/headerPictures/${nextId}/${imgRglt?.name}`
+      ? `/uploads/categories/headerPictures/${nextId}/${imgRglt?.name}`
       : null
     
     try {
@@ -215,7 +214,7 @@ React.useEffect(() => {
             width: 500,
             height: 125,
             src: imageName,
-            srcRglt: imgRglt?.name ? `${API_URL}/uploads/${imgRglt?.name}` : null,
+            srcRglt: imgRglt?.name ? `/uploads/${imgRglt?.name}` : null,
             backgroundColor: formData.backgroundColorHeader,
           },
           {

@@ -22,6 +22,7 @@ interface ContextSideBarType {
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
 }
 
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function SideBar({ storeApp, selectedCanvas }: {storeApp: StoreType, selectedCanvas: ComponentTypeMulti[]}) {
   const {toggleShow, setToastData, feedBackState, setFeedBackState} = useOutletContext<ContextSideBarType>()
@@ -65,7 +66,6 @@ React.useEffect(() => {
   /* render
   *******************************************************************************************/
 
-
   return (
     <>
       <div className='p-4 bg-white border-0 border-end sticky-top'>
@@ -76,7 +76,7 @@ React.useEffect(() => {
             backgroundColor: headerBgColor,
           }}
         >
-          <Image src={headerPicture} alt={headerPicture} width={150} />
+          <Image src={API_URL + headerPicture} alt={headerPicture} width={150} />
         </div>
         {file === null ? (
           <div className=' d-flex align-items-center  justify-content-center mb-4 p-2 border rounded'>

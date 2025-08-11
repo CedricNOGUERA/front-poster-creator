@@ -16,7 +16,7 @@ export const ShopSelector = ({ title }: Props) => {
   const userStoreData = userDataStore((state: UserDataType) => state)
   const storeApp = useStoreApp()
   const [shops, setShops] = React.useState<ShopType[]>([])
-  console.log(shops)
+ 
 
   /* UseEffect
    *******************************************************************************************/

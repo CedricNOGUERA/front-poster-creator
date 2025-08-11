@@ -5,9 +5,18 @@ import ShopPage from './ShopPage'
 import CategoriesPage from './CategoriesPage'
 import UserManager from './UserManager'
 import { SideBarMenu } from '@/components/dashBoardComponents/SideBarMenu'
+import userDataStore, { UserDataType } from '@/stores/userDataStore'
 
 const DashBoard = () => {
   const [display, setDisplay] = React.useState('shops')
+  const userRole = userDataStore((state: UserDataType) => state.role)
+
+  React.useEffect(() => {
+    if (userRole !== 'super_admin') {
+      setDisplay('categories')
+      return
+    }
+  }, [userRole])
 
   const handleDisplay = (display: string) => {
     if (display === 'shops') {

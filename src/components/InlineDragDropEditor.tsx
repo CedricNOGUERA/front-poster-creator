@@ -31,6 +31,8 @@ import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
 
+
+
 interface ContextInlineDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
   toggleShow: () => void
@@ -41,6 +43,7 @@ interface ContextInlineDragDropEditorType {
 export default function InlineDragDropEditor() {
   /* States
    *******************************************************************************************/
+  const API_URL = import.meta.env.VITE_API_URL
   const { setToastData, toggleShow, setFeedBackState } =
     useOutletContext<ContextInlineDragDropEditorType>()
 
@@ -59,7 +62,7 @@ export default function InlineDragDropEditor() {
     {} as ComponentTypeMulti
   )
 
-  const[template, setTemplate] = useState<TemplateType[]>([])
+  const [template, setTemplate] = useState<TemplateType[]>([])
   const [imageName, setImageName] = React.useState<string>('')
   const [newTemplateState, setNewTemplateState] = React.useState<NewTemplateType>({
     idShop: undefined,
@@ -76,22 +79,21 @@ export default function InlineDragDropEditor() {
 
   const [showValidateModel, setShowValidateModel] = React.useState<boolean>(false)
   const handleCloseValidateModel = () => {
-    setImageName("")
+    setImageName('')
     setShowValidateModel(false)
   }
   const handleShowValidateModel = () => setShowValidateModel(true)
-
 
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
     _getTemplates(setTemplate)
-  },[])
+  }, [])
 
   React.useEffect(() => {
     _getCategoryById(storeApp?.categoryId, setSelectedCategory)
     setSelectedDimension(storeApp?.dimensionId || 0)
-  }, [setToastData, storeApp?.canvasId, storeApp?.dimensionId, toggleShow])
+  }, [setToastData, storeApp?.canvasId, storeApp?.dimensionId, toggleShow, storeApp?.categoryId])
 
   React.useEffect(() => {
     // copyPaste()
@@ -142,7 +144,6 @@ export default function InlineDragDropEditor() {
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, storeApp, maxPreviewHeight, h])
-  console.log(selectedCategory.canvas)
   /* Functions
    *******************************************************************************************/
 
@@ -360,20 +361,23 @@ export default function InlineDragDropEditor() {
     [components]
   )
 
-  const updateComponent = React.useCallback((updatedFields: Partial<ComponentTypeMulti>) => {
-    if (selectedIndex === null) return
+  const updateComponent = React.useCallback(
+    (updatedFields: Partial<ComponentTypeMulti>) => {
+      if (selectedIndex === null) return
 
-    setComponents((prevComponents) => {
-      const updated = [...prevComponents]
-      if (updated[selectedIndex]) {
-        updated[selectedIndex] = {
-          ...updated[selectedIndex],
-          ...updatedFields,
+      setComponents((prevComponents) => {
+        const updated = [...prevComponents]
+        if (updated[selectedIndex]) {
+          updated[selectedIndex] = {
+            ...updated[selectedIndex],
+            ...updatedFields,
+          }
         }
-      }
-      return updated
-    })
-  }, [selectedIndex, setComponents])
+        return updated
+      })
+    },
+    [selectedIndex, setComponents]
+  )
 
   const getStyleFromComponent = React.useCallback(
     (comp: ComponentTypeMulti, isSelected: boolean) => {
@@ -393,7 +397,9 @@ export default function InlineDragDropEditor() {
             right: `${
               (comp as PrincipalPriceComponentType | NumberComponentType).right ?? 0
             }px`,
-            fontFamily:  (comp as PrincipalPriceComponentType | NumberComponentType).fontFamily || 'Impact',
+            fontFamily:
+              (comp as PrincipalPriceComponentType | NumberComponentType).fontFamily ||
+              'Impact',
             fontSize: (comp as PrincipalPriceComponentType | NumberComponentType).fontSize,
             fontWeight: (comp as PrincipalPriceComponentType | NumberComponentType).fontWeight,
             color: (comp as PrincipalPriceComponentType | NumberComponentType).color,
@@ -466,15 +472,14 @@ export default function InlineDragDropEditor() {
     [newTemplateState?.width, newTemplateState?.height]
   )
 
-
   const addModel = async (name: string) => {
+    const formattedImage = name
+      .normalize('NFD') // transforme é → e + ́
+      .replace(/[\u0300-\u036f]/g, '') // retire les accents
+      .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
+      .toLowerCase()
 
-    const formattedImage = name.normalize('NFD') // transforme é → e + ́
-    .replace(/[\u0300-\u036f]/g, '') // retire les accents
-    .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
-    .toLowerCase()
-      
-    const imageName = formattedImage+'.png'
+    const imageName = formattedImage + '.png'
 
     // Génère une image PNG depuis la div canvas
     const canvasElement = posterRef.current
@@ -486,9 +491,7 @@ export default function InlineDragDropEditor() {
       return
     }
     //on vérifie l'existance d'une miniature pour ce template
-    const imageExists = template.some(
-      (img: TemplateType) => img.name === formattedImage
-    );
+    const imageExists = template.some((img: TemplateType) => img.name === formattedImage)
 
     const newData = {
       image: imageName,
@@ -516,13 +519,12 @@ export default function InlineDragDropEditor() {
 
     try {
       const responseModel = await modelsServiceInstance.postModel(formData)
-    
-      if(newTemplateState.width === newTemplateState.height && !imageExists){
+
+      if (newTemplateState.width === newTemplateState.height && !imageExists) {
         await templatesServiceInstance.postTemplate(newTemplate)
       }
 
-      if (responseModel.ok
-        ) {
+      if (responseModel.ok) {
         handleCloseValidateModel()
         setToastData({
           bg: 'success',
@@ -589,7 +591,12 @@ export default function InlineDragDropEditor() {
           onDoubleClick: (e: React.MouseEvent) => {
             e.stopPropagation()
             setSelectedIndex(index)
-            if (comp.type === 'text' || comp.type === 'enableText' || comp.type === 'number' || comp.type === 'price') {
+            if (
+              comp.type === 'text' ||
+              comp.type === 'enableText' ||
+              comp.type === 'number' ||
+              comp.type === 'price'
+            ) {
               if (isEditing) {
                 setEditingIndex(null)
               } else {
@@ -611,8 +618,8 @@ export default function InlineDragDropEditor() {
           className='rounded-circle'
           style={{
             position: 'absolute',
-            top:comp.type === 'price' ? '5px' : '-10px',
-            right:  '-15px',
+            top: comp.type === 'price' ? '5px' : '-10px',
+            right: '-15px',
             zIndex: 20,
             width: '20px',
             height: '20px',
@@ -634,47 +641,46 @@ export default function InlineDragDropEditor() {
         if (isEditing) {
           return (
             <div
-            key={index}
-            {...commonProps}
-            style={{
-              ...getStyleFromComponent(comp, isSelected),
-              border: '1px dashed blue',
-              overflow: 'visible',
-              display: 'inline-flex', 
-              alignItems: 'center',
-              minWidth: '20px',
-              width: 'auto', 
-            }}
-          >
-            <input
-              type='text'
-              value={typedComp.text}
-              onChange={(e) => updateComponent({ text: e.target.value })}
-              onBlur={() => setEditingIndex(null)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === 'Escape') {
-                  setEditingIndex(null)
-                }
-              }}
+              key={index}
+              {...commonProps}
               style={{
-                fontSize: typedComp.fontSize,
-                fontWeight: typedComp.fontWeight,
-                color: typedComp.color,
-                fontFamily: typedComp.fontFamily || 'Impact',
-                border: 'none',
-                outline: 'none',
-                background: 'transparent',
-                textAlign: "end",
-                width: `${typedComp.text.length + 1}ch`, // largeur auto selon texte
+                ...getStyleFromComponent(comp, isSelected),
+                border: '1px dashed blue',
+                overflow: 'visible',
+                display: 'inline-flex',
+                alignItems: 'center',
                 minWidth: '20px',
-                padding: 0,
-                margin: 0,
+                width: 'auto',
               }}
-              autoFocus
-            />
-            <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
-          </div>
-
+            >
+              <input
+                type='text'
+                value={typedComp.text}
+                onChange={(e) => updateComponent({ text: e.target.value })}
+                onBlur={() => setEditingIndex(null)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Escape') {
+                    setEditingIndex(null)
+                  }
+                }}
+                style={{
+                  fontSize: typedComp.fontSize,
+                  fontWeight: typedComp.fontWeight,
+                  color: typedComp.color,
+                  fontFamily: typedComp.fontFamily || 'Impact',
+                  border: 'none',
+                  outline: 'none',
+                  background: 'transparent',
+                  textAlign: 'end',
+                  width: `${typedComp.text.length + 1}ch`, // largeur auto selon texte
+                  minWidth: '20px',
+                  padding: 0,
+                  margin: 0,
+                }}
+                autoFocus
+              />
+              <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
+            </div>
           )
         }
         return (
@@ -702,7 +708,7 @@ export default function InlineDragDropEditor() {
               height={50}
               style={{
                 ...getStyleFromComponent(comp, isSelected),
-                
+
                 border: '1px dashed blue',
                 overflow: 'visible',
               }}
@@ -751,7 +757,7 @@ export default function InlineDragDropEditor() {
         return (
           <div key={index} {...commonProps}>
             <img
-              src={headerComp.src ? headerComp.src : undefined}
+              src={headerComp.src ? API_URL+ headerComp.src : undefined}
               alt=''
               style={{
                 maxWidth: '100%',
@@ -788,6 +794,7 @@ export default function InlineDragDropEditor() {
     handleDragOnCanvas,
     getStyleFromComponent,
     updateComponent,
+    API_URL
   ])
 
   /* component props
@@ -799,9 +806,8 @@ export default function InlineDragDropEditor() {
     addModel,
     imageName,
     setImageName,
-    idTemplate
+    idTemplate,
   }
-
   /* render
    *******************************************************************************************/
   return (

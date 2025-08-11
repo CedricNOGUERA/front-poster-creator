@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "roles": ["super_admin"],
+        "roles": ["super_admin", "admin"],
         "title": "Administration",
         "href": "/tableau-de-bord",
         "icon": "fas fa-shield-halved"

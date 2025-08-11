@@ -111,7 +111,7 @@ export const AddUserForm = ({
       }
     }
   }
-console.log(company)
+
   return (
     <Form onSubmit={handleSubmit}>
       {error && <Alert variant='danger'>{error}</Alert>}
@@ -158,30 +158,6 @@ console.log(company)
           }}
         />
       </Form.Group>
-      {/* <Form.Group className='mb-3' controlId='formBasicCompany'>
-        <Form.Label>Company</Form.Label>
-        <Form.Select
-          value={company.idCompany}
-          onChange={(e) => {
-            const selectedShop = shopData.find((shop) => shop.id === parseInt(e.target.value))
-            setCompany({
-              idCompany: parseInt(e.target.value),
-              nameCompany: (selectedShop && selectedShop.name) || '',
-            })
-          }}
-        >
-          <option value=''>Sélectionné une entreprise</option>
-          {shopData?.map((shop: ShopType, index: number) => {
-            if(userStoreData.company.nameCompany !== shop.name && userStoreData.role !== 'super_admin'){
-              return null
-            }
-            return(
-            <option key={index} value={shop.id}>
-              {shop.name}
-            </option>
-          )})}
-        </Form.Select>
-      </Form.Group> */}
       <Form.Group className='mb-3' controlId='formBasicRole'>
         <Form.Label>
           Role<span className='text-danger'>*</span>

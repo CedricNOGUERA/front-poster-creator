@@ -630,6 +630,7 @@ export default function DragDropEditor() {
           <div key={index} {...commonProps}>
             <img
               src={imgComp.src ?? ''}
+              // src={`${API_URL}/${shop.cover}`}
               alt=''
               width={imgComp.width}
               height={imgComp.height}

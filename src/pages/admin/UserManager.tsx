@@ -7,11 +7,13 @@ import { UserType } from '@/types/UserType'
 import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
 import React from 'react'
 import { Button, Container, Dropdown, Table } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 export default function UserManager() {
   /* States
    *******************************************************************************************/
-  // const userRole = userDataStore((state: UserDataType) => state.role)
+  const navigate = useNavigate()
+  const userRole = userDataStore((state: UserDataType) => state.role)
   const userCompany = userDataStore((state: UserDataType) => state.company )
   const [users, setUsers] = React.useState<UserType[]>([])
   const [shops, setShops] = React.useState<ShopType[]>([])
@@ -24,9 +26,15 @@ export default function UserManager() {
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
+    // Redirection si l'utilisateur a le rôle "user"
+    if (userRole === 'user') {
+      navigate('/generateur-de-bon-plan')
+      return
+    }
+    
     _getAllUsers(setUsers)
     _getAllShops(setShops)
-  }, [])
+  }, [userRole, navigate])
 
   /* Functions
    *******************************************************************************************/
@@ -80,15 +88,41 @@ export default function UserManager() {
           </thead>
           <tbody>
             {users
-              .filter((user) =>
-                user.company.some((item) =>
-                  userCompany.some((uc) => uc.idCompany === item.idCompany)
-                )
-              )
+              .filter((user) => {
+                // Si l'utilisateur connecté est super_admin, il voit tous les utilisateurs
+                if (userRole === 'super_admin') {
+                  return true;
+                }
+                // Si l'utilisateur connecté est admin, il ne voit que les utilisateurs de sa/ses compagnie(s)
+                // SAUF les super_admin
+                if (userRole === 'admin') {
+                  // Exclure les super_admin
+                  if (user.role === 'super_admin') {
+                    return false;
+                  }
+                  // Vérifier si l'utilisateur appartient à une des compagnies de l'admin connecté
+                  return user.company.some((item) =>
+                    userCompany.some((uc) => 
+                      uc.idCompany === item.idCompany
+                    )
+                  );
+                }
+                // Pour les autres rôles (user), logique par défaut
+                return user.company.some((item) =>
+                  userCompany.some((uc) => 
+                    uc.idCompany === item.idCompany
+                  )
+                );
+              })
               .map((user: UserType) => {
                 const companyLength = user.company?.length
                 const shopLength = shops?.length
                 const companylist = companyLength === shopLength ? "Tous les magasins" : user.company.map((item) => item.nameCompany).join(', ')
+
+                // if(user.role !== 'super_admin'){
+                //   return
+                // }
+
                 return (
                   <tr key={user.id}>
                     <td>{companylist}</td>

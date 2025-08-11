@@ -8,6 +8,8 @@ import { useOutletContext } from 'react-router-dom'
 import { FeedBackSatateType, ToastDataType } from '@/types/DiversType'
 import { _handleFileChange } from '@/utils/functions'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { useNavigate } from 'react-router-dom'
+
 
 type Props = {
   title: string
@@ -24,9 +26,12 @@ const API_URL = import.meta.env.VITE_API_URL
 export const ShopSelectorDrag = ({ title }: Props) => {
   /* States
    *******************************************************************************************/
+  const navigate = useNavigate()
   const { toggleShow, setToastData, feedBackState, setFeedBackState } =
     useOutletContext<ContextCategorySelectorDragType>()
   const userStoreData = userDataStore((state: UserDataType) => state)
+  const userRole = userDataStore((state: UserDataType) => state.role)
+
   const storeApp = useStoreApp()
   const [shops, setShops] = React.useState<ShopType[]>([])
   const [file, setFile] = React.useState<File | null>(null)
@@ -50,7 +55,12 @@ export const ShopSelectorDrag = ({ title }: Props) => {
    *******************************************************************************************/
   React.useEffect(() => {
     _getAllShops(setShops)
-  }, [])
+     // Redirection si l'utilisateur a le rôle "user"
+    if (userRole === 'user') {
+      navigate('/generateur-de-bon-plan')
+      return
+    }
+  }, [userRole, navigate])
 
   /* Functions
    *******************************************************************************************/
