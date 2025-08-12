@@ -62,7 +62,6 @@ export default function CategorySelectorDrag({ title }: Props) {
   }
   const handleShowAdd = () => setShowAdd(true)
 
-  console.log(formData)
 
   /* useEffect
    *******************************************************************************************/
