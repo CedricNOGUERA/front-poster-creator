@@ -49,6 +49,7 @@ export default function InlineDragDropEditor() {
 
   const storeApp = useStoreApp()
   const idTemplate = storeApp.templateId
+  const [isErrorModel, setIsErrorModel] = useState<boolean>(false);
   const [components, setComponents] = useState<ComponentTypeMulti[]>([])
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
@@ -79,7 +80,7 @@ export default function InlineDragDropEditor() {
 
   const [showValidateModel, setShowValidateModel] = React.useState<boolean>(false)
   const handleCloseValidateModel = () => {
-    setImageName('')
+    // setImageName('')
     setShowValidateModel(false)
   }
   const handleShowValidateModel = () => setShowValidateModel(true)
@@ -473,7 +474,10 @@ export default function InlineDragDropEditor() {
   )
 
   const addModel = async (name: string) => {
-    console.log(name)
+    if(name === ""){
+      setIsErrorModel(true)
+      return 
+    }
 
     setFeedBackState((prev) => ({
       ...prev,
@@ -532,6 +536,7 @@ export default function InlineDragDropEditor() {
 
       if (responseModel.ok) {
         handleCloseValidateModel()
+        _getTemplates(setTemplate)
         setToastData({
           bg: 'success',
           position: 'top-end',
@@ -540,7 +545,8 @@ export default function InlineDragDropEditor() {
           message: 'Modèle ajouté avec succès !',
         })
         toggleShow()
-        setImageName('')
+        setIsErrorModel(false)
+        // setImageName('')
       } else {
         const err = await responseModel.json()
         throw new Error(err?.error || 'Erreur serveur')
@@ -816,6 +822,8 @@ export default function InlineDragDropEditor() {
     imageName,
     setImageName,
     idTemplate,
+    template, setTemplate,
+    isErrorModel
   }
   /* render
    *******************************************************************************************/

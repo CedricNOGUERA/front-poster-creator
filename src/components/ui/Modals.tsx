@@ -1,6 +1,6 @@
 import { _handleFileChange } from '@/utils/functions'
 import React from 'react'
-import { Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
+import { Alert, Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
 import { useOutletContext } from 'react-router-dom'
 import { TagPicker } from 'rsuite'
 import {
@@ -69,15 +69,15 @@ export function ModalValidateModel({
 }: {
   modalValidateModelProps: ModalValidateModelType
 }) {
-  const { showValidateModel, handleCloseValidateModel, addModel, imageName, setImageName } =
+  const { showValidateModel, handleCloseValidateModel, addModel, imageName, setImageName, template, setTemplate, isErrorModel } =
     modalValidateModelProps
   const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
-  const [templates, setTemplates] = React.useState<TemplateType[]>([])
+  // const [templates, setTemplates] = React.useState<TemplateType[]>([])
 
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
-    _getTemplates(setTemplates)
+    _getTemplates(setTemplate)
   }, [])
 
   return (
@@ -108,13 +108,18 @@ export function ModalValidateModel({
             }}
           >
             <option value=''>Sélectionnez un model existant</option>
-            {templates.map((template: TemplateType, index: number) => (
+            {template.map((template: TemplateType, index: number) => (
               <option key={index} value={template.name}>
                 {template.name}
               </option>
             ))}
           </Form.Select>
         </Form.Group>
+        {isErrorModel && (
+          <Alert variant='danger'>
+            <i className='fa fa-circle-xmark me-2 text-danger'></i>
+            Vous devez remplir un de ces champs</Alert>
+        )}
       </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={handleCloseValidateModel}>

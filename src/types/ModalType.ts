@@ -4,6 +4,7 @@ import { ShopType } from "./ShopType"
 import { UserType } from "./UserType"
 import { SideBarDataType } from "@/components/DragDropComponents/SideBar"
 import { CategoriesType } from "./CategoriesType"
+import { TemplateType } from "./TemplatesType"
 
 //Delete categories picture
 export interface ModalDeleteType {
@@ -23,6 +24,9 @@ export interface ModalValidateModelType {
   addModel: (name: string) => Promise<void>
   imageName: string
   setImageName: React.Dispatch<React.SetStateAction<string>>
+  template: TemplateType[]
+  setTemplate: React.Dispatch<React.SetStateAction<TemplateType[]>>
+  isErrorModel: boolean
 }
 export interface ModalUpdateModelType {
   showUpdateModel: boolean
@@ -69,7 +73,7 @@ export interface ModalDeleteUserType {
   handleCloseDelete: () => void
   selectedUser: UserType | null
   deleteUser: (id: number) => Promise<void>
-  isLoading: boolean
+  isLoading: boolean | undefined
 }
 
 export interface ModalGenericDeletePropsType {

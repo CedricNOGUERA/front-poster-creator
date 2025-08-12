@@ -186,7 +186,6 @@ export const _generateInitalComponent = (
         const updated = [...components];
         updated[0] = headerComponent;
         updated[1] = yellowComponent;
-        console.log(updated)
         setComponents(updated);
       } else {
         setComponents([headerComponent, yellowComponent]);

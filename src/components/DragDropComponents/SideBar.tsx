@@ -70,14 +70,18 @@ React.useEffect(() => {
     <>
       <div className='p-4 bg-white border-0 border-end sticky-top'>
         <h4 className='fw-bold text-secondary mb-4'>Générateur d'affiche</h4>
+        
+        {headerPicture !== null && (
         <div
           className='d-flex align-items-center justify-content-center mb-4 p-2 border rounded '
           style={{
             backgroundColor: headerBgColor,
           }}
         >
-          <Image src={API_URL + headerPicture} alt={headerPicture} width={150} />
+
+            <Image src={API_URL + headerPicture} alt={headerPicture} width={150} />
         </div>
+        )}
         {file === null ? (
           <div className=' d-flex align-items-center  justify-content-center mb-4 p-2 border rounded'>
             <Form.Group controlId='formFile' className=''>
