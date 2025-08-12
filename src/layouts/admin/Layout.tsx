@@ -37,7 +37,7 @@ export const AdminLayout = () => {
     if(!token) {
       navigate('/login')
     }
-  }, [token])
+  }, [token, navigate])
 
   /* render
    *******************************************************************************************/

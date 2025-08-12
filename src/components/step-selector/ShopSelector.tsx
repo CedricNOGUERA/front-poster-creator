@@ -49,12 +49,6 @@ export const ShopSelector = ({ title }: Props) => {
           
           })
           .map((shop: ShopType) => {
-            // if (
-            //   userStoreData.company.nameCompany !== shop.name &&
-            //   userStoreData.role !== 'super_admin'
-            // ) {
-            //   return null
-            // }
             return (
               <div
                 key={shop.id}

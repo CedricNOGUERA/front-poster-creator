@@ -51,43 +51,42 @@ export default function CategoriesPage() {
 
   const categorieDisplay = (categories: CategoriesType[]) => {
     return categories
-    .filter((item) => {
-      if(userRole === "super_admin"){
-        return true
-      }
-      if(userRole === "admin"){
-
-        return item.shopIds.some((shopId) => 
-          userData.company.some((comp) => 
-            shopId === comp.idCompany
-      )
-        )
-      }
-    })
-    .map((category) => (
-      <tr key={category.id}>
-        <td>{category.id}</td>
-        <td>{category.name}</td>
-        <td className='bg-secondary'>
-          <Image src={API_URL + category.image} alt={category.name} width={100} />
-        </td>
-        <td>
-          {category.shopIds.map((shop: number, indx: number) => (
-            <span key={indx}>{shopDisplay(shopData, shop, indx, category)}</span>
-          ))}
-        </td>
-        <td>
-          <MenuDrop
-            trigger={trigger}
-            data={category}
-            handleShowEditModal={
-              handleShowEditModal as (data: CategoriesType) => void | null | undefined
-            }
-            handleShowDeleteModal={handleShowDeleteModal}
-          />
-        </td>
-      </tr>
-    ))
+      .filter((item) => {
+        if (userRole === 'super_admin') {
+          return true
+        }
+        if (userRole === 'admin') {
+          return item.shopIds.some((shopId) =>
+            userData.company.some((comp) => shopId === comp.idCompany)
+          )
+        }
+      })
+      .map((category) => (
+        <tr key={category.id}>
+          <td>{category.id}</td>
+          <td>{category.name}</td>
+          <td className='bg-secondary'>
+            {category.image && (
+              <Image src={API_URL + category.image} alt={category.name} width={100} />
+            )}
+          </td>
+          <td>
+            {category.shopIds.map((shop: number, indx: number) => (
+              <span key={indx}>{shopDisplay(shopData, shop, indx, category)}</span>
+            ))}
+          </td>
+          <td>
+            <MenuDrop
+              trigger={trigger}
+              data={category}
+              handleShowEditModal={
+                handleShowEditModal as (data: CategoriesType) => void | null | undefined
+              }
+              handleShowDeleteModal={handleShowDeleteModal}
+            />
+          </td>
+        </tr>
+      ))
   }
 
 

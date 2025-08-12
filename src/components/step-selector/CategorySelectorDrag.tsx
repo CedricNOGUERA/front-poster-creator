@@ -208,7 +208,7 @@ export default function CategorySelectorDrag({ title }: Props) {
             width: 500,
             height: 125,
             src: imageName,
-            srcRglt: imgRglt?.name ? `/uploads/${imgRglt?.name}` : null,
+            srcRglt: imageRgltName,
             backgroundColor: formData.backgroundColorHeader,
           },
           {
@@ -261,7 +261,6 @@ export default function CategorySelectorDrag({ title }: Props) {
         toggleShow()
         handleCloseAdd()
       }
-      // }
     } catch (error) {
       console.log(error)
       setFeedBackState((prev) => ({
