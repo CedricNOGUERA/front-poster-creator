@@ -193,7 +193,15 @@ export const ShopSelectorDrag = ({ title }: Props) => {
       <h2 className='fs-4 fw-bold text-primary'>{title}</h2>
       <div className='d-flex flex-wrap justify-content-center align-items-center mt-5 mb-5'>
         {shops
-          .filter((shop) => userStoreData.company.some((uc) => uc.idCompany === shop.id))
+          .filter((shop) =>  {
+            if(userStoreData.role === "super_admin"){
+              return true
+            }else{
+              userStoreData.company.some((uc) =>
+              uc.idCompany === shop.id)
+            }
+          
+          })
           .map((shop: ShopType) => {
       
           return (

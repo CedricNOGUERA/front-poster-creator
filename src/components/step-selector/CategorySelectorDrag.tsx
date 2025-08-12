@@ -1,20 +1,20 @@
-import useStoreApp from '@/stores/storeApp';
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { ToastDataType } from '@/types/DiversType';
-import { CategoriesType } from '@/types/CategoriesType';
-import { _getAllShops, _getCategories } from '@/utils/apiFunctions';
-import categoriesServiceInstance from '@/services/CategoriesServices';
-import { ModalAddCategory } from '../ui/Modals';
-import { ShopType } from '@/types/ShopType';
-import { ComponentTypeMulti } from '@/types/ComponentType';
+import useStoreApp from '@/stores/storeApp'
+import React from 'react'
+import { useOutletContext } from 'react-router-dom'
+import { ToastDataType } from '@/types/DiversType'
+import { CategoriesType } from '@/types/CategoriesType'
+import { _getAllShops, _getCategories } from '@/utils/apiFunctions'
+import categoriesServiceInstance from '@/services/CategoriesServices'
+import { ModalAddCategory } from '../ui/Modals'
+import { ShopType } from '@/types/ShopType'
+import { ComponentTypeMulti } from '@/types/ComponentType'
 type Props = {
   title: string
 }
 
 export type FormCategoryDataType = {
   name: string
-  icon: {name: string, value: string}
+  icon: { name: string; value: string }
   image: string
   imageRglt: string
   backgroundColorHeader: string
@@ -28,33 +28,30 @@ interface ContextCategorySelectorDragType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
 }
 
-
-export default function CategorySelectorDrag({title} : Props) {
+export default function CategorySelectorDrag({ title }: Props) {
   /* States
-  *******************************************************************************************/
-  const {toggleShow, setToastData} = useOutletContext<ContextCategorySelectorDragType>()
+   *******************************************************************************************/
+  const { toggleShow, setToastData } = useOutletContext<ContextCategorySelectorDragType>()
   const storeApp = useStoreApp()
   const [shopData, setshopData] = React.useState<ShopType[]>([])
   const [cat, setCat] = React.useState<CategoriesType[]>([])
-  const [file, setFile] = React.useState<File| null>(null)
-  const [imgRglt, setImgRglt] = React.useState<File| null>(null)
+  const [file, setFile] = React.useState<File | null>(null)
+  const [imgRglt, setImgRglt] = React.useState<File | null>(null)
   const [feedBackState, setFeedBackState] = React.useState({
     isLoading: false,
-    loadingMessage: "",
+    loadingMessage: '',
     isError: false,
-    errorMessage: "",
+    errorMessage: '',
   })
   const [validated, setValidated] = React.useState(false)
-  const [fieldErrors, setFieldErrors] = React.useState<{[key: string]: string}>({})
+  const [fieldErrors, setFieldErrors] = React.useState<{ [key: string]: string }>({})
   const [formData, setFormData] = React.useState<FormCategoryDataType>({
-    name: "",
-    icon: {"name": "",
-        value: ""
-    },
-    image: "",
-    imageRglt: "",
-    backgroundColorHeader: "#ff0000",
-    backgroundColorBody: "#ffea00",
+    name: '',
+    icon: { name: '', value: '' },
+    image: '',
+    imageRglt: '',
+    backgroundColorHeader: '#ff0000',
+    backgroundColorBody: '#ffea00',
     shopIds: [],
     canvas: [],
   })
@@ -65,126 +62,123 @@ export default function CategorySelectorDrag({title} : Props) {
   }
   const handleShowAdd = () => setShowAdd(true)
 
- 
 
-
-/* useEffect
+  /* useEffect
    *******************************************************************************************/
-React.useEffect(() => {
-  _getCategories(setCat, setToastData, toggleShow, setFeedBackState)
-  _getAllShops(setshopData)
-}, [setToastData, toggleShow])
+  React.useEffect(() => {
+    _getCategories(setCat, setToastData, toggleShow, setFeedBackState)
+    _getAllShops(setshopData)
+  }, [setToastData, toggleShow])
 
-
-
-/* functions
+  /* functions
    *******************************************************************************************/
 
   // Fonction de validation en temps réel
   const validateField = (fieldName: string, value: string) => {
-    const errors = { ...fieldErrors };
-    const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-    
+    const errors = { ...fieldErrors }
+    const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
+
     switch (fieldName) {
       case 'name':
         if (!value.trim()) {
-          errors.name = 'Le nom est requis';
+          errors.name = 'Le nom est requis'
         } else if (value.trim().length < 2) {
-          errors.name = 'Le nom doit contenir au moins 2 caractères';
+          errors.name = 'Le nom doit contenir au moins 2 caractères'
         } else {
-          delete errors.name;
+          delete errors.name
         }
-        break;
+        break
       case 'icon':
         if (!value.trim()) {
-          errors.icon = 'L\'icône est requise';
+          errors.icon = "L'icône est requise"
         } else if (!value.trim().startsWith('fa fa-')) {
-          errors.icon = 'L\'icône doit commencer par "fa fa-"';
+          errors.icon = 'L\'icône doit commencer par "fa fa-"'
         } else {
-          delete errors.icon;
+          delete errors.icon
         }
-        break;
+        break
       case 'backgroundColorHeader':
       case 'backgroundColorBody':
         if (!hexColorRegex.test(value)) {
-          errors[fieldName] = 'Veuillez sélectionner une couleur valide';
+          errors[fieldName] = 'Veuillez sélectionner une couleur valide'
         } else {
-          delete errors[fieldName];
+          delete errors[fieldName]
         }
-        break;
+        break
       default:
-        break;
+        break
     }
-    
-    setFieldErrors(errors);
-  };
+
+    setFieldErrors(errors)
+  }
 
   const onHandleCategory = (id: number) => {
-  const idCanvas = cat && cat?.find((category: CategoriesType) => category.id === id)?.canvasId
-  if(idCanvas) {
-    storeApp.setCanvasId(idCanvas);
-  } 
-    storeApp.setDimensionId(9);
-    storeApp.setCategoryId(id);
-    storeApp.nextStep();
-  };
+    const idCanvas =
+      cat && cat?.find((category: CategoriesType) => category.id === id)?.canvasId
+    if (idCanvas) {
+      storeApp.setCanvasId(idCanvas)
+    }
+    storeApp.setDimensionId(9)
+    storeApp.setCategoryId(id)
+    storeApp.nextStep()
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const form = e.currentTarget;
-    
+    const form = e.currentTarget
+
     // Validation du formulaire
     if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-      setValidated(true);
-      return;
+      e.preventDefault()
+      e.stopPropagation()
+      setValidated(true)
+      return
     }
-    
+
     // Validation personnalisée
-    if (formData.name.trim() === "") {
+    if (formData.name.trim() === '') {
       setFeedBackState((prev) => ({
         ...prev,
         isError: true,
-        errorMessage: "Veuillez saisir un nom de catégorie",
+        errorMessage: 'Veuillez saisir un nom de catégorie',
         isLoading: false,
-        loadingMessage: "",
+        loadingMessage: '',
       }))
-      setValidated(true);
-      return;
+      setValidated(true)
+      return
     }
-    
+
     if (formData.name.trim().length < 2) {
       setFeedBackState((prev) => ({
         ...prev,
         isError: true,
-        errorMessage: "Le nom de la catégorie doit contenir au moins 2 caractères",
+        errorMessage: 'Le nom de la catégorie doit contenir au moins 2 caractères',
         isLoading: false,
-        loadingMessage: "",
+        loadingMessage: '',
       }))
-      setValidated(true);
-      return;
+      setValidated(true)
+      return
     }
-    
+
     if (formData.shopIds.length === 0) {
       setFeedBackState((prev) => ({
         ...prev,
         isError: true,
-        errorMessage: "Veuillez sélectionner au moins un magasin",
+        errorMessage: 'Veuillez sélectionner au moins un magasin',
         isLoading: false,
-        loadingMessage: "",
+        loadingMessage: '',
       }))
-      setValidated(true);
-      return;
+      setValidated(true)
+      return
     }
-    
-    setValidated(true);
+
+    setValidated(true)
     setFeedBackState((prev) => ({
       ...prev,
       isLoading: true,
-      loadingMessage: "Chargement...",
+      loadingMessage: 'Chargement...',
       isError: false,
-      errorMessage: "",
+      errorMessage: '',
     }))
 
     const lastId = cat.reduce((maxId, item) => Math.max(maxId, item.id || 0), 0)
@@ -196,7 +190,7 @@ React.useEffect(() => {
     const imageRgltName = imgRglt?.name
       ? `/uploads/categories/headerPictures/${nextId}/${imgRglt?.name}`
       : null
-    
+
     try {
       const newCategory = {
         id: cat.length + 1,
@@ -224,9 +218,9 @@ React.useEffect(() => {
             width: 500,
             height: 375,
             backgroundColor: formData.backgroundColorBody,
-          }
+          },
         ],
-      };
+      }
 
       const categoryFormData = new FormData()
       categoryFormData.append('data', JSON.stringify(newCategory))
@@ -238,14 +232,12 @@ React.useEffect(() => {
       }
       // Log entries to properly inspect FormData
       for (const pair of categoryFormData.entries()) {
-        console.log(pair[0] + ': ', pair[1]);
+        console.log(pair[0] + ': ', pair[1])
       }
       const addCatResponse = await categoriesServiceInstance.postCategory(categoryFormData)
 
-      if (
-        addCatResponse.ok
-      ) {
-        setValidated(true);
+      if (addCatResponse.ok) {
+        setValidated(true)
         setCat((prev: CategoriesType[]) => [...prev, newCategory as unknown as CategoriesType])
         setFormData({
           name: '',
@@ -269,8 +261,8 @@ React.useEffect(() => {
         toggleShow()
         handleCloseAdd()
       }
-    // }
-    }catch (error) {
+      // }
+    } catch (error) {
       console.log(error)
       setFeedBackState((prev) => ({
         ...prev,
@@ -278,22 +270,20 @@ React.useEffect(() => {
         errorMessage: "Une erreur s'est produite lors de l'ajout de la catégorie",
       }))
       setToastData({
-        bg: "danger",
-        position: "top-end",
+        bg: 'danger',
+        position: 'top-end',
         delay: 4000,
-        icon: "fa fa-times-circle",
+        icon: 'fa fa-times-circle',
         message: "Une erreur s'est produite lors de l'ajout de la catégorie",
       })
       toggleShow()
-    }finally {
+    } finally {
       setFeedBackState((prev) => ({
         ...prev,
         isLoading: false,
-        loadingMessage: "",
+        loadingMessage: '',
       }))
     }
-  
-
   }
 
   const resetForm = () => {
@@ -314,15 +304,28 @@ React.useEffect(() => {
     setFeedBackState((prev) => ({
       ...prev,
       isLoading: false,
-      loadingMessage: "",
+      loadingMessage: '',
       isError: false,
-      errorMessage: "",
+      errorMessage: '',
     }))
   }
 
-console.log(formData)
-  const modalAddCategoryProps = {showAdd, handleCloseAdd, handleSubmit, formData, setFormData, setFile, setImgRglt, feedBackState, shopData, validated, file, fieldErrors, validateField}
-  
+  const modalAddCategoryProps = {
+    showAdd,
+    handleCloseAdd,
+    handleSubmit,
+    formData,
+    setFormData,
+    setFile,
+    setImgRglt,
+    feedBackState,
+    shopData,
+    validated,
+    file,
+    fieldErrors,
+    validateField,
+  }
+
   /* render
    *******************************************************************************************/
   return (
@@ -339,7 +342,7 @@ console.log(formData)
                   style={{ width: '200px', height: '183px' }}
                   onClick={() => onHandleCategory(category.id as number)}
                 >
-                  <i className={category.icon + ' text-primary fs-1'}></i>
+                  <i className={category.icon.value + ' text-primary fs-1'}></i>
                   <p className='mt-2 text-center fw-bold fs-5 text-primary'>{category.name}</p>
                 </div>
               )
@@ -359,4 +362,4 @@ console.log(formData)
       </div>
     </>
   )
-};
+}

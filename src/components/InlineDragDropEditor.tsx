@@ -473,6 +473,14 @@ export default function InlineDragDropEditor() {
   )
 
   const addModel = async (name: string) => {
+    console.log(name)
+
+    setFeedBackState((prev) => ({
+      ...prev,
+      isLoading: true,
+      loadingMessage: 'Chargement',
+    }))
+
     const formattedImage = name
       .normalize('NFD') // transforme é → e + ́
       .replace(/[\u0300-\u036f]/g, '') // retire les accents
@@ -511,11 +519,9 @@ export default function InlineDragDropEditor() {
     formData.append('image', blob, imageName)
     formData.append('data', JSON.stringify(newData))
 
-    setFeedBackState((prev) => ({
-      ...prev,
-      isLoading: true,
-      loadingMessage: 'Chargement',
-    }))
+  
+
+   
 
     try {
       const responseModel = await modelsServiceInstance.postModel(formData)
@@ -756,14 +762,17 @@ export default function InlineDragDropEditor() {
         const headerComp = comp as HeaderComponentType
         return (
           <div key={index} {...commonProps}>
-            <img
-              src={headerComp.src ? API_URL+ headerComp.src : undefined}
+            {headerComp.src !== null && (
+
+              <img
+              src={API_URL+ headerComp.src}
               alt=''
               style={{
                 maxWidth: '100%',
                 maxHeight: '100%',
               }}
-            />
+              />
+            )}
           </div>
         )
       }
