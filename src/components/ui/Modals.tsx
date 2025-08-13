@@ -69,16 +69,21 @@ export function ModalValidateModel({
 }: {
   modalValidateModelProps: ModalValidateModelType
 }) {
-  const { showValidateModel, handleCloseValidateModel, addModel, imageName, setImageName, template, setTemplate, isErrorModel } =
+  const { showValidateModel, handleCloseValidateModel, addModel, imageName, setImageName, template, setTemplate,  isErrorModel, hasModel } =
     modalValidateModelProps
   const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
-  // const [templates, setTemplates] = React.useState<TemplateType[]>([])
+
+  const [isTemplate, setIsTemplate] = React.useState<boolean>(false)
 
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
     _getTemplates(setTemplate)
-  }, [])
+  }, [setTemplate])
+  
+  React.useEffect(() => {
+    setIsTemplate(template.some((item) => item.name === imageName))
+  }, [imageName, template])
 
   return (
     <Modal show={showValidateModel} onHide={handleCloseValidateModel}>
@@ -88,9 +93,9 @@ export function ModalValidateModel({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Voulez-vous valider ce model ?
+        Voulez-vous {hasModel && isTemplate ? "modifier" : "valider"} ce model ?
         <Form.Group className='mb-3' controlId='exampleForm.ControlInput1'>
-          <Form.Label>Ajouter un nom au model</Form.Label>
+          <Form.Label>{hasModel && isTemplate ? "Nom du modèle" : "Ajouter un nom au model"}</Form.Label>
           <Form.Control
             type='text'
             placeholder='Saisissez un nom'
@@ -118,7 +123,14 @@ export function ModalValidateModel({
         {isErrorModel && (
           <Alert variant='danger'>
             <i className='fa fa-circle-xmark me-2 text-danger'></i>
-            Vous devez remplir un de ces champs</Alert>
+            Vous devez remplir un de ces champs
+          </Alert>
+        )}
+        {hasModel && isTemplate && (
+          <Alert variant='danger'>
+            <i className='fa fa-circle-xmark me-2 text-danger'></i>
+            <small>Attention : Le modèle existant sera remplacé définitivement</small>
+          </Alert>
         )}
       </Modal.Body>
       <Modal.Footer>
@@ -150,9 +162,6 @@ export function ModalUpdateModel({
 }) {
   const { showUpdateModel, handleCloseUpdateModel, updateModel } = modalUpdateModelProps
   const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
-
-  /* UseEffect
-   *******************************************************************************************/
 
   return (
     <Modal show={showUpdateModel} onHide={handleCloseUpdateModel}>

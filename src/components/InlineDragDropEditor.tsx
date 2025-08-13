@@ -14,6 +14,7 @@ import dimensions from '@/mocks/dimensions.json'
 import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import {
   _generateInitalComponent,
+  // _generateInitalComponent2,
   _handleDeleteComponent,
   _handleDragOver,
   _handleExportToPDF,
@@ -21,7 +22,7 @@ import {
 } from '@/utils/functions'
 import SideBar from './DragDropComponents/SideBar'
 import { DimensionType } from '@/types/DimensionType'
-import { _getCategoryById, _getTemplates } from '@/utils/apiFunctions'
+import { _getCategoryById, _getModels, _getTemplates } from '@/utils/apiFunctions'
 import { useOutletContext } from 'react-router-dom'
 import ComponentEditor from './DragDropComponents/ComponentEditor'
 import { ModalValidateModel } from './ui/Modals'
@@ -30,6 +31,8 @@ import modelsServiceInstance from '@/services/modelsServices'
 import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
+import { ModelType } from '@/types/modelType'
+import { _showToast } from '@/utils/notifications'
 
 
 
@@ -38,18 +41,21 @@ interface ContextInlineDragDropEditorType {
   toggleShow: () => void
   feedBackState: FeedBackSatateType
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
+  hasModel: boolean
+  setHasModel: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function InlineDragDropEditor() {
   /* States
    *******************************************************************************************/
   const API_URL = import.meta.env.VITE_API_URL
-  const { setToastData, toggleShow, setFeedBackState } =
+  const { setToastData, toggleShow, setFeedBackState, hasModel, setHasModel } =
     useOutletContext<ContextInlineDragDropEditorType>()
 
   const storeApp = useStoreApp()
   const idTemplate = storeApp.templateId
   const [isErrorModel, setIsErrorModel] = useState<boolean>(false);
+  // const [hasModel, setHasModel] = useState<boolean>(false);
   const [components, setComponents] = useState<ComponentTypeMulti[]>([])
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
@@ -57,6 +63,8 @@ export default function InlineDragDropEditor() {
   const [selectedCategory, setSelectedCategory] = useState<CategoriesType>(
     {} as CategoriesType
   )
+  const [models, setModels] = useState<ModelType[]>([])
+  const [modelId, setModelId] = useState<number>(0)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [dimensionFactor, setDimensionFactor] = useState<number | null>(null)
   const [copiedComponent, setCopiedComponent] = useState<ComponentTypeMulti>(
@@ -89,6 +97,7 @@ export default function InlineDragDropEditor() {
    *******************************************************************************************/
   React.useEffect(() => {
     _getTemplates(setTemplate)
+    _getModels(setModels)
   }, [])
 
   React.useEffect(() => {
@@ -132,19 +141,99 @@ export default function InlineDragDropEditor() {
   }, [components, selectedIndex, copiedComponent])
 
   React.useEffect(() => {
-    _generateInitalComponent(
-      selectedCategory.canvas,
-      storeApp,
-      newTemplateState,
-      setNewTemplateState,
-      maxPreviewHeight,
-      h,
-      components,
-      setComponents,
-      setDimensionFactor
-    )
+    //on vérifie s'il y a unmodel existant
+    setHasModel( models.some((model) => (
+          model.categoryId === storeApp.categoryId &&
+          model.dimensionId === storeApp.dimensionId 
+        )
+      ))
+
+    //canvas du model existant
+  //   const canvasModel = models.find((model) => (
+  //     model.categoryId === storeApp.categoryId &&
+  //     model.dimensionId === storeApp.dimensionId 
+  //   )
+  // )?.canvas
+
+  const idModel = models.find((model) => (
+    model.categoryId === storeApp.categoryId &&
+    model.dimensionId === storeApp.dimensionId 
+  )
+)?.id
+
+  if(idModel)
+{
+  setModelId(idModel)
+  // setComponents(canvasModel)
+}  
+
+}, [storeApp, models])
+
+  React.useEffect(() => {
+//     const hasGotModel= models.some(
+//       (model) =>
+//         model.categoryId === storeApp.categoryId &&
+//         model.dimensionId === storeApp.dimensionId
+//     )
+//     setHasModel(
+//       hasGotModel
+//     )
+// console.log(hasGotModel)
+//     const canvasModel = models.find(
+//       (model) =>
+//         model.categoryId === storeApp.categoryId && model.dimensionId === storeApp.dimensionId
+//     )?.canvas
+// console.log(canvasModel)
+
+//     if (hasGotModel && canvasModel !== undefined && canvasModel?.length > 0) {
+    
+//         _generateInitalComponent2(
+//           canvasModel,
+//           storeApp,
+//           newTemplateState,
+//           setNewTemplateState,
+//           maxPreviewHeight,
+//           h,
+//           components,
+//           setComponents,
+//           setDimensionFactor
+//         )
+//       // setComponents(canvasModel)
+      
+//       setImageName(selectedCategory.name)
+//     }
+//     else{
+
+      
+//       _generateInitalComponent(
+//         selectedCategory.canvas,
+//         storeApp,
+//         newTemplateState,
+//         setNewTemplateState,
+//         maxPreviewHeight,
+//         h,
+//         components,
+//         setComponents,
+//         setDimensionFactor
+//       )
+//   }
+  
+  _generateInitalComponent(
+    selectedCategory.canvas,
+    storeApp,
+    newTemplateState,
+    setNewTemplateState,
+    maxPreviewHeight,
+    h,
+    components,
+    setComponents,
+    setDimensionFactor
+  )
+  // const imageName = modelsServiceInstance.formattedModelPicture(selectedCategory.name)
+  // setImageName(selectedCategory.name)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, storeApp, maxPreviewHeight, h])
+  }, [selectedCategory, storeApp, maxPreviewHeight, h, storeApp, models, selectedDimension])
+
   /* Functions
    *******************************************************************************************/
 
@@ -161,6 +250,7 @@ export default function InlineDragDropEditor() {
       )
       return
     }
+  
 
     const canvasRect = canvasElement.getBoundingClientRect()
     const left = e.clientX - canvasRect.left
@@ -473,10 +563,11 @@ export default function InlineDragDropEditor() {
     [newTemplateState?.width, newTemplateState?.height]
   )
 
+
   const addModel = async (name: string) => {
-    if(name === ""){
+    if (name === '') {
       setIsErrorModel(true)
-      return 
+      return
     }
 
     setFeedBackState((prev) => ({
@@ -485,13 +576,8 @@ export default function InlineDragDropEditor() {
       loadingMessage: 'Chargement',
     }))
 
-    const formattedImage = name
-      .normalize('NFD') // transforme é → e + ́
-      .replace(/[\u0300-\u036f]/g, '') // retire les accents
-      .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
-      .toLowerCase()
-
-    const imageName = formattedImage + '.png'
+    //formattage du nom de l'image
+    const imageName = modelsServiceInstance.formattedModelPicture(name)
 
     // Génère une image PNG depuis la div canvas
     const canvasElement = posterRef.current
@@ -503,9 +589,12 @@ export default function InlineDragDropEditor() {
       return
     }
     //on vérifie l'existance d'une miniature pour ce template
-    const imageExists = template.some((img: TemplateType) => img.name === formattedImage)
+    // const hasTemplate = template.some(
+    //   (tmp: TemplateType) => tmp.categoryId === storeApp.categoryId
+    // )
+    const imageExists = template.some((img: TemplateType) => img.image === imageName.trim())
 
-    const newData = {
+    const newModelData = {
       image: imageName,
       categoryId: storeApp.categoryId,
       dimensionId: storeApp.dimensionId,
@@ -516,53 +605,81 @@ export default function InlineDragDropEditor() {
       name: name,
       image: imageName,
       categoryId: storeApp.categoryId,
-      shopIds: [storeApp.shopId],
+      shopIds: selectedCategory.shopIds,
     }
 
     const formData = new FormData()
     formData.append('image', blob, imageName)
-    formData.append('data', JSON.stringify(newData))
+    formData.append('data', JSON.stringify(newModelData))
 
-  
-
-   
+    console.log(imageName)
+    console.log(imageExists, hasModel)
 
     try {
-      const responseModel = await modelsServiceInstance.postModel(formData)
+      if (hasModel && imageExists) {
+        const thumbnialFormData = new FormData()
+        thumbnialFormData.append('image', blob, imageName)
+        let responseThumbnail = null
+        const response = await modelsServiceInstance.patchModel(modelId, components)
 
-      if (newTemplateState.width === newTemplateState.height && !imageExists) {
-        await templatesServiceInstance.postTemplate(newTemplate)
-      }
+        if(storeApp.dimensionId === 9){
+          responseThumbnail = await templatesServiceInstance.patchImageTemplate(storeApp.categoryId, imageName, thumbnialFormData)
+        }
 
-      if (responseModel.ok) {
-        handleCloseValidateModel()
-        _getTemplates(setTemplate)
-        setToastData({
-          bg: 'success',
-          position: 'top-end',
-          delay: 3000,
-          icon: 'fa fa-check-circle',
-          message: 'Modèle ajouté avec succès !',
-        })
-        toggleShow()
-        setIsErrorModel(false)
-        // setImageName('')
+        if (response.ok ) {
+          handleCloseValidateModel()
+          _showToast(
+            response.ok,
+            response.ok
+              ? 'Modèle modifié avec succès !'
+              : 'Échec de la modification du modèle !',
+            setToastData,
+            toggleShow,
+            3000
+          )
+          setIsErrorModel(false)
+        }
+
+        if(responseThumbnail && responseThumbnail.ok) {
+          handleCloseValidateModel()
+          _showToast(
+            responseThumbnail.ok,
+            responseThumbnail.ok
+              ? 'Miniature modifié avec succès !'
+              : 'Échec de la modification de la miniature !',
+            setToastData,
+            toggleShow,
+            3000
+          )
+          setIsErrorModel(false)
+        }
+
       } else {
-        const err = await responseModel.json()
-        throw new Error(err?.error || 'Erreur serveur')
+        const responseModel = await modelsServiceInstance.postModel(formData)
+
+        if (newTemplateState.width === newTemplateState.height && !imageExists) {
+          await templatesServiceInstance.postTemplate(newTemplate)
+        }
+
+        if (responseModel.ok) {
+          handleCloseValidateModel()
+          _getTemplates(setTemplate)
+          _getModels(setModels)
+          _showToast(true, "Modèle ajouté avec succès !", setToastData, toggleShow, 3000);
+      
+          setIsErrorModel(false)
+          // setImageName('')
+        } else {
+          const err = await responseModel.json()
+          throw new Error(err?.error || 'Erreur serveur')
+        }
       }
     } catch (error) {
       console.error('Error adding model:', error)
-      setToastData({
-        bg: 'danger',
-        position: 'top-end',
-        delay: 3000,
-        icon: 'fa fa-check-circle',
-        message: "Une erreur est survenue lors de l'ajout du modèle.",
-      })
-      toggleShow()
+      _showToast(false, "Une erreur est survenue lors de la validation du modèle.", setToastData, toggleShow, 3000)
     } finally {
       _getTemplates(setTemplate)
+      _getModels(setModels)
       setFeedBackState((prev) => ({
         ...prev,
         isLoading: false,
@@ -570,7 +687,7 @@ export default function InlineDragDropEditor() {
       }))
     }
   }
-
+console.log(storeApp)
   /* UseMemo
    *******************************************************************************************/
   const renderedComponents = React.useMemo(() => {
@@ -754,7 +871,7 @@ export default function InlineDragDropEditor() {
         }
         return (
           <div key={index} {...commonProps}>
-            <span style={{ fontFamily: textComp.fontFamily }}>{textComp.text}</span>
+            <span style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}>{textComp.text}</span>
             {deleteButton}
           </div>
         )
@@ -771,7 +888,7 @@ export default function InlineDragDropEditor() {
             {headerComp.src !== null && (
 
               <img
-              src={API_URL+ headerComp.src}
+              src={API_URL + headerComp.src}
               alt=''
               style={{
                 maxWidth: '100%',
@@ -788,7 +905,7 @@ export default function InlineDragDropEditor() {
         return (
           <div key={index} {...commonProps}>
             <img
-              src={imgComp.src ?? ''}
+              src={API_URL + imgComp.src }
               alt=''
               width={imgComp.width}
               height={imgComp.height}
@@ -823,7 +940,8 @@ export default function InlineDragDropEditor() {
     setImageName,
     idTemplate,
     template, setTemplate,
-    isErrorModel
+    isErrorModel,
+    hasModel
   }
   /* render
    *******************************************************************************************/

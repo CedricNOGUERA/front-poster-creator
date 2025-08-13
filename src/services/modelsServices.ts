@@ -1,7 +1,7 @@
 //
 
 import { ComponentTypeMulti } from "@/types/ComponentType";
-
+import * as htmlToImage from 'html-to-image'
 // import { ModelType } from "@/types/modelType"
 
 class ModelsService {
@@ -45,8 +45,7 @@ class ModelsService {
         headers: {
           "Content-Type": "application/json",
         },
-        // body: formData
-        body: JSON.stringify({ canvas: formData }),
+        body: JSON.stringify({ data: JSON.stringify({ canvas: formData }) }),
       }
     );
     return response;
@@ -65,6 +64,32 @@ class ModelsService {
     );
     return response;
   }
+
+
+  formattedModelPicture(name: string){
+    const formattedImage = name
+    .normalize('NFD') // transforme é → e + ́
+    .replace(/[\u0300-\u036f]/g, '') // retire les accents
+    .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
+    .toLowerCase()
+
+  const imageName = formattedImage + '.png'
+  return imageName
+  }
+
+  async miniatureModel(posterRef: React.RefObject<HTMLDivElement | null>) {
+    const canvasElement = posterRef.current
+    if (!canvasElement) return
+    
+    const blob = await htmlToImage.toBlob(canvasElement)
+    if (!blob) {
+      console.error("Erreur de génération de l'image")
+      return
+    }else {
+      return blob
+    }
+  }
+
 }
 
 const modelsServiceInstance = new ModelsService();

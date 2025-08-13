@@ -1,8 +1,16 @@
 import useStoreApp from "@/stores/storeApp";
+import React from "react";
+import { useOutletContext } from "react-router-dom";
+
+interface ProgressBarContextType {
+  setHasModel: React.Dispatch<React.SetStateAction<boolean>>
+}
 
 export const ProgressBarDrag = () => {
   /* States
    *******************************************************************************************/
+  const { setHasModel } =
+    useOutletContext<ProgressBarContextType>()
   const storeApp = useStoreApp();
 
   /* Render
@@ -37,6 +45,7 @@ export const ProgressBarDrag = () => {
                 storeApp.setCategoryId(0);
                 storeApp.setTemplateId(0);
                 storeApp.setDimensionId(0);
+                setHasModel(false)
               }
             : undefined
         }

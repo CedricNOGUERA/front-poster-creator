@@ -12,6 +12,7 @@ export const AdminLayout = () => {
    *******************************************************************************************/
   const [show, setShow] = React.useState(false)
   const toggleShow = () => setShow(!show)
+  const [hasModel, setHasModel] = React.useState<boolean>(false)
   const navigate = useNavigate()
   const [toastData, setToastData] = React.useState<ToastDataType>({
     bg: '',
@@ -58,7 +59,9 @@ export const AdminLayout = () => {
               shops,
               setShops,
               titleHeader,
-              setTitleHeader
+              setTitleHeader,
+              hasModel,
+              setHasModel
             }}
           />
         </div>

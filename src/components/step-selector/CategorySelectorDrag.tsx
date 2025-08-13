@@ -1,6 +1,6 @@
 import useStoreApp from '@/stores/storeApp'
 import React from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import { ToastDataType } from '@/types/DiversType'
 import { CategoriesType } from '@/types/CategoriesType'
 import { _getAllShops, _getCategories } from '@/utils/apiFunctions'
@@ -8,6 +8,10 @@ import categoriesServiceInstance from '@/services/CategoriesServices'
 import { ModalAddCategory } from '../ui/Modals'
 import { ShopType } from '@/types/ShopType'
 import { ComponentTypeMulti } from '@/types/ComponentType'
+import userDataStore from '@/stores/userDataStore'
+import { _expiredSession, _showToast } from '@/utils/notifications'
+// import { _expiredSession } from '@/utils/functions'
+
 type Props = {
   title: string
 }
@@ -33,6 +37,8 @@ export default function CategorySelectorDrag({ title }: Props) {
    *******************************************************************************************/
   const { toggleShow, setToastData } = useOutletContext<ContextCategorySelectorDragType>()
   const storeApp = useStoreApp()
+  const userLogOut = userDataStore((state) => state.authLogout)
+  const navigate = useNavigate()
   const [shopData, setshopData] = React.useState<ShopType[]>([])
   const [cat, setCat] = React.useState<CategoriesType[]>([])
   const [file, setFile] = React.useState<File | null>(null)
@@ -260,7 +266,27 @@ export default function CategorySelectorDrag({ title }: Props) {
         })
         toggleShow()
         handleCloseAdd()
-      }
+      }else if (!addCatResponse.ok && addCatResponse.status === 403) {
+          // _expiredSession(setToastData, toggleShow, userLogOut, navigate)
+          // setToastData({
+          //   bg: 'danger',
+          //   position: 'top-end',
+          //   delay: 4000,
+          //   icon: 'fa fa-times-circle',
+          //   message: 'Votre session est expirée, veuillez vous reconnecter',
+          // })
+          // toggleShow()
+          // userLogOut()
+          // setTimeout(() => {
+          //   navigate('/login')
+          // }, 5000)
+          _expiredSession(
+            (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate
+        )
+      
+    }
     } catch (error) {
       console.log(error)
       setFeedBackState((prev) => ({
@@ -324,7 +350,7 @@ export default function CategorySelectorDrag({ title }: Props) {
     fieldErrors,
     validateField,
   }
-
+  
   /* render
    *******************************************************************************************/
   return (
