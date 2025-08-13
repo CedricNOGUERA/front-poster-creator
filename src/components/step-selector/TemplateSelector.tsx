@@ -20,8 +20,7 @@ export const TemplateSelector = ({ title }: Props) => {
   React.useEffect(() => {
     _getTemplate(setTemplates, storeApp.categoryId)
   }, [storeApp.categoryId])
-  console.log(storeApp.categoryId)
-  console.log(templates)
+
 
   /* Functions
    *******************************************************************************************/

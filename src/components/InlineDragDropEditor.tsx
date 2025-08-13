@@ -612,8 +612,7 @@ export default function InlineDragDropEditor() {
     formData.append('image', blob, imageName)
     formData.append('data', JSON.stringify(newModelData))
 
-    console.log(imageName)
-    console.log(imageExists, hasModel)
+
 
     try {
       if (hasModel && imageExists) {
@@ -687,7 +686,6 @@ export default function InlineDragDropEditor() {
       }))
     }
   }
-console.log(storeApp)
   /* UseMemo
    *******************************************************************************************/
   const renderedComponents = React.useMemo(() => {
