@@ -138,7 +138,7 @@ export const EditorTemplate = () => {
     setModelId(selectedSchema?.id ?? 0)
   }
 
-  console.log(canvasData)
+
 
   const getPageDimensions = async () => {
     const selectedDimension = dimensions.find((d) => d.id === storeApp.dimensionId)
@@ -340,6 +340,7 @@ export const EditorTemplate = () => {
                           wordBreak: 'break-word',
                           transform: `rotate(${textComp?.rotation}deg)`,
                           padding: `0 ${5}px`,
+                          textDecoration: textComp.textDecoration ?? 'none'
                         }}
                       >
                         {textComp?.text}

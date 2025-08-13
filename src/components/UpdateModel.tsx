@@ -49,6 +49,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
 
   /* States
    *******************************************************************************************/
+  const API_URL = import.meta.env.VITE_API_URL
   const { setToastData, toggleShow } =
     useOutletContext<ContextInlineDragDropEditorType>()
 
@@ -80,7 +81,9 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     height: previewStyle?.height ? prevHeight : 600,
     orientation: '',
   })
-  const h = newTemplateState.height && newTemplateState.height
+  const selectedDim = dimensions.find((d) => d.id === selectedDimension)
+  // const h = newTemplateState.height && newTemplateState.height
+  const h = selectedDim?.height && selectedDim?.height
   const maxPreviewHeight = h && h < 100 ? 150 : 500
   const posterRef = React.useRef<HTMLDivElement>(null)
 
@@ -96,10 +99,8 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
   /* UseEffect
    *******************************************************************************************/
 
-  React.useEffect(() => {
-   
-  },[])
 
+  console.log(components)
   React.useEffect(() => {
     _getCategoryById(storeApp?.categoryId, setSelectedCategory)
     setSelectedDimension(storeApp?.dimensionId || 0)
@@ -489,7 +490,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
 
       if(response.ok){
         setToastData({
-           bg: 'success',
+          bg: 'success',
           position: 'top-end',
           delay: 3000,
           icon: 'fa fa-check-circle',
@@ -498,7 +499,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         toggleShow()
       }else{
         setToastData({
-           bg: 'danger',
+          bg: 'danger',
           position: 'top-end',
           delay: 3000,
           icon: 'fa fa-circle-xmark',
@@ -510,7 +511,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     }catch(error){
       console.log(error)
       setToastData({
-           bg: 'danger',
+          bg: 'danger',
           position: 'top-end',
           delay: 3000,
           icon: 'fa fa-circle-xmark',
@@ -704,7 +705,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         }
         return (
           <div key={index} {...commonProps}>
-            <span style={{ fontFamily: textComp.fontFamily }}>{textComp.text}</span>
+            <span style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}>{textComp.text}</span>
             {deleteButton}
           </div>
         )
@@ -719,7 +720,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         return (
           <div key={index} {...commonProps}>
             <img
-              src={headerComp.src ? headerComp.src : undefined}
+              src={API_URL + headerComp.src }
               alt=''
               style={{
                 maxWidth: '100%',
@@ -735,7 +736,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         return (
           <div key={index} {...commonProps}>
             <img
-              src={imgComp.src ?? ''}
+              src={API_URL + imgComp.src }
               alt=''
               width={imgComp.width}
               height={imgComp.height}
@@ -756,6 +757,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     handleDragOnCanvas,
     getStyleFromComponent,
     updateComponent,
+    API_URL
   ])
 
   /* component props
@@ -769,7 +771,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     setImageName,
     idTemplate
   }
- const selectedDim = dimensions.find((d) => d.id === selectedDimension)
+
 
   /* render
    *******************************************************************************************/

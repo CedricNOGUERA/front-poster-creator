@@ -267,6 +267,8 @@ export const _getTemplateLength = async (
   setTemplateLength(result.length);
 };
 
+
+
 ///////////////////////
 //category
 ///////////////////////
@@ -341,7 +343,7 @@ export const _getCategoryPictures = async (
   shopId: number,
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
 ) => {
-  const API_URL = import.meta.env.VITE_API_URL;
+  // const API_URL = import.meta.env.VITE_API_URL;
   setFeedBackState({
     isLoading: true,
     loadingMessage: "",
@@ -359,7 +361,7 @@ export const _getCategoryPictures = async (
         return {
           idShop: shopId,
           category: categoryId,
-          image: `${API_URL}${item}`,
+          image: `${item}`,
         };
       });
       setSideBarData(pictures);
@@ -424,9 +426,7 @@ export const _handleUploadFile = async (
         {
           idShop: shopId,
           category: categoryId,
-          image: `${
-            import.meta.env.VITE_API_URL
-          }/uploads/categories/images/${categoryId}/${file?.name}`,
+          image: `/uploads/categories/images/${categoryId}/${file?.name}`,
         },
       ]);
       console.log("fetch");

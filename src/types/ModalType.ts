@@ -24,9 +24,10 @@ export interface ModalValidateModelType {
   addModel: (name: string) => Promise<void>
   imageName: string
   setImageName: React.Dispatch<React.SetStateAction<string>>
-  template: TemplateType[]
-  setTemplate: React.Dispatch<React.SetStateAction<TemplateType[]>>
+  template: TemplateType[] 
+  setTemplate: React.Dispatch<React.SetStateAction<TemplateType[]>> 
   isErrorModel: boolean
+  hasModel: boolean
 }
 export interface ModalUpdateModelType {
   showUpdateModel: boolean

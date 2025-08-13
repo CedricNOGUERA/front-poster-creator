@@ -147,7 +147,7 @@ React.useEffect(() => {
                     
                   className={`relative-zone mb-2 p-2 border rounded bg-green-100 move text-center`}
                 >
-                  <Image src={item.image} alt='redBlock' width={50} className='move' />
+                  <Image src={API_URL + item.image} alt={item.image} width={50} className='move' />
                   {hoveredIndex === indx && (
                     <Button
                       variant='light'

@@ -21,6 +21,7 @@ export const TemplateSelector = ({ title }: Props) => {
     _getTemplate(setTemplates, storeApp.categoryId)
   }, [storeApp.categoryId])
 
+
   /* Functions
    *******************************************************************************************/
   const onHandleTemplate = (id: number | undefined) => {

@@ -14,7 +14,8 @@ interface ContextCategorySelectorDragType {
 }
 
 export default function ShopPage() {
-  const columnsData = ['ID', 'Nom', 'Actions']
+  const API_URL = import.meta.env.VITE_API_URL
+  const columnsData = ['ID', 'logo', 'Nom', 'Actions']
   const {setToastData, toggleShow} = useOutletContext<ContextCategorySelectorDragType>()
   const [shops, setShops] = useState<ShopType[]>([]);
   const [selectedShopId, setSelectedShopId] = useState<number | null>(null);
@@ -47,6 +48,8 @@ const shopDisplay = (shops: ShopType[]) => {
   return shops.map((shop) => (
     <tr key={shop.id} className='align-middle'>
       <td>{shop.id}</td>
+      <td>
+        <img src={API_URL +"/"+ shop.cover} alt={shop?.name} width={50} /></td>
       <td>{shop?.name}</td>
       <td>
         <MenuDrop

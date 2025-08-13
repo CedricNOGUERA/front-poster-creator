@@ -40,6 +40,16 @@ class TemplatesServices {
     return response
   }
 
+  async patchImageTemplate(id: number, imageName: string, formData: FormData) {
+
+    const response = await fetch(`${API_URL}/api/template/${id}/thumbnail/${imageName}`, {
+      method: 'PATCH',
+      body: formData
+    })
+
+    return response
+  }
+
   async deleteTemplate(templateId: number | undefined) {
     if (!templateId) return
     const response = await fetch(`${API_URL}/api/templates/${templateId}`, {
