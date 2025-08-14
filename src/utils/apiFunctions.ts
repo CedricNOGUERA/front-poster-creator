@@ -14,6 +14,8 @@ import { TemplateType } from "@/types/TemplatesType";
 import { UserType } from "@/types/UserType";
 import React from "react";
 
+const API_URL = import.meta.env.VITE_API_URL
+
 ///////////////////////
 //Auth
 ///////////////////////
@@ -59,7 +61,7 @@ export const _getAllShops = async (
 export const _getCanvas = (
   setCanvasData: React.Dispatch<React.SetStateAction<Canvastype[]>>
 ) => {
-  fetch(`${import.meta.env.VITE_API_URL}/api/canvas`)
+  fetch(`${API_URL}/api/canvas`)
     .then((res) => res.json())
     .then((data) => {
       setCanvasData(data);
@@ -75,7 +77,7 @@ export const _getCanvasById = async (
 ) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/canvas/${id}`
+      `${API_URL}/api/canvas/${id}`
     );
 
     if (!response.ok) {
@@ -108,7 +110,7 @@ export const _addCanvas = async (
 ) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/add-canvas`,
+      `${API_URL}/api/add-canvas`,
       {
         method: "POST",
         headers: {
@@ -168,7 +170,7 @@ export const _uploadPicture = async (
   formData.append("image", file); // "image" correspond à upload.single('image') dans le serveur
 
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+    const response = await fetch(`${API_URL}/api/upload`, {
       method: "POST",
       body: formData,
     });
@@ -262,7 +264,7 @@ export const _getTemplate = async (
 export const _getTemplateLength = async (
   setTemplateLength: React.Dispatch<React.SetStateAction<number>>
 ) => {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/templates`);
+  const response = await fetch(`${API_URL}/api/templates`);
   const result = await response.json();
   setTemplateLength(result.length);
 };
@@ -343,7 +345,7 @@ export const _getCategoryPictures = async (
   shopId: number,
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
 ) => {
-  // const API_URL = import.meta.env.VITE_API_URL;
+  // const API_URL = API_URL;
   setFeedBackState({
     isLoading: true,
     loadingMessage: "",
@@ -465,7 +467,8 @@ export const _handleDeleteImg = async (
   toggleShow: () => void,
   categoryId: number
 ) => {
-  const imageUrl = sideBarData[index!].image;
+  const imageUrl = API_URL + sideBarData[index!].image;
+  console.log(imageUrl)
   try {
     const url = new URL(imageUrl);
     const pathnameParts = url.pathname.split("/");
