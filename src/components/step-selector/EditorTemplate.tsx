@@ -340,6 +340,7 @@ export const EditorTemplate = () => {
                           wordBreak: 'break-word',
                           transform: `rotate(${textComp?.rotation}deg)`,
                           padding: `0 ${5}px`,
+                          fontFamily: textComp.fontFamily,
                           textDecoration: textComp.textDecoration ?? 'none'
                         }}
                       >
