@@ -43,8 +43,12 @@ export const ShopSelector = ({ title }: Props) => {
             if(userStoreData.role === "super_admin"){
               return true
             }else{
-              userStoreData.company.some((uc) =>
-              uc.idCompany === shop.id)
+              if(userStoreData.role === "admin"){
+                return (
+                  userStoreData.company.some((uc) =>
+                    uc.idCompany === shop.id)
+                )
+              }
             }
           
           })
