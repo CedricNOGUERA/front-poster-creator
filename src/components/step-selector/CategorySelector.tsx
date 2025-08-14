@@ -48,7 +48,7 @@ export const CategorySelector = ({ title }: Props) => {
                 style={{ width: "200px", height: "183px" }}
                 onClick={() => onHandleCategory(category.id as number)}
               >
-                <i className={category.icon + " text-primary fs-1"}></i>
+                <i className={category.icon.value + " text-primary fs-1"}></i>
                 <p className="mt-2 text-center fw-bold fs-5 text-primary">
                   {category.name}
                 </p>
