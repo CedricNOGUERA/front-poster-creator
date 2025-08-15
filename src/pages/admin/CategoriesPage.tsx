@@ -128,9 +128,9 @@ export default function CategoriesPage() {
     if (imgRglt) {
       formData.append('imageRglt', imgRglt)
     }
-
     try {
       const response = await categoriesServiceInstance.updateCategory(id, formData)
+      
       if (response.ok) {
         _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
         handleCloseAddEditModal()

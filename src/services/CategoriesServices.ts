@@ -40,7 +40,7 @@ class CategoriesService {
 
     async getPicturesByCategory(category: number) {
       const response = await fetch(`${API_URL}/api/uploads/${category}`)
-      // console.log(response)
+
       if (!response.ok) {
         throw new Error('Erreur lors de la récupération des images')
       }
@@ -48,13 +48,19 @@ class CategoriesService {
     }
 
     async updateCategory(id: number | undefined, selectedCategory: FormData) {
+      // Convertir FormData en objet JavaScript
+      const formDataObj: Record<string, string | number | boolean | File> = {};
+      selectedCategory.forEach((value, key) => {
+        formDataObj[key] = value;
+      });
+
       const response = await fetch(`${API_URL}/api/categories/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
-        body: selectedCategory,
+        body: JSON.stringify(formDataObj),
       })
       return response
     }

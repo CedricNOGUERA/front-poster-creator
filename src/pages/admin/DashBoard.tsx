@@ -13,7 +13,7 @@ const DashBoard = () => {
 
   React.useEffect(() => {
     if (userRole !== 'super_admin') {
-      setDisplay('categories')
+      setDisplay('utilisateurs')
       return
     }
   }, [userRole])

@@ -100,7 +100,6 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
    *******************************************************************************************/
 
 
-  console.log(components)
   React.useEffect(() => {
     _getCategoryById(storeApp?.categoryId, setSelectedCategory)
     setSelectedDimension(storeApp?.dimensionId || 0)
