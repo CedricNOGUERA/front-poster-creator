@@ -515,11 +515,16 @@ export function ModalAddEditCategory({
             <Form.Label className=''>
               Image actuelle
               <span className='bg-secondary ms-2 p-2'>
-                <Image
+                {formData?.image !== null ? (
+
+                  <Image
                   src={API_URL + formData?.image || 'no-picture'}
                   alt={formData?.name || 'no-picture'}
                   width={100}
-                />
+                  />
+                ) : (
+                  <span className='text-light'>Aucune image</span>
+                )}
               </span>
             </Form.Label>
             <Form.Control
@@ -547,7 +552,7 @@ export function ModalAddEditCategory({
                       )
                     }
                   }
-                  return <span className='text-danger'>Aucune image réglette</span>
+                  return <span className='text-light'>Aucune image réglette</span>
                 })()}
               </span>
             </Form.Label>
@@ -632,9 +637,12 @@ export function ModalAddEditCategory({
             style={{ width: '100%' }}
             placeholder='Sélectionnez le ou les magasins'
             onChange={(value) => {
+              // Convertir le tableau de chaînes en tableau de nombres
+              const numericIds = value ? value.map((id: string) => parseInt(id, 10)) : []
+        
               setFormData((prev) => ({
                 ...prev,
-                shopIds: value,
+                shopIds: numericIds,
               }))
             }}
           />

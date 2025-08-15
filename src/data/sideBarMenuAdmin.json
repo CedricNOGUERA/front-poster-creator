@@ -11,7 +11,7 @@
         "title": "Catégories",
         "icon": "fas fa-list",
         "display": "categories",
-        "role": ["super_admin", "admin"]
+        "role": ["super_admin"]
     },
     {
         "id": 3,
