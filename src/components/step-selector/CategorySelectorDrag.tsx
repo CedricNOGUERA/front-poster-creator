@@ -267,19 +267,6 @@ export default function CategorySelectorDrag({ title }: Props) {
         toggleShow()
         handleCloseAdd()
       }else if (!addCatResponse.ok && addCatResponse.status === 403) {
-          // _expiredSession(setToastData, toggleShow, userLogOut, navigate)
-          // setToastData({
-          //   bg: 'danger',
-          //   position: 'top-end',
-          //   delay: 4000,
-          //   icon: 'fa fa-times-circle',
-          //   message: 'Votre session est expirée, veuillez vous reconnecter',
-          // })
-          // toggleShow()
-          // userLogOut()
-          // setTimeout(() => {
-          //   navigate('/login')
-          // }, 5000)
           _expiredSession(
             (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
             userLogOut,

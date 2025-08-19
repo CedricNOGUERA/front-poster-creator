@@ -18,6 +18,7 @@ import 'rsuite/Drawer/styles/index.css'
 import UserManager from './pages/admin/UserManager'
 import DashBoard from './pages/admin/DashBoard'
 import InlineDragDropEditor from './components/step-selector/InlineDragDropEditor'
+import Account from './pages/admin/Account'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -35,6 +36,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord' element={<DashBoard />} />
+          <Route path='/profile' element={<Account />} />
         </Route>
       </Routes>
     </BrowserRouter>
