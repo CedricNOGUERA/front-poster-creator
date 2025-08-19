@@ -30,7 +30,7 @@ export const _getMe = async (
     id: number,
     email: string,
     name: string,
-    company: { idCompany: number; nameCompany: string },
+    company: { idCompany: number; nameCompany: string }[],
     role: "super_admin" | "admin" | "user"
   ) => void
 ) => {

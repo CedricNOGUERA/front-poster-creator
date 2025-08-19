@@ -6,6 +6,7 @@ import { SideHeaderMenu } from "./SideHeaderMenu";
 import userDataStore, {UserDataType} from '@/stores/userDataStore'
 import useStoreApp from "@/stores/storeApp";
 import { StoreType } from "@/stores/storeApp";
+import { Link } from "react-router-dom";
 
 export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string, setTitleHeader: React.Dispatch<React.SetStateAction<string>>}) => {
   /* States
@@ -37,7 +38,7 @@ export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string,
           <Navbar.Brand className='text-white text-uppercase fw-bold mx-auto'>
             {titleHeader}
           </Navbar.Brand>
-          <span className='d-flex align-items-center text-white' title={`Hello ${userName}`} >{userName}</span>
+          <span className='d-flex align-items-center text-white pointer ' title={`Hello ${userName}`} ><Link to="/profile" className="text-decoration-none text-light">{userName}</Link></span>
           {(userRole === "admin" || userRole === "super_admin") ? ( 
             <Button variant='transparent' onClick={() => setOpen(true)}>
             <i className='fa-solid fa-ellipsis-vertical  text-light'></i>

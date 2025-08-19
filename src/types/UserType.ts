@@ -13,4 +13,5 @@ export interface UserType {
     nameCompany: string
   }[]
   role: 'super_admin' | 'admin' | 'user'
+  passwordHash?: string
 }
