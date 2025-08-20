@@ -25,6 +25,7 @@ export const AddUserForm = ({
 /* States
  *******************************************************************************************/
   const userStoreData = userDataStore((state: UserDataType) => state)
+  const userRlole = userDataStore((state: UserDataType) => state.role)
   const [name, setName] = React.useState<string>('')
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
@@ -59,11 +60,24 @@ export const AddUserForm = ({
     setError(null)
     setSuccess(null)
     setLoading(true)
-    if (password.length < 12 && titleButton !== 'Modifier') {
-      setError('Le mot de passe doit contenir au moins 12 caractères')
-      setLoading(false)
-      return
-    }
+
+    const regexVerification = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{12,}$/;
+    const passwordValidation = regexVerification.test(password)
+    
+        if (company.length === 0) {
+          setError('Veuillez sélectionner au moins un magasin.')
+          setLoading(false)
+          return
+        }
+
+        if (!passwordValidation && !initialData) {
+          setError(
+            'Le mot de passe doit être composé de minimum: 12 caractères , 1 majuscule, 1 minuscule, et un caratère spécial (#, ~, $, %, *, !, @...).'
+          )
+          setLoading(false)
+          return
+        }
+
     try {
       if (initialData && initialData.id) {
         const updatedData: Partial<UserType> = { name, email, company, role } // Inclure le mot de passe seulement s'il a été modifié
@@ -114,8 +128,8 @@ export const AddUserForm = ({
 
   return (
     <Form onSubmit={handleSubmit}>
-      {error && <Alert variant='danger'>{error}</Alert>}
-      {success && <Alert variant='success'>{success}</Alert>}
+      {error && <Alert variant='danger' className='text-danger'><i className='fa fa-circle-xmark me-2'></i>{error}</Alert>}
+      {success && <Alert variant='success'><i className='fa fa-circle-check me-2 text-success'></i> {success}</Alert>}
       <Form.Group className='mb-3' controlId='formBasicName'>
         <Form.Label>
           Prénom<span className='text-danger'>*</span>
@@ -148,6 +162,7 @@ export const AddUserForm = ({
           data={shopList}
           style={{ width: '100%' }}
           placeholder='Sélectionnez le ou les magasins'
+          value={company.map(comp => comp.idCompany)}
           onChange={(values: number[]) => {
             const selectedCompanies = shopList.filter((shop) => values.includes(shop.value))
             const selectedShop = selectedCompanies.map((item) => ({
@@ -179,9 +194,10 @@ export const AddUserForm = ({
           })}
         </Form.Select>
       </Form.Group>
+      {userRlole === "super_admin" && (
       <Form.Group className='mb-3' controlId='formBasicPassword'>
         <Form.Label>
-          Mot de passe<span className='text-danger'>*</span>
+          Mot de passe{!initialData && <span className='text-danger'>*</span>}
         </Form.Label>
         <InputGroup className='mb-3'>
           <Form.Control
@@ -202,11 +218,11 @@ export const AddUserForm = ({
             ></i>
           </InputGroup.Text>
         </InputGroup>
-        <Form.Text className='text-muted'>
-          Le mot de passe doit contenir au moins 12 caractères.
-        </Form.Text>
+    
       </Form.Group>
-      <div className={handleCloseAdd ? 'text-end' : 'text-center'}>
+      )}
+
+      <div className={handleCloseAdd ? 'text-end mt-' : 'text-center mt-3'}>
         {handleCloseAdd && (
           <Button variant='secondary' onClick={handleCloseAdd} className='me-2'>
             Annuler
