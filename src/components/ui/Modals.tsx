@@ -93,9 +93,9 @@ export function ModalValidateModel({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Voulez-vous {hasModel && isTemplate ? "modifier" : "valider"} ce model ?
+        Voulez-vous {hasModel  ? "modifier" : "valider"} ce model ?
         <Form.Group className='mb-3' controlId='exampleForm.ControlInput1'>
-          <Form.Label>{hasModel && isTemplate ? "Nom du modèle" : "Ajouter un nom au model"}</Form.Label>
+          <Form.Label>{hasModel ? "Nom du modèle" : "Ajouter un nom au model"}</Form.Label>
           <Form.Control
             type='text'
             placeholder='Saisissez un nom'
