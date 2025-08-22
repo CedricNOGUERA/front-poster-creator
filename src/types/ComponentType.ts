@@ -77,9 +77,31 @@ export type PrincipalPriceComponentType = {
   showCustomValue?: boolean;
 }
 
+export type HorizontalLineComponentType = {
+  type: string
+  top: number
+  left: number
+  width: number
+  color: string
+  thickness: number
+  showCustomValue?: boolean;
+}
+
+export type VerticalLineComponentType = {
+  type: string
+  top: number
+  left: number
+  height: number
+  color: string
+  thickness: number
+  showCustomValue?: boolean;
+}
+
 export type ComponentTypeMulti =
   | HeaderComponentType
   | NumberComponentType
   | TextComponentType
   | BackgroundComponentType
   | ImageComponentType
+  | HorizontalLineComponentType
+  | VerticalLineComponentType

@@ -216,6 +216,22 @@ React.useEffect(() => {
         >
           Zone numérique
         </div>
+        <div
+          draggable
+          onDragStart={(e) => _handleDragStart(e, 'horizontalLine')}
+          className='mb-2 p-2 border rounded move text-center'
+          title="glisser et déposer dans l'encadré pour ajouter une ligne horizontale"
+        >
+          Ligne horizontale
+        </div>
+        <div
+          draggable
+          onDragStart={(e) => _handleDragStart(e, 'verticalLine')}
+          className='mb-2 p-2 border rounded move text-center'
+          title="glisser et déposer dans l'encadré pour ajouter une ligne verticale"
+        >
+          Ligne verticale
+        </div>
       </div>
 
       <ModalDelete modalDeleteProps={modalDeleteProps} />

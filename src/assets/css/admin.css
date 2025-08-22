@@ -122,6 +122,13 @@
   right: 2%;
 }
 
+td{
+  text-align: center;
+  vertical-align: middle;
+  
+  
+}
+
 /**
 / Component : Card
 ---------------------------------------------------------*/

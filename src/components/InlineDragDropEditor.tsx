@@ -7,6 +7,8 @@ import {
   NumberComponentType,
   PrincipalPriceComponentType,
   HeaderComponentType,
+  HorizontalLineComponentType,
+  VerticalLineComponentType,
 } from '@/types/ComponentType'
 import useStoreApp from '@/stores/storeApp'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
@@ -418,6 +420,24 @@ React.useEffect(() => {
         height: 'auto',
         src: src,
       }
+    } else if (type === 'horizontalLine') {
+      newComponent = {
+        type: 'horizontalLine',
+        top,
+        left,
+        width: 200,
+        color: '#000000',
+        thickness: 2,
+      }
+    } else if (type === 'verticalLine') {
+      newComponent = {
+        type: 'verticalLine',
+        top,
+        left,
+        height: 200,
+        color: '#000000',
+        thickness: 2,
+      }
     } else {
       console.error('Unknown component type dropped:', type)
       return
@@ -596,6 +616,28 @@ React.useEffect(() => {
             left: `${(comp as ImageComponentType).left ?? 0}px`,
             width: `${(comp as ImageComponentType).width}px`,
             height: 'auto',
+            border: isSelected ? '1px gray dashed' : '',
+            cursor: 'move',
+          }
+        case 'horizontalLine':
+          return {
+            ...baseStyle,
+            top: `${(comp as HorizontalLineComponentType).top ?? 0}px`,
+            left: `${(comp as HorizontalLineComponentType).left ?? 0}px`,
+            width: `${(comp as HorizontalLineComponentType).width}px`,
+            height: `${(comp as HorizontalLineComponentType).thickness}px`,
+            backgroundColor: (comp as HorizontalLineComponentType).color,
+            border: isSelected ? '1px gray dashed' : '',
+            cursor: 'move',
+          }
+        case 'verticalLine':
+          return {
+            ...baseStyle,
+            top: `${(comp as VerticalLineComponentType).top ?? 0}px`,
+            left: `${(comp as VerticalLineComponentType).left ?? 0}px`,
+            height: `${(comp as VerticalLineComponentType).height}px`,
+            width: `${(comp as VerticalLineComponentType).thickness}px`,
+            backgroundColor: (comp as VerticalLineComponentType).color,
             border: isSelected ? '1px gray dashed' : '',
             cursor: 'move',
           }
@@ -953,6 +995,22 @@ React.useEffect(() => {
               height={imgComp.height}
               style={{ width: '100%', height: '100%' }}
             />
+            {deleteButton}
+          </div>
+        )
+      }
+
+      if (comp.type === 'horizontalLine') {
+        return (
+          <div key={index} {...commonProps}>
+            {deleteButton}
+          </div>
+        )
+      }
+
+      if (comp.type === 'verticalLine') {
+        return (
+          <div key={index} {...commonProps}>
             {deleteButton}
           </div>
         )
