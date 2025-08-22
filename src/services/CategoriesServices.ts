@@ -49,18 +49,17 @@ class CategoriesService {
 
     async updateCategory(id: number | undefined, selectedCategory: FormData) {
       // Convertir FormData en objet JavaScript
-      const formDataObj: Record<string, string | number | boolean | File> = {};
-      selectedCategory.forEach((value, key) => {
-        formDataObj[key] = value;
-      });
+      // const formDataObj: Record<string, string | number | boolean | File> = {};
+      // selectedCategory.forEach((value, key) => {
+      //   formDataObj[key] = value;
+      // });
 
       const response = await fetch(`${API_URL}/api/categories/${id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`
         },
-        body: JSON.stringify(formDataObj),
+        body: selectedCategory,
       })
       return response
     }
