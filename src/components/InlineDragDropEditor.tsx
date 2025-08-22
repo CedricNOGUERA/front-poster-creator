@@ -55,7 +55,6 @@ export default function InlineDragDropEditor() {
   const storeApp = useStoreApp()
   const idTemplate = storeApp.templateId
   const [isErrorModel, setIsErrorModel] = useState<boolean>(false);
-  // const [hasModel, setHasModel] = useState<boolean>(false);
   const [components, setComponents] = useState<ComponentTypeMulti[]>([])
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
@@ -88,7 +87,7 @@ export default function InlineDragDropEditor() {
 
   const [showValidateModel, setShowValidateModel] = React.useState<boolean>(false)
   const handleCloseValidateModel = () => {
-    // setImageName('')
+    setImageName('')
     setShowValidateModel(false)
   }
   const handleShowValidateModel = () => setShowValidateModel(true)
@@ -148,6 +147,8 @@ export default function InlineDragDropEditor() {
         )
       ))
 
+
+     
     //canvas du model existant
   //   const canvasModel = models.find((model) => (
   //     model.categoryId === storeApp.categoryId &&
@@ -169,7 +170,49 @@ export default function InlineDragDropEditor() {
 
 }, [storeApp, models])
 
+console.log(modelId)
+
   React.useEffect(() => {
+    const hasTemplate = template.find((model) => (
+      model.name === imageName
+    )
+  )
+ 
+if(hasTemplate){
+  setHasModel( models.some((model) => (
+    model.categoryId === storeApp.categoryId &&
+    model.dimensionId === storeApp.dimensionId &&
+    model.templateId === hasTemplate.id
+  )
+))
+}
+
+
+
+//canvas du model existant
+//   const canvasModel = models.find((model) => (
+//     model.categoryId === storeApp.categoryId &&
+//     model.dimensionId === storeApp.dimensionId 
+//   )
+// )?.canvas
+
+const idModel = models.find((model) => (
+model.categoryId === storeApp.categoryId &&
+model.dimensionId === storeApp.dimensionId 
+)
+)?.id
+
+if(idModel)
+{
+setModelId(idModel)
+// setComponents(canvasModel)
+}  
+
+  console.log(hasTemplate)
+},[imageName])
+console.log(hasModel)
+React.useEffect(() => {
+  
 //     const hasGotModel= models.some(
 //       (model) =>
 //         model.categoryId === storeApp.categoryId &&
@@ -656,7 +699,8 @@ export default function InlineDragDropEditor() {
       } else {
         const responseModel = await modelsServiceInstance.postModel(formData)
 
-        if (newTemplateState.width === newTemplateState.height && !imageExists) {
+        if (!imageExists) {
+        // if (newTemplateState.width === newTemplateState.height && !imageExists) {
           await templatesServiceInstance.postTemplate(newTemplate)
         }
 

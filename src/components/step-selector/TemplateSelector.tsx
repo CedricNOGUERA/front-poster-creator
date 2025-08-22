@@ -1,4 +1,3 @@
-// import templates from "@/mocks/templates.json";
 import useStoreApp from "@/stores/storeApp";
 import { TemplateType } from "@/types/TemplatesType";
 import { _getTemplate } from "@/utils/apiFunctions";
@@ -48,6 +47,7 @@ export const TemplateSelector = ({ title }: Props) => {
                 onClick={() => onHandleTemplate(template.id)}
               >
                 <img src={`${API_URL}/uploads/miniatures/${storeApp.categoryId}/${template.image}`} alt={template.name} width={200} />
+                <div>{template.name}</div>
               </div>
             )
           }
