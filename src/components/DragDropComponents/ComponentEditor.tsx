@@ -3,6 +3,7 @@ import { TextEditor } from '../TextEditor'
 import { ImageEditor } from '../ImageEditor'
 import { ComponentTypeMulti } from '@/types/ComponentType'
 import BgEditor from '../BgEditor'
+import LineEditor from '../LineEditor'
 
 interface ComponentEditorType {
     components: ComponentTypeMulti[]
@@ -34,6 +35,13 @@ return (
                 {(components[selectedIndex]?.type === 'background-color' ||
                   components[selectedIndex]?.type === 'header') && (
                   <BgEditor
+                    component={components[selectedIndex]}
+                    updateComponent={updateComponent}
+                  />
+                )}
+                {(components[selectedIndex]?.type === 'horizontalLine' ||
+                  components[selectedIndex]?.type === 'verticalLine') && (
+                  <LineEditor
                     component={components[selectedIndex]}
                     updateComponent={updateComponent}
                   />
