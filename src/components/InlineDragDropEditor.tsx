@@ -16,7 +16,6 @@ import dimensions from '@/mocks/dimensions.json'
 import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import {
   _generateInitalComponent,
-  // _generateInitalComponent2,
   _handleDeleteComponent,
   _handleDragOver,
   _handleExportToPDF,
@@ -35,7 +34,6 @@ import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
 import { ModelType } from '@/types/modelType'
 import { _showToast } from '@/utils/notifications'
-
 
 
 interface ContextInlineDragDropEditorType {
@@ -149,15 +147,6 @@ export default function InlineDragDropEditor() {
         )
       ))
 
-
-     
-    //canvas du model existant
-  //   const canvasModel = models.find((model) => (
-  //     model.categoryId === storeApp.categoryId &&
-  //     model.dimensionId === storeApp.dimensionId 
-  //   )
-  // )?.canvas
-
   const idModel = models.find((model) => (
     model.categoryId === storeApp.categoryId &&
     model.dimensionId === storeApp.dimensionId 
@@ -172,7 +161,6 @@ export default function InlineDragDropEditor() {
 
 }, [storeApp, models])
 
-console.log(modelId)
 
   React.useEffect(() => {
     const hasTemplate = template.find((model) => (
@@ -189,15 +177,6 @@ if(hasTemplate){
 ))
 }
 
-
-
-//canvas du model existant
-//   const canvasModel = models.find((model) => (
-//     model.categoryId === storeApp.categoryId &&
-//     model.dimensionId === storeApp.dimensionId 
-//   )
-// )?.canvas
-
 const idModel = models.find((model) => (
 model.categoryId === storeApp.categoryId &&
 model.dimensionId === storeApp.dimensionId 
@@ -207,61 +186,13 @@ model.dimensionId === storeApp.dimensionId
 if(idModel)
 {
 setModelId(idModel)
-// setComponents(canvasModel)
 }  
 
-  console.log(hasTemplate)
+
 },[imageName])
-console.log(hasModel)
+
 React.useEffect(() => {
   
-//     const hasGotModel= models.some(
-//       (model) =>
-//         model.categoryId === storeApp.categoryId &&
-//         model.dimensionId === storeApp.dimensionId
-//     )
-//     setHasModel(
-//       hasGotModel
-//     )
-// console.log(hasGotModel)
-//     const canvasModel = models.find(
-//       (model) =>
-//         model.categoryId === storeApp.categoryId && model.dimensionId === storeApp.dimensionId
-//     )?.canvas
-// console.log(canvasModel)
-
-//     if (hasGotModel && canvasModel !== undefined && canvasModel?.length > 0) {
-    
-//         _generateInitalComponent2(
-//           canvasModel,
-//           storeApp,
-//           newTemplateState,
-//           setNewTemplateState,
-//           maxPreviewHeight,
-//           h,
-//           components,
-//           setComponents,
-//           setDimensionFactor
-//         )
-//       // setComponents(canvasModel)
-      
-//       setImageName(selectedCategory.name)
-//     }
-//     else{
-
-      
-//       _generateInitalComponent(
-//         selectedCategory.canvas,
-//         storeApp,
-//         newTemplateState,
-//         setNewTemplateState,
-//         maxPreviewHeight,
-//         h,
-//         components,
-//         setComponents,
-//         setDimensionFactor
-//       )
-//   }
   
   _generateInitalComponent(
     selectedCategory.canvas,
@@ -274,8 +205,7 @@ React.useEffect(() => {
     setComponents,
     setDimensionFactor
   )
-  // const imageName = modelsServiceInstance.formattedModelPicture(selectedCategory.name)
-  // setImageName(selectedCategory.name)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, storeApp, maxPreviewHeight, h, storeApp, models, selectedDimension])
 
@@ -899,9 +829,10 @@ React.useEffect(() => {
         return (
           <div key={index} {...commonProps}>
             <div style={{ whiteSpace: 'nowrap' }}>
-              <span style={{ textDecoration: typedComp.textDecoration ?? 'none' }}>
-                {_thousandSeparator(parseInt(typedComp.text))}
-              </span>
+              <span 
+                style={{ textDecoration: typedComp.textDecoration ?? 'none' }}
+                dangerouslySetInnerHTML={{ __html: _thousandSeparator(parseInt(typedComp.text)) }}
+              />
               <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
             </div>
             {deleteButton}
@@ -955,7 +886,10 @@ React.useEffect(() => {
         }
         return (
           <div key={index} {...commonProps}>
-            <span style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}>{textComp.text}</span>
+            <span 
+              style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}
+              dangerouslySetInnerHTML={{ __html: textComp.text }}
+            />
             {deleteButton}
           </div>
         )

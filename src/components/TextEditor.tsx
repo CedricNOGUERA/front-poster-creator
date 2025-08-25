@@ -1,6 +1,7 @@
 import { ComponentTypeMulti, TextComponentType, NumberComponentType, PrincipalPriceComponentType } from '@/types/ComponentType'
-import { Form } from 'react-bootstrap'
+import { Form, Button, ButtonGroup } from 'react-bootstrap'
 import fonts from '@/data/fonts.json'
+import React from 'react'
 
 export function TextEditor({
   component,
@@ -10,19 +11,122 @@ export function TextEditor({
   updateComponent: (updatedFields: Partial<ComponentTypeMulti>) => void
 }) {
 
-  if (!component) return null
+  // if (!component) return null
   const comp = component as TextComponentType | NumberComponentType | PrincipalPriceComponentType
+  
+  const [text, setText] = React.useState(comp.text || '')
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null)
+
+
+  React.useEffect(() => {
+    setText(comp.text || '')
+  }, [comp.text])
+
+  const handleTextChange = (newText: string) => {
+    setText(newText)
+    updateComponent({ text: newText })
+  }
+
+  const addSuperscript = () => {
+    const textArea = textAreaRef.current
+    if (!textArea) return
+
+    const start = textArea.selectionStart
+    const end = textArea.selectionEnd
+    const selectedText = text.substring(start, end)
+    
+    if (selectedText) {
+      const newText = text.substring(0, start) + `<sup>${selectedText}</sup>` + text.substring(end)
+      handleTextChange(newText)
+      
+      // Remettre le focus et la sélection
+      setTimeout(() => {
+        textArea.focus()
+        textArea.setSelectionRange(start + 7, start + 7 + selectedText.length)
+      }, 0)
+    }
+  }
+
+  const removeSuperscript = () => {
+    const textArea = textAreaRef.current
+    if (!textArea) return
+
+    const start = textArea.selectionStart
+    const end = textArea.selectionEnd
+    const selectedText = text.substring(start, end)
+    
+    if (selectedText.includes('<sup>') && selectedText.includes('</sup>')) {
+      const cleanText = selectedText.replace(/<sup>(.*?)<\/sup>/g, '$1')
+      const newText = text.substring(0, start) + cleanText + text.substring(end)
+      handleTextChange(newText)
+      
+      // Remettre le focus et la sélection
+      setTimeout(() => {
+        textArea.focus()
+        textArea.setSelectionRange(start, start + cleanText.length)
+      }, 0)
+    }
+  }
+
+  // const isSuperscriptSelected = () => {
+  //   const textArea = textAreaRef.current
+  //   if (!textArea) return false
+    
+  //   const start = textArea.selectionStart
+  //   const end = textArea.selectionEnd
+  //   const selectedText = text.substring(start, end)
+    
+  //   return selectedText.includes('<sup>') && selectedText.includes('</sup>')
+  // }
+
   return (
     <div>
       <h4 className='fw-bold text-secondary'>Éditer le texte</h4>
       <div className='text-start'>
         <Form.Group className='mb-3' controlId='Contenu'>
           <Form.Label>Contenu</Form.Label>
+          <div className='mb-2'>
+            <ButtonGroup size='sm'>
+              <Button
+                variant='outline-secondary'
+                onClick={addSuperscript}
+                title='Mettre en exposant'
+              >
+                <b>X</b><sup>2</sup>
+              </Button>
+              <Button
+                variant='outline-secondary'
+                onClick={removeSuperscript}
+                // disabled={!isSuperscriptSelected()}
+                title="Retirer l'exposant"
+              >
+                <b>X</b>
+                <span style={{ textDecoration: 'line-through' }}>
+                  <sup>2</sup>
+                </span>
+              </Button>
+            </ButtonGroup>
+            <div>
+              <small className='text-muted ms-2'>
+                Sélectionnez du texte puis cliquez sur{' '}
+                <sup>
+                  <b>X</b>
+                </sup>
+              </small>
+            </div>
+            <div>
+              <small className='text-muted ms-2'>
+                pour le mettre en exposant
+              </small>
+            </div>
+          </div>
           <Form.Control
-            type='text'
-            placeholder='Saisissez le texte ici'
-            value={comp.text || ''}
-            onChange={(e) => updateComponent({ text: e.target.value })}
+            as='textarea'
+            rows={3}
+            placeholder='Saisissez le texte ici. Utilisez les boutons ci-dessus pour le formatage.'
+            value={text}
+            onChange={(e) => handleTextChange(e.target.value)}
+            ref={textAreaRef}
           />
         </Form.Group>
       </div>
@@ -46,9 +150,9 @@ export function TextEditor({
           <Form.Select
             aria-label='Default select example'
             value={comp.fontFamily || ''}
-            onChange={(e) => {updateComponent({ fontFamily: e.target.value})
-          console.log(e.target.value)
-          }}
+            onChange={(e) => {
+              updateComponent({ fontFamily: e.target.value })
+            }}
           >
             <option>Sélectionnez une police</option>
             {fonts.map((font) => (
@@ -56,8 +160,6 @@ export function TextEditor({
                 {font.label}
               </option>
             ))}
-              
-            
           </Form.Select>
         </Form.Group>
       </div>
