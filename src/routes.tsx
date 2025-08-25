@@ -19,6 +19,7 @@ import UserManager from './pages/admin/UserManager'
 import DashBoard from './pages/admin/DashBoard'
 import InlineDragDropEditor from './components/step-selector/InlineDragDropEditor'
 import Account from './pages/admin/Account'
+import { TinyMCETest } from './components/TinyMCETest'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord' element={<DashBoard />} />
           <Route path='/profile' element={<Account />} />
+          <Route path='/test' element={<TinyMCETest />} />
         </Route>
       </Routes>
     </BrowserRouter>

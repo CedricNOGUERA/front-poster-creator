@@ -52,3 +52,47 @@ export default tseslint.config({
   },
 })
 ```
+
+# Générateur de Bons Plans
+
+## Éditeur de Texte Riche
+
+Le projet utilise **Quill.js** comme éditeur de texte riche pour une meilleure expérience utilisateur lors de la création de templates.
+
+### Fonctionnalités de l'éditeur
+
+- **Formatage de base** : Gras, italique, souligné
+- **Exposants et indices** : Support des scripts supérieurs et inférieurs
+- **Couleurs** : Sélecteur de couleur intégré
+- **Interface intuitive** : Barre d'outils Bootstrap-friendly
+
+### Installation
+
+```bash
+npm install react-quill --legacy-peer-deps
+```
+
+### Utilisation
+
+L'éditeur est intégré dans le composant `TextEditor.tsx` et remplace l'ancien textarea basique.
+
+### Configuration
+
+L'éditeur est configuré avec les modules suivants :
+- Toolbar personnalisée avec les outils essentiels
+- Styles CSS personnalisés pour l'intégration Bootstrap
+- Support des formats HTML pour l'export PDF
+
+### Avantages de Quill.js
+
+- ✅ **Léger** : ~200KB vs 1MB+ pour CKEditor
+- ✅ **Simple** : API intuitive et facile à intégrer
+- ✅ **Personnalisable** : Toolbar et styles adaptables
+- ✅ **Performance** : Idéal pour un éditeur en ligne
+- ✅ **HTML natif** : Compatible avec `dangerouslySetInnerHTML`
+
+### Alternatives considérées
+
+- **Draft.js** : Plus complexe, API verbeuse
+- **CKEditor 5** : Trop lourd pour ce cas d'usage
+- **Quill.js** : **Recommandé** pour ce projet

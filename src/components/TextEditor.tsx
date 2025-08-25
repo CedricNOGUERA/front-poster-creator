@@ -2,6 +2,8 @@ import { ComponentTypeMulti, TextComponentType, NumberComponentType, PrincipalPr
 import { Form, Button, ButtonGroup } from 'react-bootstrap'
 import fonts from '@/data/fonts.json'
 import React from 'react'
+import { Editor } from '@tinymce/tinymce-react'
+import { TINYMCE_CONFIG } from '@/config/tinymce'
 
 export function TextEditor({
   component,
@@ -11,12 +13,10 @@ export function TextEditor({
   updateComponent: (updatedFields: Partial<ComponentTypeMulti>) => void
 }) {
 
-  // if (!component) return null
   const comp = component as TextComponentType | NumberComponentType | PrincipalPriceComponentType
   
   const [text, setText] = React.useState(comp.text || '')
-  const textAreaRef = React.useRef<HTMLTextAreaElement>(null)
-
+  const [editorRef, setEditorRef] = React.useState<unknown>(null)
 
   React.useEffect(() => {
     setText(comp.text || '')
@@ -27,57 +27,25 @@ export function TextEditor({
     updateComponent({ text: newText })
   }
 
+  const handleEditorInit = (_evt: unknown, editor: unknown) => {
+    setEditorRef(editor)
+  }
+
   const addSuperscript = () => {
-    const textArea = textAreaRef.current
-    if (!textArea) return
-
-    const start = textArea.selectionStart
-    const end = textArea.selectionEnd
-    const selectedText = text.substring(start, end)
-    
-    if (selectedText) {
-      const newText = text.substring(0, start) + `<sup>${selectedText}</sup>` + text.substring(end)
-      handleTextChange(newText)
-      
-      // Remettre le focus et la sélection
-      setTimeout(() => {
-        textArea.focus()
-        textArea.setSelectionRange(start + 7, start + 7 + selectedText.length)
-      }, 0)
+    if (editorRef && typeof editorRef === 'object' && editorRef !== null) {
+      const editor = editorRef as { execCommand: (command: string, showUI: boolean, value: string) => boolean; selection: { getContent: () => string } }
+      editor.execCommand('mceInsertContent', false, '<sup>' + editor.selection.getContent() + '</sup>')
     }
   }
 
-  const removeSuperscript = () => {
-    const textArea = textAreaRef.current
-    if (!textArea) return
-
-    const start = textArea.selectionStart
-    const end = textArea.selectionEnd
-    const selectedText = text.substring(start, end)
-    
-    if (selectedText.includes('<sup>') && selectedText.includes('</sup>')) {
-      const cleanText = selectedText.replace(/<sup>(.*?)<\/sup>/g, '$1')
-      const newText = text.substring(0, start) + cleanText + text.substring(end)
-      handleTextChange(newText)
-      
-      // Remettre le focus et la sélection
-      setTimeout(() => {
-        textArea.focus()
-        textArea.setSelectionRange(start, start + cleanText.length)
-      }, 0)
+  const addSubscript = () => {
+    if (editorRef && typeof editorRef === 'object' && editorRef !== null) {
+      const editor = editorRef as { execCommand: (command: string, showUI: boolean, value: string) => boolean; selection: { getContent: () => string } }
+      editor.execCommand('mceInsertContent', false, '<sub>' + editor.selection.getContent() + '</sub>')
     }
   }
 
-  // const isSuperscriptSelected = () => {
-  //   const textArea = textAreaRef.current
-  //   if (!textArea) return false
-    
-  //   const start = textArea.selectionStart
-  //   const end = textArea.selectionEnd
-  //   const selectedText = text.substring(start, end)
-    
-  //   return selectedText.includes('<sup>') && selectedText.includes('</sup>')
-  // }
+  if (!component) return null
 
   return (
     <div>
@@ -86,48 +54,42 @@ export function TextEditor({
         <Form.Group className='mb-3' controlId='Contenu'>
           <Form.Label>Contenu</Form.Label>
           <div className='mb-2'>
-            <ButtonGroup size='sm'>
-              <Button
-                variant='outline-secondary'
-                onClick={addSuperscript}
-                title='Mettre en exposant'
-              >
-                <b>X</b><sup>2</sup>
-              </Button>
-              <Button
-                variant='outline-secondary'
-                onClick={removeSuperscript}
-                // disabled={!isSuperscriptSelected()}
-                title="Retirer l'exposant"
-              >
-                <b>X</b>
-                <span style={{ textDecoration: 'line-through' }}>
-                  <sup>2</sup>
-                </span>
-              </Button>
-            </ButtonGroup>
-            <div>
-              <small className='text-muted ms-2'>
-                Sélectionnez du texte puis cliquez sur{' '}
-                <sup>
-                  <b>X</b>
-                </sup>
-              </small>
-            </div>
-            <div>
-              <small className='text-muted ms-2'>
-                pour le mettre en exposant
-              </small>
+            <small className='text-muted'>
+              Utilisez la barre d'outils pour formater votre texte
+            </small>
+            <div className='mt-2'>
+              <ButtonGroup size='sm'>
+                <Button
+                  variant='outline-secondary'
+                  onClick={addSuperscript}
+                  title='Mettre en exposant'
+                >
+                  <b>X</b><sup>2</sup>
+                </Button>
+                <Button
+                  variant='outline-secondary'
+                  onClick={addSubscript}
+                  title='Mettre en indice'
+                >
+                  <b>X</b><sub>2</sub>
+                </Button>
+              </ButtonGroup>
+              {/* <div>
+                <small className='text-muted ms-2'>
+                  Sélectionnez du texte puis cliquez sur les boutons pour le mettre en exposant/indice
+                </small>
+              </div> */}
             </div>
           </div>
-          <Form.Control
-            as='textarea'
-            rows={3}
-            placeholder='Saisissez le texte ici. Utilisez les boutons ci-dessus pour le formatage.'
-            value={text}
-            onChange={(e) => handleTextChange(e.target.value)}
-            ref={textAreaRef}
-          />
+          <div style={{width: '300px', border: '1px solid #ced4da', borderRadius: '0.375rem' }}>
+            <Editor
+              apiKey={TINYMCE_CONFIG.API_KEY}
+              value={text}
+              onEditorChange={handleTextChange}
+              onInit={handleEditorInit}
+              init={TINYMCE_CONFIG.DEFAULT_CONFIG}
+            />
+          </div>
         </Form.Group>
       </div>
       {comp.type === 'price' && 'width' in comp && (

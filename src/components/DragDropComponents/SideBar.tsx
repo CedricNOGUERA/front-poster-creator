@@ -188,19 +188,19 @@ React.useEffect(() => {
           draggable
           onDragStart={(e) => _handleDragStart(e, 'enableText')}
           className='mb-2 p-2 border rounded move text-center'
-          title="glisser et déposer dans l'encadré pour ajouter une zone de texte"
+          title="glisser et déposer dans l'encadré pour ajouter une zone de texte non modifiable"
         >
           Zone de texte non modifiable
         </div>
-        <div
+        {/* <div
           draggable
           onDragStart={(e) => _handleDragStart(e, 'group')}
           className='mb-2 p-2 border rounded move text-center'
           title="glisser et déposer dans l'encadré pour ajouter une zone de texte"
         >
           Group
-        </div>
-        <div
+        </div> */}
+        {/* <div
           draggable
           onDragStart={(e) => _handleDragStart(e, 'price')}
           className='mb-2 p-2 border rounded move text-center'
@@ -215,7 +215,7 @@ React.useEffect(() => {
           title="glisser et déposer dans l'encadré pour ajouter une zone de texte"
         >
           Zone numérique
-        </div>
+        </div> */}
         <div
           draggable
           onDragStart={(e) => _handleDragStart(e, 'horizontalLine')}

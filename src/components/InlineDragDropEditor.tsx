@@ -731,7 +731,7 @@ React.useEffect(() => {
               handleDragOnCanvas(e, index)
             }
           },
-          onDoubleClick: (e: React.MouseEvent) => {
+          onClick: (e: React.MouseEvent) => {
             e.stopPropagation()
             setSelectedIndex(index)
             if (
@@ -781,51 +781,51 @@ React.useEffect(() => {
 
       if (comp.type === 'price' || comp.type === 'number') {
         const typedComp = comp as PrincipalPriceComponentType | NumberComponentType
-        if (isEditing) {
-          return (
-            <div
-              key={index}
-              {...commonProps}
-              style={{
-                ...getStyleFromComponent(comp, isSelected),
-                border: '1px dashed blue',
-                overflow: 'visible',
-                display: 'inline-flex',
-                alignItems: 'center',
-                minWidth: '20px',
-                width: 'auto',
-              }}
-            >
-              <input
-                type='text'
-                value={typedComp.text}
-                onChange={(e) => updateComponent({ text: e.target.value })}
-                onBlur={() => setEditingIndex(null)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Escape') {
-                    setEditingIndex(null)
-                  }
-                }}
-                style={{
-                  fontSize: typedComp.fontSize,
-                  fontWeight: typedComp.fontWeight,
-                  color: typedComp.color,
-                  fontFamily: typedComp.fontFamily || 'Impact',
-                  border: 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                  textAlign: 'end',
-                  width: `${typedComp.text.length + 1}ch`, // largeur auto selon texte
-                  minWidth: '20px',
-                  padding: 0,
-                  margin: 0,
-                }}
-                autoFocus
-              />
-              <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
-            </div>
-          )
-        }
+        // if (isEditing) {
+        //   return (
+        //     <div
+        //       key={index}
+        //       {...commonProps}
+        //       style={{
+        //         ...getStyleFromComponent(comp, isSelected),
+        //         border: '1px dashed blue',
+        //         overflow: 'visible',
+        //         display: 'inline-flex',
+        //         alignItems: 'center',
+        //         minWidth: '20px',
+        //         width: 'auto',
+        //       }}
+        //     >
+        //       <input
+        //         type='text'
+        //         value={typedComp.text}
+        //         onChange={(e) => updateComponent({ text: e.target.value })}
+        //         onBlur={() => setEditingIndex(null)}
+        //         onKeyDown={(e) => {
+        //           if (e.key === 'Enter' || e.key === 'Escape') {
+        //             setEditingIndex(null)
+        //           }
+        //         }}
+        //         style={{
+        //           fontSize: typedComp.fontSize,
+        //           fontWeight: typedComp.fontWeight,
+        //           color: typedComp.color,
+        //           fontFamily: typedComp.fontFamily || 'Impact',
+        //           border: 'none',
+        //           outline: 'none',
+        //           background: 'transparent',
+        //           textAlign: 'end',
+        //           width: `${typedComp.text.length + 1}ch`, // largeur auto selon texte
+        //           minWidth: '20px',
+        //           padding: 0,
+        //           margin: 0,
+        //         }}
+        //         autoFocus
+        //       />
+        //       <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
+        //     </div>
+        //   )
+        // }
         return (
           <div key={index} {...commonProps}>
             <div style={{ whiteSpace: 'nowrap' }}>
@@ -842,48 +842,48 @@ React.useEffect(() => {
 
       if (comp.type === 'text' || comp.type === 'enableText') {
         const textComp = comp as TextComponentType
-        if (isEditing) {
-          return (
-            <foreignObject
-              key={index}
-              x={textComp.left}
-              y={textComp.top}
-              width={150}
-              height={50}
-              style={{
-                ...getStyleFromComponent(comp, isSelected),
+        // if (isEditing) {
+        //   return (
+        //     <foreignObject
+        //       key={index}
+        //       x={textComp.left}
+        //       y={textComp.top}
+        //       width={150}
+        //       height={50}
+        //       style={{
+        //         ...getStyleFromComponent(comp, isSelected),
 
-                border: '1px dashed blue',
-                overflow: 'visible',
-              }}
-            >
-              <input
-                type='text'
-                value={textComp.text}
-                onChange={(e) => updateComponent({ text: e.target.value })}
-                onBlur={() => setEditingIndex(null)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Escape') {
-                    setEditingIndex(null)
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  fontFamily: textComp.fontFamily,
-                  fontSize: textComp.fontSize,
-                  fontWeight: textComp.fontWeight,
-                  color: textComp.color,
-                  border: 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                  transform: `rotate(${textComp.rotation ?? 0}deg)`,
-                }}
-                autoFocus
-              />
-            </foreignObject>
-          )
-        }
+        //         border: '1px dashed blue',
+        //         overflow: 'visible',
+        //       }}
+        //     >
+        //       <input
+        //         type='text'
+        //         value={textComp.text}
+        //         onChange={(e) => updateComponent({ text: e.target.value })}
+        //         onBlur={() => setEditingIndex(null)}
+        //         onKeyDown={(e) => {
+        //           if (e.key === 'Enter' || e.key === 'Escape') {
+        //             setEditingIndex(null)
+        //           }
+        //         }}
+        //         style={{
+        //           width: '100%',
+        //           height: '100%',
+        //           fontFamily: textComp.fontFamily,
+        //           fontSize: textComp.fontSize,
+        //           fontWeight: textComp.fontWeight,
+        //           color: textComp.color,
+        //           border: 'none',
+        //           outline: 'none',
+        //           background: 'transparent',
+        //           transform: `rotate(${textComp.rotation ?? 0}deg)`,
+        //         }}
+        //         autoFocus
+        //       />
+        //     </foreignObject>
+        //   )
+        // }
         return (
           <div key={index} {...commonProps}>
             <span 
