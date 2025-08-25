@@ -233,7 +233,6 @@ React.useEffect(() => {
           Ligne verticale
         </div>
       </div>
-
       <ModalDelete modalDeleteProps={modalDeleteProps} />
     </>
   )
