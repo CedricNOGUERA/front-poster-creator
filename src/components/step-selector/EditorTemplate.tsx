@@ -5,10 +5,12 @@ import {
   BackgroundComponentType,
   ComponentTypeMulti,
   HeaderComponentType,
+  HorizontalLineComponentType,
   ImageComponentType,
   NumberComponentType,
   PrincipalPriceComponentType,
   TextComponentType,
+  VerticalLineComponentType,
 } from '@/types/ComponentType'
 import { ModelType } from '@/types/modelType'
 import { _getModels } from '@/utils/apiFunctions'
@@ -19,6 +21,64 @@ import React, { useRef, useState } from 'react'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
+
+// Fonction utilitaire pour nettoyer et sécuriser le HTML
+const sanitizeHTML = (html: string): string => {
+  if (!html) return ''
+  
+  // Liste des balises autorisées
+  const allowedTags = ['b', 'i', 'u', 'strong', 'em', 'sup', 'sub', 'br', 'span', 'div', 'p']
+  
+  // Créer un élément temporaire pour parser le HTML
+  const tempDiv = document.createElement('div')
+  tempDiv.innerHTML = html
+  
+  // Fonction récursive pour nettoyer les nœuds
+  const cleanNode = (node: Node): string => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent || ''
+    }
+    
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as Element
+      const tagName = element.tagName.toLowerCase()
+      
+      // Si la balise n'est pas autorisée, retourner seulement le texte
+      if (!allowedTags.includes(tagName)) {
+        return element.textContent || ''
+      }
+      
+      // Récupérer les attributs de style autorisés
+      const allowedAttributes = ['style', 'class']
+      const attributes = Array.from(element.attributes)
+        .filter(attr => allowedAttributes.includes(attr.name))
+        .map(attr => `${attr.name}="${attr.value}"`)
+        .join(' ')
+      
+      // Construire la balise ouvrante
+      const openTag = attributes ? `<${tagName} ${attributes}>` : `<${tagName}>`
+      
+      // Traiter les enfants
+      let innerHTML = ''
+      for (const child of Array.from(element.childNodes)) {
+        innerHTML += cleanNode(child)
+      }
+      
+      // Retourner la balise complète
+      return `${openTag}${innerHTML}</${tagName}>`
+    }
+    
+    return ''
+  }
+  
+  // Nettoyer tous les nœuds
+  let cleanedHTML = ''
+  for (const child of Array.from(tempDiv.childNodes)) {
+    cleanedHTML += cleanNode(child)
+  }
+  
+  return cleanedHTML
+}
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -224,6 +284,7 @@ export const EditorTemplate = () => {
 
   const API_URL = import.meta.env.VITE_API_URL
   
+  console.log(canvasData)
 
   /* Render
    *******************************************************************************************/
@@ -344,7 +405,7 @@ export const EditorTemplate = () => {
                           textDecoration: textComp.textDecoration ?? 'none'
                         }}
                       >
-                        {textComp?.text}
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(textComp?.text || '') }} />
                       </div>
                     )
                   }
@@ -424,6 +485,42 @@ export const EditorTemplate = () => {
                       </div>
                     )
                   }
+                  if (component.type === 'horizontalLine') {
+                    const horizComp = component as HorizontalLineComponentType
+                    return (
+                      <div
+                        key={index}
+                        className={`absolute cursor-move pointer text-end`}
+                        style={{
+                          position: 'absolute',
+                          top: `${horizComp?.top ?? 0}px`,
+                          left: `${horizComp?.left ?? 0}px`,
+                          width: `${horizComp?.width}px`,
+                          height: `${horizComp?.thickness}px`,
+                          backgroundColor: horizComp?.color,
+                        }}
+                      >
+                      </div>
+                    )
+                  }
+                  if (component.type === 'verticalLine') {
+                    const vertComp = component as VerticalLineComponentType
+                    return (
+                      <div
+                        key={index}
+                        className={`absolute cursor-move pointer text-end`}
+                        style={{
+                          position: 'absolute',
+                          top: `${vertComp?.top ?? 0}px`,
+                          left: `${vertComp?.left ?? 0}px`,
+                          width: `${vertComp?.thickness}px`,
+                          height: `${vertComp?.height}px`,
+                          backgroundColor: vertComp?.color,
+                        }}
+                      >
+                      </div>
+                    )
+                  }
                   return null
                 })}
               </div>
@@ -447,7 +544,7 @@ export const EditorTemplate = () => {
                           <Form.Control
                             type='text'
                             placeholder='Entrez la valeur'
-                            value={comp.text || ''}
+                            value={comp.text ? comp.text.replace(/<[^>]*>/g, '') : ''}
                             onChange={(e) => {
                               const updatedCanvas = [...canvasData]
                               updatedCanvas[index] = {
