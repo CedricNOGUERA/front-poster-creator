@@ -208,13 +208,13 @@ export function ModalAddCategory({
     setFile,
     setImgRglt,
     feedBackState,
-    shopData,
+    shops,
     validated,
     fieldErrors,
     validateField,
   } = modalAddCategoryProps
 
-  const shopList = shopData.map((item: ShopType) => ({
+  const shopList = shops.map((item: ShopType) => ({
     label: item.name,
     value: String(item.id),
   }))
@@ -437,6 +437,7 @@ export function ModalAddEditCategory({
     label: item.name,
     value: String(item.id),
   }))
+  console.log(formData)
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
@@ -634,6 +635,7 @@ export function ModalAddEditCategory({
           <Form.Label>Magasins</Form.Label>
           <TagPicker
             data={shopList}
+            value={formData?.shopIds?.map(id => String(id))}
             style={{ width: '100%' }}
             placeholder='Sélectionnez le ou les magasins'
             onChange={(value) => {

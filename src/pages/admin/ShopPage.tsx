@@ -65,7 +65,10 @@ const shopDisplay = (shops: ShopType[]) => {
 const getAllShops = async () => {
   setIsLoading(true);
   try {
-    await shopServiceInstance.getShops(setShops);
+    const response = await shopServiceInstance.getShops();
+
+setShops(response.data)
+
   } catch (err) {
     console.error("Erreur lors de la récupération des magasins:", err);
   } finally {

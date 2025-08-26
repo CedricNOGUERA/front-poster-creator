@@ -19,6 +19,8 @@ interface ContextCategorySelectorDragType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
   feedBackState: FeedBackSatateType
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
+  shops: ShopType[]
+  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>
 }
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -27,13 +29,13 @@ export const ShopSelectorDrag = ({ title }: Props) => {
   /* States
    *******************************************************************************************/
   const navigate = useNavigate()
-  const { toggleShow, setToastData, feedBackState, setFeedBackState } =
+  const { toggleShow, setToastData, feedBackState, setFeedBackState, shops, setShops } =
     useOutletContext<ContextCategorySelectorDragType>()
   const userStoreData = userDataStore((state: UserDataType) => state)
   const userRole = userDataStore((state: UserDataType) => state.role)
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
 
   const storeApp = useStoreApp()
-  const [shops, setShops] = React.useState<ShopType[]>([])
   const [file, setFile] = React.useState<File | null>(null)
   const [validated, setValidated] = React.useState(false)
   const [fieldErrors, setFieldErrors] = React.useState<{[key: string]: string}>({})
@@ -54,14 +56,13 @@ export const ShopSelectorDrag = ({ title }: Props) => {
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
-    _getAllShops(setShops)
      // Redirection si l'utilisateur a le rôle "user"
     if (userRole === 'user') {
       navigate('/generateur-de-bon-plan')
       return
     }
   }, [userRole, navigate])
-
+console.log(shops)
   /* Functions
    *******************************************************************************************/
   const onHandleShop = (id: number) => {
@@ -151,12 +152,13 @@ export const ShopSelectorDrag = ({ title }: Props) => {
       const response = await shopServiceInstance.addShop(shopFormData)
       if (response.ok) {
         const newShop = {
-          id: 56,
+          id: shops?.length + 1,
           name: formData.name,
           cover: file ? `uploads/shopMiniatures/${formData.name}/${file.name}` : '',
         }
 
         setShops((prev) => [...prev, newShop])
+        _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)
         setToastData({
           bg: 'success',
           position: 'top-end',
