@@ -5,10 +5,12 @@ import {
   BackgroundComponentType,
   ComponentTypeMulti,
   HeaderComponentType,
+  HorizontalLineComponentType,
   ImageComponentType,
   NumberComponentType,
   PrincipalPriceComponentType,
   TextComponentType,
+  VerticalLineComponentType,
 } from '@/types/ComponentType'
 import { ModelType } from '@/types/modelType'
 import { _getModels } from '@/utils/apiFunctions'
@@ -16,9 +18,11 @@ import { _thousandSeparator } from '@/utils/functions'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import React, { useRef, useState } from 'react'
-import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import { Button, Col, Container, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
+import CanvasEditor from '../editorTemplateComponent/CanvasEditor'
+import WarrantyPicture from '../editorTemplateComponent/WarrantyPicture'
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -223,7 +227,326 @@ export const EditorTemplate = () => {
   }
 
   const API_URL = import.meta.env.VITE_API_URL
-  
+
+  const sanitizeHTML = (html: string): string => {
+    if (!html) return ''
+    
+    // Liste des balises autorisées
+    const allowedTags = ['b', 'i', 'u', 'strong', 'em', 'sup', 'sub', 'br', 'span', 'div', 'p']
+    
+    // Créer un élément temporaire pour parser le HTML
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = html
+    
+    // Fonction récursive pour nettoyer les nœuds
+    const cleanNode = (node: Node): string => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return node.textContent || ''
+      }
+      
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as Element
+        const tagName = element.tagName.toLowerCase()
+        
+        // Si la balise n'est pas autorisée, retourner seulement le texte
+        if (!allowedTags.includes(tagName)) {
+          return element.textContent || ''
+        }
+        
+        // Récupérer les attributs de style autorisés
+        const allowedAttributes = ['style', 'class']
+        const attributes = Array.from(element.attributes)
+          .filter(attr => allowedAttributes.includes(attr.name))
+          .map(attr => `${attr.name}="${attr.value}"`)
+          .join(' ')
+        
+        // Construire la balise ouvrante
+        const openTag = attributes ? `<${tagName} ${attributes}>` : `<${tagName}>`
+        
+        // Traiter les enfants
+        let innerHTML = ''
+        for (const child of Array.from(element.childNodes)) {
+          innerHTML += cleanNode(child)
+        }
+        
+        // Retourner la balise complète
+        return `${openTag}${innerHTML}</${tagName}>`
+      }
+      
+      return ''
+    }
+    
+    // Nettoyer tous les nœuds
+    let cleanedHTML = ''
+    for (const child of Array.from(tempDiv.childNodes)) {
+      cleanedHTML += cleanNode(child)
+    }
+    
+    return cleanedHTML
+  }
+
+  const canvasDisplay = canvasData?.map((component: ComponentTypeMulti, index: number) => {
+    if (component.type === 'price') {
+      const priceComp = component as PrincipalPriceComponentType
+      const numberValue = parseInt(priceComp?.text.replace(/\D/g, ''), 10)
+      const formattedNumber = !isNaN(numberValue)
+        ? _thousandSeparator(numberValue)
+        : priceComp?.text
+
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move pointer`}
+          style={{
+            position: 'absolute',
+            bottom: `${priceComp?.bottom ?? 0}px`,
+            right: `${priceComp?.right ?? 0}px`,
+            height: 'auto',
+            fontFamily: priceComp?.fontFamily,
+            fontSize: `${priceComp?.fontSize}px`,
+            fontWeight: priceComp?.fontWeight,
+            color: priceComp?.color,
+            wordBreak: 'break-word',
+            transform: `rotate(${priceComp?.rotation}deg)`,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ whiteSpace: 'nowrap' }}>
+            <span
+              style={{
+                textDecoration: priceComp?.textDecoration ?? 'none',
+              }}
+            >
+              {formattedNumber}
+            </span>
+            <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
+          </div>
+        </div>
+      )
+    }
+    if (component.type === 'number') {
+    
+      const numberComp = component as NumberComponentType
+      const numberValue = parseInt(numberComp.text.replace(/\D/g, ''), 10)
+      const formattedNumber = !isNaN(numberValue)
+        ? _thousandSeparator(numberValue)
+        : numberComp.text
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move pointer`}
+          style={{
+            position: 'absolute',
+            bottom: `${numberComp.bottom ?? 0}px`,
+            right: `${numberComp.right ?? 0}px`,
+            minWidth: `${20}px`,
+            minHeight: `${10}px`,
+            fontFamily: numberComp?.fontFamily,
+            fontSize: numberComp?.fontSize,
+            fontWeight: numberComp.fontWeight,
+            color: numberComp.color,
+            wordBreak: 'break-word',
+            transform: `rotate(${numberComp.rotation}deg)`,
+            padding: `0 ${5}px`,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ whiteSpace: 'nowrap' }}>
+            <span
+              style={{
+                textDecoration: numberComp.textDecoration ?? 'none',
+              }}
+            >
+              {formattedNumber}
+            </span>
+            <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
+          </div>
+        </div>
+      )
+    }
+    if (component.type === 'text') {
+      const textComp = component as TextComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move pointer text-end`}
+          style={{
+            position: 'absolute',
+            top: `${textComp?.top ?? 0}px`,
+            left: `${textComp?.left ?? 0}px`,
+            fontSize: `${textComp?.fontSize ?? 16}px`,
+            fontWeight: textComp?.fontWeight,
+            color: textComp?.color,
+            minWidth: `${20}px`,
+            minHeight: `${10}px`,
+            wordBreak: 'break-word',
+            transform: `rotate(${textComp?.rotation}deg)`,
+            padding: `0 ${5}px`,
+            fontFamily: textComp.fontFamily,
+            textDecoration: textComp.textDecoration ?? 'none'
+          }}
+        >
+          {textComp?.text}
+        </div>
+      )
+    }
+    if (component.type === 'enableText') {
+      const textComp = component as TextComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move pointer text-end`}
+          style={{
+            position: 'absolute',
+            top: `${textComp?.top ?? 0}px`,
+            left: `${textComp?.left ?? 0}px`,
+            fontSize: `${textComp?.fontSize ?? 16}px`,
+            fontWeight: textComp?.fontWeight,
+            color: textComp?.color,
+            minWidth: `${20}px`,
+            minHeight: `${10}px`,
+            wordBreak: 'break-word',
+            transform: `rotate(${textComp?.rotation}deg)`,
+            padding: `0 ${5}px`,
+            fontFamily: textComp.fontFamily,
+            textDecoration: textComp.textDecoration ?? 'none'
+          }}
+        >
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(textComp?.text || '') }} />
+        </div>
+      )
+    }
+    if (component.type === 'background-color') {
+      const bgComp = component as BackgroundComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move`}
+          style={{
+            position: 'absolute',
+            top: `${bgComp.top ?? 0}px`,
+            left: `${bgComp.left ?? 0}px`,
+            width: `${bgComp.width ?? 0}px`,
+            height: `${bgComp.height ?? 0}px`,
+            backgroundColor: bgComp.backgroundColor,
+          }}
+        ></div>
+      )
+    }
+    if (component.type === 'header') {
+      const headerComp = component as HeaderComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move`}
+          style={{
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            top: `${headerComp.top ?? 0}px`,
+            left: `${headerComp.left ?? 0}px`,
+            width: `${headerComp.width ?? 0}px`,
+            height: `${headerComp.height ?? 0}px`,
+            backgroundColor: headerComp.backgroundColor,
+            padding:
+              headerComp?.width &&
+              headerComp?.height &&
+              headerComp?.width > headerComp?.height
+                ? '5%'
+                : '1%',
+          }}
+        >
+          <img
+            src={headerComp.src ? API_URL + headerComp.src : undefined}
+            alt=''
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+            }}
+          />
+        </div>
+      )
+    }
+    if (component.type === 'image') {
+      const imgComp = component as ImageComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move`}
+          style={{
+            position: 'absolute',
+            top: `${imgComp.top ?? 0}px`,
+            left: `${imgComp.left ?? 0}px`,
+          }}
+        >
+          <img
+            src={imgComp?.src ? API_URL + imgComp?.src : ''}
+            alt={imgComp?.src ?? ''}
+            style={{
+              width: `${imgComp.width ?? 0}px`,
+              height: `auto`,
+              objectFit: 'contain',
+            }}
+          />
+        </div>
+      )
+    }
+    if (component.type === 'horizontalLine') {
+      const horizontalComp = component as HorizontalLineComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move`}
+          style={{
+            position: 'absolute',
+            top: `${horizontalComp.top ?? 0}px`,
+            left: `${horizontalComp.left ?? 0}px`,
+            width: `${horizontalComp.width ?? 0}px`,
+            height: `${horizontalComp.thickness ?? 0}px`,
+            backgroundColor: horizontalComp.color,
+          }}
+        ></div>
+      )
+    }
+    if (component.type === 'verticalLine') {
+      const verticalComp = component as VerticalLineComponentType
+      return (
+        <div
+          key={index}
+          className={`absolute cursor-move`}
+          style={{
+            position: 'absolute',
+            top: `${verticalComp.top ?? 0}px`,
+            left: `${verticalComp.left ?? 0}px`,
+            width: `${verticalComp.thickness ?? 0}px`,
+            height: `${verticalComp.height ?? 0}px`,
+            backgroundColor: verticalComp.color,
+          }}
+        ></div>
+      )
+    }
+    return null
+  })
+
+  const canvasEditorProps = {canvasData, setCanvasData, pageWidth, pageHeight} 
+  const warrantyPictureProps = {
+    selectedGarantie,
+    setSelectedGarantie,
+    pageWidth,
+    pageHeight,
+    printRef,
+    garantieImageParams,
+    setGarantieImageParams,
+    canvasData,
+    setCanvasData,
+    showGarantieSettings,
+    setShowGarantieSettings,
+  }
 
   /* Render
    *******************************************************************************************/
@@ -239,495 +562,26 @@ export const EditorTemplate = () => {
               <h4>Aperçu</h4>
               <small>Modèle : #{modelId}</small>
               <div id='canvas' className='canvas mt-4' ref={printRef} style={previewStyle}>
-                {canvasData?.map((component: ComponentTypeMulti, index: number) => {
-                  if (component.type === 'price') {
-                    const priceComp = component as PrincipalPriceComponentType
-                    const numberValue = parseInt(priceComp?.text.replace(/\D/g, ''), 10)
-                    const formattedNumber = !isNaN(numberValue)
-                      ? _thousandSeparator(numberValue)
-                      : priceComp?.text
-
-                    return (
-                      <div
-                        key={index}
-                        className={`absolute cursor-move pointer`}
-                        style={{
-                          position: 'absolute',
-                          bottom: `${priceComp?.bottom ?? 0}px`,
-                          right: `${priceComp?.right ?? 0}px`,
-                          height: 'auto',
-                          fontFamily: priceComp?.fontFamily,
-                          fontSize: `${priceComp?.fontSize}px`,
-                          fontWeight: priceComp?.fontWeight,
-                          color: priceComp?.color,
-                          wordBreak: 'break-word',
-                          transform: `rotate(${priceComp?.rotation}deg)`,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <div style={{ whiteSpace: 'nowrap' }}>
-                          <span
-                            style={{
-                              textDecoration: priceComp?.textDecoration ?? 'none',
-                            }}
-                          >
-                            {formattedNumber}
-                          </span>
-                          <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
-                        </div>
-                      </div>
-                    )
-                  }
-                  if (component.type === 'number') {
-                  
-                    const numberComp = component as NumberComponentType
-                    const numberValue = parseInt(numberComp.text.replace(/\D/g, ''), 10)
-                    const formattedNumber = !isNaN(numberValue)
-                      ? _thousandSeparator(numberValue)
-                      : numberComp.text
-                    return (
-                      <div
-                        key={index}
-                        className={`absolute cursor-move pointer`}
-                        style={{
-                          position: 'absolute',
-                          bottom: `${numberComp.bottom ?? 0}px`,
-                          right: `${numberComp.right ?? 0}px`,
-                          minWidth: `${20}px`,
-                          minHeight: `${10}px`,
-                          fontFamily: numberComp?.fontFamily,
-                          fontSize: numberComp?.fontSize,
-                          fontWeight: numberComp.fontWeight,
-                          color: numberComp.color,
-                          wordBreak: 'break-word',
-                          transform: `rotate(${numberComp.rotation}deg)`,
-                          padding: `0 ${5}px`,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <div style={{ whiteSpace: 'nowrap' }}>
-                          <span
-                            style={{
-                              textDecoration: numberComp.textDecoration ?? 'none',
-                            }}
-                          >
-                            {formattedNumber}
-                          </span>
-                          <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
-                        </div>
-                      </div>
-                    )
-                  }
-                  if (component.type === 'text' || component.type === 'enableText') {
-                    const textComp = component as TextComponentType
-                    return (
-                      <div
-                        key={index}
-                        className={`absolute cursor-move pointer text-end`}
-                        style={{
-                          position: 'absolute',
-                          top: `${textComp?.top ?? 0}px`,
-                          left: `${textComp?.left ?? 0}px`,
-                          fontSize: `${textComp?.fontSize ?? 16}px`,
-                          fontWeight: textComp?.fontWeight,
-                          color: textComp?.color,
-                          minWidth: `${20}px`,
-                          minHeight: `${10}px`,
-                          wordBreak: 'break-word',
-                          transform: `rotate(${textComp?.rotation}deg)`,
-                          padding: `0 ${5}px`,
-                          fontFamily: textComp.fontFamily,
-                          textDecoration: textComp.textDecoration ?? 'none'
-                        }}
-                      >
-                        {textComp?.text}
-                      </div>
-                    )
-                  }
-                  if (component.type === 'background-color') {
-                    const bgComp = component as BackgroundComponentType
-                    return (
-                      <div
-                        key={index}
-                        className={`absolute cursor-move`}
-                        style={{
-                          position: 'absolute',
-                          top: `${bgComp.top ?? 0}px`,
-                          left: `${bgComp.left ?? 0}px`,
-                          width: `${bgComp.width ?? 0}px`,
-                          height: `${bgComp.height ?? 0}px`,
-                          backgroundColor: bgComp.backgroundColor,
-                        }}
-                      ></div>
-                    )
-                  }
-                  if (component.type === 'header') {
-                    const headerComp = component as HeaderComponentType
-                    return (
-                      <div
-                        key={index}
-                        className={`absolute cursor-move`}
-                        style={{
-                          position: 'absolute',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          top: `${headerComp.top ?? 0}px`,
-                          left: `${headerComp.left ?? 0}px`,
-                          width: `${headerComp.width ?? 0}px`,
-                          height: `${headerComp.height ?? 0}px`,
-                          backgroundColor: headerComp.backgroundColor,
-                          padding:
-                            headerComp?.width &&
-                            headerComp?.height &&
-                            headerComp?.width > headerComp?.height
-                              ? '5%'
-                              : '1%',
-                        }}
-                      >
-                        <img
-                          src={headerComp.src ? API_URL + headerComp.src : undefined}
-                          alt=''
-                          style={{
-                            maxWidth: '100%',
-                            maxHeight: '100%',
-                          }}
-                        />
-                      </div>
-                    )
-                  }
-                  if (component.type === 'image') {
-                    const imgComp = component as ImageComponentType
-                    return (
-                      <div
-                        key={index}
-                        className={`absolute cursor-move`}
-                        style={{
-                          position: 'absolute',
-                          top: `${imgComp.top ?? 0}px`,
-                          left: `${imgComp.left ?? 0}px`,
-                        }}
-                      >
-                        <img
-                          src={imgComp?.src ? API_URL + imgComp?.src : ''}
-                          alt={imgComp?.src ?? ''}
-                          style={{
-                            width: `${imgComp.width ?? 0}px`,
-                            height: `auto`,
-                            objectFit: 'contain',
-                          }}
-                        />
-                      </div>
-                    )
-                  }
-                  return null
-                })}
+                {canvasDisplay}
               </div>
             </Col>
             <Col xs={3} className='bg-white border-start border-bottom p-4'>
               <h4>Formulaire d'édition</h4>
-              {canvasData?.map((component: ComponentTypeMulti, index: number) => {
-                if (
-                  component.type === 'text' ||
-                  component.type === 'number' ||
-                  component.type === 'price'
-                ) {
-                  const comp = component as
-                    | TextComponentType
-                    | NumberComponentType
-                    | PrincipalPriceComponentType
-                  return (
-                    <React.Fragment key={index}>
-                      <Form.Group className='text-start mb-3' controlId='title'>
-                        <div className='d-flex align-items-center gap-2'>
-                          <Form.Control
-                            type='text'
-                            placeholder='Entrez la valeur'
-                            value={comp.text || ''}
-                            onChange={(e) => {
-                              const updatedCanvas = [...canvasData]
-                              updatedCanvas[index] = {
-                                ...updatedCanvas[index],
-                                text: e.target.value,
-                              }
-                              setCanvasData(updatedCanvas)
-                            }}
-                          />
-                          <i
-                            className='fas fa-cog fs-5 cursor-pointer'
-                            onClick={() => {
-                              const updatedCanvas = [...canvasData]
-                              updatedCanvas[index] = {
-                                ...updatedCanvas[index],
-                                showCustomValue: !updatedCanvas[index]?.showCustomValue,
-                              }
-                              setCanvasData(updatedCanvas)
-                            }}
-                            style={{ cursor: 'pointer' }}
-                          />
-                        </div>
-                      </Form.Group>
-                      {comp.showCustomValue && (
-                        <div className='custom-value d-flex gap-2 mb-3'>
-                          {/* Size */}
-                          <Form.Group className='text-center mb-3' controlId='fontSize'>
-                            <Form.Label>
-                              <i className='fas fa-text-height'></i>
-                            </Form.Label>
-                            <div className='d-flex align-items-center gap-2'>
-                              <Form.Range
-                                min={10}
-                                max={pageWidth * 2}
-                                step={1}
-                                value={comp.fontSize || 0}
-                                onChange={(e) => {
-                                  const updatedCanvas = [...canvasData]
-                                  updatedCanvas[index] = {
-                                    ...updatedCanvas[index],
-                                    fontSize: parseInt(e.target.value) || 0,
-                                  }
-                                  setCanvasData(updatedCanvas)
-                                }}
-                              />
-                            </div>
-                          </Form.Group>
-                          {/* Up/Down position */}
-                          {comp.type !== 'price' && comp.type !== 'number' ? (
-                            <Form.Group className='text-center mb-3' controlId='positionY'>
-                              <Form.Label>
-                                <i className='fas fa-arrows-up-down'></i>
-                              </Form.Label>
-                              <div className='d-flex align-items-center gap-2'>
-                                <Form.Range
-                                  min={0}
-                                  max={1000}
-                                  step={1}
-                                  value={comp.top || 0}
-                                  onChange={(e) => {
-                                    const updatedCanvas = [...canvasData]
-                                    updatedCanvas[index] = {
-                                      ...updatedCanvas[index],
-                                      top: parseInt(e.target.value) || 0,
-                                    }
-                                    setCanvasData(updatedCanvas)
-                                  }}
-                                />
-                              </div>
-                            </Form.Group>
-                          ) : (
-                            <Form.Group className='text-center mb-3' controlId='positionY'>
-                              <Form.Label>
-                                <i className='fas fa-arrows-up-down'></i>
-                              </Form.Label>
-                              <div className='d-flex align-items-center gap-2'>
-                                <Form.Range
-                                  min={0}
-                                  max={pageHeight * 2}
-                                  step={1}
-                                  value={comp.bottom || 0}
-                                  onChange={(e) => {
-                                    const updatedCanvas = [...canvasData]
-                                    updatedCanvas[index] = {
-                                      ...updatedCanvas[index],
-                                      bottom: parseInt(e.target.value) || 0,
-                                    }
-                                    setCanvasData(updatedCanvas)
-                                  }}
-                                />
-                              </div>
-                            </Form.Group>
-                          )}
-                          {/* left/Right position */}
-                          {comp.type !== 'price' && comp.type !== 'number' ? (
-                            <Form.Group className='text-center mb-3' controlId='positionX'>
-                              <Form.Label>
-                                <i className='fas fa-arrows-left-right'></i>
-                              </Form.Label>
-                              <div className='d-flex align-items-center gap-2'>
-                                <Form.Range
-                                  min={-pageWidth * 2}
-                                  max={pageWidth * 2}
-                                  step={1}
-                                  value={comp.left || 0}
-                                  onChange={(e) => {
-                                    const updatedCanvas = [...canvasData]
-                                    updatedCanvas[index] = {
-                                      ...updatedCanvas[index],
-                                      left: parseInt(e.target.value) || 0,
-                                    }
-                                    setCanvasData(updatedCanvas)
-                                  }}
-                                />
-                              </div>
-                            </Form.Group>
-                          ) : (
-                            <Form.Group className='text-center mb-3' controlId='positionX'>
-                              <Form.Label>
-                                <i className='fas fa-arrows-left-right'></i>
-                              </Form.Label>
-                              <div className='d-flex align-items-center gap-2'>
-                                <Form.Range
-                                  min={-pageWidth * 2}
-                                  max={pageWidth * 2}
-                                  step={1}
-                                  value={comp.right || 0}
-                                  onChange={(e) => {
-                                    const updatedCanvas = [...canvasData]
-                                    updatedCanvas[index] = {
-                                      ...updatedCanvas[index],
-                                      right: parseInt(e.target.value) || 0,
-                                    }
-                                    setCanvasData(updatedCanvas)
-                                  }}
-                                />
-                              </div>
-                            </Form.Group>
-                          )}
-                        </div>
-                      )}
-                    </React.Fragment>
-                  )
-                }
-              })}
+              <CanvasEditor canvasEditorProps={canvasEditorProps} />
               {storeApp.categoryId === 2 && storeApp.shopId === 2 && (
-                <Form.Group className='mb-4' controlId='garantie'>
-                  <div className='d-flex align-items-center gap-2'>
-                    <Form.Select
-                      value={selectedGarantie}
-                      onChange={(e) => {
-                        const garantieValue = e.target.value
-                        setSelectedGarantie(garantieValue)
-                        let garantieSrc = ''
-                        if (garantieValue === '6mois') {
-                          garantieSrc =
-                            import.meta.env.VITE_API_URL + '/uploads/garantie-6-mois.png'
-                        } else if (garantieValue === '1an') {
-                          garantieSrc =
-                            import.meta.env.VITE_API_URL + '/uploads/garantie-1-an.png'
-                        } else if (garantieValue === '2ans') {
-                          garantieSrc =
-                            import.meta.env.VITE_API_URL + '/uploads/garantie-2-ans.png'
-                        } else {
-                          garantieSrc = ''
-                        }
-                        // Récupère la taille réelle du canvas
-                        let canvasWidth = pageWidth
-                        let canvasHeight = pageHeight
-                        if (printRef.current) {
-                          const rect = (
-                            printRef.current as HTMLElement
-                          ).getBoundingClientRect()
-                          canvasWidth = rect.width
-                          canvasHeight = rect.height
-                        }
-                        // Position initiale en bas à droite
-                        const MARGIN = 20
-                        const IMAGE_WIDTH = 80
-                        const IMAGE_HEIGHT = 100
-                        const initialTop = canvasHeight - MARGIN - IMAGE_HEIGHT
-                        const initialLeft = canvasWidth - MARGIN - IMAGE_WIDTH
-                        // Met à jour les paramètres initiaux
-                        setGarantieImageParams({
-                          width: IMAGE_WIDTH,
-                          top: initialTop,
-                          left: initialLeft,
-                        })
-                        const garantieComponent = {
-                          type: 'image',
-                          top: initialTop,
-                          left: initialLeft,
-                          width: IMAGE_WIDTH,
-                          src: garantieSrc,
-                        }
-                        const filteredCanvas = canvasData.filter(
-                          (comp) =>
-                            !(
-                              comp.type === 'image' &&
-                              'src' in comp &&
-                              typeof comp.src === 'string' &&
-                              comp.src.includes('garantie-')
-                            )
-                        )
-                        if (garantieSrc) {
-                          setCanvasData([...filteredCanvas, garantieComponent])
-                        } else {
-                          setCanvasData(filteredCanvas)
-                        }
-                      }}
-                    >
-                      <option value='6mois'>Garantie 6 mois</option>
-                      <option value='1an'>Garantie 1 an</option>
-                      <option value='2ans'>Garantie 2 ans</option>
-                      <option value='aucune'>Aucune garantie</option>
-                    </Form.Select>
-                    <i
-                      className='fas fa-cog fs-5 cursor-pointer'
-                      onClick={() => setShowGarantieSettings(!showGarantieSettings)}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </div>
-                  {showGarantieSettings && (
-                    <div className='custom-value d-flex flex-column gap-2 mt-3'>
-                      <Form.Group>
-                        <Form.Label>Largeur</Form.Label>
-                        <Form.Range
-                          min={40}
-                          max={300}
-                          value={garantieImageParams.width}
-                          onChange={(e) =>
-                            setGarantieImageParams((params) => ({
-                              ...params,
-                              width: parseInt(e.target.value),
-                            }))
-                          }
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Label>Position verticale</Form.Label>
-                        <Form.Range
-                          min={0}
-                          max={pageHeight}
-                          value={garantieImageParams.top}
-                          onChange={(e) =>
-                            setGarantieImageParams((params) => ({
-                              ...params,
-                              top: parseInt(e.target.value),
-                            }))
-                          }
-                        />
-                      </Form.Group>
-                      <Form.Group>
-                        <Form.Label>Position horizontale</Form.Label>
-                        <Form.Range
-                          min={0}
-                          max={pageWidth * 3}
-                          value={garantieImageParams.left}
-                          onChange={(e) =>
-                            setGarantieImageParams((params) => ({
-                              ...params,
-                              left: parseInt(e.target.value),
-                            }))
-                          }
-                        />
-                      </Form.Group>
-                    </div>
-                  )}
-                </Form.Group>
+                <WarrantyPicture warrantyPictureProps={warrantyPictureProps} />
               )}
               <Container className='d-flex flex-md-column flex-lg-row justify-content-between align-items-center'>
-               {adminRole || superAdminRole && (
-                 <Button
-                 variant='outline-secondary'
-                 onClick={() => setIsUpdating(true)}
-                 className='mt-4 me-2'
-                 >
-                  Modifier le modèle
-                </Button>
-                )}
+                {adminRole ||
+                  (superAdminRole && (
+                    <Button
+                      variant='outline-secondary'
+                      onClick={() => setIsUpdating(true)}
+                      className='mt-4 me-2'
+                    >
+                      Modifier le modèle
+                    </Button>
+                  ))}
                 <Button variant='primary' onClick={handleExportToPDF} className='mt-4'>
                   Génerer le PDF
                 </Button>
