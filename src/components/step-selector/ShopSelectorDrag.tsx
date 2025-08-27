@@ -62,7 +62,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
       return
     }
   }, [userRole, navigate])
-console.log(shops)
+
   /* Functions
    *******************************************************************************************/
   const onHandleShop = (id: number) => {
