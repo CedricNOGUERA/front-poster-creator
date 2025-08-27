@@ -776,6 +776,15 @@ export function ModalGenericDelete({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Etes sûr de vouloir supprimer {title} ?</Modal.Body>
+      {title === 'catégorie' && (
+        <Modal.Body className='pt-0'>
+          <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
+            <i className='ri-error-warning-line fs-5 me-2'></i>
+            <small>Tous les modèles associés à cette catégorie seront effacés</small>
+          </Alert>
+        </Modal.Body>
+      )}
+
       <Modal.Footer>
         <Button variant='secondary' onClick={handleClose}>
           Annuler

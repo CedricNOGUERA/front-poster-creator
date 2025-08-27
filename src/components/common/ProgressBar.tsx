@@ -8,7 +8,7 @@ export const ProgressBar = () => {
   /* Render
    *******************************************************************************************/
   return (
-    <div className={`progress-bar bg-light border-bottom mb-3`}>
+    <div className={`progress-bar bg-light border-bottom`}>
       <div
         className={`step ${storeApp.step >= 1 ? "current" : ""}`}
         onClick={() => {
