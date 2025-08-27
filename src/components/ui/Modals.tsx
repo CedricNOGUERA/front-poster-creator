@@ -437,7 +437,6 @@ export function ModalAddEditCategory({
     label: item.name,
     value: String(item.id),
   }))
-  console.log(formData)
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
