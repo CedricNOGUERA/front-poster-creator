@@ -48,16 +48,16 @@ export const SideHeaderMenu = ({
         {headerMenuItems
           .filter((item) => !item.roles || item.roles.includes(userRole))
           .map((item) => (
-            <Container key={item.id} className='menu-link py-3 rounded-start'>
               <Link
                 to={item.href}
                 onClick={() => handleClick(item.title)}
                 className='d-flex align-items-center text-decoration-none text-muted'
               >
+            <Container key={item.id} className='menu-link py-3 rounded-start'>
                 <i className={`${item.icon} me-2 fs-5`}></i>
                 {item.title}
-              </Link>
             </Container>
+              </Link>
           ))}
         <Container className=' log-out  py-3 px-0 border-top'>
           <Container className=' menu-link py-3 rounded-start'>

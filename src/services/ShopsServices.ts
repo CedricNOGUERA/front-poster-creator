@@ -1,6 +1,6 @@
-import { ShopType } from "@/types/ShopType"
-import axios from "axios"
-import React from "react"
+import { ShopType } from '@/types/ShopType'
+import axios from 'axios'
+import React from 'react'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -12,7 +12,6 @@ class ShopsServices {
     return response
   }
   async getShops() {
-
     const config = {
       method: 'GET',
       url: `${import.meta.env.VITE_API_URL}/api/shops`,
@@ -23,6 +22,7 @@ class ShopsServices {
     }
     return axios.request(config)
   }
+
   async addShop(newShop: FormData) {
     const response = await fetch(`${API_URL}/api/add-shop`, {
       method: 'POST',
@@ -32,17 +32,19 @@ class ShopsServices {
   }
 
   async deleteShop(shopId: number) {
-    const response = await fetch(`${API_URL}/api/shops/${shopId}`, {
+    const config = {
       method: 'DELETE',
+      url: `${import.meta.env.VITE_API_URL}/api/shops/${shopId}`,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
       },
-    })
-    return response
+    }
+
+    return axios.request(config)
   }
 }
 
-const shopServiceInstance = new ShopsServices();
+const shopServiceInstance = new ShopsServices()
 
 export default shopServiceInstance

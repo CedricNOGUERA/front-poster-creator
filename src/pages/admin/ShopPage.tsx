@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Container, Table, Button } from 'react-bootstrap';
 import { ShopType } from '@/types/ShopType';
 import shopServiceInstance from '@/services/ShopsServices';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { ModalAddShop, ModalGenericDelete } from '@/components/ui/Modals';
 import { ToastDataType } from '@/types/DiversType';
 import TableLoader from '@/components/ui/squeleton/TableLoader';
 import TableHeader from '@/components/ui/table/TableHeader';
 import MenuDrop from '@/components/ui/table/MenuDrop';
+import { AxiosError } from 'axios';
+import { _expiredSession, _showToast } from '@/utils/notifications';
+import userDataStore, { UserDataType } from '@/stores/userDataStore';
 interface ContextCategorySelectorDragType {
   toggleShow: () => void
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -17,6 +20,8 @@ export default function ShopPage() {
   const API_URL = import.meta.env.VITE_API_URL
   const columnsData = ['ID', 'logo', 'Nom', 'Actions']
   const {setToastData, toggleShow} = useOutletContext<ContextCategorySelectorDragType>()
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
+  const navigate = useNavigate()
   const [shops, setShops] = useState<ShopType[]>([]);
   const [selectedShopId, setSelectedShopId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -97,18 +102,30 @@ setShops(response.data)
     if (!id) return;
     setIsLoading(true);
     try {
-      const response = await shopServiceInstance.deleteShop(id);
-      if (response.ok) {
-        handleCloseDeleteModal();
-        getAllShops();
-      } else {
-        
-        console.error("Erreur lors de la suppression du magasin");
+      // const response = await shopServiceInstance.deleteShop(id)
+      const deleteResponse = await shopServiceInstance.deleteShop(id)
+      console.log(deleteResponse)
+      if(deleteResponse.status === 200){
+
+        handleCloseDeleteModal()
+        getAllShops()
+        _showToast(true, deleteResponse?.data.message, setToastData, toggleShow, 4000)
+
       }
     } catch (err) {
-      console.error("Erreur lors de la suppression du magasin:", err);
+      console.error('Erreur lors de la suppression du magasin:', err)
+      if (err instanceof AxiosError) {
+        if (err.status === 403) {
+          _expiredSession(
+            (success, message, delay) =>
+              _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate
+          )
+        }
+      }
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false)
     }
   };
 
