@@ -140,59 +140,30 @@ export default function InlineDragDropEditor() {
   }, [components, selectedIndex, copiedComponent])
 
   React.useEffect(() => {
-    //on vérifie s'il y a unmodel existant
-    setHasModel( models.some((model) => (
-          model.categoryId === storeApp.categoryId &&
-          model.dimensionId === storeApp.dimensionId 
+    const hasTemplate = template.find((model) => model.name === imageName)
+
+    if (hasTemplate) {
+      setHasModel(
+        models.some(
+          (model) =>
+            model.categoryId === storeApp.categoryId &&
+            model.dimensionId === storeApp.dimensionId &&
+            model.templateId === hasTemplate.id
         )
-      ))
+      )
+    }
 
-  const idModel = models.find((model) => (
-    model.categoryId === storeApp.categoryId &&
-    model.dimensionId === storeApp.dimensionId 
-  )
-)?.id
+    const idModel = models.find(
+      (model) =>
+        model.categoryId === storeApp.categoryId && model.dimensionId === storeApp.dimensionId
+    )?.id
 
-  if(idModel)
-{
-  setModelId(idModel)
-  // setComponents(canvasModel)
-}  
-
-}, [storeApp, models])
-
-
-  React.useEffect(() => {
-    const hasTemplate = template.find((model) => (
-      model.name === imageName
-    )
-  )
- 
-if(hasTemplate){
-  setHasModel( models.some((model) => (
-    model.categoryId === storeApp.categoryId &&
-    model.dimensionId === storeApp.dimensionId &&
-    model.templateId === hasTemplate.id
-  )
-))
-}
-
-const idModel = models.find((model) => (
-model.categoryId === storeApp.categoryId &&
-model.dimensionId === storeApp.dimensionId 
-)
-)?.id
-
-if(idModel)
-{
-setModelId(idModel)
-}  
-
-
-},[imageName])
+    if (idModel) {
+      setModelId(idModel)
+    }
+  }, [imageName, storeApp, models, template, setHasModel])
 
 React.useEffect(() => {
-  
   
   _generateInitalComponent(
     selectedCategory.canvas,
@@ -205,7 +176,6 @@ React.useEffect(() => {
     setComponents,
     setDimensionFactor
   )
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, storeApp, maxPreviewHeight, h, storeApp, models, selectedDimension])
 

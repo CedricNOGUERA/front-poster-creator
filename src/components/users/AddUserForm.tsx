@@ -1,15 +1,22 @@
 import React from 'react'
 import { ShopType } from '@/types/ShopType'
 import { Alert, Button, Form, InputGroup, Spinner } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import authServiceInstance from '@/services/AuthService'
-import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
+import { _getAllUsers } from '@/utils/apiFunctions'
 import { UserType } from '@/types/UserType'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import { TagPicker } from 'rsuite'
+import { ToastDataType } from '@/types/DiversType'
 
 interface CompanyType { idCompany: number; nameCompany: string }
+interface ContextShopSelectorType {
+  toggleShow: () => void
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
+  shops: ShopType[]
+  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>
+}
 
 export const AddUserForm = ({
   titleButton,
@@ -24,7 +31,9 @@ export const AddUserForm = ({
 }) => {
 /* States
  *******************************************************************************************/
-  const userStoreData = userDataStore((state: UserDataType) => state)
+
+const { shops } = useOutletContext<ContextShopSelectorType>()
+const userStoreData = userDataStore((state: UserDataType) => state)
   const userRlole = userDataStore((state: UserDataType) => state.role)
   const [name, setName] = React.useState<string>('')
   const [email, setEmail] = React.useState<string>('')
@@ -32,16 +41,12 @@ export const AddUserForm = ({
   const [company, setCompany] = React.useState<CompanyType[]>([])
   const [role, setRole] = React.useState<'super_admin' | 'admin' | 'user'>('user')
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
-  const [shopData, setshopData] = React.useState<ShopType[]>([])
   const [error, setError] = React.useState<string | null>(null)
   const [success, setSuccess] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState<boolean>(false)
   const navigate = useNavigate()
   const roles = ['super_admin', 'admin', 'user']
 
-  React.useEffect(() => {
-    _getAllShops(setshopData)
-  }, [])
 
   React.useEffect(() => {
     if (initialData) {
@@ -53,7 +58,7 @@ export const AddUserForm = ({
     }
   }, [initialData])
 
-  const shopList = shopData.map((item: ShopType) => ({ label: item.name, value: item.id }));
+  const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()

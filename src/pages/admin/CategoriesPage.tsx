@@ -9,7 +9,6 @@ import { Container, Table } from 'react-bootstrap';
 import { useOutletContext } from 'react-router-dom';
 import Image from 'react-bootstrap/Image';
 import TableLoader from '@/components/ui/squeleton/TableLoader';
-import { _getAllShops } from '@/utils/apiFunctions';
 import TableHeader from '@/components/ui/table/TableHeader';
 import MenuDrop from '@/components/ui/table/MenuDrop';
 import userDataStore, { UserDataType } from '@/stores/userDataStore';
@@ -27,6 +26,8 @@ export default function CategoriesPage() {
   const userData = userDataStore((state: UserDataType) => state)
 
   const {toggleShow, setToastData, shops, feedBackState, setFeedBackState} = useOutletContext<ContextSideBarType>()
+  // const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
+  // const navigate = useNavigate()
   const columnsData = ['ID', 'Nom', 'Image', 'Magasins', 'Actions']
   const [categories, setCategories] = React.useState<CategoriesType[]>([]);
   const [selectedCategory, setSelectedCategory] = React.useState<CategoriesType>({} as CategoriesType);
@@ -34,7 +35,6 @@ export default function CategoriesPage() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [file, setFile] = React.useState<File| null>(null)
   const [imgRglt, setImgRglt] = React.useState<File| null>(null)
-  const [shopData, setShopData] = React.useState<ShopType[]>([]);
 
   const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -43,7 +43,6 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
-    _getAllShops(setShopData);
   }, [setFeedBackState, setToastData]);
 
 
@@ -72,7 +71,7 @@ export default function CategoriesPage() {
           </td>
           <td>
             {category.shopIds.map((shop: number, indx: number) => (
-              <span key={indx}>{shopDisplay(shopData, shop, indx, category)}</span>
+              <span key={indx}>{shopDisplay(shops, shop, indx, category)}</span>
             ))}
           </td>
           <td>

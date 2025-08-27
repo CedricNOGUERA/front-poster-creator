@@ -1,11 +1,19 @@
 import useStoreApp from '@/stores/storeApp'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { ToastDataType } from '@/types/DiversType'
 import { ShopType } from '@/types/ShopType'
-import { _getAllShops } from '@/utils/apiFunctions'
+
 import React from 'react'
+import {useOutletContext } from 'react-router-dom'
 
 type Props = {
   title: string
+}
+
+interface ContextShopSelectorType {
+  toggleShow: () => void
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
+  shops: ShopType[]
 }
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -13,17 +21,10 @@ const API_URL = import.meta.env.VITE_API_URL
 export const ShopSelector = ({ title }: Props) => {
   /* States
    *******************************************************************************************/
+  const { shops } = useOutletContext<ContextShopSelectorType>()
   const userStoreData = userDataStore((state: UserDataType) => state)
   const storeApp = useStoreApp()
-  const [shops, setShops] = React.useState<ShopType[]>([])
- 
 
-  /* UseEffect
-   *******************************************************************************************/
-
-  React.useEffect(() => {
-    _getAllShops(setShops)
-  }, [])
 
   /* Functions
    *******************************************************************************************/

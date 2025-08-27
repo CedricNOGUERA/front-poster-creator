@@ -2,21 +2,31 @@ import { ModalGenericDelete } from '@/components/ui/Modals'
 import { ModalAddUser} from '@/components/users/ModalUser'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { ToastDataType } from '@/types/DiversType'
 import { ShopType } from '@/types/ShopType'
 import { UserType } from '@/types/UserType'
-import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
+import {  _getAllUsers } from '@/utils/apiFunctions'
 import React from 'react'
 import { Button, Container, Dropdown, Table } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
+
+interface ContextShopSelectorType {
+  toggleShow: () => void
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
+  shops: ShopType[]
+  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>
+}
 
 export default function UserManager() {
   /* States
    *******************************************************************************************/
   const navigate = useNavigate()
+  const { shops} = useOutletContext<ContextShopSelectorType>()
+
+  // const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
   const userRole = userDataStore((state: UserDataType) => state.role)
   const userCompany = userDataStore((state: UserDataType) => state.company )
   const [users, setUsers] = React.useState<UserType[]>([])
-  const [shops, setShops] = React.useState<ShopType[]>([])
   const [showAdd, setShowAdd] = React.useState<boolean>(false)
   const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
@@ -31,9 +41,8 @@ export default function UserManager() {
       navigate('/generateur-de-bon-plan')
       return
     }
-    
     _getAllUsers(setUsers)
-    _getAllShops(setShops)
+    
   }, [userRole, navigate])
 
   /* Functions
@@ -117,7 +126,7 @@ export default function UserManager() {
               .map((user: UserType) => {
                 const companyLength = user.company?.length
                 const shopLength = shops?.length
-                const companylist = companyLength === shopLength ? "Tous les magasins" : user.company.map((item) => item.nameCompany).join(', ')
+                const companylist = (companyLength === shopLength || user.role === 'super_admin') ? "Tous les magasins" : user.company.map((item) => item.nameCompany).join(', ')
 
                 // if(user.role !== 'super_admin'){
                 //   return

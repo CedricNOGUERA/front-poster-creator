@@ -26,7 +26,6 @@ const LoginForm = () => {
 
     try {
       const response = await authServiceInstance.loginUser({ email, password });
-      console.log(response);
 
       if (response.status === 200) {
         sessionStorage.setItem("token", response.data.token);

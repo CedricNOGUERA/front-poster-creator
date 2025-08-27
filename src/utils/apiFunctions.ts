@@ -12,7 +12,10 @@ import { ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { UserType } from "@/types/UserType";
+import { AxiosError } from "axios";
 import React from "react";
+import { _expiredSession, _showToast } from "./notifications";
+import { NavigateOptions, To } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -44,13 +47,29 @@ export const _getMe = async (
 //shop
 ///////////////////////
 
+
 export const _getAllShops = async (
-  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>
+  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  userLogOut: () => void,
+  navigate: (to: To, options?: NavigateOptions) => void,
+  toggleShow: () => void
 ) => {
   try {
-    await shopServiceInstance.getShops(setShops);
-  } catch (error) {
+    const response = await shopServiceInstance.getShops();
+    setShops(response.data)
+  } catch (error: unknown) {
     console.log(error);
+    if(error instanceof AxiosError){
+      if(error.status === 403){
+        _expiredSession(
+          (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
+          userLogOut,
+          navigate
+      )
+      }
+    }
+
   }
 };
 

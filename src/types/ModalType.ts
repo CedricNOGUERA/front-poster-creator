@@ -50,7 +50,7 @@ export interface ModalAddCategoryType {
   setFile: React.Dispatch<React.SetStateAction<File | null>>
   setImgRglt: React.Dispatch<React.SetStateAction<File | null>>
   feedBackState: FeedBackSatateType
-  shopData: ShopType[]
+  shops: ShopType[]
   // resetForm: () => void
   validated: boolean
   file: File | null

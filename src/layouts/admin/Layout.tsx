@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Outlet, useNavigate } from "react-router-dom";
 import { AdminFooter } from "./Footer";
 import { AdminHeader } from "./Header";
@@ -6,10 +7,12 @@ import { FeedBackSatateType, ToastDataType } from "@/types/DiversType";
 import ToastInfo from "@/components/common/Toasts";
 import { ShopType } from "@/types/ShopType";
 import { _getAllShops } from "@/utils/apiFunctions";
+import userDataStore, { UserDataType } from "@/stores/userDataStore";
 
 export const AdminLayout = () => {
   /* States
    *******************************************************************************************/
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)  
   const [show, setShow] = React.useState(false)
   const toggleShow = () => setShow(!show)
   const [hasModel, setHasModel] = React.useState<boolean>(false)
@@ -32,8 +35,8 @@ export const AdminLayout = () => {
   const token = sessionStorage.getItem('token')
 
   React.useEffect(() => {
-    _getAllShops(setShops)
-  }, [])
+    _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)
+  }, [navigate, userLogOut])
   React.useEffect(() => {
     if(!token) {
       navigate('/login')

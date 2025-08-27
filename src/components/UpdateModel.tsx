@@ -7,6 +7,8 @@ import {
   NumberComponentType,
   PrincipalPriceComponentType,
   HeaderComponentType,
+  HorizontalLineComponentType,
+  VerticalLineComponentType,
 } from '@/types/ComponentType'
 import useStoreApp from '@/stores/storeApp'
 import { Button, Container } from 'react-bootstrap'
@@ -472,6 +474,28 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
             border: isSelected ? '1px gray dashed' : '',
             cursor: 'move',
           }
+          case 'horizontalLine':
+            return {
+              ...baseStyle,
+              top: `${(comp as HorizontalLineComponentType).top ?? 0}px`,
+              left: `${(comp as HorizontalLineComponentType).left ?? 0}px`,
+              width: `${(comp as HorizontalLineComponentType).width}px`,
+              height: `${(comp as HorizontalLineComponentType).thickness}px`,
+              backgroundColor: (comp as HorizontalLineComponentType).color,
+              border: isSelected ? '1px gray dashed' : '',
+              cursor: 'move',
+            }
+          case 'verticalLine':
+            return {
+              ...baseStyle,
+              top: `${(comp as VerticalLineComponentType).top ?? 0}px`,
+              left: `${(comp as VerticalLineComponentType).left ?? 0}px`,
+              height: `${(comp as VerticalLineComponentType).height}px`,
+              width: `${(comp as VerticalLineComponentType).thickness}px`,
+              backgroundColor: (comp as VerticalLineComponentType).color,
+              border: isSelected ? '1px gray dashed' : '',
+              cursor: 'move',
+            }
         default:
           return baseStyle
       }
@@ -704,7 +728,11 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         }
         return (
           <div key={index} {...commonProps}>
-            <span style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}>{textComp.text}</span>
+          
+              <span 
+              style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}
+              dangerouslySetInnerHTML={{ __html: textComp.text }}
+            />
             {deleteButton}
           </div>
         )
@@ -741,6 +769,22 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
               height={imgComp.height}
               style={{ width: '100%', height: '100%' }}
             />
+            {deleteButton}
+          </div>
+        )
+      }
+
+      if (comp.type === 'horizontalLine') {
+        return (
+          <div key={index} {...commonProps}>
+            {deleteButton}
+          </div>
+        )
+      }
+
+      if (comp.type === 'verticalLine') {
+        return (
+          <div key={index} {...commonProps}>
             {deleteButton}
           </div>
         )

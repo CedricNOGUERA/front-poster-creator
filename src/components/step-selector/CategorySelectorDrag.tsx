@@ -3,13 +3,14 @@ import React from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { ToastDataType } from '@/types/DiversType'
 import { CategoriesType } from '@/types/CategoriesType'
-import { _getAllShops, _getCategories } from '@/utils/apiFunctions'
+import { _getCategories } from '@/utils/apiFunctions'
 import categoriesServiceInstance from '@/services/CategoriesServices'
 import { ModalAddCategory } from '../ui/Modals'
-import { ShopType } from '@/types/ShopType'
+// import { ShopType } from '@/types/ShopType'
 import { ComponentTypeMulti } from '@/types/ComponentType'
 import userDataStore from '@/stores/userDataStore'
 import { _expiredSession, _showToast } from '@/utils/notifications'
+import { ShopType } from '@/types/ShopType'
 // import { _expiredSession } from '@/utils/functions'
 
 type Props = {
@@ -30,16 +31,17 @@ export type FormCategoryDataType = {
 interface ContextCategorySelectorDragType {
   toggleShow: () => void
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
+  shops: ShopType[]
 }
 
 export default function CategorySelectorDrag({ title }: Props) {
   /* States
    *******************************************************************************************/
-  const { toggleShow, setToastData } = useOutletContext<ContextCategorySelectorDragType>()
+  const { toggleShow, setToastData, shops } = useOutletContext<ContextCategorySelectorDragType>()
   const storeApp = useStoreApp()
   const userLogOut = userDataStore((state) => state.authLogout)
   const navigate = useNavigate()
-  const [shopData, setshopData] = React.useState<ShopType[]>([])
+  // const [shopData, setshopData] = React.useState<ShopType[]>([])
   const [cat, setCat] = React.useState<CategoriesType[]>([])
   const [file, setFile] = React.useState<File | null>(null)
   const [imgRglt, setImgRglt] = React.useState<File | null>(null)
@@ -73,7 +75,6 @@ export default function CategorySelectorDrag({ title }: Props) {
    *******************************************************************************************/
   React.useEffect(() => {
     _getCategories(setCat, setToastData, toggleShow, setFeedBackState)
-    _getAllShops(setshopData)
   }, [setToastData, toggleShow])
 
   /* functions
@@ -331,7 +332,7 @@ export default function CategorySelectorDrag({ title }: Props) {
     setFile,
     setImgRglt,
     feedBackState,
-    shopData,
+    shops,
     validated,
     file,
     fieldErrors,

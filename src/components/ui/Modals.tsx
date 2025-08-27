@@ -208,13 +208,13 @@ export function ModalAddCategory({
     setFile,
     setImgRglt,
     feedBackState,
-    shopData,
+    shops,
     validated,
     fieldErrors,
     validateField,
   } = modalAddCategoryProps
 
-  const shopList = shopData.map((item: ShopType) => ({
+  const shopList = shops.map((item: ShopType) => ({
     label: item.name,
     value: String(item.id),
   }))
@@ -437,6 +437,7 @@ export function ModalAddEditCategory({
     label: item.name,
     value: String(item.id),
   }))
+  console.log(formData)
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
@@ -634,6 +635,7 @@ export function ModalAddEditCategory({
           <Form.Label>Magasins</Form.Label>
           <TagPicker
             data={shopList}
+            value={formData?.shopIds?.map(id => String(id))}
             style={{ width: '100%' }}
             placeholder='Sélectionnez le ou les magasins'
             onChange={(value) => {
@@ -774,6 +776,15 @@ export function ModalGenericDelete({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Etes sûr de vouloir supprimer {title} ?</Modal.Body>
+      {title === 'catégorie' && (
+        <Modal.Body className='pt-0'>
+          <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
+            <i className='ri-error-warning-line fs-5 me-2'></i>
+            <small>Tous les modèles associés à cette catégorie seront effacés</small>
+          </Alert>
+        </Modal.Body>
+      )}
+
       <Modal.Footer>
         <Button variant='secondary' onClick={handleClose}>
           Annuler
