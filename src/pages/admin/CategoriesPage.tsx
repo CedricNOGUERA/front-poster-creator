@@ -6,12 +6,14 @@ import { ShopType } from '@/types/ShopType';
 import { _getCategories } from '@/utils/apiFunctions';
 import React, { useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import Image from 'react-bootstrap/Image';
 import TableLoader from '@/components/ui/squeleton/TableLoader';
 import TableHeader from '@/components/ui/table/TableHeader';
 import MenuDrop from '@/components/ui/table/MenuDrop';
 import userDataStore, { UserDataType } from '@/stores/userDataStore';
+import { AxiosError } from 'axios';
+import { _expiredSession, _showToast } from '@/utils/notifications';
 interface ContextSideBarType {
     toggleShow: () => void
     setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -26,8 +28,8 @@ export default function CategoriesPage() {
   const userData = userDataStore((state: UserDataType) => state)
 
   const {toggleShow, setToastData, shops, feedBackState, setFeedBackState} = useOutletContext<ContextSideBarType>()
-  // const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
-  // const navigate = useNavigate()
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
+  const navigate = useNavigate()
   const columnsData = ['ID', 'Nom', 'Image', 'Magasins', 'Actions']
   const [categories, setCategories] = React.useState<CategoriesType[]>([]);
   const [selectedCategory, setSelectedCategory] = React.useState<CategoriesType>({} as CategoriesType);
@@ -128,9 +130,10 @@ export default function CategoriesPage() {
       formData.append('imageRglt', imgRglt)
     }
     try {
-      const response = await categoriesServiceInstance.updateCategory(id, formData)
-      
-      if (response.ok) {
+      const updateResponse = await categoriesServiceInstance.updateCategory(id, formData)
+      console.log(updateResponse)
+
+      if (updateResponse.status === 200) {
         _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
         handleCloseAddEditModal()
         setToastData({
@@ -140,12 +143,22 @@ export default function CategoriesPage() {
           icon: 'fa fa-check-circle',
           message: 'Catégorie modifiée avec succès !',
         })
-        toggleShow()
-      } else {
-        console.error("Erreur lors de la modification de la catégorie");
+        toggleShow()}
+
+    } catch (error: unknown) {
+      console.error("Erreur lors de la modification de la catégorie:", error);
+      if(error instanceof AxiosError){
+        if(error?.response?.data.code === "TOKEN_EXPIRED" && error.status === 401)
+
+        console.log("Votre session est expirée")
+
+        _expiredSession(
+          (success: boolean, message: string, delay: number) =>
+            _showToast(success, message, setToastData, toggleShow, delay),
+          userLogOut,
+          navigate
+        )
       }
-    } catch (err) {
-      console.error("Erreur lors de la modification de la catégorie:", err);
     } finally {
       setFeedBackState({
         isLoading: false,

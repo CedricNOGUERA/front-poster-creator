@@ -1,4 +1,5 @@
 import { CategoriesType } from "@/types/CategoriesType"
+import axios from "axios"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -47,23 +48,19 @@ class CategoriesService {
       return response
     }
 
+
     async updateCategory(id: number | undefined, selectedCategory: FormData) {
-      // Convertir FormData en objet JavaScript
-      // const formDataObj: Record<string, string | number | boolean | File> = {};
-      // selectedCategory.forEach((value, key) => {
-      //   formDataObj[key] = value;
-      // });
-
-      const response = await fetch(`${API_URL}/api/categories/${id}`, {
+      const config = {
         method: 'PATCH',
+        url: `${API_URL}/api/categories/${id}`,
         headers: {
-          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
-        body: selectedCategory,
-      })
-      return response
+        data: selectedCategory,
+      }
+  
+      return axios.request(config)
     }
-
 
     async deletePictureCategory(id: number, name: string) {
       const response = await fetch(`${API_URL}/api/uploads/${id}/${name}`, {
