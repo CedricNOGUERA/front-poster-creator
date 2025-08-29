@@ -131,7 +131,7 @@ export default function CategoriesPage() {
     }
     try {
       const updateResponse = await categoriesServiceInstance.updateCategory(id, formData)
-      console.log(updateResponse)
+
 
       if (updateResponse.status === 200) {
         _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
@@ -146,12 +146,10 @@ export default function CategoriesPage() {
         toggleShow()}
 
     } catch (error: unknown) {
-      console.error("Erreur lors de la modification de la catégorie:", error);
-      if(error instanceof AxiosError){
-        if(error?.response?.data.code === "TOKEN_EXPIRED" && error.status === 401)
-
-        console.log("Votre session est expirée")
-
+      if (error instanceof AxiosError) {
+        console.error('Erreur lors de la modification de la catégorie:', error)
+        if (error?.response?.data.code === 'TOKEN_EXPIRED' && error.status === 401)
+          console.log('Votre session est expirée')
         _expiredSession(
           (success: boolean, message: string, delay: number) =>
             _showToast(success, message, setToastData, toggleShow, delay),
@@ -210,8 +208,8 @@ const shopDisplay = (shopData: ShopType[], shop: number, indx: number, category:
 
   return (
     <Container fluid className='p-0'>
-          <h3 className='py-3 mb-0'>Gestion des Catégories</h3>
-          {/* <Row className='bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-5'>
+      <h3 className='py-3 mb-0'>Gestion des Catégories</h3>
+      {/* <Row className='bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-5'>
         <Col xs={1} className=' ps-sm-2'>
           <Link to='/tableau-de-bord' className='text-muted'>
             <i className='fa-solid fa-circle-arrow-left fs-3'></i>
