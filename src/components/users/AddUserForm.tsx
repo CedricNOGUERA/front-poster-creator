@@ -47,6 +47,17 @@ const userStoreData = userDataStore((state: UserDataType) => state)
   const navigate = useNavigate()
   const roles = ['super_admin', 'admin', 'user']
 
+  const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
+
+  React.useEffect(() => {
+    if(role === "super_admin"){
+    const selectedShop = shopList.map((item) => ({
+      nameCompany: item.label,
+      idCompany: item.value,
+    }))
+    setCompany([...selectedShop])
+  }
+  }, [role, shopList])
 
   React.useEffect(() => {
     if (initialData) {
@@ -58,7 +69,6 @@ const userStoreData = userDataStore((state: UserDataType) => state)
     }
   }, [initialData])
 
-  const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -131,6 +141,7 @@ const userStoreData = userDataStore((state: UserDataType) => state)
     }
   }
 
+
   return (
     <Form onSubmit={handleSubmit}>
       {error && <Alert variant='danger' className='text-danger'><i className='fa fa-circle-xmark me-2'></i>{error}</Alert>}
@@ -140,10 +151,12 @@ const userStoreData = userDataStore((state: UserDataType) => state)
           Prénom<span className='text-danger'>*</span>
         </Form.Label>
         <Form.Control
+          name="UserName"
           type='text'
           placeholder='Saisissez votre nom'
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autoComplete='off'
           required
         />
       </Form.Group>
@@ -152,29 +165,40 @@ const userStoreData = userDataStore((state: UserDataType) => state)
           Email<span className='text-danger'>*</span>
         </Form.Label>
         <Form.Control
+          name="userEmail"
           type='email'
           placeholder='Saisissez votre email'
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete='off'
           required
         />
       </Form.Group>
-      <Form.Group className='mb-3' controlId='categoryShops'>
+      <Form.Group className='mb-3' controlId='company'>
         <Form.Label>
           Magasins<span className='text-danger'>*</span>
         </Form.Label>
         <TagPicker
+          name="company"
           data={shopList}
           style={{ width: '100%' }}
           placeholder='Sélectionnez le ou les magasins'
           value={company.map(comp => comp.idCompany)}
           onChange={(values: number[]) => {
             const selectedCompanies = shopList.filter((shop) => values.includes(shop.value))
+            if(role === "super_admin"){
+              const selectedShop = shopList.map((item) => ({
+                nameCompany: item.label,
+                idCompany: item.value,
+              }))
+              setCompany([...selectedShop])
+            }else{
             const selectedShop = selectedCompanies.map((item) => ({
               nameCompany: item.label,
               idCompany: item.value,
             }))
             setCompany([...selectedShop])
+          }
           }}
         />
       </Form.Group>
@@ -182,7 +206,8 @@ const userStoreData = userDataStore((state: UserDataType) => state)
         <Form.Label>
           Role<span className='text-danger'>*</span>
         </Form.Label>
-        <Form.Select
+        <Form.Select  
+          name="role"
           value={role}
           onChange={(e) => setRole(e.target.value as 'super_admin' | 'admin' | 'user')}
         >
@@ -206,11 +231,13 @@ const userStoreData = userDataStore((state: UserDataType) => state)
         </Form.Label>
         <InputGroup className='mb-3'>
           <Form.Control
+            name="password"
             type={showPassword ? 'text' : 'password'}
             placeholder='Saisissez votre mot de passe'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required={initialData ? false : true}
+            autoComplete='off'
           />
           <InputGroup.Text
             id='eyeOrNot'
