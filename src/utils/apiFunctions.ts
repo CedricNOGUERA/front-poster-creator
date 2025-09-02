@@ -6,7 +6,7 @@ import shopServiceInstance from "@/services/ShopsServices";
 import templatesServiceInstance from "@/services/TemplatesServices";
 import UsersServices from "@/services/UsersServices";
 import { Canvastype } from "@/types/CanvasType";
-import { CategoriesType } from "@/types/CategoriesType";
+import { CategoriesPaginatedType, CategoriesType } from "@/types/CategoriesType";
 import { FeedBackSatateType, ToastDataType } from "@/types/DiversType";
 import { ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
@@ -294,54 +294,105 @@ export const _getTemplateLength = async (
 //category
 ///////////////////////
 
-export const _getCategories = async (
-  setCat: React.Dispatch<React.SetStateAction<CategoriesType[]>>,
-  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
-  toggleShow: () => void,
-  setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
-) => {
-  setFeedBackState({
-    isLoading: true,
-    loadingMessage: "Chargement des catégories...",
-    isError: false,
-    errorMessage: "",
-  });
-  try {
-    const categories = await categoriesServiceInstance.getCategories(setCat);
-    if (!categories.ok) {
-      setToastData({
-        bg: "danger",
-        position: "top-end",
-        delay: 3000,
-        icon: "fa fa-check-circle",
-        message:
-          "Erreur " +
-          categories.status +
-          ". Une erreur est survenue lors de la récupération des catégories.",
-      });
-      toggleShow();
-      throw new Error(`Erreur HTTP : ${categories.status}`);
-    }
-  } catch (error) {
-    console.log(error);
-    setToastData({
-      bg: "danger",
-      position: "top-end",
-      delay: 4000,
-      icon: "fa fa-circle-xmark",
-      message:
-        "Une erreur est survenue lors de la récupération des catégories. Vérifiez votre connexion internet.",
-    });
-    toggleShow();
-  } finally {
+  export const _getCategories = async (
+    setCat: React.Dispatch<React.SetStateAction<CategoriesType[]>>,
+    setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+    toggleShow: () => void,
+    setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
+  ) => {
     setFeedBackState({
-      isLoading: false,
-      loadingMessage: "",
+      isLoading: true,
+      loadingMessage: "Chargement des catégories...",
       isError: false,
       errorMessage: "",
     });
-  }
-};
+    try {
+      const categories = await categoriesServiceInstance.getCategories(setCat);
+      if (!categories.ok) {
+        setToastData({
+          bg: "danger",
+          position: "top-end",
+          delay: 3000,
+          icon: "fa fa-check-circle",
+          message:
+            "Erreur " +
+            categories.status +
+            ". Une erreur est survenue lors de la récupération des catégories.",
+        });
+        toggleShow();
+        throw new Error(`Erreur HTTP : ${categories.status}`);
+      }
+    } catch (error) {
+      console.log(error);
+      setToastData({
+        bg: "danger",
+        position: "top-end",
+        delay: 4000,
+        icon: "fa fa-circle-xmark",
+        message:
+          "Une erreur est survenue lors de la récupération des catégories. Vérifiez votre connexion internet.",
+      });
+      toggleShow();
+    } finally {
+      setFeedBackState({
+        isLoading: false,
+        loadingMessage: "",
+        isError: false,
+        errorMessage: "",
+      });
+    }
+  };
+  export const _getCategoriesPaginated = async (
+    setCat: React.Dispatch<React.SetStateAction<CategoriesPaginatedType>>,
+    setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+    toggleShow: () => void,
+    setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>,
+    page: number,
+    limit: number
+
+  ) => {
+    setFeedBackState({
+      isLoading: true,
+      loadingMessage: "Chargement des catégories...",
+      isError: false,
+      errorMessage: "",
+    });
+    try {
+      const categories = await categoriesServiceInstance.getCategoriesPaginated(setCat, page, limit);
+      if (!categories.ok) {
+        setToastData({
+          bg: "danger",
+          position: "top-end",
+          delay: 3000,
+          icon: "fa fa-check-circle",
+          message:
+            "Erreur " +
+            categories.status +
+            ". Une erreur est survenue lors de la récupération des catégories.",
+        });
+        toggleShow();
+        throw new Error(`Erreur HTTP : ${categories.status}`);
+      }
+    } catch (error) {
+      console.log(error);
+      setToastData({
+        bg: "danger",
+        position: "top-end",
+        delay: 4000,
+        icon: "fa fa-circle-xmark",
+        message:
+          "Une erreur est survenue lors de la récupération des catégories. Vérifiez votre connexion internet.",
+      });
+      toggleShow();
+    } finally {
+      setFeedBackState({
+        isLoading: false,
+        loadingMessage: "",
+        isError: false,
+        errorMessage: "",
+      });
+    }
+  };
 
 export const _getCategoryById = async (
   id: number,

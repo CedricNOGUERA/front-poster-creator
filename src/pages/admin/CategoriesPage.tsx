@@ -1,12 +1,12 @@
 import { ModalAddEditCategory, ModalGenericDelete } from '@/components/ui/Modals';
 import categoriesServiceInstance from '@/services/CategoriesServices';
-import { CategoriesType } from '@/types/CategoriesType';
+import { CategoriesPaginatedType, CategoriesType } from '@/types/CategoriesType';
 import { FeedBackSatateType, ToastDataType } from '@/types/DiversType';
 import { ShopType } from '@/types/ShopType';
-import { _getCategories } from '@/utils/apiFunctions';
+import { _getCategories, _getCategoriesPaginated } from '@/utils/apiFunctions';
 import React, { useEffect } from 'react';
-import { Container, Table } from 'react-bootstrap';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { Container, Table, Pagination, Form } from 'react-bootstrap';
+import {useNavigate, useOutletContext } from 'react-router-dom';
 import Image from 'react-bootstrap/Image';
 import TableLoader from '@/components/ui/squeleton/TableLoader';
 import TableHeader from '@/components/ui/table/TableHeader';
@@ -31,12 +31,16 @@ export default function CategoriesPage() {
   const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
   const navigate = useNavigate()
   const columnsData = ['ID', 'Nom', 'Image', 'Magasins', 'Actions']
+  const [categoriesPaginated, setCategoriesPaginated] = React.useState<CategoriesPaginatedType>({} as CategoriesPaginatedType);
   const [categories, setCategories] = React.useState<CategoriesType[]>([]);
   const [selectedCategory, setSelectedCategory] = React.useState<CategoriesType>({} as CategoriesType);
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [file, setFile] = React.useState<File| null>(null)
   const [imgRglt, setImgRglt] = React.useState<File| null>(null)
+  const [page, setPage] = React.useState<number>(1);
+  const [limit, setLimit] = React.useState<number>(10);
+  const [activePage, setActivePage] = React.useState<number>(1);
 
   const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -44,8 +48,13 @@ export default function CategoriesPage() {
   const trigger = "categories"
 
   useEffect(() => {
-    _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
+    // _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
+    _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit);
   }, [setFeedBackState, setToastData]);
+
+  useEffect(() => {
+    setCategories(categoriesPaginated.categories)
+  }, [categoriesPaginated]);
 
 
 
@@ -89,6 +98,21 @@ export default function CategoriesPage() {
         </tr>
       ))
   }
+
+
+  const itemCategoriesDisplay = Array.from({length: categoriesPaginated?.pagination?.totalPages}).map((_, index) => (
+    <Pagination.Item key={index} onClick={() => {
+      setPage(index + 1)
+      setActivePage(index + 1)
+      _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, index + 1,limit)
+
+
+    }}
+    active={activePage === index + 1}
+    className='text-dark'
+    >{index + 1}</Pagination.Item>
+  
+  ))
 
 
   const handleShowEditModal = (category: CategoriesType) => {
@@ -232,6 +256,72 @@ const shopDisplay = (shopData: ShopType[], shop: number, indx: number, category:
             )}
           </tbody>
         </Table>
+        {categoriesPaginated?.pagination?.totalItems >= limit && (
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>
+              <Pagination>
+                <Pagination.Prev 
+                disabled={!categoriesPaginated?.pagination?.hasPreviousPage}
+                onClick={() => {
+                  
+                  setPage(page - 1)
+                  _getCategoriesPaginated(
+                    setCategoriesPaginated,
+                    setToastData,
+                    toggleShow,
+                    setFeedBackState,
+                    page - 1,
+                    limit
+                  )
+                }} />
+                {itemCategoriesDisplay}
+                <Pagination.Next 
+                disabled={!categoriesPaginated?.pagination?.hasNextPage}
+                onClick={() => {
+                  
+                  setPage(page + 1)
+                  _getCategoriesPaginated(
+                    setCategoriesPaginated,
+                    setToastData,
+                    toggleShow,
+                    setFeedBackState,
+                    page + 1,
+                    limit
+                  )
+                }}
+                />
+
+              </Pagination>
+            </div>
+            <div className='d-flex justify-content-end align-items-center gap-2 w-50'>
+              <small>Catégories par page</small>
+              <Form.Select
+                style={{ width: '71px' }}
+                size='sm'
+                aria-label='Default select example'
+                value={limit}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  setLimit(parseInt(e.target.value))
+
+                  _getCategoriesPaginated(
+                    setCategoriesPaginated,
+                    setToastData,
+                    toggleShow,
+                    setFeedBackState,
+                    1,
+                    parseInt(e.target.value)
+                  )
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </Form.Select>
+            </div>
+          </div>
+        )}
       </Container>
 
       <ModalAddEditCategory modalAddEditCategoryProps={modalAddEditCategoryProps} />

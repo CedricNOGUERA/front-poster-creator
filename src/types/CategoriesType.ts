@@ -10,3 +10,17 @@ export type CategoriesType = {
   canvasId: number
   canvas: ComponentTypeMulti[]
 }
+
+export type CategoriesPaginatedType = {
+  categories: CategoriesType[]
+  pagination: {
+    currentPage: number
+    totalPages: number
+    totalItems: number
+    itemsPerPage: number
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+    nextPage: number
+    previousPage: number
+  }
+}

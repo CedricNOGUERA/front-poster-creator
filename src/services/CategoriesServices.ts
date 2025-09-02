@@ -1,4 +1,4 @@
-import { CategoriesType } from "@/types/CategoriesType"
+import { CategoriesPaginatedType, CategoriesType } from "@/types/CategoriesType"
 import axios from "axios"
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -18,6 +18,7 @@ class CategoriesService {
             return response
     }
 
+    
     async getCategories(setCat: React.Dispatch<React.SetStateAction<CategoriesType[]>>) {
       const response = await fetch(`${API_URL}/api/categories`)
       if (!response.ok) {
@@ -28,7 +29,17 @@ class CategoriesService {
       setCat(data)
       return response
     }
+    async getCategoriesPaginated(setCat: React.Dispatch<React.SetStateAction<CategoriesPaginatedType>>, page: number, limit: number) {
+      const response = await fetch(`${API_URL}/api/categories-paginated?page=${page}&limit=${limit}`)
+      if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des catégories')
+      }
 
+      const data = await response.json()
+      
+      setCat(data)
+      return response
+    }
     async getCategoryById(id: number, setCategory: React.Dispatch<React.SetStateAction<CategoriesType>>) {
       const response = await fetch(`${API_URL}/api/categories/${id}`)
       if (!response.ok) {
