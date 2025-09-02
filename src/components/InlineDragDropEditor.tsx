@@ -116,7 +116,7 @@ export default function InlineDragDropEditor() {
 
       if (e.ctrlKey && e.key === 'v') {
         // Coller
-        if (copiedComponent) {
+        if (copiedComponent && copiedComponent.type !== "background-color" && copiedComponent.type !== "header") {
           const textComp = copiedComponent as TextComponentType
           const numberComp = copiedComponent as NumberComponentType
           const newComp = {
