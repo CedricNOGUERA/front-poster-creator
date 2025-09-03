@@ -78,17 +78,19 @@ class CategoriesService {
         method: 'DELETE',
       })
       return response
+      
     }
 
     async deleteCategory(id: number) {
-      const response = await fetch(`${API_URL}/api/categories/${id}`, {
+      const config = {
         method: 'DELETE',
+        url: `${API_URL}/api/categories/${id}`,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-      },
-      })
-      return response
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      }
+  
+      return axios.request(config)
     }
 
     async uploadPicture(file: FormData, categoryId: number) {
