@@ -82,6 +82,7 @@ export function TextEditor({
   return (
     <div>
       <h4 className='fw-bold text-secondary'>Éditer le texte</h4>
+  
       <div className='text-start'>
         <Form.Group className='mb-3' controlId='Contenu'>
           <Form.Label>Contenu</Form.Label>
@@ -130,19 +131,6 @@ export function TextEditor({
           />
         </Form.Group>
       </div>
-      {comp.type === 'price' && 'width' in comp && (
-        <div className='text-start'>
-          <Form.Group className='mb-3' controlId='Contenu'>
-            <Form.Label>Position</Form.Label>
-            <Form.Control
-              type='number'
-              placeholder='Saisissez le texte ici'
-              value={comp.width || ''}
-              onChange={(e) => updateComponent({ width: parseInt(e.target.value) })}
-            />
-          </Form.Group>
-        </div>
-      )}
 
       <div className='text-start'>
         <Form.Group className='mb-3' controlId='PoliceSize'>
@@ -176,7 +164,7 @@ export function TextEditor({
       </div>
       <div className='text-start'>
         <Form.Group className='mb-3' controlId='PoliceWeight'>
-          <Form.Label>Epaissuer de police</Form.Label>
+          <Form.Label>Epaisseur de police</Form.Label>
           <Form.Select
             aria-label='Default select example'
             value={comp.fontWeight}
@@ -231,6 +219,7 @@ export function TextEditor({
           }
         />
       </div>
+
     </div>
   )
 }

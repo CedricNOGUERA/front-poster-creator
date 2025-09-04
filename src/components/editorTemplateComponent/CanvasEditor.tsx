@@ -12,7 +12,7 @@ interface CanvasEditorType {
 export default function CanvasEditor({canvasEditorProps}: {canvasEditorProps :CanvasEditorType}) {
 
     const {canvasData, setCanvasData, pageWidth, pageHeight} = canvasEditorProps
-
+console.log(pageWidth)
   return (
     <>
     {canvasData?.map((component: ComponentTypeMulti, index: number) => {
@@ -25,6 +25,11 @@ export default function CanvasEditor({canvasEditorProps}: {canvasEditorProps :Ca
             | TextComponentType
             | NumberComponentType
             | PrincipalPriceComponentType
+
+            const maxPreviewHeight = pageHeight < 100 ? 150 : 500 // en pixels
+            const scaleFactor = maxPreviewHeight / pageHeight
+
+
           return (
             <React.Fragment key={index}>
               <Form.Group className='text-start mb-3' controlId='title'>
@@ -89,7 +94,8 @@ export default function CanvasEditor({canvasEditorProps}: {canvasEditorProps :Ca
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
                           min={0}
-                          max={1000}
+                          max={pageHeight * scaleFactor}
+                          // max={1000}
                           step={1}
                           value={comp.top || 0}
                           onChange={(e) => {
@@ -111,7 +117,7 @@ export default function CanvasEditor({canvasEditorProps}: {canvasEditorProps :Ca
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
                           min={0}
-                          max={pageHeight * 2}
+                          max={pageHeight * scaleFactor}
                           step={1}
                           value={comp.bottom || 0}
                           onChange={(e) => {
@@ -134,8 +140,8 @@ export default function CanvasEditor({canvasEditorProps}: {canvasEditorProps :Ca
                       </Form.Label>
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
-                          min={-pageWidth * 2}
-                          max={pageWidth * 2}
+                          min={0}
+                          max={pageWidth * scaleFactor}
                           step={1}
                           value={comp.left || 0}
                           onChange={(e) => {

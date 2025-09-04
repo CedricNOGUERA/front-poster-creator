@@ -21,8 +21,9 @@ import React, { useRef, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
-import CanvasEditor from '../editorTemplateComponent/CanvasEditor'
+// import CanvasEditor from '../editorTemplateComponent/CanvasEditor'
 import WarrantyPicture from '../editorTemplateComponent/WarrantyPicture'
+import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -567,7 +568,8 @@ export const EditorTemplate = () => {
             </Col>
             <Col xs={3} className='bg-white border-start border-bottom p-4'>
               <h4>Formulaire d'édition</h4>
-              <CanvasEditor canvasEditorProps={canvasEditorProps} />
+              <CanvasEditorImproved canvasEditorProps={canvasEditorProps} />
+              {/* <CanvasEditor canvasEditorProps={canvasEditorProps} /> */}
               {storeApp.categoryId === 2 && storeApp.shopId === 2 && (
                 <WarrantyPicture warrantyPictureProps={warrantyPictureProps} />
               )}

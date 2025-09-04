@@ -288,9 +288,9 @@ export default function CategoriesPage() {
         categoryFormData.append('imageRglt', imgRglt)
       }
       // Log entries to properly inspect FormData
-      for (const pair of categoryFormData.entries()) {
-        console.log(pair[0] + ': ', pair[1])
-      }
+      // for (const pair of categoryFormData.entries()) {
+      //   console.log(pair[0] + ': ', pair[1])
+      // }
       const addCatResponse = await categoriesServiceInstance.postCategory(categoryFormData)
 
       if (addCatResponse.ok) {
