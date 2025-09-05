@@ -16,7 +16,7 @@ export default function ComponentEditor({ComponentEditorProps}: {ComponentEditor
 return (
   <React.Fragment>
       {selectedIndex !== null && components[selectedIndex] ? (
-              <div className='bg-white p-4 border-0 border-start'>
+              <div className='bg-white py-4 px-3 border-0 border-start'>
                 {(components[selectedIndex]?.type === 'text' ||
                   components[selectedIndex]?.type === 'enableText' ||
                   components[selectedIndex]?.type === 'number' ||

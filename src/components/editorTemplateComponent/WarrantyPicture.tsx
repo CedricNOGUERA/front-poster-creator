@@ -54,11 +54,11 @@ export default function WarrantyPicture({
             setSelectedGarantie(garantieValue)
             let garantieSrc = ''
             if (garantieValue === '6mois') {
-              garantieSrc = import.meta.env.VITE_API_URL + '/uploads/garantie-6-mois.png'
+              garantieSrc = '/uploads/garantie-6-mois.png'
             } else if (garantieValue === '1an') {
-              garantieSrc = import.meta.env.VITE_API_URL + '/uploads/garantie-1-an.png'
+              garantieSrc = '/uploads/garantie-1-an.png'
             } else if (garantieValue === '2ans') {
-              garantieSrc = import.meta.env.VITE_API_URL + '/uploads/garantie-2-ans.png'
+              garantieSrc = '/uploads/garantie-2-ans.png'
             } else {
               garantieSrc = ''
             }
@@ -89,6 +89,8 @@ export default function WarrantyPicture({
               width: IMAGE_WIDTH,
               src: garantieSrc,
             }
+            console.log(garantieSrc)
+            console.log(garantieComponent)
             const filteredCanvas = canvasData.filter(
               (comp) =>
                 !(
