@@ -1,4 +1,6 @@
 import { ComponentTypeMulti } from '@/types/ComponentType'
+import { PictureType } from '@/types/DiversType'
+import { _getPictures } from '@/utils/apiFunctions'
 import React from 'react'
 import { Card, Form, Button, ButtonGroup } from 'react-bootstrap'
 
@@ -45,8 +47,38 @@ export default function PictureAdder({
     setShowGarantieSettings,
   } = warrantyPictureProps
 
+
+  const [pictures, setPictures] = React.useState<PictureType[]>([]);
+
+
+  React.useEffect(() => {
+    _getPictures(setPictures)
+  }, [])
+
+
   const maxPreviewHeight = pageHeight < 100 ? 150 : 500
   const scaleFactor = maxPreviewHeight / pageHeight
+
+  // Fonction utilitaire pour synchroniser les paramètres avec canvasData
+  const syncImageWithCanvas = (updates: Partial<{ width: number; top: number; left: number }>) => {
+    if (selectedGarantie) {
+      const updatedCanvas = canvasData.map((comp) => {
+        if (
+          comp.type === 'image' &&
+          'src' in comp &&
+          typeof comp.src === 'string' &&
+          comp.src === selectedGarantie
+        ) {
+          return {
+            ...comp,
+            ...updates,
+          }
+        }
+        return comp
+      })
+      setCanvasData(updatedCanvas)
+    }
+  }
 
   const moveImagePosition = (
     direction: 'up' | 'down' | 'left' | 'right',
@@ -71,16 +103,14 @@ export default function PictureAdder({
     }
 
     setGarantieImageParams(updates)
+    syncImageWithCanvas(updates)
   }
 
   return (
     <Card className='shadow-sm'>
       <Card.Header className='d-flex justify-content-between align-items-center'>
         <div className='d-flex align-items-center gap-2'>
-          <i
-            className={`fas fa-image
-                 text-primary`}
-          ></i>
+          <i className={`fas fa-image text-primary`}></i>
           <span className='fw-bold text-capitalize'>Image</span>
         </div>
         <div className='d-flex gap-2'>
@@ -106,16 +136,17 @@ export default function PictureAdder({
               onChange={(e) => {
                 const garantieValue = e.target.value
                 setSelectedGarantie(garantieValue)
-                let garantieSrc = ''
-                if (garantieValue === '6mois') {
-                  garantieSrc = '/uploads/garantie-6-mois.png'
-                } else if (garantieValue === '1an') {
-                  garantieSrc = '/uploads/garantie-1-an.png'
-                } else if (garantieValue === '2ans') {
-                  garantieSrc = '/uploads/garantie-2-ans.png'
-                } else {
-                  garantieSrc = ''
-                }
+                const garantieSrc = e.target.value
+                // let garantieSrc = ''
+                // if (garantieValue === '6mois') {
+                //   garantieSrc = '/uploads/garantie-6-mois.png'
+                // } else if (garantieValue === '1an') {
+                //   garantieSrc = '/uploads/garantie-1-an.png'
+                // } else if (garantieValue === '2ans') {
+                //   garantieSrc = '/uploads/garantie-2-ans.png'
+                // } else {
+                //   garantieSrc = ''
+                // }
                 // Récupère la taille réelle du canvas
                 let canvasWidth = pageWidth
                 let canvasHeight = pageHeight
@@ -143,8 +174,7 @@ export default function PictureAdder({
                   width: IMAGE_WIDTH,
                   src: garantieSrc,
                 }
-                console.log(garantieSrc)
-                console.log(garantieComponent)
+      
                 const filteredCanvas = canvasData.filter(
                   (comp) =>
                     !(
@@ -154,17 +184,17 @@ export default function PictureAdder({
                       comp.src.includes('garantie-')
                     )
                 )
-                if (garantieSrc) {
+                if (garantieSrc && garantieSrc !== "aucune") {
                   setCanvasData([...filteredCanvas, garantieComponent])
                 } else {
                   setCanvasData(filteredCanvas)
                 }
               }}
             >
-              <option value='6mois'>Garantie 6 mois</option>
-              <option value='1an'>Garantie 1 an</option>
-              <option value='2ans'>Garantie 2 ans</option>
-              <option value='aucune'>Aucune garantie</option>
+              <option value="aucune">Aucune</option>
+              {pictures.map((pict) => (
+                <option key={pict.id} value={pict.src}>{pict.name}</option>
+              ))}
             </Form.Select>
           </div>
           {showGarantieSettings && (
@@ -180,12 +210,14 @@ export default function PictureAdder({
                     min={40}
                     max={300}
                     value={garantieImageParams.width}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newWidth = parseInt(e.target.value)
                       setGarantieImageParams((params) => ({
                         ...params,
-                        width: parseInt(e.target.value),
+                        width: newWidth,
                       }))
-                    }
+                      syncImageWithCanvas({ width: newWidth })
+                    }}
                   />
                 </Form.Group>
                 {/* Boutons de déplacement rapide */}
@@ -241,12 +273,14 @@ export default function PictureAdder({
                     max={pageHeight * scaleFactor}
                     step={1}
                     value={garantieImageParams.top}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newTop = parseInt(e.target.value)
                       setGarantieImageParams((params) => ({
                         ...params,
-                        top: parseInt(e.target.value),
+                        top: newTop,
                       }))
-                    }
+                      syncImageWithCanvas({ top: newTop })
+                    }}
                   />
                   <Form.Control
                     type='number'
@@ -254,12 +288,14 @@ export default function PictureAdder({
                     max={pageHeight * scaleFactor}
                     step={1}
                     value={garantieImageParams.top}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newTop = parseInt(e.target.value) || 0
                       setGarantieImageParams((params) => ({
                         ...params,
-                        top: parseInt(e.target.value) || 0,
+                        top: newTop,
                       }))
-                    }
+                      syncImageWithCanvas({ top: newTop })
+                    }}
                     size='sm'
                     className='mt-1'
                   />
@@ -275,12 +311,14 @@ export default function PictureAdder({
                     max={pageWidth * scaleFactor}
                     step={1}
                     value={garantieImageParams.left}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newLeft = parseInt(e.target.value)
                       setGarantieImageParams((params) => ({
                         ...params,
-                        left: parseInt(e.target.value),
+                        left: newLeft,
                       }))
-                    }
+                      syncImageWithCanvas({ left: newLeft })
+                    }}
                   />
                   <Form.Control
                     type='number'
@@ -288,12 +326,14 @@ export default function PictureAdder({
                     max={pageWidth * scaleFactor}
                     step={1}
                     value={garantieImageParams.left}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newLeft = parseInt(e.target.value) || 0
                       setGarantieImageParams((params) => ({
                         ...params,
-                        left: parseInt(e.target.value) || 0,
+                        left: newLeft,
                       }))
-                    }
+                      syncImageWithCanvas({ left: newLeft })
+                    }}
                     size='sm'
                     className='mt-1'
                   />

@@ -6,6 +6,7 @@ import CategoriesPage from './CategoriesPage'
 import UserManager from './UserManager'
 import { SideBarMenu } from '@/components/dashBoardComponents/SideBarMenu'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import PicturesLibraryPage from './PicturesLibraryPage'
 
 const DashBoard = () => {
   const [display, setDisplay] = React.useState('shops')
@@ -25,12 +26,14 @@ const DashBoard = () => {
       return <CategoriesPage />
     } else if (display === 'utilisateurs') {
       return <UserManager />
+    } else if (display === 'phototheque') {
+      return <PicturesLibraryPage />
     }
   }
 
   return (
     <Container fluid className='px-0'>
-      <Row className='w-100 gx-0'>
+      <Row className='w-100 gx-0' style={{height: "89vh"}}>
         <SideBarMenu setDisplay={setDisplay} />
         <Col className='h-100'>
           {handleDisplay(display)}

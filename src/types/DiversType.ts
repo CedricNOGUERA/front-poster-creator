@@ -24,3 +24,11 @@ export type FeedBackSatateType = {
   isError: boolean
   errorMessage: string
 }
+
+export type PictureType = {
+  "id": number
+  "name": string
+  "src": string
+  "value": string
+  "createAt": string
+}

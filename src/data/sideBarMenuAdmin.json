@@ -19,5 +19,12 @@
         "icon": "fas fa-user",
         "display": "utilisateurs",
         "role": ["super_admin", "admin"]
+    },
+    {
+        "id": 4,
+        "title": "Photothèque",
+        "icon": "fas fa-book",
+        "display": "phototheque",
+        "role": ["super_admin"]
     }
 ]
