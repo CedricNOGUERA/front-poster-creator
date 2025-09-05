@@ -21,8 +21,6 @@ import React, { useRef, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
-// import CanvasEditor from '../editorTemplateComponent/CanvasEditor'
-// import WarrantyPicture from '../editorTemplateComponent/WarrantyPicture'
 import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
 import PictureAdder from '../editorTemplateComponent/PictureAdder'
 
@@ -45,7 +43,7 @@ export const EditorTemplate = () => {
     top: 0,
     left: 0,
   });
-
+  
   const [previewStyle, setPreviewStyle] = useState<React.CSSProperties>({
     width: '100%',
     height: '100%',
@@ -55,7 +53,7 @@ export const EditorTemplate = () => {
     boxShadow: '0 0 5px rgba(0,0,0,0.2)',
     margin: 'auto',
   })
-
+  
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
 
   /* UseEffect
@@ -73,61 +71,7 @@ export const EditorTemplate = () => {
   React.useEffect(() => {
     _getModels(setModels)
   }, [])
-
-  React.useEffect(() => {
-    // Ne rien faire si aucune garantie sélectionnée
-    if (!selectedGarantie || selectedGarantie === "aucune") {
-      setCanvasData((prev) =>
-        Array.isArray(prev)
-          ? prev.filter(
-              (comp) =>
-                !(
-                  comp.type === "image" &&
-                  "src" in comp &&
-                  typeof comp.src === "string" &&
-                  comp.src.includes("garantie-")
-                )
-            )
-          : []
-      );
-      return;
-    }
-
-    // Détermine l'URL de l'image selon la garantie sélectionnée
-    let garantieSrc = ''
-    if (selectedGarantie === '6mois') {
-      garantieSrc = '/uploads/garantie-6-mois.png'
-    } else if (selectedGarantie === '1an') {
-      garantieSrc = '/uploads/garantie-1-an.png'
-    } else if (selectedGarantie === '2ans') {
-      garantieSrc = '/uploads/garantie-2-ans.png'
-    }
-
-    const garantieComponent = {
-      type: "image",
-      top: garantieImageParams.top,
-      left: garantieImageParams.left,
-      width: garantieImageParams.width,
-      height: "auto",
-      src: garantieSrc,
-    };
-
-    setCanvasData((prev) => {
-      const filtered = Array.isArray(prev)
-        ? prev.filter(
-            (comp) =>
-              !(
-                comp.type === "image" &&
-                "src" in comp &&
-                typeof comp.src === "string" &&
-                comp.src.includes("garantie-")
-              )
-          )
-        : [];
-      return garantieSrc ? [...filtered, garantieComponent] : filtered;
-    });
-  }, [garantieImageParams, selectedGarantie]);
-
+  
   /* Functions
    *******************************************************************************************/
   const getCanvasData = async () => {
@@ -141,8 +85,6 @@ export const EditorTemplate = () => {
     setCanvasData(selectedSchema?.canvas as ComponentTypeMulti[])
     setModelId(selectedSchema?.id ?? 0)
   }
-
-
 
   const getPageDimensions = async () => {
     const selectedDimension = dimensions.find((d) => d.id === storeApp.dimensionId)
@@ -546,6 +488,7 @@ export const EditorTemplate = () => {
     setCanvasData,
     showGarantieSettings,
     setShowGarantieSettings,
+    // setGarantieSrc,
   }
 
   /* Render
@@ -569,11 +512,7 @@ export const EditorTemplate = () => {
               <h4 className='mb-4'>Formulaire d'édition</h4>
               <div className='flex-grow-1'>
                 <CanvasEditorImproved canvasEditorProps={canvasEditorProps} />
-                {/* <CanvasEditor canvasEditorProps={canvasEditorProps} /> */}
-                {/*{storeApp.categoryId === 2 && storeApp.shopId === 2 && (*/}
-                  {/* <WarrantyPicture warrantyPictureProps={warrantyPictureProps} /> */}
                   <PictureAdder warrantyPictureProps={warrantyPictureProps} />
-                {/* // )} */}
               </div>
               <Container className='d-flex flex-md-column flex-lg-row justify-content-between align-items-center mt-4'>
                 {adminRole ||

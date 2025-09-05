@@ -170,38 +170,6 @@ export default function CanvasEditorImproved({
                       </Accordion.Body>
                     </Accordion.Item>
 
-                    {/* Aperçu */}
-                    {/* <Accordion.Item eventKey="2">
-                                            <Accordion.Header>
-                                                <i className="fas fa-eye me-2"></i>
-                                                Aperçu
-                                            </Accordion.Header>
-                                            <Accordion.Body>
-                                                <div 
-                                                    className="border rounded p-3 bg-light position-relative"
-                                                    style={{ 
-                                                        width: `${pageWidth * scaleFactor}px`,
-                                                        height: `${pageHeight * scaleFactor}px`,
-                                                        margin: '0 auto'
-                                                    }}
-                                                >
-                                                    <div
-                                                        className="position-absolute"
-                                                        style={{
-                                                            fontSize: `${(comp.fontSize || 0) * scaleFactor}px`,
-                                                            top: comp.type === 'price' || comp.type === 'number' ? 'auto' : `${(comp.top || 0) * scaleFactor}px`,
-                                                            left: comp.type === 'price' || comp.type === 'number' ? 'auto' : `${(comp.left || 0) * scaleFactor}px`,
-                                                            bottom: comp.type === 'price' || comp.type === 'number' ? `${(comp.bottom || 0) * scaleFactor}px` : 'auto',
-                                                            right: comp.type === 'price' || comp.type === 'number' ? `${(comp.right || 0) * scaleFactor}px` : 'auto',
-                                                            color: '#333',
-                                                            fontWeight: 'bold'
-                                                        }}
-                                                    >
-                                                        {comp.text || 'Aperçu du texte'}
-                                                    </div>
-                                                </div>
-                                            </Accordion.Body>
-                                        </Accordion.Item> */}
                   </Accordion>
                 )}
               </Card.Body>

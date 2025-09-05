@@ -7,7 +7,7 @@ import templatesServiceInstance from "@/services/TemplatesServices";
 import UsersServices from "@/services/UsersServices";
 import { Canvastype } from "@/types/CanvasType";
 import { CategoriesPaginatedType, CategoriesType } from "@/types/CategoriesType";
-import { FeedBackSatateType, ToastDataType } from "@/types/DiversType";
+import { FeedBackSatateType, PictureType, ToastDataType } from "@/types/DiversType";
 import { ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
@@ -16,6 +16,7 @@ import { AxiosError } from "axios";
 import React from "react";
 import { _expiredSession, _showToast } from "./notifications";
 import { NavigateOptions, To } from "react-router-dom";
+import VariousPicturesServices from "@/services/VariousPicturesServices";
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -592,3 +593,23 @@ export const _getAllUsers = async (
   const data = await response.json();
   setUsers(data);
 };
+
+
+
+///////////////////////
+//Pictures
+///////////////////////
+
+
+export const _getPictures = async (setPictures: React.Dispatch<React.SetStateAction<PictureType[]>>) => {
+  try{
+      const response = await VariousPicturesServices.getVariousPictures()
+      console.log(response)
+      if(response.status === 200){
+          setPictures(response?.data)
+      }
+  }
+  catch(error){
+      console.log(error)
+  }
+}
