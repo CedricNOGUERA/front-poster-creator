@@ -21,8 +21,10 @@ import React, { useRef, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
-import CanvasEditor from '../editorTemplateComponent/CanvasEditor'
-import WarrantyPicture from '../editorTemplateComponent/WarrantyPicture'
+// import CanvasEditor from '../editorTemplateComponent/CanvasEditor'
+// import WarrantyPicture from '../editorTemplateComponent/WarrantyPicture'
+import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
+import PictureAdder from '../editorTemplateComponent/PictureAdder'
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -92,15 +94,13 @@ export const EditorTemplate = () => {
     }
 
     // Détermine l'URL de l'image selon la garantie sélectionnée
-    let garantieSrc = "";
-    if (selectedGarantie === "6mois") {
-      garantieSrc =
-        import.meta.env.VITE_API_URL + "/uploads/garantie-6-mois.png";
-    } else if (selectedGarantie === "1an") {
-      garantieSrc = import.meta.env.VITE_API_URL + "/uploads/garantie-1-an.png";
-    } else if (selectedGarantie === "2ans") {
-      garantieSrc =
-        import.meta.env.VITE_API_URL + "/uploads/garantie-2-ans.png";
+    let garantieSrc = ''
+    if (selectedGarantie === '6mois') {
+      garantieSrc = '/uploads/garantie-6-mois.png'
+    } else if (selectedGarantie === '1an') {
+      garantieSrc = '/uploads/garantie-1-an.png'
+    } else if (selectedGarantie === '2ans') {
+      garantieSrc = '/uploads/garantie-2-ans.png'
     }
 
     const garantieComponent = {
@@ -565,13 +565,17 @@ export const EditorTemplate = () => {
                 {canvasDisplay}
               </div>
             </Col>
-            <Col xs={3} className='bg-white border-start border-bottom p-4'>
-              <h4>Formulaire d'édition</h4>
-              <CanvasEditor canvasEditorProps={canvasEditorProps} />
-              {storeApp.categoryId === 2 && storeApp.shopId === 2 && (
-                <WarrantyPicture warrantyPictureProps={warrantyPictureProps} />
-              )}
-              <Container className='d-flex flex-md-column flex-lg-row justify-content-between align-items-center'>
+            <Col xs={3} className='bg-white border-start border-bottom p-4 d-flex flex-column' style={{ height: '100vh', overflowY: 'auto' }}>
+              <h4 className='mb-4'>Formulaire d'édition</h4>
+              <div className='flex-grow-1'>
+                <CanvasEditorImproved canvasEditorProps={canvasEditorProps} />
+                {/* <CanvasEditor canvasEditorProps={canvasEditorProps} /> */}
+                {/*{storeApp.categoryId === 2 && storeApp.shopId === 2 && (*/}
+                  {/* <WarrantyPicture warrantyPictureProps={warrantyPictureProps} /> */}
+                  <PictureAdder warrantyPictureProps={warrantyPictureProps} />
+                {/* // )} */}
+              </div>
+              <Container className='d-flex flex-md-column flex-lg-row justify-content-between align-items-center mt-4'>
                 {adminRole ||
                   (superAdminRole && (
                     <Button
