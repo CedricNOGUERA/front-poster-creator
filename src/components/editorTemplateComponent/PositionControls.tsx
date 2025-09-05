@@ -52,33 +52,6 @@ export default function PositionControls({
   }
 
 
-//   const centerPositionVertical = () => {
-//     if (component.type === 'price' || component.type === 'number') {
-//       updateComponent({ 
-//         bottom: ((pageHeight * scaleFactor) / 2)/2, 
-//         // right: (pageWidth * scaleFactor) / 2 
-//       } as Partial<NumberComponentType | PrincipalPriceComponentType>)
-//     } else {
-//       updateComponent({ 
-//         top: ((pageHeight * scaleFactor) / 2), 
-//         // left: (pageWidth * scaleFactor) / 2 
-//       } as Partial<TextComponentType>)
-//     }
-//   }
-//   const centerPositionHorizontal = () => {
-//     if (component.type === 'price' || component.type === 'number') {
-//       updateComponent({ 
-//         // bottom: ((pageHeight * scaleFactor) / 2)/2, 
-//         right: (pageWidth * scaleFactor) / 2 
-//       } as Partial<NumberComponentType | PrincipalPriceComponentType>)
-//     } else {
-//       updateComponent({ 
-//         // top: ((pageHeight * scaleFactor) / 2), 
-//         left: (pageWidth * scaleFactor) / 2 
-//       } as Partial<TextComponentType>)
-//     }
-//   }
-
   return (
     <div className='position-controls'>
       {/* Contrôles de déplacement avec boutons directionnels */}
@@ -122,29 +95,6 @@ export default function PositionControls({
           </ButtonGroup>
         </div>
 
-        {/* Boutons de positionnement rapide */}
-        {/* <div className="d-flex justify-content-center gap-2 mb-3">
-         
-          <Button 
-            variant="outline-primary" 
-            size="sm"
-            onClick={centerPositionVertical}
-            title="Centrer l'élément"
-          >
-            <i className="fas fa-crosshairs me-1"></i>
-            Centrer V
-          </Button>
-          <Button 
-            variant="outline-primary" 
-            size="sm"
-            onClick={centerPositionHorizontal}
-            title="Centrer l'élément"
-          >
-            <i className="fas fa-crosshairs me-1"></i>
-            Centrer H
-          </Button>
-        </div> */}
-
         {/* Contrôles précis avec inputs numériques */}
         <div className='row g-2'>
           {/* Position verticale */}
@@ -153,30 +103,29 @@ export default function PositionControls({
               <i className='fas fa-arrows-up-down me-1'></i>
               Vert.
             </Form.Label>
-                         <Form.Range
-                 min={0}
-                 max={pageHeight * scaleFactor}
-                 step={1}
-                 value={
-                     component.type === 'price' || component.type === 'number'
-                       ? component.bottom || 0
-                       : component.top || 0
-                   }
-                 onChange={(e) => {
-                   const value = parseInt(e.target.value) || 0
-                   if (component.type === 'price' || component.type === 'number') {
-                     updateComponent({
-                       bottom: value,
-                     } as Partial<NumberComponentType | PrincipalPriceComponentType>)
-                   } else {
-                     updateComponent({
-                       top: value,
-                     } as Partial<TextComponentType>)
-                   }
-                 }}
-               />
+            <Form.Range
+              min={0}
+              max={pageHeight * scaleFactor}
+              step={1}
+              value={
+                component.type === 'price' || component.type === 'number'
+                  ? component.bottom || 0
+                  : component.top || 0
+              }
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 0
+                if (component.type === 'price' || component.type === 'number') {
+                  updateComponent({
+                    bottom: value,
+                  } as Partial<NumberComponentType | PrincipalPriceComponentType>)
+                } else {
+                  updateComponent({
+                    top: value,
+                  } as Partial<TextComponentType>)
+                }
+              }}
+            />
             <InputGroup size='sm'>
-           
               <Form.Control
                 type='number'
                 min={0}
@@ -202,34 +151,7 @@ export default function PositionControls({
                   }
                 }}
               />
-              {/* <Button
-                variant='outline-secondary'
-                size='sm'
-                onClick={() =>
-                  movePosition(
-                    component.type === 'price' || component.type === 'number' ? 'up' : 'down',
-                    1
-                  )
-                }
-              >
-                <i className='fas fa-plus'></i>
-              </Button>
-              <Button
-                variant='outline-secondary'
-                size='sm'
-                onClick={() =>
-                  movePosition(
-                    component.type === 'price' || component.type === 'number'
-                      ? 'down'
-                      : 'up',
-                    1
-                  )
-                }
-              >
-               <small> <i className='fas fa-minus'></i></small>
-              </Button> */}
             </InputGroup>
-           
           </div>
 
           {/* Position horizontale */}
@@ -239,33 +161,36 @@ export default function PositionControls({
               {/* {component.type === 'price' || component.type === 'number' ? 'Droite' : 'Gauche'} */}
               Horiz.
             </Form.Label>
-                         <Form.Range
-                 min={component.type === 'price' || component.type === 'number' ? -pageWidth * 2 : 0}
-                 max={component.type === 'price' || component.type === 'number' ? pageWidth * 2 : pageWidth * scaleFactor}
-                 step={1}
-                 value={
-                     component.type === 'price' || component.type === 'number'
-                       ? component.right || 0
-                       : component.left || 0
-                   }
-                 onChange={(e) => {
-                   const value = parseInt(e.target.value) || 0
-                   if (component.type === 'price' || component.type === 'number') {
-                     updateComponent({
-                       right: value,
-                     } as Partial<NumberComponentType | PrincipalPriceComponentType>)
-                   } else {
-                     updateComponent({
-                       left: value,
-                     } as Partial<TextComponentType>)
-                   }
-                 }}
-               />
+            <Form.Range
+              min={
+                component.type === 'price' || component.type === 'number' ? -pageWidth * 2 : 0
+              }
+              max={
+                component.type === 'price' || component.type === 'number'
+                  ? pageWidth * 2
+                  : pageWidth * scaleFactor
+              }
+              step={1}
+              value={
+                component.type === 'price' || component.type === 'number'
+                  ? component.right || 0
+                  : component.left || 0
+              }
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 0
+                if (component.type === 'price' || component.type === 'number') {
+                  updateComponent({
+                    right: value,
+                  } as Partial<NumberComponentType | PrincipalPriceComponentType>)
+                } else {
+                  updateComponent({
+                    left: value,
+                  } as Partial<TextComponentType>)
+                }
+              }}
+            />
             <InputGroup size='sm'>
-              {/* <InputGroup.Text>
-                <i className='fas fa-arrow-left'></i>
-              </InputGroup.Text> */}
-              
+
               <Form.Control
                 type='number'
                 min={
@@ -295,68 +220,10 @@ export default function PositionControls({
                   }
                 }}
               />
-              {/* <Button
-                variant='outline-secondary'
-                size='sm'
-                onClick={() =>
-                  movePosition(
-                    component.type === 'price' || component.type === 'number'
-                      ? 'left'
-                      : 'right',
-                    1
-                  )
-                }
-              >
-                <i className='fas fa-plus'></i>
-              </Button>
-              <Button
-                variant='outline-secondary'
-                size='sm'
-                onClick={() =>
-                  movePosition(
-                    component.type === 'price' || component.type === 'number'
-                      ? 'right'
-                      : 'left',
-                    1
-                  )
-                }
-              >
-                <i className='fas fa-minus'></i>
-              </Button> */}
 
             </InputGroup>
-             
           </div>
         </div>
-
-        {/* Slider pour ajustement fin */}
-        {/* <div className='mt-3'>
-          <Form.Label className='small'>
-            <i className='fas fa-sliders-h me-1'></i>
-            Ajustement fin
-          </Form.Label>
-          <Form.Range
-            min={0}
-            max={100}
-            step={1}
-            value={50}
-            onChange={(e) => {
-              const percentage = parseInt(e.target.value) / 100
-              if (component.type === 'price' || component.type === 'number') {
-                updateComponent({
-                  bottom: percentage * pageHeight * scaleFactor,
-                  right: 0,
-                } as Partial<NumberComponentType | PrincipalPriceComponentType>)
-              } else {
-                updateComponent({
-                  top: percentage * pageHeight * scaleFactor,
-                  left: percentage * pageWidth * scaleFactor,
-                } as Partial<TextComponentType>)
-              }
-            }}
-            className='mt-1'
-          />
-        </div> */}
       </div>
     </div>
   )
