@@ -6,7 +6,7 @@ import { _getPictures } from '@/utils/apiFunctions'
 import { _showToast } from '@/utils/notifications'
 import { AxiosError } from 'axios'
 import React from 'react'
-import { Badge, Button, Card, Container } from 'react-bootstrap'
+import { Badge, Button, ButtonGroup, Card, Container } from 'react-bootstrap'
 import { useOutletContext } from 'react-router-dom'
 
 
@@ -135,21 +135,35 @@ export default function PicturesLibraryPage() {
   return (
     <Container fluid className='p-0'>
       <h3 className='py-3'>Gestion des images</h3>
-      <Button onClick={handleShowAdd}>+</Button>
+      <Container className='text-end'>
+        <ButtonGroup >
+        <Button onClick={handleShowAdd}  >
+          <i className='fas fa-circle-plus'></i>
+        </Button>
+        <Button onClick={handleShowAdd} >
+           ajouter une image
+        </Button>
+        </ButtonGroup>
+      </Container>
       <Container className='d-flex flex-wrap align-items-center mt-5 mb-5 gap-4'>
         {pictures.map((pict) => (
           <>
-          <Card key={pict.id} style={{position: "relative"}}>
-            <Card.Body>
-              <img src={API_URL + pict.src} alt={pict.name} width={100} />
-            </Card.Body>
-            <Badge pill bg="secondary" style={{position:"absolute", top: 2, right: 2}}
-            onClick={() => {
-              handleShowDelete()
-              setSelectedPicture(pict)
-            }}
-            >x</Badge>
-          </Card>
+            <Card key={pict.id} style={{ position: 'relative' }}>
+              <Card.Body>
+                <img src={API_URL + pict.src} alt={pict.name} width={100} />
+              </Card.Body>
+              <Badge
+                pill
+                bg='secondary'
+                style={{ position: 'absolute', top: 2, right: 2 }}
+                onClick={() => {
+                  handleShowDelete()
+                  setSelectedPicture(pict)
+                }}
+              >
+                x
+              </Badge>
+            </Card>
           </>
         ))}
       </Container>
