@@ -13,19 +13,31 @@ class VariousPicturesServices {
   }
 
   async postPictures(newPicture: FormData) {
-
+    console.log(newPicture)
     const config = {
       method: 'POST',
       url: `${API_URL}/api/add-various-picture`,
       headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Content-Type': 'multipart/form-data'
       },
-      body:  newPicture,
+      data: newPicture,
     }
 
     return axios.request(config)
   }
 
+  async deletePicture(id: number) {
+    const config = {
+      method: 'DELETE',
+      url: `${API_URL}/api/various-pictures/${id}`,
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+      },
+    }
+
+    return axios.request(config)
+  }
 
 }
 

@@ -26,9 +26,9 @@ export type FeedBackSatateType = {
 }
 
 export type PictureType = {
-  "id": number
+  "id"?: number
   "name": string
   "src": string
   "value": string
-  "createAt": string
+  "createdAt": string
 }

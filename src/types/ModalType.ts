@@ -80,7 +80,7 @@ export interface ModalDeleteUserType {
 export interface ModalGenericDeletePropsType {
   show: boolean;
   handleClose: () => void;
-  selectedId: number | null;
+  selectedId: number | null | undefined;
   handleDelete: (id: number) => void | Promise<void>;
   title: string;
   isLoading: boolean;
@@ -100,5 +100,23 @@ export interface ModalAddShopType {
   setFile: React.Dispatch<React.SetStateAction<File | null>>
   feedBackState: FeedBackSatateType
 
+}
+
+
+export interface ModalAddPictureType {
+  showAdd: boolean 
+  handleCloseAdd: () => void 
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void 
+  imageName: string
+  setImageName: React.Dispatch<React.SetStateAction<string>>
+  setFile: React.Dispatch<React.SetStateAction<File | null>>
+  // setImgRglt: React.Dispatch<React.SetStateAction<File | null>>
+  // feedBackState: FeedBackSatateType
+  // shops: ShopType[]
+  // // resetForm: () => void
+  // validated: boolean
+  file: File | null
+  // fieldErrors: {[key: string]: string}
+  // validateField: (fieldName: string, value: string) => void
 }
 

@@ -12,6 +12,7 @@ import {
   ModalAddShopType,
   ModalAddEditCategoryType,
   ModalUpdateModelType,
+  ModalAddPictureType,
 } from '@/types/ModalType'
 import { ShopType } from '@/types/ShopType'
 import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
@@ -808,6 +809,124 @@ export function ModalGenericDelete({
           {isLoading ? <Spinner size='sm' animation='border' variant='light' /> : 'Valider'}
         </Button>
       </Modal.Footer>
+    </Modal>
+  )
+}
+
+
+export function ModalAddPicture({
+  modalAddPictureProps,
+}: {
+  modalAddPictureProps: ModalAddPictureType
+}) {
+  const {
+    showAdd, handleCloseAdd, handleSubmit, imageName, setImageName, setFile
+  } = modalAddPictureProps
+
+
+
+  return (
+    <Modal show={showAdd} onHide={handleCloseAdd}>
+      <Form 
+      // noValidate validated={validated} 
+      onSubmit={handleSubmit}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <i className='fa fa-plus-circle text-primary fs-1'></i> &nbsp;Ajouter une nouvelle
+            catégorie
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className='mb-3' controlId='categoryName'>
+            <Form.Label>
+              Nom<span className='text-danger'>*</span>
+            </Form.Label>
+            <Form.Control
+              type='text'
+              placeholder="Saissisez le nom de l'image"
+              value={imageName || ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setImageName(e.target.value)
+                // validateField('name', e.target.value)
+              }}
+              // onBlur={(e) => validateField('name', e.target.value)}
+              required
+              // isInvalid={(validated && !formData.name.trim()) || !!fieldErrors.name}
+            />
+            {/* <Form.Control.Feedback type='invalid'>
+              {fieldErrors.name || 'Veuillez saisir un nom de catégorie.'}
+            </Form.Control.Feedback> */}
+          </Form.Group>
+          {/* <Form.Group className='mb-3' controlId='categoryIcon'>
+            <Form.Label>Icône</Form.Label>
+            <Dropdown>
+              <Dropdown.Toggle
+                variant='transparente'
+                id='catIcon'
+                className='w-100 text-start border'
+              >
+                {formData.icon && formData.icon.value ? (
+                  <>
+                    <i className={formData.icon.value + ' fs-5 text-primary'}></i>
+                    <span className='ms-2'>{formData.icon.name}</span>
+                  </>
+                ) : (
+                  'Sélectionnez une icone'
+                )}
+              </Dropdown.Toggle>
+              <Dropdown.Menu className='w-100'>
+                <Dropdown.Item
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, icon: { name: '', value: '' } }))
+                  }
+                >
+                  Annuler
+                </Dropdown.Item>
+                {fontAwesomeIcons.map((icon) => (
+                  <Dropdown.Item
+                    key={icon.name}
+                    onClick={() => setFormData((prev) => ({ ...prev, icon }))}
+                  >
+                    <i className={icon.value + ' fs-5 me-2 text-primary'}></i>
+                    <span style={{ fontSize: 15 }}>{icon.name}</span>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </Form.Group> */}
+          <Form.Group controlId='formFile' className='mb-3'>
+            <Form.Label className=''>Ajouter une image(header)</Form.Label>
+            <Form.Control
+              type='file'
+              accept='image/*'
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                _handleFileChange(e, setFile)
+              }
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              setImageName("")
+              handleCloseAdd()
+            }}
+          >
+            Annuler
+          </Button>
+          <Button variant='success' 
+          // disabled={feedBackState.isLoading} 
+          type='submit'>
+            Valider
+            {/* {feedBackState.isLoading && (
+              <Spinner size='sm' animation='border' role='status' aria-hidden='true' />
+            )}
+            &nbsp;{feedBackState.isLoading ? feedBackState.loadingMessage : 'Valider'} */}
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   )
 }

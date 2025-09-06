@@ -137,16 +137,6 @@ export default function PictureAdder({
                 const garantieValue = e.target.value
                 setSelectedGarantie(garantieValue)
                 const garantieSrc = e.target.value
-                // let garantieSrc = ''
-                // if (garantieValue === '6mois') {
-                //   garantieSrc = '/uploads/garantie-6-mois.png'
-                // } else if (garantieValue === '1an') {
-                //   garantieSrc = '/uploads/garantie-1-an.png'
-                // } else if (garantieValue === '2ans') {
-                //   garantieSrc = '/uploads/garantie-2-ans.png'
-                // } else {
-                //   garantieSrc = ''
-                // }
                 // Récupère la taille réelle du canvas
                 let canvasWidth = pageWidth
                 let canvasHeight = pageHeight
@@ -180,8 +170,7 @@ export default function PictureAdder({
                     !(
                       comp.type === 'image' &&
                       'src' in comp &&
-                      typeof comp.src === 'string' &&
-                      comp.src.includes('garantie-')
+                      typeof comp.src === 'string' 
                     )
                 )
                 if (garantieSrc && garantieSrc !== "aucune") {
