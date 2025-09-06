@@ -1,6 +1,6 @@
-// import VariousPicturesServices from '@/services/VariousPicturesServices'
 import { ModalAddPicture, ModalGenericDelete } from '@/components/ui/Modals'
 import VariousPicturesServices from '@/services/VariousPicturesServices'
+// import userDataStore from '@/stores/userDataStore'
 import { PictureType, ToastDataType } from '@/types/DiversType'
 import { _getPictures } from '@/utils/apiFunctions'
 import { _showToast } from '@/utils/notifications'
@@ -9,12 +9,10 @@ import React from 'react'
 import { Badge, Button, Card, Container } from 'react-bootstrap'
 import { useOutletContext } from 'react-router-dom'
 
+
 interface ContextType {
   toggleShow: () => void
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
-    // shops: ShopType[]
-    // feedBackState: FeedBackSatateType
-    // setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>
 }
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -22,6 +20,7 @@ const API_URL = import.meta.env.VITE_API_URL
 export default function PicturesLibraryPage() {
 
     const {toggleShow, setToastData} = useOutletContext<ContextType>()
+    // const userLogOut = userDataStore((state) => state.authLogout)
 
     const [pictures, setPictures] = React.useState<PictureType[]>([])
     const [file, setFile] = React.useState<File | null>(null)
@@ -113,7 +112,12 @@ export default function PicturesLibraryPage() {
     } catch (error: unknown) {
       console.log(error)
       if(error instanceof AxiosError){
-        _showToast(false, error.response?.data.message || error.response?.data.error, setToastData, toggleShow, 4000)
+        if(error.status === 401 && error.response?.data.code === "TOKEN_EXPIRED"){
+          _showToast(false, "Session expirée, reconnectez-vous", setToastData, toggleShow, 5000)
+          // userLogOut()
+        }else{
+          _showToast(false, error.response?.data.message || error.response?.data.error, setToastData, toggleShow, 4000)
+        }
       }
     } finally {
       setIsLoading(false)
