@@ -30,3 +30,19 @@ p{
 /* .bg-salmon{
   background-color: #fcb3aa;
 } */
+
+/* Styles pour l'effet de survol sur les cartes d'images */
+.hovered-display .delete-badge {
+  display: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hovered-display:hover .delete-badge {
+  display: block;
+}
+
+.hovered-display:hover .delete-badge:hover {
+  background-color: #dc3545 !important;
+  transform: scale(1.1);
+}

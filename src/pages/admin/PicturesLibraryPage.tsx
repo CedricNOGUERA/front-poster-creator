@@ -160,20 +160,21 @@ export default function PicturesLibraryPage() {
       </Container>
       <Container className='d-flex flex-wrap align-items-center mt-5 mb-5 gap-4'>
         {pictures.map((pict) => (
-            <Card key={pict.id} style={{ position: 'relative' }}>
+            <Card key={pict.id} style={{ position: 'relative' }} className='hovered-display'>
               <Card.Body>
                 <img src={API_URL + pict.src} alt={pict.name} width={100} />
               </Card.Body>
               <Badge
                 pill
                 bg='secondary'
-                style={{ position: 'absolute', top: 2, right: 2 }}
+                style={{ position: 'absolute', top: -10, right: -10 }}
+                className='delete-badge'
                 onClick={() => {
                   handleShowDelete()
                   setSelectedPicture(pict)
                 }}
               >
-                x
+                <i className='fas fa-xmark'></i>
               </Badge>
             </Card>
         ))}
