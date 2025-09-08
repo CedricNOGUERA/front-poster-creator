@@ -1,13 +1,14 @@
 import { ModalAddPicture, ModalGenericDelete } from '@/components/ui/Modals'
 import VariousPicturesServices from '@/services/VariousPicturesServices'
+import userDataStore from '@/stores/userDataStore'
 // import userDataStore from '@/stores/userDataStore'
 import { PictureType, ToastDataType } from '@/types/DiversType'
 import { _getPictures } from '@/utils/apiFunctions'
-import { _showToast } from '@/utils/notifications'
+import { _expiredSession, _showToast } from '@/utils/notifications'
 import { AxiosError } from 'axios'
 import React from 'react'
 import { Badge, Button, ButtonGroup, Card, Container } from 'react-bootstrap'
-import { useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 
 
 interface ContextType {
@@ -20,7 +21,8 @@ const API_URL = import.meta.env.VITE_API_URL
 export default function PicturesLibraryPage() {
 
     const {toggleShow, setToastData} = useOutletContext<ContextType>()
-    // const userLogOut = userDataStore((state) => state.authLogout)
+    const userLogOut = userDataStore((state) => state.authLogout)
+    const navigate = useNavigate()
 
     const [pictures, setPictures] = React.useState<PictureType[]>([])
     const [file, setFile] = React.useState<File | null>(null)
@@ -53,24 +55,24 @@ export default function PicturesLibraryPage() {
     }, [])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-
     e.preventDefault()
     setIsLoading(false)
 
-    const valuePicture = imageName.normalize('NFD') // transforme é → e + ́
-    .replace(/[\u0300-\u036f]/g, '') // retire les accents
-    .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
-    .toLowerCase()
-    
+    const valuePicture = imageName
+      .normalize('NFD') // transforme é → e + ́
+      .replace(/[\u0300-\u036f]/g, '') // retire les accents
+      .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
+      .toLowerCase()
+
     const pictureData = {
       name: imageName,
-      value: valuePicture
+      value: valuePicture,
     }
 
     const newPictureData = new FormData()
     newPictureData.append('data', JSON.stringify(pictureData))
 
-    if(file){
+    if (file) {
       newPictureData.append('image', file)
     }
 
@@ -78,22 +80,28 @@ export default function PicturesLibraryPage() {
       const response = await VariousPicturesServices.postPictures(newPictureData)
       console.log(response)
 
-      if(response.status === 201){
-        console.log("image ajoutée")
-        _showToast(true, "image ajoutée avec succès", setToastData, toggleShow, 4000)
+      if (response.status === 201) {
+        console.log('image ajoutée')
+        _showToast(true, 'image ajoutée avec succès', setToastData, toggleShow, 4000)
 
         handleCloseAdd()
         _getPictures(setPictures)
       }
-
     } catch (error: unknown) {
       console.log(error)
-      if(error instanceof AxiosError){
-        _showToast(false, error.response?.data.error, setToastData, toggleShow, 4000)
+      if (error instanceof AxiosError) {
+        if (error.status === 401 && error.response?.data.code === 'TOKEN_EXPIRED') {
+          _expiredSession(
+            (success: boolean, message: string, delay: number) =>
+              _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate
+          )
+        }
       }
-
     }
   }
+
   const deletePicture = async(id: number) => {
     setIsLoading(true)
     
@@ -103,6 +111,7 @@ export default function PicturesLibraryPage() {
 
       if(response.status === 200){
         console.log("image supprimée")
+
         _showToast(true, "Image supprimée avec succès", setToastData, toggleShow, 4000)
         
         handleCloseDelete()
@@ -113,8 +122,12 @@ export default function PicturesLibraryPage() {
       console.log(error)
       if(error instanceof AxiosError){
         if(error.status === 401 && error.response?.data.code === "TOKEN_EXPIRED"){
-          _showToast(false, "Session expirée, reconnectez-vous", setToastData, toggleShow, 5000)
-          // userLogOut()
+          _expiredSession(
+            (success: boolean, message: string, delay: number) =>
+              _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate
+          )
         }else{
           _showToast(false, error.response?.data.message || error.response?.data.error, setToastData, toggleShow, 4000)
         }
@@ -141,13 +154,12 @@ export default function PicturesLibraryPage() {
           <i className='fas fa-circle-plus'></i>
         </Button>
         <Button onClick={handleShowAdd} >
-           ajouter une image
+          ajouter une image
         </Button>
         </ButtonGroup>
       </Container>
       <Container className='d-flex flex-wrap align-items-center mt-5 mb-5 gap-4'>
         {pictures.map((pict) => (
-          <>
             <Card key={pict.id} style={{ position: 'relative' }}>
               <Card.Body>
                 <img src={API_URL + pict.src} alt={pict.name} width={100} />
@@ -164,7 +176,6 @@ export default function PicturesLibraryPage() {
                 x
               </Badge>
             </Card>
-          </>
         ))}
       </Container>
       <ModalAddPicture modalAddPictureProps={modalAddPictureProps} />

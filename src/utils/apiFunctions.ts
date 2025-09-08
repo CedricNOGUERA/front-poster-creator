@@ -604,7 +604,6 @@ export const _getAllUsers = async (
 export const _getPictures = async (setPictures: React.Dispatch<React.SetStateAction<PictureType[]>>) => {
   try{
       const response = await VariousPicturesServices.getVariousPictures()
-      console.log(response)
       if(response.status === 200){
           setPictures(response?.data)
       }
