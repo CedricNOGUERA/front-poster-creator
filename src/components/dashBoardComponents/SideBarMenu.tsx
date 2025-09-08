@@ -10,6 +10,7 @@ export const SideBarMenu = ({
 }) => {
 
   const userRole = userDataStore((state: UserDataType) => state.role)
+  const userName = userDataStore((state: UserDataType) => state.name)
 
 
   const menuMap = sideBarMenuAdmin
@@ -26,13 +27,18 @@ export const SideBarMenu = ({
 
   })
   .map((item) =>{ 
-
+    if (item.title === 'Photothèque' && userName !== 'Cédric') {
+      return false
+    }
+    
     return(
+      
     <Container
     key={item.id}
       className='dash-menu-link  py-3 rounded-end pointer'
       onClick={() => setDisplay(item.display)}
     >
+
       <div className='d-flex align-items-center text-decoration-none text-muted ps-2'>
         <i className={`${item.icon} me-2`}></i>
         {item.title}
