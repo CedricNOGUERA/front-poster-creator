@@ -28,6 +28,7 @@ import * as htmlToImage from 'html-to-image'
 import modelsServiceInstance from '@/services/modelsServices'
 import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
+import { TemplateType } from '@/types/TemplatesType'
 
 interface ContextInlineDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -761,6 +762,10 @@ export default function InlineDragDropEditor() {
     addModel,
     imageName,
     setImageName,
+    template: [] as TemplateType[],
+    setTemplate: () => {},
+    isErrorModel: false,
+    hasModel: false,
   }
 
   /* render

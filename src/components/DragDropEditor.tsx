@@ -28,6 +28,7 @@ import * as htmlToImage from 'html-to-image'
 import modelsServiceInstance from '@/services/modelsServices'
 import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
+import { TemplateType } from '@/types/TemplatesType'
 
 interface ContextDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -655,6 +656,10 @@ export default function DragDropEditor() {
     addModel,
     imageName,
     setImageName,
+    template: [] as TemplateType[],
+    setTemplate: () => {},
+    isErrorModel: false,
+    hasModel: false,
   }
 
   /* render
