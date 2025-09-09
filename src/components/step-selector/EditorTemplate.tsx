@@ -315,7 +315,7 @@ export const EditorTemplate = () => {
       return (
         <div
           key={index}
-          className={`absolute cursor-move pointer text-end`}
+          className={`absolute cursor-move pointer text-start`}
           style={{
             position: 'absolute',
             top: `${textComp?.top ?? 0}px`,
@@ -341,7 +341,7 @@ export const EditorTemplate = () => {
       return (
         <div
           key={index}
-          className={`absolute cursor-move pointer text-end`}
+          className={`absolute cursor-move pointer text-start`}
           style={{
             position: 'absolute',
             top: `${textComp?.top ?? 0}px`,
