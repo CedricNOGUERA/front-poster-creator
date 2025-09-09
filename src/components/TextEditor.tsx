@@ -79,48 +79,52 @@ export function TextEditor({
   //   return selectedText.includes('<sup>') && selectedText.includes('</sup>')
   // }
 
+
+  console.log(comp.type)
+
   return (
     <div>
       <h4 className='fw-bold text-secondary'>Éditer le texte</h4>
-  
+
       <div className='text-start'>
         <Form.Group className='mb-3' controlId='Contenu'>
           <Form.Label>Contenu</Form.Label>
-          <div className='mb-2'>
-            <ButtonGroup size='sm'>
-              <Button
-                variant='outline-secondary'
-                onClick={addSuperscript}
-                title='Mettre en exposant'
-              >
-                <b>X</b><sup>2</sup>
-              </Button>
-              <Button
-                variant='outline-secondary'
-                onClick={removeSuperscript}
-                // disabled={!isSuperscriptSelected()}
-                title="Retirer l'exposant"
-              >
-                <b>X</b>
-                <span style={{ textDecoration: 'line-through' }}>
-                  <sup>2</sup>
-                </span>
-              </Button>
-            </ButtonGroup>
-            <div>
-              <small className='text-muted ms-2'>
-                Sélectionnez du texte puis cliquez sur{' '}
-                <sup>
+          {comp.type === 'enableText' && (
+            <div className='mb-2'>
+              <ButtonGroup size='sm'>
+                <Button
+                  variant='outline-secondary'
+                  onClick={addSuperscript}
+                  title='Mettre en exposant'
+                >
                   <b>X</b>
-                </sup>
-              </small>
+                  <sup>2</sup>
+                </Button>
+                <Button
+                  variant='outline-secondary'
+                  onClick={removeSuperscript}
+                  // disabled={!isSuperscriptSelected()}
+                  title="Retirer l'exposant"
+                >
+                  <b>X</b>
+                  <span style={{ textDecoration: 'line-through' }}>
+                    <sup>2</sup>
+                  </span>
+                </Button>
+              </ButtonGroup>
+              <div>
+                <small className='text-muted ms-2'>
+                  Sélectionnez du texte puis cliquez sur{' '}
+                  <sup>
+                    <b>X</b>
+                  </sup>
+                </small>
+              </div>
+              <div>
+                <small className='text-muted ms-2'>pour le mettre en exposant</small>
+              </div>
             </div>
-            <div>
-              <small className='text-muted ms-2'>
-                pour le mettre en exposant
-              </small>
-            </div>
-          </div>
+          )}
           <Form.Control
             as='textarea'
             rows={3}
@@ -219,7 +223,6 @@ export function TextEditor({
           }
         />
       </div>
-
     </div>
   )
 }

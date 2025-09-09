@@ -481,6 +481,7 @@ React.useEffect(() => {
             minHeight: '10px',
             borderBottom: isSelected ? '1px gray dashed' : '',
             cursor: 'move',
+            lineHeight: `${(comp as TextComponentType).fontSize}px`
           }
         case 'background-color':
           return {
@@ -825,6 +826,7 @@ React.useEffect(() => {
 
                 border: '1px dashed blue',
                 overflow: 'visible',
+                
               }}
             >
               <input
@@ -855,7 +857,7 @@ React.useEffect(() => {
           )
         }
         return (
-          <div key={index} {...commonProps}>
+          <div key={index} {...commonProps} className='text-start'>
             <span 
               style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}
               dangerouslySetInnerHTML={{ __html: textComp.text }}

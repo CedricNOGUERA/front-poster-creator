@@ -1,3 +1,4 @@
+
 export type HeaderComponentType = {
   type: string
   top: number
@@ -44,6 +45,7 @@ export type TextComponentType = {
   color: string
   textDecoration?: 'none' | 'line-through'
   showCustomValue?: boolean;
+  textAlign: string | undefined
 }
 export type NumberComponentType = {
   type: string
