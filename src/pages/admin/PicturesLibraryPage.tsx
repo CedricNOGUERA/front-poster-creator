@@ -15,6 +15,10 @@ interface ContextType {
   toggleShow: () => void
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
 }
+interface feedBackType {
+  isLoading: boolean
+  loadingMessage: string
+}
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -27,7 +31,7 @@ export default function PicturesLibraryPage() {
     const [pictures, setPictures] = React.useState<PictureType[]>([])
     const [file, setFile] = React.useState<File | null>(null)
     const [imageName, setImageName] = React.useState<string>("")
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    // const [isLoading, setIsLoading] = React.useState<boolean>(false);
     
     const [selectedPicture, setSelectedPicture] = React.useState<PictureType>({
       id: 0,
@@ -36,6 +40,10 @@ export default function PicturesLibraryPage() {
       value: "",
       createdAt: ""
     })
+    const [feedBackState, setfeedBackState] = React.useState<feedBackType>({
+      isLoading: false,
+      loadingMessage: "",
+    });
     
 
     const [showAdd, setShowAdd] = React.useState(false)
@@ -56,7 +64,12 @@ export default function PicturesLibraryPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsLoading(false)
+    // setIsLoading(false)
+    setfeedBackState((prev) => ({
+      ...prev,
+      isLoading: true,
+      loadingMessage: "Chargement"
+    }))
 
     const valuePicture = imageName
       .normalize('NFD') // transforme é → e + ́
@@ -83,7 +96,6 @@ export default function PicturesLibraryPage() {
       if (response.status === 201) {
         console.log('image ajoutée')
         _showToast(true, 'image ajoutée avec succès', setToastData, toggleShow, 4000)
-
         handleCloseAdd()
         _getPictures(setPictures)
       }
@@ -99,11 +111,20 @@ export default function PicturesLibraryPage() {
           )
         }
       }
+    }finally{
+      setfeedBackState((prev) => ({
+        ...prev,
+        isLoading: false,
+      }))
     }
   }
 
   const deletePicture = async(id: number) => {
-    setIsLoading(true)
+    setfeedBackState((prev) => ({
+      ...prev,
+      isLoading: true,
+      loadingMessage: "Chargement"
+    }))
     
     try {
       const response = await VariousPicturesServices.deletePicture(id)
@@ -111,13 +132,10 @@ export default function PicturesLibraryPage() {
 
       if(response.status === 200){
         console.log("image supprimée")
-
         _showToast(true, "Image supprimée avec succès", setToastData, toggleShow, 4000)
-        
         handleCloseDelete()
         _getPictures(setPictures)
       }
-
     } catch (error: unknown) {
       console.log(error)
       if(error instanceof AxiosError){
@@ -133,17 +151,21 @@ export default function PicturesLibraryPage() {
         }
       }
     } finally {
-      setIsLoading(false)
+      setfeedBackState((prev) => ({
+        ...prev,
+        isLoading: false,
+        loadingMessage: ""
+      }))
     }
   }
 
 
 
   const modalAddPictureProps = {
-    showAdd, handleCloseAdd, handleSubmit, imageName, setImageName, setFile, file
+    showAdd, handleCloseAdd, handleSubmit, imageName, setImageName, setFile, file, feedBackState
   }
 
-  const modalGenericDeleteProps = { show: showDelete, handleClose: handleCloseDelete, selectedId: selectedPicture.id, handleDelete: deletePicture, title: "l'image", isLoading }
+  const modalGenericDeleteProps = { show: showDelete, handleClose: handleCloseDelete, selectedId: selectedPicture.id, handleDelete: deletePicture, title: "l'image", isLoading: feedBackState.isLoading }
 
   return (
     <Container fluid className='p-0'>

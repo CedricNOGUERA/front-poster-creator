@@ -109,13 +109,13 @@ export interface ModalAddPictureType {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void 
   imageName: string
   setImageName: React.Dispatch<React.SetStateAction<string>>
-  setFile: React.Dispatch<React.SetStateAction<File | null>>
-  // setImgRglt: React.Dispatch<React.SetStateAction<File | null>>
-  // feedBackState: FeedBackSatateType
-  // shops: ShopType[]
-  // // resetForm: () => void
-  // validated: boolean
   file: File | null
+  setFile: React.Dispatch<React.SetStateAction<File | null>>
+  feedBackState: {
+    isLoading: boolean
+    loadingMessage: string
+  }
+  // validated: boolean
   // fieldErrors: {[key: string]: string}
   // validateField: (fieldName: string, value: string) => void
 }
