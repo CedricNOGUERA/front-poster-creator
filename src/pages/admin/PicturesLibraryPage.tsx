@@ -172,11 +172,11 @@ export default function PicturesLibraryPage() {
       <h3 className='py-3'>Gestion des images</h3>
       <Container className='text-end'>
         <ButtonGroup >
-        <Button onClick={handleShowAdd}  >
+        <Button onClick={handleShowAdd} className='pe-1 border-0 border-end border-light' >
           <i className='fas fa-circle-plus'></i>
         </Button>
-        <Button onClick={handleShowAdd} >
-          ajouter une image
+        <Button onClick={handleShowAdd} className='ps-1'>
+          Ajouter une image
         </Button>
         </ButtonGroup>
       </Container>
