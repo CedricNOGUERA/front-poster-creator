@@ -329,7 +329,8 @@ export const EditorTemplate = () => {
             transform: `rotate(${textComp?.rotation}deg)`,
             padding: `0 ${5}px`,
             fontFamily: textComp.fontFamily,
-            textDecoration: textComp.textDecoration ?? 'none'
+            textDecoration: textComp.textDecoration ?? 'none',
+            lineHeight: `${textComp.fontSize}px`
           }}
         >
           {textComp?.text}
@@ -355,7 +356,8 @@ export const EditorTemplate = () => {
             transform: `rotate(${textComp?.rotation}deg)`,
             padding: `0 ${5}px`,
             fontFamily: textComp.fontFamily,
-            textDecoration: textComp.textDecoration ?? 'none'
+            textDecoration: textComp.textDecoration ?? 'none',
+            lineHeight: `${textComp.fontSize}px`
           }}
         >
           <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(textComp?.text || '') }} />
