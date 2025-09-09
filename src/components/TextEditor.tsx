@@ -80,7 +80,6 @@ export function TextEditor({
   // }
 
 
-  console.log(comp.type)
 
   return (
     <div>
