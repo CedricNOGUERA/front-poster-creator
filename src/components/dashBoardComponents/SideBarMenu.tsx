@@ -10,7 +10,7 @@ export const SideBarMenu = ({
 }) => {
 
   const userRole = userDataStore((state: UserDataType) => state.role)
-  const userName = userDataStore((state: UserDataType) => state.name)
+  // const userName = userDataStore((state: UserDataType) => state.name)
 
 
   const menuMap = sideBarMenuAdmin
@@ -27,9 +27,9 @@ export const SideBarMenu = ({
 
   })
   .map((item) =>{ 
-    if (item.title === 'Photothèque' && userName !== 'Cédric') {
-      return false
-    }
+    // if (item.title === 'Photothèque' && userName !== 'Cédric') {
+    //   return false
+    // }
     
     return(
       
