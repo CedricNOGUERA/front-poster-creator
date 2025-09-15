@@ -29,6 +29,7 @@ import { ModalUpdateModel } from './ui/Modals'
 import modelsServiceInstance from '@/services/modelsServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { ModelType } from '@/types/modelType'
+import PrintOptionsModal from './PrintOptionsModal'
 
 interface ContextInlineDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -97,6 +98,10 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     setShowUpdateModel(false)
   }
   const handleShowUpdateModel = () => setShowUpdateModel(true)
+  
+  const [showPrintOptions, setShowPrintOptions] = useState(false)
+  const handleClosePrintOptions = () => setShowPrintOptions(false)
+  const handleShowPrintOptions = () => setShowPrintOptions(true)
 
   /* UseEffect
    *******************************************************************************************/
@@ -859,6 +864,13 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
               Visualiser en PDF
             </Button>
             <Button
+              variant='info'
+              onClick={handleShowPrintOptions}
+              className='me-4'
+            >
+              Options d'impression
+            </Button>
+            <Button
               variant='success'
               onClick={() => {
                 handleShowUpdateModel()
@@ -874,6 +886,12 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         <ComponentEditor ComponentEditorProps={ComponentEditorProps} />
       </div>
       <ModalUpdateModel modalUpdateModelProps={modalUpdateModelProps} />
+      <PrintOptionsModal
+        show={showPrintOptions}
+        onHide={handleClosePrintOptions}
+        templateState={newTemplateState}
+        canvasRef={posterRef}
+      />
     </Container>
   )
 }

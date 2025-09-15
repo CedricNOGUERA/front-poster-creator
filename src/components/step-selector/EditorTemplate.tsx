@@ -22,7 +22,9 @@ import { Button, Col, Container, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
 import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
+import PrintOptionsModal from '../PrintOptionsModal'
 import PictureAdder from '../editorTemplateComponent/PictureAdder'
+// import PrintOptionsModalAdvanced from '../PrintOptionsModalAdvanced'
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -55,6 +57,7 @@ export const EditorTemplate = () => {
   })
   
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
+  const [showPrintOptions, setShowPrintOptions] = useState(false)
 
   /* UseEffect
    *******************************************************************************************/
@@ -527,8 +530,11 @@ export const EditorTemplate = () => {
                       Modifier le modèle
                     </Button>
                   ))}
-                <Button variant='primary' onClick={handleExportToPDF} className='mt-4'>
+                <Button variant='primary' onClick={handleExportToPDF} className='mt-4 me-2'>
                   Génerer le PDF
+                </Button>
+                <Button variant='info' onClick={() => setShowPrintOptions(true)} className='text-muted mt-4'>
+                  Options d'impression
                 </Button>
               </Container>
             </Col>
@@ -537,6 +543,17 @@ export const EditorTemplate = () => {
       ) : (
         <UpdateModel updateModelProps={updateModelProps} />
       )}
+      <PrintOptionsModal
+        show={showPrintOptions}
+        onHide={() => setShowPrintOptions(false)}
+        templateState={{
+          width: pageWidth,
+          height: pageHeight,
+          idShop: storeApp.shopId,
+          idCategory: storeApp.categoryId
+        }}
+        canvasRef={printRef}
+      />
     </>
   )
 }

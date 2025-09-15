@@ -3,11 +3,11 @@ import { ToastPosition } from "react-bootstrap/esm/ToastContainer"
 export type NewTemplateType = {
   idShop: number | undefined
   idCategory: number | undefined
-  nameCategory: string
-  nameTemplate: string
   width: number | undefined
   height: number | undefined
-  orientation: string | null
+  nameCategory?: string
+  nameTemplate?: string
+  orientation?: string | null
 }
 
 export type ToastDataType = {
