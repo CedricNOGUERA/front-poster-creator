@@ -111,8 +111,8 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
             pdf.id === pdfFile.id 
               ? { 
                   ...pdf, 
-                  width: (pdfPage.width / 5.67), 
-                  height: (pdfPage.height / 5.67), 
+                  width: (pdfPage.width), 
+                  height: (pdfPage.height), 
                   preview: pdfPage.imageData,
                   status: 'ready' as const
                 }
@@ -181,9 +181,10 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
           variant="outline-info"
           size="sm"
           onClick={() => setShowHelp(true)}
-          className="ms-2"
+          className="ms-2 border-0"
         >
-          Aide
+          <i className='fa-regular fa-circle-question'></i>
+          {/* Aide */}
         </Button>
       </Modal.Header>
       <Modal.Body>
@@ -211,7 +212,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                     onChange={(e) => setPrintMode(e.target.value as "single" | "multiple" | "combine")}
                     inline
                   />
-                  {/* <Form.Check
+                  <Form.Check
                     type="radio"
                     label="Combinaison de PDFs"
                     name="printMode"
@@ -219,7 +220,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                     checked={printMode === 'combine'}
                     onChange={(e) => setPrintMode(e.target.value as "single" | "multiple" | "combine")}
                     inline
-                  /> */}
+                  />
                 </div>
               </Form.Group>
             </Col>

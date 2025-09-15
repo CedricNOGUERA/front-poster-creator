@@ -29,7 +29,7 @@ import { ModalUpdateModel } from './ui/Modals'
 import modelsServiceInstance from '@/services/modelsServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { ModelType } from '@/types/modelType'
-import PrintOptionsModal from './PrintOptionsModal'
+// import PrintOptionsModal from './PrintOptionsModal'
 
 interface ContextInlineDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -99,9 +99,9 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
   }
   const handleShowUpdateModel = () => setShowUpdateModel(true)
   
-  const [showPrintOptions, setShowPrintOptions] = useState(false)
-  const handleClosePrintOptions = () => setShowPrintOptions(false)
-  const handleShowPrintOptions = () => setShowPrintOptions(true)
+  // const [showPrintOptions, setShowPrintOptions] = useState(false)
+  // const handleClosePrintOptions = () => setShowPrintOptions(false)
+  // const handleShowPrintOptions = () => setShowPrintOptions(true)
 
   /* UseEffect
    *******************************************************************************************/
@@ -863,13 +863,13 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
             >
               Visualiser en PDF
             </Button>
-            <Button
+            {/* <Button
               variant='info'
               onClick={handleShowPrintOptions}
               className='me-4'
             >
               Options d'impression
-            </Button>
+            </Button> */}
             <Button
               variant='success'
               onClick={() => {
@@ -886,12 +886,12 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         <ComponentEditor ComponentEditorProps={ComponentEditorProps} />
       </div>
       <ModalUpdateModel modalUpdateModelProps={modalUpdateModelProps} />
-      <PrintOptionsModal
+      {/* <PrintOptionsModal
         show={showPrintOptions}
         onHide={handleClosePrintOptions}
         templateState={newTemplateState}
         canvasRef={posterRef}
-      />
+      /> */}
     </Container>
   )
 }

@@ -3,7 +3,7 @@
  * Utilise PDF.js via CDN pour extraire le contenu des PDFs
  */
 
-export interface PDFPage {
+export interface PDFPageData {
   imageData: string
   width: number
   height: number
@@ -13,14 +13,27 @@ export interface PDFPage {
 // Déclaration globale pour PDF.js
 declare global {
   interface Window {
-    pdfjsLib: any
+    pdfjsLib: {
+      getDocument: (options: { data: ArrayBuffer }) => { promise: Promise<PDFDocument> }
+      GlobalWorkerOptions: { workerSrc: string }
+    }
   }
+}
+
+interface PDFDocument {
+  numPages: number
+  getPage: (pageNumber: number) => Promise<PDFPage>
+}
+
+interface PDFPage {
+  getViewport: (options: { scale: number }) => { width: number; height: number }
+  render: (options: { canvasContext: CanvasRenderingContext2D; viewport: { width: number; height: number } }) => { promise: Promise<void> }
 }
 
 /**
  * Charge PDF.js depuis le CDN
  */
-const loadPDFJS = (): Promise<any> => {
+const loadPDFJS = (): Promise<typeof window.pdfjsLib> => {
   return new Promise((resolve, reject) => {
     if (window.pdfjsLib) {
       resolve(window.pdfjsLib)
@@ -49,18 +62,19 @@ const loadPDFJS = (): Promise<any> => {
 /**
  * Convertit un PDF en images avec contenu réel
  */
-export const convertPDFToImages = async (pdfFile: File): Promise<PDFPage[]> => {
+export const convertPDFToImages = async (pdfFile: File): Promise<PDFPageData[]> => {
   try {
     const pdfjsLib = await loadPDFJS()
     
     const arrayBuffer = await pdfFile.arrayBuffer()
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-    const pages: PDFPage[] = []
+    const pages: PDFPageData[] = []
 
     // Convertir chaque page en image
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum)
       const viewport = page.getViewport({ scale: 2.0 }) // Échelle pour la qualité
+
       
       // Créer un canvas pour rendre la page
       const canvas = document.createElement('canvas')
@@ -81,14 +95,16 @@ export const convertPDFToImages = async (pdfFile: File): Promise<PDFPage[]> => {
       // Convertir en image
       const imageData = canvas.toDataURL('image/png', 1.0)
       
+    
       pages.push({
         imageData,
-        width: viewport.width,
-        height: viewport.height,
+        width:viewport.width,
+        height:viewport.height,
         pageNumber: pageNum
       })
     }
-console.log(pages)
+
+
     return pages
   } catch (error) {
     console.error('Erreur lors de la conversion PDF:', error)
@@ -100,7 +116,7 @@ console.log(pages)
 /**
  * Version de fallback qui crée un aperçu visuel du PDF
  */
-const convertPDFToImagesFallback = async (pdfFile: File): Promise<PDFPage[]> => {
+const convertPDFToImagesFallback = async (pdfFile: File): Promise<PDFPageData[]> => {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
   if (!context) {
@@ -146,7 +162,7 @@ const convertPDFToImagesFallback = async (pdfFile: File): Promise<PDFPage[]> => 
 /**
  * Convertit un PDF en image simple (première page seulement)
  */
-export const convertPDFToSingleImage = async (pdfFile: File): Promise<PDFPage> => {
+export const convertPDFToSingleImage = async (pdfFile: File): Promise<PDFPageData> => {
   const pages = await convertPDFToImages(pdfFile)
   return pages[0] // Retourner seulement la première page
 }

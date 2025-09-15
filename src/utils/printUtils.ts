@@ -1,7 +1,7 @@
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { NewTemplateType } from '@/types/DiversType'
-import { convertPDFToSingleImage, calculateResizeDimensions } from './pdfConverterReal'
+import { convertPDFToSingleImage } from './pdfConverterReal'
 
 export interface PrintLayout {
   rows: number
@@ -23,6 +23,16 @@ export interface PrintOptions {
   spacing?: number
   uploadedPDFs?: File[]
   resizeMode?: 'proportional' | 'original' | 'fit'
+}
+
+// Helper pour obtenir des dimensions de page valides
+const getPageDimensions = (opts: PrintOptions): PageDimensions => {
+  if (opts.pageFormat === 'custom' && opts.customDimensions) {
+    return opts.customDimensions
+  }
+  // Cast restreint car PrintOptions ne propose que 'A4' | 'A3' en plus de 'custom'
+  const key = opts.pageFormat as 'A4' | 'A3'
+  return PAGE_DIMENSIONS[key]
 }
 
 // Dimensions des formats de page en mm
@@ -85,9 +95,7 @@ export const generateMultipleCopiesPDF = async (
     throw new Error('Dimensions du template non définies')
   }
 
-  const pageDimensions = options.pageFormat === 'custom' && options.customDimensions
-    ? options.customDimensions
-    : PAGE_DIMENSIONS[options.pageFormat]
+  const pageDimensions = getPageDimensions(options)
 
   const layout = calculateOptimalLayout(
     templateState.width,
@@ -151,9 +159,8 @@ export const generateSinglePDF = async (
   templateState: NewTemplateType,
   options: PrintOptions
 ): Promise<void> => {
-  const pageDimensions = options.pageFormat === 'custom' && options.customDimensions
-    ? options.customDimensions
-    : PAGE_DIMENSIONS[options.pageFormat]
+  // Marque le paramètre comme utilisé pour la linter
+  void options
 
   // Capturer le canvas
   const canvas = await html2canvas(canvasElement, {
@@ -197,9 +204,7 @@ export const generateCombinedPDF = async (
   templateState: NewTemplateType,
   options: PrintOptions
 ): Promise<void> => {
-  const pageDimensions = options.pageFormat === 'custom' && options.customDimensions
-    ? options.customDimensions
-    : PAGE_DIMENSIONS[options.pageFormat]
+  const pageDimensions = getPageDimensions(options)
 
   
   // Capturer le canvas actuel
@@ -226,6 +231,9 @@ export const generateCombinedPDF = async (
   })
 
   const spacing = options.spacing || 5
+  // PDF.js renders pages into a canvas in CSS pixels at 96 dpi, multiplied by the viewport scale (here 2).
+  // That means effective dpi ~= 96 * 2 = 192. Convert pixels to millimeters accordingly for jsPDF.
+  const PX_TO_MM = 1/5.67
   let currentX = spacing
   let currentY = spacing
   let maxHeightInRow = posterHeight
@@ -254,67 +262,75 @@ export const generateCombinedPDF = async (
         }
 
         // Calculer les dimensions selon le mode choisi
-        let resizeDimensions: { width: number; height: number }
-        console.log(options)
+        // let resizeDimensions: { width: number; height: number }
+  
+        // Dimensions originales du PDF converties en millimètres
+        // const originalWidthMm = pdfPage.width
+        // const originalHeightMm = pdfPage.height
+        const originalWidthMm = pdfPage.width * PX_TO_MM
+        const originalHeightMm = pdfPage.height * PX_TO_MM
         
-        switch (options.resizeMode || 'proportional') {
-          case 'original':
-            default:
-            // Conserver les dimensions d'origine
-            resizeDimensions = {
-              width: pdfPage.width,
-              height: pdfPage.height
-            }
-            break
+        // switch (options.resizeMode ?? 'original') {
+        //   case 'original':
+            // Conserver les dimensions d'origine (converties en mm)
+            // resizeDimensions = {
+            //   width: originalWidthMm,
+            //   height: originalHeightMm
+            // }
+            // break
+          // case 'fit':
+          //   // Ajuster pour maximiser l'utilisation de l'espace
+          //   resizeDimensions = calculateResizeDimensions(
+          //     originalWidthMm,
+          //     originalHeightMm,
+          //     availableWidth,
+          //     availableHeight
+          //   )
+          //   break
+          // case 'proportional':
+          // default: {
+          //   // Redimensionnement proportionnel intelligent
+          //   const maxAllowedWidth = Math.min(availableWidth, posterWidth) // Ne jamais dépasser la taille de l'affiche
+          //   const maxAllowedHeight = Math.min(availableHeight, posterHeight)
             
-          case 'fit':
-            // Ajuster pour maximiser l'utilisation de l'espace
-            resizeDimensions = calculateResizeDimensions(
-              pdfPage.width,
-              pdfPage.height,
-              availableWidth,
-              availableHeight
-            )
-            break
-            
-          case 'proportional':
-        
-            // Redimensionnement proportionnel intelligent
-            const maxAllowedWidth = Math.min(availableWidth, posterWidth * 1.5) // Max 1.5x la taille de l'affiche
-            const maxAllowedHeight = Math.min(availableHeight, posterHeight * 1.5)
-            
-            resizeDimensions = calculateResizeDimensions(
-              pdfPage.width,
-              pdfPage.height,
-              maxAllowedWidth,
-              maxAllowedHeight
-            )
-            break
-        }
+          //   resizeDimensions = calculateResizeDimensions(
+          //     originalWidthMm,
+          //     originalHeightMm,
+          //     maxAllowedWidth,
+          //     maxAllowedHeight
+          //   )
+          //   break
+          // }
+        // }
+    
 
         // Vérifier si l'image rentre dans l'espace disponible
-        if (resizeDimensions.width <= availableWidth && resizeDimensions.height <= availableHeight) {
+        if (originalWidthMm <= availableWidth && originalHeightMm <= availableHeight) {
           pdf.addImage(
             pdfPage.imageData,
             'PNG',
             currentX,
             currentY,
-            resizeDimensions.width,
-            resizeDimensions.height,
+            originalWidthMm,
+            originalHeightMm,
+            // resizeDimensions.width,
+            // resizeDimensions.height,
             undefined,
             'FAST'
           )
           
-          currentX += resizeDimensions.width + spacing
-          maxHeightInRow = Math.max(maxHeightInRow, resizeDimensions.height)
+          currentX += originalWidthMm + spacing
+          // currentX += resizeDimensions.width + spacing
+          // maxHeightInRow = Math.max(maxHeightInRow, resizeDimensions.height)
+          maxHeightInRow = Math.max(maxHeightInRow, originalHeightMm)
         } else {
           // L'image ne rentre pas, passer à la ligne suivante
           currentX = spacing
           currentY += maxHeightInRow + spacing
-          maxHeightInRow = resizeDimensions.height
+          maxHeightInRow = originalHeightMm
           
           // Vérifier si on a encore de la place
-          if (currentY + resizeDimensions.height > pageDimensions.height) {
+          if (currentY + originalHeightMm > pageDimensions.height) {
             console.warn(`Le PDF ${pdfFile.name} ne peut pas être ajouté, pas assez d'espace`)
             break
           }
@@ -324,13 +340,13 @@ export const generateCombinedPDF = async (
             'PNG',
             currentX,
             currentY,
-            resizeDimensions.width,
-            resizeDimensions.height,
+            originalWidthMm,
+            originalHeightMm,
             undefined,
             'FAST'
           )
           
-          currentX += resizeDimensions.width + spacing
+          currentX += originalWidthMm + spacing
         }
       } catch (error) {
         console.error(`Erreur lors du traitement du PDF ${pdfFile.name}:`, error)

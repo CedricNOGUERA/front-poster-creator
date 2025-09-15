@@ -8,11 +8,11 @@ interface PrintHelpModalProps {
 
 const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
   return (
-    <Modal show={show} onHide={onHide} size="lg" centered>
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={onHide} size="lg" >
+      <Modal.Header className='border border-3 border-info  border-bottom-0' closeButton>
         <Modal.Title>Guide d'utilisation - Options d'impression</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className='border border-3 border-info border-top-0 border-bottom-0'>
         <Row>
           <Col md={12}>
             <h5>🎯 Modes d'impression disponibles</h5>
@@ -64,12 +64,12 @@ const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
               <ListGroup.Item>A3 (297 × 420 mm)</ListGroup.Item>
               <ListGroup.Item>A5 (148 × 210 mm)</ListGroup.Item>
               <ListGroup.Item>A2 (420 × 594 mm)</ListGroup.Item>
-              <ListGroup.Item>Personnalisé</ListGroup.Item>
+              {/* <ListGroup.Item>Personnalisé</ListGroup.Item> */}
             </ListGroup>
           </Col>
         </Row>
 
-        <Row className="mb-4">
+        {/* <Row className="mb-4">
           <Col md={12}>
             <h5>⚙️ Fonctionnalités avancées</h5>
             <Row>
@@ -128,9 +128,9 @@ const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
               </ListGroup.Item>
             </ListGroup>
           </Col>
-        </Row>
+        </Row> */}
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className='border border-3 border-info border-top-0'>
         <Button variant="secondary" onClick={onHide}>
           Fermer
         </Button>
