@@ -196,7 +196,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                 <div className='d-flex flex-row justify-content-around border rounded-3 py-3'>
                   <Form.Check
                     type="radio"
-                    label="Impression simple"
+                    label="Extraction simple"
                     name="printMode"
                     value="single"
                     checked={printMode === 'single'}
@@ -238,7 +238,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
                       <option value="A3">A3 (297 x 420 mm)</option>
-                      <option value="custom">Personnalisé</option>
+                      {/* <option value="custom">Personnalisé</option> */}
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -308,7 +308,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
           {printMode === 'combine' && (
             <>
               <Row>
-                <Col md={12}>
+                <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Format de page de sortie</Form.Label>
                     <Form.Select
@@ -317,12 +317,24 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
                       <option value="A3">A3 (297 x 420 mm)</option>
-                      <option value="custom">Personnalisé</option>
+                      {/* <option value="custom">Personnalisé</option> */}
                     </Form.Select>
                   </Form.Group>
                 </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Espacement entre les PDFs (mm)</Form.Label>
+                    <Form.Control
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={spacing}
+                      onChange={(e) => setSpacing(parseInt(e.target.value))}
+                    />
+                  </Form.Group>
+                </Col>
               </Row>
-
+            
               {pageFormat === 'custom' && (
                 <Row>
                   <Col md={6}>
@@ -370,50 +382,59 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                   <Col md={12}>
                     <h6>PDFs sélectionnés:</h6>
                     {uploadedPDFs.map(pdf => {
-                    console.log(pdf)
-                   return (
-                      <Card key={pdf.id} className="mb-2">
-                        <Card.Body className="py-2">
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div className="d-flex align-items-center">
-                              {pdf.status === 'processing' && (
-                                <div className="spinner-border spinner-border-sm me-2" role="status">
-                                  <span className="visually-hidden">Chargement...</span>
-                                </div>
-                              )}
-                              {pdf.status === 'ready' && pdf.preview && (
-                                <img 
-                                  src={pdf.preview} 
-                                  alt="Aperçu" 
-                                  style={{ width: '30px', height: '30px', objectFit: 'cover', marginRight: '10px' }}
-                                />
-                              )}
-                              {pdf.status === 'error' && (
-                                <span className="text-danger me-2">❌</span>
-                              )}
-                              <div>
-                                <div>{pdf.name}</div>
-                                {pdf.status === 'ready' && (
-                                  <small className="text-muted">
-                                    {Math.round(pdf.width)} × {Math.round(pdf.height)} px
-                                  </small>
+                      return (
+                        <Card key={pdf.id} className='mb-2'>
+                          <Card.Body className='py-2'>
+                            <div className='d-flex justify-content-between align-items-center'>
+                              <div className='d-flex align-items-center'>
+                                {pdf.status === 'processing' && (
+                                  <div
+                                    className='spinner-border spinner-border-sm me-2'
+                                    role='status'
+                                  >
+                                    <span className='visually-hidden'>Chargement...</span>
+                                  </div>
+                                )}
+                                {pdf.status === 'ready' && pdf.preview && (
+                                  <img
+                                    src={pdf.preview}
+                                    alt='Aperçu'
+                                    style={{
+                                      width: '30px',
+                                      height: '30px',
+                                      objectFit: 'cover',
+                                      marginRight: '10px',
+                                    }}
+                                  />
                                 )}
                                 {pdf.status === 'error' && (
-                                  <small className="text-danger">Erreur lors du traitement</small>
+                                  <span className='text-danger me-2'>❌</span>
                                 )}
+                                <div>
+                                  <div>{pdf.name}</div>
+                                  {pdf.status === 'ready' && (
+                                    <small className='text-muted'>
+                                      {Math.round(pdf.width)} × {Math.round(pdf.height)} px
+                                    </small>
+                                  )}
+                                  {pdf.status === 'error' && (
+                                    <small className='text-danger'>
+                                      Erreur lors du traitement
+                                    </small>
+                                  )}
+                                </div>
                               </div>
+                              <Button
+                                variant='outline-danger'
+                                size='sm'
+                                onClick={() => removePDF(pdf.id)}
+                              >
+                                Supprimer
+                              </Button>
                             </div>
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => removePDF(pdf.id)}
-                            >
-                              Supprimer
-                            </Button>
-                          </div>
-                        </Card.Body>
-                      </Card>
-                    )}
+                          </Card.Body>
+                        </Card>
+                      )}
                     )}
                   </Col>
                 </Row>
