@@ -27,9 +27,6 @@ export const SideBarMenu = ({
 
   })
   .map((item) =>{ 
-    // if (item.title === 'Photothèque' && userName !== 'Cédric') {
-    //   return false
-    // }
     
     return(
       
