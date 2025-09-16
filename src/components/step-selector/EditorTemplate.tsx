@@ -15,14 +15,16 @@ import {
 import { ModelType } from '@/types/modelType'
 import { _getModels } from '@/utils/apiFunctions'
 import { _thousandSeparator } from '@/utils/functions'
-import html2canvas from 'html2canvas'
-import jsPDF from 'jspdf'
+// import html2canvas from 'html2canvas'
+// import jsPDF from 'jspdf'
 import React, { useRef, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import UpdateModel from '../UpdateModel'
 import userDataStore from '@/stores/userDataStore'
 import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
+import PrintOptionsModal from '../PrintOptionsModal'
 import PictureAdder from '../editorTemplateComponent/PictureAdder'
+// import PrintOptionsModalAdvanced from '../PrintOptionsModalAdvanced'
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -55,6 +57,7 @@ export const EditorTemplate = () => {
   })
   
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
+  const [showPrintOptions, setShowPrintOptions] = useState(false)
 
   /* UseEffect
    *******************************************************************************************/
@@ -128,41 +131,41 @@ export const EditorTemplate = () => {
     })
   }
 
-  const handleExportToPDF = async () => {
-    if (!printRef.current) return
+  // const handleExportToPDF = async () => {
+  //   if (!printRef.current) return
 
-    try {
-      // Capture le contenu de l'aperçu avec une meilleure résolution
-      const canvas = await html2canvas(printRef.current, {
-        scale: 4, // Augmente significativement la qualité
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        allowTaint: true,
-        imageTimeout: 0,
-        removeContainer: false,
-      })
+  //   try {
+  //     // Capture le contenu de l'aperçu avec une meilleure résolution
+  //     const canvas = await html2canvas(printRef.current, {
+  //       scale: 4, // Augmente significativement la qualité
+  //       useCORS: true,
+  //       logging: false,
+  //       backgroundColor: '#ffffff',
+  //       allowTaint: true,
+  //       imageTimeout: 0,
+  //       removeContainer: false,
+  //     })
 
-      // Crée un nouveau PDF avec les dimensions en millimètres
-      const pdf = new jsPDF({
-        orientation: pageHeight > pageWidth ? 'portrait' : 'landscape',
-        unit: 'mm',
-        format: [pageHeight, pageWidth],
-      })
+  //     // Crée un nouveau PDF avec les dimensions en millimètres
+  //     const pdf = new jsPDF({
+  //       orientation: pageHeight > pageWidth ? 'portrait' : 'landscape',
+  //       unit: 'mm',
+  //       format: [pageHeight, pageWidth],
+  //     })
 
-      // Convertit le canvas en image et l'ajoute au PDF
-      const imgData = canvas.toDataURL('image/png', 1.0) // Qualité maximale
-      const imgWidth = pageWidth
-      const imgHeight = pageHeight
+  //     // Convertit le canvas en image et l'ajoute au PDF
+  //     const imgData = canvas.toDataURL('image/png', 1.0) // Qualité maximale
+  //     const imgWidth = pageWidth
+  //     const imgHeight = pageHeight
 
-      // Ajoute l'image au PDF avec les dimensions exactes
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST')
-      // pdf.save(template?.templateId?.name + ".pdf");
-      pdf.save('document.pdf')
-    } catch (error) {
-      console.error('Erreur lors de la génération du PDF:', error)
-    }
-  }
+  //     // Ajoute l'image au PDF avec les dimensions exactes
+  //     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST')
+  //     // pdf.save(template?.templateId?.name + ".pdf");
+  //     pdf.save('document.pdf')
+  //   } catch (error) {
+  //     console.error('Erreur lors de la génération du PDF:', error)
+  //   }
+  // }
 
   const updateModelProps = {
     canvasData, setIsUpdating, previewStyle, modelId, setModels
@@ -527,8 +530,11 @@ export const EditorTemplate = () => {
                       Modifier le modèle
                     </Button>
                   ))}
-                <Button variant='primary' onClick={handleExportToPDF} className='mt-4'>
+                {/* <Button variant='primary' onClick={handleExportToPDF} className='mt-4 me-2'>
                   Génerer le PDF
+                </Button> */}
+                <Button variant='info' onClick={() => setShowPrintOptions(true)} className='text-muted mt-4'>
+                  Options d'impression
                 </Button>
               </Container>
             </Col>
@@ -537,6 +543,17 @@ export const EditorTemplate = () => {
       ) : (
         <UpdateModel updateModelProps={updateModelProps} />
       )}
+      <PrintOptionsModal
+        show={showPrintOptions}
+        onHide={() => setShowPrintOptions(false)}
+        templateState={{
+          width: pageWidth,
+          height: pageHeight,
+          idShop: storeApp.shopId,
+          idCategory: storeApp.categoryId
+        }}
+        canvasRef={printRef}
+      />
     </>
   )
 }

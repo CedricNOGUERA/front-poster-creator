@@ -29,6 +29,7 @@ import modelsServiceInstance from '@/services/modelsServices'
 import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
+import PrintOptionsModal from './PrintOptionsModal'
 
 interface ContextDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -71,6 +72,10 @@ export default function DragDropEditor() {
   const [showValidateModel, setShowValidateModel] = React.useState<boolean>(false)
   const handleCloseValidateModel = () => setShowValidateModel(false)
   const handleShowValidateModel = () => setShowValidateModel(true)
+  
+  const [showPrintOptions, setShowPrintOptions] = useState(false)
+  const handleClosePrintOptions = () => setShowPrintOptions(false)
+  const handleShowPrintOptions = () => setShowPrintOptions(true)
 
   /* UseEffect
    *******************************************************************************************/
@@ -730,6 +735,13 @@ export default function DragDropEditor() {
               Exporter en PDF
             </Button>
             <Button
+              variant='info'
+              onClick={handleShowPrintOptions}
+              className='me-4'
+            >
+              Options d'impression
+            </Button>
+            <Button
               variant='success'
               onClick={() => {
                 handleShowValidateModel()
@@ -745,6 +757,12 @@ export default function DragDropEditor() {
       </div>
 
       <ModalValidateModel modalValidateModelProps={modalValidateModelProps} />
+      <PrintOptionsModal
+        show={showPrintOptions}
+        onHide={handleClosePrintOptions}
+        templateState={newTemplateState}
+        canvasRef={posterRef}
+      />
     </Container>
   )
 }
