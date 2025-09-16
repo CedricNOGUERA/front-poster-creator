@@ -111,8 +111,8 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
             pdf.id === pdfFile.id 
               ? { 
                   ...pdf, 
-                  width: (pdfPage.width), 
-                  height: (pdfPage.height), 
+                  width: (pdfPage.width) / 5.67, 
+                  height: (pdfPage.height) / 5.67, 
                   preview: pdfPage.imageData,
                   status: 'ready' as const
                 }
