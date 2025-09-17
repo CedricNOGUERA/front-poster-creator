@@ -56,14 +56,14 @@ const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
           </Col>
         </Row>
 
-        <Row className="mb-4">
+        <Row className="mb-">
           <Col md={12}>
             <h5>📏 Formats de page supportés</h5>
             <ListGroup horizontal className="mb-3">
               <ListGroup.Item>A4 (210 × 297 mm)</ListGroup.Item>
               <ListGroup.Item>A3 (297 × 420 mm)</ListGroup.Item>
-              <ListGroup.Item>A5 (148 × 210 mm)</ListGroup.Item>
-              <ListGroup.Item>A2 (420 × 594 mm)</ListGroup.Item>
+              {/* <ListGroup.Item>A5 (148 × 210 mm)</ListGroup.Item>
+              <ListGroup.Item>A2 (420 × 594 mm)</ListGroup.Item> */}
               {/* <ListGroup.Item>Personnalisé</ListGroup.Item> */}
             </ListGroup>
           </Col>

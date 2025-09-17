@@ -382,6 +382,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                   <Col md={12}>
                     <h6>PDFs sélectionnés:</h6>
                     {uploadedPDFs.map(pdf => {
+                      const width = (50* Math.round(pdf.width))/Math.round(pdf.height)
                       return (
                         <Card key={pdf.id} className='mb-2'>
                           <Card.Body className='py-2'>
@@ -400,8 +401,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                                     src={pdf.preview}
                                     alt='Aperçu'
                                     style={{
-                                      width: '30px',
-                                      height: '30px',
+                                      width: `${width}px`,
+                                      // width: '30px',
+                                      height: '50px',
                                       objectFit: 'cover',
                                       marginRight: '10px',
                                     }}
