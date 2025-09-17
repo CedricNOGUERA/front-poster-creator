@@ -34,7 +34,6 @@ import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
 import { ModelType } from '@/types/modelType'
 import { _showToast } from '@/utils/notifications'
-import PrintOptionsModal from './PrintOptionsModal'
 
 
 interface ContextInlineDragDropEditorType {
@@ -93,10 +92,6 @@ export default function InlineDragDropEditor() {
   }
   const handleShowValidateModel = () => setShowValidateModel(true)
   
-  const [showPrintOptions, setShowPrintOptions] = useState(false)
-  const handleClosePrintOptions = () => setShowPrintOptions(false)
-  const handleShowPrintOptions = () => setShowPrintOptions(true)
-
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
@@ -1019,13 +1014,13 @@ React.useEffect(() => {
             >
               Exporter en PDF
             </Button>
-            <Button
+            {/* <Button
               variant='info'
               onClick={handleShowPrintOptions}
               className='me-4'
             >
               Options d'impression
-            </Button>
+            </Button> */}
             <Button
               variant='success'
               onClick={() => {
@@ -1041,12 +1036,6 @@ React.useEffect(() => {
         <ComponentEditor ComponentEditorProps={ComponentEditorProps} />
       </div>
       <ModalValidateModel modalValidateModelProps={modalValidateModelProps} />
-      <PrintOptionsModal
-        show={showPrintOptions}
-        onHide={handleClosePrintOptions}
-        templateState={newTemplateState}
-        canvasRef={posterRef}
-      />
     </Container>
   )
 }

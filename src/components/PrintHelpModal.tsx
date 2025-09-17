@@ -16,7 +16,7 @@ const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
         <Row>
           <Col md={12}>
             <h5>🎯 Modes d'impression disponibles</h5>
-            <p>Notre système d'impression avancé vous offre trois modes principaux :</p>
+            <p>Notre système d'impression vous offre trois modes principaux :</p>
           </Col>
         </Row>
 
@@ -38,7 +38,7 @@ const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
                 <Card.Title className="text-success">🔄 Duplication sur une page</Card.Title>
                 <Card.Text>
                   Place automatiquement plusieurs copies de votre affiche sur une même page
-                  (A4, A3 ou format personnalisé) pour optimiser l'utilisation du papier.
+                  (A4, A3) pour optimiser l'utilisation du papier.
                 </Card.Text>
               </Card.Body>
             </Card>
