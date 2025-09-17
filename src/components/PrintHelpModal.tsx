@@ -56,7 +56,7 @@ const PrintHelpModal: React.FC<PrintHelpModalProps> = ({ show, onHide }) => {
           </Col>
         </Row>
 
-        <Row className="mb-">
+        <Row>
           <Col md={12}>
             <h5>📏 Formats de page supportés</h5>
             <ListGroup horizontal className="mb-3">
