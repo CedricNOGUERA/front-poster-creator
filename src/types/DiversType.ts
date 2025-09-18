@@ -32,3 +32,9 @@ export type PictureType = {
   "value": string
   "createdAt": string
 }
+
+export type ResetKey = 'shopId' | 'categoryId' | 'templateId' | 'dimensionId'
+
+export type ResetConfig = {
+  [step: number]: ResetKey[];
+};
