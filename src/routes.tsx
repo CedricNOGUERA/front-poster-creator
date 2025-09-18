@@ -9,6 +9,7 @@ import './assets/css/style.css'
 import "remixicon/fonts/remixicon.css";
 import RegisterPage from './pages/public/RegisterPage'
 import LoginPage from './pages/public/LoginPage'
+import GuideUtilisateur from './pages/public/GuideUtilisateur'
 import SchemaBuilder from './pages/admin/SchemaBuilder'
 // import InlineDragDropEditor from '@/components/step-selector/InlineDragDropEditor'
 import 'rsuite/TagPicker/styles/index.css'
@@ -31,12 +32,14 @@ createRoot(document.getElementById('root')!).render(
         {/* Admin routes */}
         <Route element={<AdminLayout />}>
           <Route path='/generateur-de-bon-plan' element={<StepSelectorMockupBuilder />} />
-          <Route path='/createur-de-bon-plan' element={<SchemaBuilder />} />
           <Route path='/createur-de-bon-plan-inline' element={<InlineDragDropEditor />} />
+          <Route path='/createur-de-bon-plan' element={<SchemaBuilder />} />
           <Route path='/utilisateurs' element={<UserManager />} />
-          <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
-          <Route path='/tableau-de-bord' element={<DashBoard />} />
+          <Route path='/tableau-de-bord' element={<DashBoard />}>
+            <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
+          </Route>
           <Route path='/profile' element={<Account />} />
+          <Route path='/guide-plv' element={<GuideUtilisateur />} />
         </Route>
       </Routes>
     </BrowserRouter>

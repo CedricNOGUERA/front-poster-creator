@@ -3,6 +3,9 @@ export interface LoginFormDataType{
     password: string
 }
 
+export type RoleType = 'super_admin' | 'admin' | 'user'
+
+
 export interface UserType {
   id: number
   email: string
@@ -12,6 +15,6 @@ export interface UserType {
     idCompany: number
     nameCompany: string
   }[]
-  role: 'super_admin' | 'admin' | 'user'
+  role: RoleType
   passwordHash?: string
 }
