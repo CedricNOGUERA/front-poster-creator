@@ -159,17 +159,13 @@ footer .text-small{
 }
 
 /**
-/ Canvas
-
+/ Actived link in user guide
 ---------------------------------------------------------*/
-
-#canvas{
-
-  /* font-family: Impact, sans-serif;
-
-  letter-spacing: 0.8px; */
-
+.bg-actived-link{
+  background-color: #dcdcdc;
+  border-right: #a9a9a9 solid 3px;
 }
+
 /**
 / DragDropEditor
 ---------------------------------------------------------*/

@@ -33,7 +33,7 @@ const DashBoard = () => {
 
   return (
     <Container fluid className='px-0'>
-      <Row className='w-100 gx-0' style={{height: "89vh"}}>
+      <Row className='w-100 gx-0' >
         <SideBarMenu setDisplay={setDisplay} />
         <Col className='h-100'>
           {handleDisplay(display)}
