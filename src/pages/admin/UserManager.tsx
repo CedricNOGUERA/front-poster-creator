@@ -38,7 +38,7 @@ export default function UserManager() {
   React.useEffect(() => {
     // Redirection si l'utilisateur a le rôle "user"
     if (userRole === 'user') {
-      navigate('/generateur-de-bon-plan')
+      navigate('/editeur-de-bon-plan')
       return
     }
     _getAllUsers(setUsers)

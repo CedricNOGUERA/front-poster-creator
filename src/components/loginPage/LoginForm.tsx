@@ -30,7 +30,7 @@ const LoginForm = () => {
       if (response.status === 200) {
         sessionStorage.setItem("token", response.data.token);
         _getMe(authLogin);
-        navigate("/generateur-de-bon-plan");
+        navigate("/editeur-de-bon-plan");
       }
     } catch (err) {
       if (err instanceof AxiosError) {
