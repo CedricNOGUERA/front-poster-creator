@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { features, roles, workflows } from '@/data/guideData';
+import { features, roles, Workflows } from '@/data/guideData';
 import userDataStore from '@/stores/userDataStore';
 import { RoleType } from '@/types/UserType';
 import React from 'react';
@@ -33,9 +33,8 @@ const GuideUtilisateur = () => {
             <h1 className='display-4 text-primary'>
               <Button
                 variant='link'
-                className='p-0 me-3 text-muted'
-                // onClick={() => goToStep(storeApp.step - 1)}
-                href='/createur-de-bon-plan'
+                className='p-0 me-3 text-'
+                href='/editeur-de-bon-plan'
                 style={{ textDecoration: 'none' }}
               >
                 <i className='fa fa-circle-arrow-left fs-3'></i>
@@ -68,7 +67,7 @@ const GuideUtilisateur = () => {
                     if (userRole === 'super_admin') {
                       return true
                     }
-                      //admin voit tous les rôles, suaf le rôle super_admin
+                    //admin voit tous les rôles, suaf le rôle super_admin
                     if (userRole === 'admin') {
                       if (data.id === 'super_admin') {
                         return false
@@ -85,7 +84,9 @@ const GuideUtilisateur = () => {
                       <Nav.Item key={role.id} className='pe-1'>
                         <Nav.Link
                           onClick={() => setActiveRole(role.id)}
-                          className={`d-flex align-items-center text-dark rounded-start-0 ${activeRole === role.id ? "bg-actived-link" : ""}`}
+                          className={`d-flex align-items-center text-dark rounded-start-0 ${
+                            activeRole === role.id ? 'bg-actived-link' : ''
+                          }`}
                         >
                           <i className={`${role.icon} me-2 text-muted`}></i>
                           {role.name}
@@ -135,11 +136,11 @@ const GuideUtilisateur = () => {
                                     <p className='text-muted small mb-2'>
                                       {feature.description}
                                     </p>
-                                    <Link to={feature?.link ? feature?.link : "#"} >
-                                    <Badge bg='secondary' className='small'>
-                                      <i className='fas fa-route me-1'></i>
-                                      {feature.access}
-                                    </Badge>
+                                    <Link to={feature?.link ? feature?.link : '#'}>
+                                      <Badge bg='secondary' className='small'>
+                                        <i className='fas fa-route me-1'></i>
+                                        {feature.access}
+                                      </Badge>
                                     </Link>
                                   </div>
                                 </div>
@@ -155,35 +156,17 @@ const GuideUtilisateur = () => {
                           </h4>
 
                           <Accordion>
-                            <Accordion.Item eventKey='0'>
-                              <Accordion.Header>
-                                <i className='fas fa-pen-to-square me-2'></i>
-                                Créer une Affiche
-                              </Accordion.Header>
-                              <Accordion.Body>
-                                <ol className='mb-0'>
-                                  {workflows.create_poster.map((step, index) => (
-                                    <li key={index} className='mb-2'>
-                                      <strong>{step.title}</strong>
-                                      <p className='text-muted small mb-1'>
-                                        {step.description}
-                                      </p>
-                                      <small className='text-info'>{step.details}</small>
-                                    </li>
-                                  ))}
-                                </ol>
-                              </Accordion.Body>
-                            </Accordion.Item>
-
-                            {(role.id === 'super_admin' || role.id === 'admin') && (
-                              <Accordion.Item eventKey='1'>
+                            {Workflows.filter((data) =>
+                              data.role.some((item) => item === activeRole)
+                            ).map((item, indx) => (
+                              <Accordion.Item key={indx} eventKey={item.name}>
                                 <Accordion.Header>
                                   <i className='fas fa-users me-2'></i>
-                                  Gérer les Utilisateurs
+                                  {item.name}
                                 </Accordion.Header>
                                 <Accordion.Body>
                                   <ol className='mb-0'>
-                                    {workflows.manage_users.map((step, index) => (
+                                    {item.dataList.map((step, index) => (
                                       <li key={index} className='mb-2'>
                                         <strong>{step.title}</strong>
                                         <p className='text-muted small mb-1'>
@@ -195,7 +178,7 @@ const GuideUtilisateur = () => {
                                   </ol>
                                 </Accordion.Body>
                               </Accordion.Item>
-                            )}
+                            ))}
                           </Accordion>
                         </Col>
                       </Row>
@@ -246,9 +229,10 @@ const GuideUtilisateur = () => {
                       </Row>
 
                       <div className='text-center mt-4'>
-                        <Link to='/login' className='btn btn-primary btn-lg'>
-                          <i className='fas fa-sign-in-alt me-2'></i>
-                          Accéder à l'Application
+                        <Link to='/editeur-de-bon-plan' className='btn btn-primary btn-lg'>
+                          {/* <i className='fas fa-sign-in-alt me-2'></i> */}
+                          <i className='fa fa-circle-arrow-left me-2'></i>
+                          Retour
                         </Link>
                       </div>
                     </Card.Body>
