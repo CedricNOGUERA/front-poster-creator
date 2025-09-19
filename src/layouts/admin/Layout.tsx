@@ -32,7 +32,7 @@ export const AdminLayout = () => {
   })
   const [shops, setShops] = React.useState<ShopType[]>([])
   const [titleHeader, setTitleHeader] = React.useState<string>("Editeur de bon plan")
-  const token = sessionStorage.getItem('token')
+  const token = localStorage.getItem('token')
 
   React.useEffect(() => {
     _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)

@@ -28,7 +28,7 @@ const LoginForm = () => {
       const response = await authServiceInstance.loginUser({ email, password });
 
       if (response.status === 200) {
-        sessionStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", response.data.token);
         _getMe(authLogin);
         navigate("/editeur-de-bon-plan");
       }

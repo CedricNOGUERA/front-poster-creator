@@ -18,7 +18,7 @@ class VariousPicturesServices {
       method: 'POST',
       url: `${API_URL}/api/add-various-picture`,
       headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'multipart/form-data'
       },
       data: newPicture,
@@ -32,7 +32,7 @@ class VariousPicturesServices {
       method: 'DELETE',
       url: `${API_URL}/api/various-pictures/${id}`,
       headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
     }
 

@@ -40,7 +40,7 @@ const DashBoard = () => {
   React.useEffect(() => {
     setDisplay(getDisplayFromUrl())
     setTitleHeader('Administration')
-  }, [getDisplayFromUrl])
+  }, [getDisplayFromUrl, setTitleHeader])
 
   const handleDisplay = (display: string) => {
     if (display === 'shops') {

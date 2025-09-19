@@ -10,7 +10,7 @@ class CategoriesService {
         const response = await fetch(`${API_URL}/api/add-categories`, {
               method: 'POST',
               headers: {
-                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
               },
               body:  newCategory,
             })
@@ -65,7 +65,7 @@ class CategoriesService {
         method: 'PATCH',
         url: `${API_URL}/api/categories/${id}`,
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         data: selectedCategory,
       }
@@ -86,7 +86,7 @@ class CategoriesService {
         method: 'DELETE',
         url: `${API_URL}/api/categories/${id}`,
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }
   
