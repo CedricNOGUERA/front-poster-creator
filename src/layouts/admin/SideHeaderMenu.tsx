@@ -35,7 +35,7 @@ export const SideHeaderMenu = ({
     resetStore()
     setOpen(false)
     authLogout()
-    sessionStorage.removeItem('token')
+    localStorage.removeItem('token')
   }
 
   return (

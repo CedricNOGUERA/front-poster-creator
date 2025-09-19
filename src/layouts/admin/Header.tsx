@@ -22,7 +22,7 @@ export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string,
   const handleClickLogout = () => {
     resetStore()
     authLogout()
-    sessionStorage.removeItem('token')
+    localStorage.removeItem('token')
   }
 
   const sideHeaderMenuProps = {

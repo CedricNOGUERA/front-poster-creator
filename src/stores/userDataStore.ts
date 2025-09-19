@@ -58,7 +58,7 @@ const userDataStore = create(
     }),
     {
       name: 'userData',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
     }
   )
 )

@@ -9,7 +9,7 @@ export async function fetchWithAuth(
   input: RequestInfo | URL,
   init?: RequestInit,
 ): Promise<Response> {
-  const token = sessionStorage.getItem('token');
+  const token = localStorage.getItem('token');
   const headers = new Headers(init?.headers);
 
   if (token) {
@@ -29,7 +29,7 @@ export async function fetchWithAuth(
   });
 
   if (response.status === 401 || response.status === 403) {
-    sessionStorage.removeItem('token');
+    localStorage.removeItem('token');
     // Consider a more global way to alert and redirect if needed,
     // for now, throwing an error is the most flexible for SPA components to handle.
     // alert('Votre session a expiré. Veuillez vous reconnecter.'); // Avoid direct alert in a service

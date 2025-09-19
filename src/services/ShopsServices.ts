@@ -37,7 +37,7 @@ class ShopsServices {
       url: `${import.meta.env.VITE_API_URL}/api/shops/${shopId}`,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     }
 
