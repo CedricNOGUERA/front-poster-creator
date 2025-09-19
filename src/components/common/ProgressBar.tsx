@@ -33,7 +33,7 @@ export const ProgressBar = () => {
       {storeApp.step > 1 && (
         <Button
           variant='link'
-          className='p-0 me-3 text-muted'
+          className='p-0 me-3 text-primary'
           onClick={() => goToStep(storeApp.step - 1)}
           style={{ textDecoration: 'none' }}
         >
