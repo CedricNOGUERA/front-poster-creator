@@ -20,6 +20,10 @@ import UserManager from './pages/admin/UserManager'
 import DashBoard from './pages/admin/DashBoard'
 import InlineDragDropEditor from './components/step-selector/InlineDragDropEditor'
 import Account from './pages/admin/Account'
+import NotFound from './pages/NotFound'
+import ShopPage from './pages/admin/ShopPage'
+import CategoriesPage from './pages/admin/CategoriesPage'
+import PicturesLibraryPage from './pages/admin/PicturesLibraryPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -29,13 +33,17 @@ createRoot(document.getElementById('root')!).render(
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/' element={<Navigate to='/login' replace />} />
+          <Route path='*' element={<NotFound />} />
         {/* Admin routes */}
         <Route element={<AdminLayout />}>
-          <Route path='/generateur-de-bon-plan' element={<StepSelectorMockupBuilder />} />
+          <Route path='/editeur-de-bon-plan' element={<StepSelectorMockupBuilder />} />
           <Route path='/createur-de-bon-plan-inline' element={<InlineDragDropEditor />} />
           <Route path='/createur-de-bon-plan' element={<SchemaBuilder />} />
           <Route path='/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord' element={<DashBoard />}>
+            <Route path='/tableau-de-bord/magasins' element={<ShopPage />} />
+            <Route path='/tableau-de-bord/categories' element={<CategoriesPage />} />
+            <Route path='/tableau-de-bord/phototheque' element={<PicturesLibraryPage />} />
             <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
           </Route>
           <Route path='/profile' element={<Account />} />

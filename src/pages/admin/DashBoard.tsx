@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Col, Container, Row } from 'react-bootstrap'
 import ShopPage from './ShopPage'
 import CategoriesPage from './CategoriesPage'
@@ -7,17 +6,41 @@ import UserManager from './UserManager'
 import { SideBarMenu } from '@/components/dashBoardComponents/SideBarMenu'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import PicturesLibraryPage from './PicturesLibraryPage'
+import { useLocation, useOutletContext } from 'react-router-dom'
+
+interface ContextType {
+  setTitleHeader: React.Dispatch<React.SetStateAction<string>>
+}
 
 const DashBoard = () => {
-  const [display, setDisplay] = React.useState('shops')
+  const {setTitleHeader} = useOutletContext<ContextType>()
+  const location = useLocation()
   const userRole = userDataStore((state: UserDataType) => state.role)
+  
+  // Déterminer la section à afficher basée sur l'URL
+  const getDisplayFromUrl = React.useCallback(() => {
+    if (location.pathname.includes('/utilisateurs')) {
+      return 'utilisateurs'
+    }
+    if (location.pathname.includes('/categories')) {
+      return 'categories'
+    }
+    if (location.pathname.includes('/phototheque')) {
+      return 'phototheque'
+    }
+    if (location.pathname.includes('/shops')) {
+      return 'shops'
+    }
+    // Par défaut selon le rôle
+    return userRole === 'super_admin' ? 'shops' : 'utilisateurs'
+  }, [location.pathname, userRole])
+
+  const [display, setDisplay] = React.useState(getDisplayFromUrl)
 
   React.useEffect(() => {
-    if (userRole !== 'super_admin') {
-      setDisplay('utilisateurs')
-      return
-    }
-  }, [userRole])
+    setDisplay(getDisplayFromUrl())
+    setTitleHeader('Administration')
+  }, [getDisplayFromUrl])
 
   const handleDisplay = (display: string) => {
     if (display === 'shops') {

@@ -216,7 +216,7 @@ const Profile: React.FC = () => {
   }
 
   const handleBack = () => {
-    navigate('/generateur-de-bon-plan')
+    navigate('/editeur-de-bon-plan')
   }
 
   return (
