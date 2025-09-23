@@ -3,7 +3,7 @@ import { ShopType } from '@/types/ShopType'
 import { Alert, Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import authServiceInstance from '@/services/AuthService'
-import { _getAllUsers } from '@/utils/apiFunctions'
+import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
 import { UserType } from '@/types/UserType'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
@@ -32,9 +32,10 @@ export const AddUserForm = ({
 /* States
  *******************************************************************************************/
 
-const { shops } = useOutletContext<ContextShopSelectorType>()
-const userStoreData = userDataStore((state: UserDataType) => state)
+  const { shops, setShops, setToastData, toggleShow } = useOutletContext<ContextShopSelectorType>()
+  const userStoreData = userDataStore((state: UserDataType) => state)
   const userRlole = userDataStore((state: UserDataType) => state.role)
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
   const [name, setName] = React.useState<string>('')
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
@@ -101,7 +102,7 @@ const userStoreData = userDataStore((state: UserDataType) => state)
         }
 
         await UsersServices.updateUser(initialData.id, updatedData)
-
+        _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)
         setSuccess('Utilisateur modifié avec succès.') // Placeholder
       } else {
         // Logique de création
@@ -113,6 +114,7 @@ const userStoreData = userDataStore((state: UserDataType) => state)
           role,
         })
         const responseData = await response.json()
+        _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)
         setSuccess(
           responseData.message ||
             'Inscription réussie ! Vous pouvez maintenant vous connecter.'

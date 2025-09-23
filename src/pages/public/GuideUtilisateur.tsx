@@ -44,7 +44,7 @@ const GuideUtilisateur = () => {
               <span className='d-none d-md-inline'>- Générateur de Bon Plan</span>
             </h1>
             <p className='lead text-muted'>
-              Guide complet pour utiliser l'application selon votre rôle
+              {/* Guide complet pour utiliser l'application selon votre rôle */}
             </p>
           </div>
         </Col>
@@ -108,7 +108,7 @@ const GuideUtilisateur = () => {
                     <Card.Header className={`bg-${role.color} text-white`}>
                       <h3 className='mb-0'>
                         <i className={`${role.icon} me-2`}></i>
-                        Guide pour {role.name}
+                        {role.name}
                       </h3>
                     </Card.Header>
                     <Card.Body>
@@ -161,7 +161,7 @@ const GuideUtilisateur = () => {
                             ).map((item, indx) => (
                               <Accordion.Item key={indx} eventKey={item.name}>
                                 <Accordion.Header>
-                                  <i className='fas fa-users me-2'></i>
+                                  <i className={`${item.icon} me-2`}></i>
                                   {item.name}
                                 </Accordion.Header>
                                 <Accordion.Body>
@@ -183,9 +183,9 @@ const GuideUtilisateur = () => {
                         </Col>
                       </Row>
 
-                      <hr className='my-4' />
+                      {/* <hr className='my-4' /> */}
 
-                      <Row>
+                      {/* <Row>
                         <Col>
                           <h4 className='text-warning mb-3'>
                             <i className='fas fa-lightbulb me-2'></i>
@@ -226,7 +226,7 @@ const GuideUtilisateur = () => {
                             </Col>
                           </Row>
                         </Col>
-                      </Row>
+                      </Row> */}
 
                       <div className='text-center mt-4'>
                         <Link to='/editeur-de-bon-plan' className='btn btn-primary btn-lg'>
@@ -251,7 +251,7 @@ const getRoleDescription = (role: string): string => {
   const descriptions = {
     super_admin: "Accès complet à toutes les fonctionnalités de l'application. Peut gérer les magasins, catégories, utilisateurs et créer des modèles d'affiches.",
     admin: "Peut gérer les utilisateurs de sa/ses société(s) et utiliser l'éditeur d'affiches. Accès limité aux fonctionnalités administratives.",
-    user: "Accès uniquement à l'éditeur d'affiches pour créer des affiches personnalisées selon les modèles disponibles."
+    user: "Accès uniquement à l'éditeur d'affiches pour les personnalisées selon les modèles disponibles."
   };
   return descriptions[role as keyof typeof descriptions] || '';
 };
