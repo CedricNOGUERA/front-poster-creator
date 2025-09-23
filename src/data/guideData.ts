@@ -16,8 +16,9 @@ import { RoleType } from "@/types/UserType"
 
   interface WorkflowType {
     name: string
-      role: RoleType[],
-      dataList: ItemWorkflowType[]
+    icon: string
+    role: RoleType[]
+    dataList: ItemWorkflowType[]
   }
 
   export const roles: RoleDataType[] = [
@@ -100,80 +101,10 @@ import { RoleType } from "@/types/UserType"
 
   export const Workflows: WorkflowType[] = [
 
-    {
-      name: "Créer un affiche",
-      role: ["super_admin"],
-      dataList: [
-        {
-          step: 1,
-          title: "Sélection du Magasin",
-          description: "Choisissez le magasin pour lequel vous créez l'affiche",
-          details: "Cette étape détermine les paramètres spécifiques au magasin (couleurs, logos, etc.)"
-        },
-        {
-          step: 2,
-          title: "Sélection du Type d'Affichage",
-          description: "Choisissez la catégorie d'affiche (Bon Plan, Fin de Série, etc.)",
-          details: "Chaque type a ses propres modèles et paramètres prédéfinis"
-        },
-        {
-          step: 3,
-          title: "Sélection du Modèle",
-          description: "Choisissez parmi les modèles disponibles pour ce type d'affiche",
-          details: "Les modèles sont adaptés au type d'affichage sélectionné"
-        },
-        {
-          step: 4,
-          title: "Sélection des Dimensions",
-          description: "Définissez la taille finale de votre affiche",
-          details: "Les dimensions disponibles sont prédéfinies"
-        },
-        {
-          step: 5,
-          title: "Création et Personnalisation",
-          description: "Personnalisez le contenu de votre affiche",
-          details: "Créer les textes et placer des images selon vos besoins"
-        }
-      ]
-    },
-    {
-      name: "Editer une affiche",
-      role: ["super_admin", "admin", "user"],
-      dataList: [
-        {
-          step: 1,
-          title: "Sélection du Magasin",
-          description: "Choisissez le magasin pour lequel vous créez l'affiche",
-          details: "Cette étape détermine les paramètres spécifiques au magasin (couleurs, logos, etc.)"
-        },
-        {
-          step: 2,
-          title: "Sélection du Type d'Affichage",
-          description: "Choisissez la catégorie d'affiche (Bon Plan, Fin de Série, etc.)",
-          details: "Chaque type a ses propres modèles et paramètres prédéfinis"
-        },
-        {
-          step: 3,
-          title: "Sélection du Modèle",
-          description: "Choisissez parmi les modèles disponibles pour ce type d'affiche",
-          details: "Les modèles sont adaptés au type d'affichage sélectionné"
-        },
-        {
-          step: 4,
-          title: "Sélection des Dimensions",
-          description: "Définissez la taille finale de votre affiche",
-          details: "Les dimensions disponibles dépendent du modèle choisi"
-        },
-        {
-          step: 5,
-          title: "Édition et Personnalisation",
-          description: "Personnalisez le contenu de votre affiche",
-          details: "Modifiez et déplacer  les textes, les images selon vos besoins"
-        }
-      ]
-    },
+    
     {
       name: "Gérer les magasins",
+      icon: "fas fa-store",
       role: ["super_admin"],
       dataList: [
         {
@@ -204,6 +135,7 @@ import { RoleType } from "@/types/UserType"
     },
     {
       name: "Gérer les catégories",
+      icon: "fas fa-list",
       role: ["super_admin"],
       dataList: [
         {
@@ -234,6 +166,7 @@ import { RoleType } from "@/types/UserType"
     },
     {
       name: "Gérer les utilisateurs",
+      icon: "fas fa-users",
       role: ["super_admin", "admin"],
       dataList: [
         {
@@ -270,6 +203,7 @@ import { RoleType } from "@/types/UserType"
     },
     {
       name: "Gérer les images",
+      icon: "fas fa-images",
       role: ["super_admin"],
       dataList: [
         {
@@ -295,6 +229,80 @@ import { RoleType } from "@/types/UserType"
           title: "Supprimer une Image",
           description: "Survoler une image pour afficher le bouton de suppression 'X'",
           details: "Clique le bouton pour supprimer l'image"
+        }
+      ]
+    },
+    {
+      name: "Créer un affiche",
+      icon: "fas fa-hammer",
+      role: ["super_admin"],
+      dataList: [
+        {
+          step: 1,
+          title: "Sélection du Magasin",
+          description: "Choisissez le magasin pour lequel vous créez l'affiche",
+          details: "Cette étape détermine les paramètres spécifiques au magasin (couleurs, logos, etc.)"
+        },
+        {
+          step: 2,
+          title: "Sélection du Type d'Affichage",
+          description: "Choisissez la catégorie d'affiche (Bon Plan, Fin de Série, etc.)",
+          details: "Chaque type a ses propres modèles et paramètres prédéfinis"
+        },
+        {
+          step: 3,
+          title: "Sélection du Modèle",
+          description: "Choisissez parmi les modèles disponibles pour ce type d'affiche",
+          details: "Les modèles sont adaptés au type d'affichage sélectionné"
+        },
+        {
+          step: 4,
+          title: "Sélection des Dimensions",
+          description: "Définissez la taille finale de votre affiche",
+          details: "Les dimensions disponibles sont prédéfinies"
+        },
+        {
+          step: 5,
+          title: "Création et Personnalisation",
+          description: "Personnalisez le contenu de votre affiche",
+          details: "Créer les textes et placer des images selon vos besoins"
+        }
+      ]
+    },
+    {
+      name: "Editer une affiche",
+      icon: "fas fa-pen-to-square",
+      role: ["super_admin", "admin", "user"],
+      dataList: [
+        {
+          step: 1,
+          title: "Sélection du Magasin",
+          description: "Choisissez le magasin pour lequel vous créez l'affiche",
+          details: "Cette étape détermine les paramètres spécifiques au magasin (couleurs, logos, etc.)"
+        },
+        {
+          step: 2,
+          title: "Sélection du Type d'Affichage",
+          description: "Choisissez la catégorie d'affiche (Bon Plan, Fin de Série, etc.)",
+          details: "Chaque type a ses propres modèles et paramètres prédéfinis"
+        },
+        {
+          step: 3,
+          title: "Sélection du Modèle",
+          description: "Choisissez parmi les modèles disponibles pour ce type d'affiche",
+          details: "Les modèles sont adaptés au type d'affichage sélectionné"
+        },
+        {
+          step: 4,
+          title: "Sélection des Dimensions",
+          description: "Définissez la taille finale de votre affiche",
+          details: "Les dimensions disponibles dépendent du modèle choisi"
+        },
+        {
+          step: 5,
+          title: "Édition et Personnalisation",
+          description: "Personnalisez le contenu de votre affiche",
+          details: "Modifiez et déplacer  les textes, les images selon vos besoins"
         }
       ]
     }

@@ -6,13 +6,13 @@ export const AdminFooter = () => {
           <p>Powerder by LOGIS</p>
         </div>
         <div className="d-flex flex-column align-items-start">
-          <a
+          {/* <a
             className="text-white text-decoration-none small fw-bold"
             href="/guide-plv"
             target="_blank"
           >
             Accédez au guide PLV ?
-          </a>
+          </a> */}
         </div>
       </div>
     </footer>
