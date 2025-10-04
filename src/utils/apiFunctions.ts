@@ -289,6 +289,31 @@ export const _getTemplateLength = async (
   setTemplateLength(result.length);
 };
 
+export const _patchTemplate = async(id: number | undefined, data: TemplateType, setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>, handleCloseAddEditModal: () => void) => {
+  setFeedBackState((prev) => ({
+    ...prev,
+    isLoading: true,
+    loadingMessage: 'Chargement',
+  }))
+  try {
+    const response = await templatesServiceInstance.patchTemplates(id, data)
+    console.log(response)
+
+    if (response.ok) {
+      handleCloseAddEditModal()
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    setFeedBackState((prev) => ({
+      ...prev,
+      isLoading: false,
+      loadingMessage: '',
+    }))
+  }
+
+}
+
 
 
 ///////////////////////

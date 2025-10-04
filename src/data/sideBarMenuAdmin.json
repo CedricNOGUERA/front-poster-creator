@@ -26,5 +26,12 @@
         "icon": "fas fa-images",
         "display": "phototheque",
         "role": ["super_admin"]
+    },
+    {
+        "id": 5,
+        "title": "Models",
+        "icon": "fas fa-file",
+        "display": "models",
+        "role": ["super_admin"]
     }
 ]

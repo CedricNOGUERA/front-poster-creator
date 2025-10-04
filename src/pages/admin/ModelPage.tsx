@@ -1,15 +1,20 @@
-// import templatesServiceInstance from '@/services/TemplatesServices';
+import { ModalAddEditModel } from "@/components/ui/Modals";
+import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
-import { Col, Container, Image, Row, Spinner, Table } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Col, Container, Dropdown, Image, Row, Spinner, Table } from "react-bootstrap";
+import { Link, useOutletContext } from "react-router-dom";
+
+interface ContextType {
+  shops: ShopType[]
+}
 
 export default function ModelsPage() {
+  const {shops} = useOutletContext<ContextType>()
   const [models, setModels] = React.useState<TemplateType[]>([]);
-  // const [selectedModel, setSelectedModel] = React.useState<TemplateType | null>(null);
-  // const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  // const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
+  const [selectedModel, setSelectedModel] = React.useState<TemplateType>({} as TemplateType);
+  const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   // const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -21,16 +26,16 @@ export default function ModelsPage() {
   //   setShowAddEditModal(true);
   // };
 
-  // const handleShowEditModal = (model: TemplateType) => {
-  //   // setSelectedModel(model);
-  //   setShowAddEditModal(true);
-  // };
+  const handleShowEditModal = (model: TemplateType) => {
+    setSelectedModel(model);
+    setShowAddEditModal(true);
+  };
 
-  // const handleCloseAddEditModal = () => {
-  //   setShowAddEditModal(false);
-  //   setSelectedModel(null);
-  //   _getTemplates(setModels);
-  // };
+  const handleCloseAddEditModal = () => {
+    setShowAddEditModal(false);
+    setSelectedModel({} as TemplateType);
+    _getTemplates(setModels);
+  };
 
   // const handleShowDeleteModal = (model: TemplateType) => {
   //   // setSelectedModel(model);
@@ -60,8 +65,9 @@ export default function ModelsPage() {
   //     setIsLoading(false);
   //   }
   // };
+  const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
 
-  // const modalAddEditModelProps = { show: showAddEditModal, handleClose: handleCloseAddEditModal, modelData: selectedModel };
+  const modalAddEditModelProps = { showAddEditModal, handleCloseAddEditModal, selectedModel, setSelectedModel, shopList };
   // const modalDeleteModelProps = { show: showDeleteModal, handleClose: handleCloseDeleteModal, modelName: selectedModel?.name, handleDelete: handleDeleteModel, isLoading };
 
   return (
@@ -88,16 +94,22 @@ export default function ModelsPage() {
           <Table striped hover responsive="sm" className=" shadow">
             <thead className="sticky-sm-top ">
               <tr>
-                <th className="py-3">ID</th>
+                {/* <th className="py-3">ID</th> */}
                 <th className="py-3">Nom</th>
                 <th className="py-3">Miniature</th>
+                <th className="py-3">Magasin</th>
                 <th className="py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {models.map((model) => (
+              {models.map((model) => {
+                // Récupérer les noms des magasins basés sur les IDs
+                const shopNames = model.shopIds
+                  .map(shopId => shops.find(shop => shop.id === shopId)?.name)
+                  .filter(name => name !== undefined)
+                  .join(', ');
+              return(
                 <tr key={model.id} className="align-middle">
-                  <td>{model.id}</td>
                   <td>{model.name}</td>
                   <td>
                     <Image
@@ -109,8 +121,10 @@ export default function ModelsPage() {
                       height={100}
                     />
                   </td>
+                  <td>{shopNames}</td>
+
                   <td>
-                    {/* <Dropdown>
+                    <Dropdown>
                       <Dropdown.Toggle
                         variant='transparent'
                         id={`dropdown-model-${model.id}`}
@@ -124,17 +138,12 @@ export default function ModelsPage() {
                         <Dropdown.Item onClick={() => handleShowEditModal(model)}>
                           <i className='fa fa-pencil me-2'></i> Modifier
                         </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() => handleShowDeleteModal(model)}
-                          className='text-danger'
-                        >
-                          <i className='fa-solid fa-trash me-2'></i> Supprimer
-                        </Dropdown.Item>
+                      
                       </Dropdown.Menu>
-                    </Dropdown> */}
+                    </Dropdown>
                   </td>
                 </tr>
-              ))}
+              )})}
             </tbody>
           </Table>
         )}
@@ -143,8 +152,8 @@ export default function ModelsPage() {
         <strong>+</strong> <span>Ajouter un modèle</span>
       </Button> */}
 
-      {/* ModalAddEditModel à créer et à intégrer */}
-      {/* <ModalAddEditModel {...modalAddEditModelProps} /> */}
+  
+      <ModalAddEditModel modalAddEditModelProps={modalAddEditModelProps} />
 
       {/* ModalDeleteModel à créer et à intégrer */}
       {/* <ModalDeleteModel {...modalDeleteModelProps} /> */}

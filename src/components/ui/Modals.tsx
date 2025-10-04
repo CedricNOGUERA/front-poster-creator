@@ -13,10 +13,11 @@ import {
   ModalAddEditCategoryType,
   ModalUpdateModelType,
   ModalAddPictureType,
+  ModalEditModelType,
 } from '@/types/ModalType'
 import { ShopType } from '@/types/ShopType'
 import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
-import { _getTemplates, _handleDeleteImg } from '@/utils/apiFunctions'
+import { _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
 import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
 import { TemplateType } from '@/types/TemplatesType'
 const API_URL = import.meta.env.VITE_API_URL
@@ -156,6 +157,7 @@ export function ModalValidateModel({
     </Modal>
   )
 }
+
 export function ModalUpdateModel({
   modalUpdateModelProps,
 }: {
@@ -185,6 +187,82 @@ export function ModalUpdateModel({
           {feedBackState.isLoading ? (
             <>
               <Spinner size='sm' /> {feedBackState.loadingMessage}
+            </>
+          ) : (
+            <span>Valider</span>
+          )}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
+export function ModalAddEditModel({
+  modalAddEditModelProps,
+}: {
+  modalAddEditModelProps: ModalEditModelType
+}) {
+  const { showAddEditModal, handleCloseAddEditModal, selectedModel, setSelectedModel, shopList } = modalAddEditModelProps
+  const { feedBackState, setFeedBackState } = useOutletContext<ContextModalValidateModelType>()
+
+
+  return (
+    <Modal show={showAddEditModal} onHide={handleCloseAddEditModal}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <i className='fa-solid fa-edit me-2 text-success'></i>Modififer ce model
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+        <Form.Group className='mb-3' controlId='modelName'>
+          <Form.Label>Nom du model</Form.Label>
+
+          <Form.Control
+          type="text"
+          value={selectedModel?.name || ""}
+          onChange={(e) => setSelectedModel((prev) => ({
+            ...prev,
+            name: e.target.value
+          }))}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='shops'>
+          <Form.Label>Magasins</Form.Label>
+          <TagPicker
+              data={shopList}
+              style={{ width: '100%' }}
+              placeholder='Sélectionnez un ou plusieurs magasins'
+              value={selectedModel?.shopIds}
+              onChange={(newValues: string[]) => {
+                const numericIds = newValues.map((val) => parseInt(val, 10))
+                setSelectedModel((prev) => ({
+                  ...prev,
+                  shopIds: numericIds,
+                }))
+              }}
+            />
+        </Form.Group>
+        </Form>
+        Voulez-vous valider la modification ce model ?</Modal.Body>
+      <Modal.Footer>
+        <Button variant='secondary' onClick={handleCloseAddEditModal}>
+          Annuler
+        </Button>
+        <Button
+          variant='success'
+          onClick={() => {
+            const data = {
+              name: selectedModel.name,
+              image: selectedModel.image,
+              categoryId: selectedModel.categoryId,
+              shopIds: selectedModel.shopIds,
+            }
+            _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal)
+          }}
+        >
+          {feedBackState?.isLoading ? (
+            <>
+              <Spinner size='sm' /> {feedBackState?.loadingMessage}
             </>
           ) : (
             <span>Valider</span>
