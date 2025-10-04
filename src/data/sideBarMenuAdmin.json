@@ -2,7 +2,7 @@
     {
         "id": 1,
         "title": "Magasins",
-        "icon": "fas fa-shop",
+        "icon": "fas fa-store",
         "display": "shops",
         "role": ["super_admin"]
     },
@@ -16,15 +16,22 @@
     {
         "id": 3,
         "title": "Utilisateurs",
-        "icon": "fas fa-user",
+        "icon": "fas fa-users",
         "display": "utilisateurs",
         "role": ["super_admin", "admin"]
     },
     {
         "id": 4,
         "title": "Photothèque",
-        "icon": "fas fa-book",
+        "icon": "fas fa-images",
         "display": "phototheque",
+        "role": ["super_admin"]
+    },
+    {
+        "id": 5,
+        "title": "Models",
+        "icon": "fas fa-file",
+        "display": "models",
         "role": ["super_admin"]
     }
 ]

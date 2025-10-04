@@ -7,13 +7,14 @@ import { SideBarMenu } from '@/components/dashBoardComponents/SideBarMenu'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import PicturesLibraryPage from './PicturesLibraryPage'
 import { useLocation, useOutletContext } from 'react-router-dom'
+import ModelsPage from './ModelPage'
 
 interface ContextType {
   setTitleHeader: React.Dispatch<React.SetStateAction<string>>
 }
 
 const DashBoard = () => {
-  const {setTitleHeader} = useOutletContext<ContextType>()
+  const { setTitleHeader} = useOutletContext<ContextType>()
   const location = useLocation()
   const userRole = userDataStore((state: UserDataType) => state.role)
   
@@ -51,6 +52,8 @@ const DashBoard = () => {
       return <UserManager />
     } else if (display === 'phototheque') {
       return <PicturesLibraryPage />
+    }else if (display === 'models') {
+      return <ModelsPage />
     }
   }
 

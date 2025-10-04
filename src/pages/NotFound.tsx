@@ -1,10 +1,11 @@
 import { Button, ButtonGroup, Col, Row } from 'react-bootstrap'
-import notFound from '@/assets/images/404.svg'
+// import notFound from '@/assets/images/starry.svg' 
+import notFound from '@/assets/images/404.svg' 
 
 export default function NotFound() {
     return (
-      <div className='d-flex flex-column w-100 vh-100 align-items-center justify-content-center'>
-        <div className='text-center'>
+      <div className='d-flex flex-column w-100 vh-100 align-items-center justify-content-center '>
+        <div className='text-center w-75 w-md-50 px-1'>
           <img src={notFound} alt='404' width='100%' />
         </div>
         <div className='d-flex justify-content-center align-items-center text-muted p-1 p-lg-3'>

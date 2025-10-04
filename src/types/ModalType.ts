@@ -29,16 +29,26 @@ export interface ModalValidateModelType {
   isErrorModel: boolean
   hasModel: boolean
 }
+
 export interface ModalUpdateModelType {
   showUpdateModel: boolean
   handleCloseUpdateModel: () => void
   updateModel: () => Promise<void>
 }
 
+export interface ModalEditModelType {
+  showAddEditModal: boolean
+  handleCloseAddEditModal: () => void
+  selectedModel: TemplateType
+  shopList: {label: string, value: number}[]
+  setSelectedModel: React.Dispatch<React.SetStateAction<TemplateType>>
+}
+
 export interface ContextModalValidateModelType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
   toggleShow: () => void
   feedBackState: FeedBackSatateType
+  setFeedBackState:  React.Dispatch<React.SetStateAction<FeedBackSatateType>>
 }
 
 export interface ModalAddCategoryType {
