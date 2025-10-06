@@ -1,4 +1,5 @@
 import { TemplateType } from '@/types/TemplatesType'
+import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -33,16 +34,30 @@ class TemplatesServices {
     return response
   }
 
-  async patchTemplates(id: number | undefined, data: TemplateType) {
-    const response = await fetch(`${API_URL}/api/templates/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(data),
-    })
+  // async patchTemplates(id: number | undefined, data: TemplateType) {
+  //   const response = await fetch(`${API_URL}/api/templates/${id}`, {
+  //     method: 'PATCH',
+  //     headers: {
+  //       'Content-type': 'application/json',
+  //       Authorization: `Bearer ${localStorage.getItem('token')}`,
+  //     },
+  //     body: JSON.stringify(data),
+  //   })
 
+  //   return response
+  // }
+  async patchTemplates(id: number | undefined, data: TemplateType) {
+    const response = await axios.patch(
+      `${API_URL}/api/templates/${id}`,
+      data,
+      {
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    )
+  
     return response
   }
 
