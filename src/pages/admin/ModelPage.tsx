@@ -136,9 +136,8 @@ export default function ModelsPage() {
                       </Dropdown.Toggle>
                       <Dropdown.Menu align='end'>
                         <Dropdown.Item onClick={() => handleShowEditModal(model)}>
-                          <i className='fa fa-pencil me-2'></i> Modifier
+                          <i className='fa fa-store me-2'></i> Attribuer un/des magasins ou modifier le nom
                         </Dropdown.Item>
-                      
                       </Dropdown.Menu>
                     </Dropdown>
                   </td>
