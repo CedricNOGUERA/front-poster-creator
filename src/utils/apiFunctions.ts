@@ -289,7 +289,14 @@ export const _getTemplateLength = async (
   setTemplateLength(result.length);
 };
 
-export const _patchTemplate = async(id: number | undefined, data: TemplateType, setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>, handleCloseAddEditModal: () => void) => {
+export const _patchTemplate = async (
+  id: number | undefined,
+  data: TemplateType,
+  setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>,
+  handleCloseAddEditModal: () => void,
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
+  toggleShow: () => void
+) => {
   setFeedBackState((prev) => ({
     ...prev,
     isLoading: true,
@@ -297,13 +304,31 @@ export const _patchTemplate = async(id: number | undefined, data: TemplateType, 
   }))
   try {
     const response = await templatesServiceInstance.patchTemplates(id, data)
-    console.log(response)
 
-    if (response.ok) {
+    if (response.status === 200) {
       handleCloseAddEditModal()
+      setToastData({
+        bg: 'success',
+        position: 'top-end',
+        delay: 4000,
+        icon: 'fa fa-check-circle',
+        message: response.data.message ? response.data.message : 'Modification bien appliquée',
+      })
+      toggleShow()
     }
-  } catch (error) {
+    return response
+  } catch (error: unknown) {
     console.log(error)
+    if(error instanceof AxiosError)
+    setToastData({
+      bg: 'danger',
+      position: 'top-end',
+      delay: 7000,
+      icon: 'fa fa-xmark-circle',
+      message: error?.response?.data?.message ? error?.response?.data?.message : error?.message === "Network Error" ? "Une erreur serveur est survenue, vérifier votre connexion internet. Si le problème persiste contactez votre administrateur" : 'Une erreur est survenue lors de la modification',
+    })
+    toggleShow()
+
   } finally {
     setFeedBackState((prev) => ({
       ...prev,
@@ -311,7 +336,6 @@ export const _patchTemplate = async(id: number | undefined, data: TemplateType, 
       loadingMessage: '',
     }))
   }
-
 }
 
 

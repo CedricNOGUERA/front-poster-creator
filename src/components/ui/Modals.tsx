@@ -1,5 +1,5 @@
 import { _handleFileChange } from '@/utils/functions'
-import React from 'react'
+import React, { FormEvent } from 'react'
 import { Alert, Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
 import { useOutletContext } from 'react-router-dom'
 import { TagPicker } from 'rsuite'
@@ -196,24 +196,53 @@ export function ModalUpdateModel({
     </Modal>
   )
 }
+
 export function ModalAddEditModel({
   modalAddEditModelProps,
 }: {
   modalAddEditModelProps: ModalEditModelType
 }) {
   const { showAddEditModal, handleCloseAddEditModal, selectedModel, setSelectedModel, shopList } = modalAddEditModelProps
-  const { feedBackState, setFeedBackState } = useOutletContext<ContextModalValidateModelType>()
+  const { feedBackState, setFeedBackState,  setToastData, toggleShow } = useOutletContext<ContextModalValidateModelType>()
 
+  const onPatchSubmit = (e: FormEvent<HTMLFormElement>) =>{
+    e.preventDefault()
+    const data = {
+      name: selectedModel.name,
+      image: selectedModel.image,
+      categoryId: selectedModel.categoryId,
+      shopIds: selectedModel.shopIds,
+    }
+
+    try{
+      _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal, setToastData, toggleShow)
+    
+      
+
+      // setToastData({
+      //   bg: "success",
+      //   position: "top-end",
+      //   delay: 4000,
+      //   icon: "fa fa-check-circle",
+      //   message: "Modification bien appliquée",
+      // });
+      // toggleShow();
+    
+    }catch(error){
+      console.log(error)
+    }
+  
+  }
 
   return (
     <Modal show={showAddEditModal} onHide={handleCloseAddEditModal}>
+        <Form onSubmit={onPatchSubmit}>
       <Modal.Header closeButton>
         <Modal.Title>
           <i className='fa-solid fa-edit me-2 text-success'></i>Modififer ce model
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
         <Form.Group className='mb-3' controlId='modelName'>
           <Form.Label>Nom du model</Form.Label>
 
@@ -242,23 +271,23 @@ export function ModalAddEditModel({
               }}
             />
         </Form.Group>
-        </Form>
-        Voulez-vous valider la modification ce model ?</Modal.Body>
+        </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={handleCloseAddEditModal}>
           Annuler
         </Button>
         <Button
           variant='success'
-          onClick={() => {
-            const data = {
-              name: selectedModel.name,
-              image: selectedModel.image,
-              categoryId: selectedModel.categoryId,
-              shopIds: selectedModel.shopIds,
-            }
-            _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal)
-          }}
+          type="submit"
+          // onClick={() => {
+          //   const data = {
+          //     name: selectedModel.name,
+          //     image: selectedModel.image,
+          //     categoryId: selectedModel.categoryId,
+          //     shopIds: selectedModel.shopIds,
+          //   }
+          //   _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal)
+          // }}
         >
           {feedBackState?.isLoading ? (
             <>
@@ -269,6 +298,7 @@ export function ModalAddEditModel({
           )}
         </Button>
       </Modal.Footer>
+          </Form>
     </Modal>
   )
 }
