@@ -34,19 +34,7 @@ class TemplatesServices {
     return response
   }
 
-  // async patchTemplates(id: number | undefined, data: TemplateType) {
-  //   const response = await fetch(`${API_URL}/api/templates/${id}`, {
-  //     method: 'PATCH',
-  //     headers: {
-  //       'Content-type': 'application/json',
-  //       Authorization: `Bearer ${localStorage.getItem('token')}`,
-  //     },
-  //     body: JSON.stringify(data),
-  //   })
-
-  //   return response
-  // }
-  async patchTemplates(id: number | undefined, data: TemplateType) {
+  async patchTemplates(id: number | undefined, data: Partial<TemplateType>) {
     const response = await axios.patch(
       `${API_URL}/api/templates/${id}`,
       data,

@@ -73,6 +73,21 @@ class CategoriesService {
       return axios.request(config)
     }
 
+
+    async duplicateCategory(id: number | undefined, newCategoryName: string){
+      const config = {
+        method: 'POST',
+        url: `${API_URL}/api/categories/${id}/duplicate`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        data: {name: newCategoryName}
+      }
+
+      return axios.request(config)
+    }
+
     async deletePictureCategory(id: number, name: string) {
       const response = await fetch(`${API_URL}/api/uploads/${id}/${name}`, {
         method: 'DELETE',

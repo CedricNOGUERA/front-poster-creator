@@ -1,4 +1,4 @@
-import { ModalAddCategory, ModalAddEditCategory, ModalGenericDelete } from '@/components/ui/Modals';
+import { ModalAddCategory, ModalAddEditCategory, ModalDuplicateCategory, ModalGenericDelete } from '@/components/ui/Modals';
 import categoriesServiceInstance from '@/services/CategoriesServices';
 import { CategoriesPaginatedType, CategoriesType } from '@/types/CategoriesType';
 import { FeedBackSatateType, ToastDataType } from '@/types/DiversType';
@@ -65,7 +65,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     // _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
     _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit);
-  }, [setFeedBackState, setToastData]);
+  }, [setFeedBackState, setToastData, page, limit, toggleShow]);
 
   useEffect(() => {
     setCategories(categoriesPaginated.categories)
@@ -107,6 +107,7 @@ export default function CategoriesPage() {
               handleShowEditModal={
                 handleShowEditModal as (data: CategoriesType) => void | null | undefined
               }
+              handleShowDuplicate={handleShowDuplicate as (category: CategoriesType) => void | null | undefined}
               handleShowDeleteModal={handleShowDeleteModal}
             />
           </td>
@@ -134,7 +135,18 @@ export default function CategoriesPage() {
     resetForm()
     setShowAdd(false)
   }
-  const handleShowAdd = () => setShowAdd(true)
+  const handleShowAdd = () => setShowDuplicate(true)
+
+
+  const [showDuplicate, setShowDuplicate] = React.useState(false)
+  const handleCloseDuplicate = () => {
+    setSelectedCategory({} as CategoriesType)
+    setShowDuplicate(false)
+  }
+  const handleShowDuplicate = (category: CategoriesType) => {
+    setSelectedCategory(category);
+    setShowDuplicate(true);
+  }
 
   const handleShowEditModal = (category: CategoriesType) => {
     setSelectedCategory(category);
@@ -349,6 +361,8 @@ export default function CategoriesPage() {
     }
   }
 
+  console.log(selectedCategory)
+
   const handleUpdateCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedCategory) return;
@@ -369,9 +383,10 @@ export default function CategoriesPage() {
     }
     try {
       const updateResponse = await categoriesServiceInstance.updateCategory(id, formData)
-
+// const patchtemplateResponse = await _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal, setToastData, toggleShow)
 
       if (updateResponse.status === 200) {
+
         _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
         handleCloseAddEditModal()
         setToastData({
@@ -516,6 +531,7 @@ const shopDisplay = (shopData: ShopType[], shop: number, indx: number, category:
     validateField,
   }
   const modalAddEditCategoryProps = { showAdd: showAddEditModal, handleCloseAdd: handleCloseAddEditModal, handleSubmit: handleUpdateCategory, formData: selectedCategory, setFormData: setSelectedCategory, setFile: setFile, setImgRglt: setImgRglt, feedBackState: feedBackState, shopData: shops };
+  const modalDuplicateCategoryProps = {showDuplicate, handleCloseDuplicate, selectedCategory, setSelectedCategory, setCategoriesPaginated, page, limit}
   const modalDeleteCategoryProps = { show: showDeleteModal, handleClose: handleCloseDeleteModal, selectedId: selectedCategoryId, handleDelete: handleDeleteCategory,title: 'la catégorie', isLoading };
 
   return (
@@ -618,6 +634,7 @@ const shopDisplay = (shopData: ShopType[], shop: number, indx: number, category:
       </Button>
       <ModalAddCategory modalAddCategoryProps={modalAddCategoryProps} />
       <ModalAddEditCategory modalAddEditCategoryProps={modalAddEditCategoryProps} />
+      <ModalDuplicateCategory modalDuplicateCategoryProps={modalDuplicateCategoryProps} />
       <ModalGenericDelete modalGenericDeleteProps={modalDeleteCategoryProps} />
     </Container>
   )
