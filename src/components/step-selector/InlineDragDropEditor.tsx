@@ -458,7 +458,7 @@ export default function InlineDragDropEditor() {
       isLoading: true,
       loadingMessage: 'Chargement',
     }))
-
+try {
     // Génère une image PNG depuis la div canvas
     // const canvasElement = document.getElementById('canvas')
     const canvasElement = posterRef.current
@@ -489,7 +489,8 @@ export default function InlineDragDropEditor() {
     formData.append('image', blob, imageName)
     formData.append('data', JSON.stringify(newData))
 
-    try {
+    
+      
       const responseModel = await modelsServiceInstance.postModel(formData)
 
       const responseTemplate = await templatesServiceInstance.postTemplate(newTemplate)
