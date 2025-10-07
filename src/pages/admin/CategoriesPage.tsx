@@ -65,7 +65,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     // _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
     _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit);
-  }, [setFeedBackState, setToastData, page, limit, toggleShow]);
+  }, [setFeedBackState, setToastData, page, limit]);
 
   useEffect(() => {
     setCategories(categoriesPaginated.categories)
