@@ -94,7 +94,6 @@ export default function ModelsPage() {
           <Table striped hover responsive="sm" className=" shadow">
             <thead className="sticky-sm-top ">
               <tr>
-                {/* <th className="py-3">ID</th> */}
                 <th className="py-3">Nom</th>
                 <th className="py-3">Miniature</th>
                 <th className="py-3">Magasin</th>
@@ -147,15 +146,8 @@ export default function ModelsPage() {
           </Table>
         )}
       </Container>
-      {/* <Button variant='primary' className='rounded-pill fab' onClick={handleShowAddModal}>
-        <strong>+</strong> <span>Ajouter un modèle</span>
-      </Button> */}
-
   
       <ModalAddEditModel modalAddEditModelProps={modalAddEditModelProps} />
-
-      {/* ModalDeleteModel à créer et à intégrer */}
-      {/* <ModalDeleteModel {...modalDeleteModelProps} /> */}
     </Container>
   );
 }

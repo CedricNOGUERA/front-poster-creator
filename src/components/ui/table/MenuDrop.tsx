@@ -1,16 +1,20 @@
 import { CategoriesType } from '@/types/CategoriesType'
 import { ShopType } from '@/types/ShopType'
+import React from 'react'
 import { Dropdown } from 'react-bootstrap'
 
 export default function MenuDrop<T extends CategoriesType | ShopType>({
   trigger,
   data,
   handleShowEditModal,
+  handleShowDuplicate,
   handleShowDeleteModal,
 }: {
   trigger: string
   data: T
   handleShowEditModal?: (data: T) => void | undefined | null
+  handleShowDuplicate?: (data: T) => void | undefined | null
+  
   handleShowDeleteModal: (id: number) => void
 }) {
   return (
@@ -26,9 +30,14 @@ export default function MenuDrop<T extends CategoriesType | ShopType>({
       </Dropdown.Toggle>
       <Dropdown.Menu align='end'>
         {trigger === 'categories' && (
+          <React.Fragment>
           <Dropdown.Item onClick={() => handleShowEditModal && handleShowEditModal(data)}>
             <i className='fa fa-pencil me-2'></i> Modifier
           </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleShowDuplicate && handleShowDuplicate(data)}>
+            <i className='fa fa-copy me-2'></i> Dupliquer
+          </Dropdown.Item>
+          </React.Fragment>
         )}
         <Dropdown.Item
           onClick={() => handleShowDeleteModal(data.id as number)}

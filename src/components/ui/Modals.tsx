@@ -1,7 +1,7 @@
 import { _handleFileChange } from '@/utils/functions'
 import React, { FormEvent } from 'react'
 import { Alert, Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
-import { useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import { TagPicker } from 'rsuite'
 import {
   ContextModalValidateModelType,
@@ -17,9 +17,14 @@ import {
 } from '@/types/ModalType'
 import { ShopType } from '@/types/ShopType'
 import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
-import { _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
+import { _getCategoriesPaginated, _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
 import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
 import { TemplateType } from '@/types/TemplatesType'
+import { CategoriesPaginatedType, CategoriesType } from '@/types/CategoriesType'
+import categoriesServiceInstance from '@/services/CategoriesServices'
+import { AxiosError } from 'axios'
+import { _expiredSession, _showToast } from '@/utils/notifications'
+import userDataStore, { UserDataType } from '@/stores/userDataStore'
 const API_URL = import.meta.env.VITE_API_URL
 
 export function ModalDelete({ modalDeleteProps }: { modalDeleteProps: ModalDeleteType }) {
@@ -216,18 +221,6 @@ export function ModalAddEditModel({
 
     try{
       _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal, setToastData, toggleShow)
-    
-      
-
-      // setToastData({
-      //   bg: "success",
-      //   position: "top-end",
-      //   delay: 4000,
-      //   icon: "fa fa-check-circle",
-      //   message: "Modification bien appliquée",
-      // });
-      // toggleShow();
-    
     }catch(error){
       console.log(error)
     }
@@ -788,6 +781,144 @@ export function ModalAddEditCategory({
               <Spinner size='sm' animation='border' role='status' aria-hidden='true' />
             )}
             &nbsp;{feedBackState.isLoading ? feedBackState.loadingMessage : 'Valider'}
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  )
+}
+
+interface ModalDuplicateCategoryType {
+  showDuplicate: boolean
+  handleCloseDuplicate: () => void
+  selectedCategory: CategoriesType
+  setSelectedCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
+  setCategoriesPaginated: React.Dispatch<React.SetStateAction<CategoriesPaginatedType>>
+  page: number 
+  limit: number
+}
+export function ModalDuplicateCategory({
+  modalDuplicateCategoryProps,
+}: {
+  modalDuplicateCategoryProps: ModalDuplicateCategoryType
+}) {
+  const { feedBackState, setFeedBackState,  setToastData, toggleShow } = useOutletContext<ContextModalValidateModelType>()
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
+  const {showDuplicate, handleCloseDuplicate, selectedCategory, setSelectedCategory, setCategoriesPaginated, page, limit} = modalDuplicateCategoryProps
+  const [newName, setNewName] = React.useState<string>("")
+  const navigate = useNavigate()
+
+  const handleDuplicate = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const id = selectedCategory.id
+    setFeedBackState((prev)=> ({
+      ...prev,
+      isLoading: true,
+      loadingMessage: "chargement..."
+    }))
+    try{
+      const response = await categoriesServiceInstance.duplicateCategory(id, newName)
+
+      if(response.status === 201){
+        _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit)
+        handleCloseDuplicate()
+        setToastData({
+          bg: 'success',
+          position: 'top-end',
+          delay: 4000,
+          icon: 'fa fa-check-circle',
+          message: response.data.message ? response.data.message : 'Catégorie dupliquée avec succès',
+        })
+        toggleShow()
+      }
+    }catch(error: unknown){
+      console.log(error)
+      if(error instanceof AxiosError){
+        if(error.response && error.response.status === 401 && error.response.data.code === "TOKEN_EXPIRED"){
+          _expiredSession(
+            (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate
+          )
+        }else{
+          setToastData({
+          bg: 'danger',
+          position: 'top-end',
+          delay: 7000,
+          icon: 'fa fa-xmark-circle',
+          message: error?.response?.data?.message
+            ? error?.response?.data?.message
+            : error?.message === 'Network Error'
+            ? 'Une erreur serveur est survenue, vérifier votre connexion internet. Si le problème persiste contactez votre administrateur'
+            : 'Une erreur est survenue lors de la duplication',
+          })
+          toggleShow()
+        }
+      }
+    }finally{
+      setFeedBackState((prev)=> ({
+        ...prev,
+        isLoading: false,
+        loadingMessage: ""
+      }))
+    }
+  }
+
+
+  return (
+    <Modal show={showDuplicate} onHide={handleCloseDuplicate}>
+      <Form onSubmit={handleDuplicate}>
+        <Modal.Header closeButton>
+          <Modal.Title className='text-primary'>
+            <i className='fa fa-pencil '></i> Dupliquez la catégorie
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Saissisez le nouveau nom de la catégorie'
+              value={newName || ''}
+              onChange={
+                (e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)
+              }
+              required
+            />
+          </Form.Group>
+        </Modal.Body>
+        {newName === selectedCategory.name && (
+          <Modal.Body className='pt-0'>
+            <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
+              <i className='ri-error-warning-line fs-5 me-2'></i>
+              <small>Le nom de nouvelle catégorie doit différent de l'ancienne</small>
+            </Alert>
+          </Modal.Body>
+        )}
+        <Modal.Footer>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              setSelectedCategory({} as CategoriesType)
+              handleCloseDuplicate()
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant='success'
+            // disabled={feedBackState.isLoading}
+            disabled={feedBackState.isLoading || newName === selectedCategory.name}
+            type='submit'
+          >
+            {feedBackState.isLoading ? (
+              <>
+                <Spinner size='sm' animation='border' role='status' aria-hidden='true' />{' '}
+                {feedBackState.loadingMessage}
+              </>
+            ) : (
+              <span>valider</span>
+            )}
           </Button>
         </Modal.Footer>
       </Form>

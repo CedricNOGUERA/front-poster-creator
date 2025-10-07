@@ -281,7 +281,7 @@ export const _getTemplateLength = async (
 
 export const _patchTemplate = async (
   id: number | undefined,
-  data: TemplateType,
+  data: Partial<TemplateType>,
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>,
   handleCloseAddEditModal: () => void,
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>,
