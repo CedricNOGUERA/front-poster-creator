@@ -32,7 +32,7 @@ export const SideBarMenu = ({
       
     <Container
     key={item.id}
-      className='dash-menu-link  py-3 rounded-end pointer'
+      className='dash-menu-link  py-3 rounded-end pointer '
       onClick={() => setDisplay(item.display)}
     >
 
@@ -45,7 +45,7 @@ export const SideBarMenu = ({
 )
 
   return (
-    <Col sm={2} className='border-end h-100  height-container pt-2 pe-2'>
+    <Col sm={2} className='border-end h-100  height-container pt-2 pe-2 sticky-top'>
       {menuMap}
     </Col>
   )
