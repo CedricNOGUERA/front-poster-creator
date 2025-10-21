@@ -3,6 +3,7 @@ import { Modal, Button, Form, Row, Col, Card, Alert } from 'react-bootstrap'
 import { NewTemplateType } from '@/types/DiversType'
 import { generatePDF, PrintOptions, PAGE_DIMENSIONS } from '@/utils/printUtils'
 import PrintHelpModal from './PrintHelpModal'
+import { FaRegCircleQuestion } from 'react-icons/fa6'
 
 interface PrintOptionsModalProps {
   show: boolean
@@ -181,9 +182,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
           variant="outline-info"
           size="sm"
           onClick={() => setShowHelp(true)}
-          className="ms-2 border-0"
+          className="d-flex align-items-center ms-2 border-0"
         >
-          <i className='fa-regular fa-circle-question'></i>
+          <FaRegCircleQuestion />
           {/* Aide */}
         </Button>
       </Modal.Header>

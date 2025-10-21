@@ -2,6 +2,7 @@ import { CategoriesType } from '@/types/CategoriesType'
 import { ShopType } from '@/types/ShopType'
 import React from 'react'
 import { Dropdown } from 'react-bootstrap'
+import { FaEllipsisVertical } from 'react-icons/fa6'
 
 export default function MenuDrop<T extends CategoriesType | ShopType>({
   trigger,
@@ -25,7 +26,7 @@ export default function MenuDrop<T extends CategoriesType | ShopType>({
         className='border-0 no-chevron'
       >
         <b>
-          <i className='fa-solid fa-ellipsis-vertical'></i>
+          <FaEllipsisVertical />
         </b>
       </Dropdown.Toggle>
       <Dropdown.Menu align='end'>

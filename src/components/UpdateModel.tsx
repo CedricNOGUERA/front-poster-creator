@@ -29,6 +29,7 @@ import { ModalUpdateModel } from './ui/Modals'
 import modelsServiceInstance from '@/services/modelsServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { ModelType } from '@/types/modelType'
+import { FaXmark } from 'react-icons/fa6'
 // import PrintOptionsModal from './PrintOptionsModal'
 
 interface ContextInlineDragDropEditorType {
@@ -622,7 +623,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
           }}
           title='Supprimer'
         >
-          <i className='fa-solid fa-xmark'></i>
+          <FaXmark  />
         </Button>
       )
 

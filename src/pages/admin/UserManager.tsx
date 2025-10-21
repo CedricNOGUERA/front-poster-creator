@@ -8,6 +8,7 @@ import { UserType } from '@/types/UserType'
 import {  _getAllUsers } from '@/utils/apiFunctions'
 import React from 'react'
 import { Button, Container, Dropdown, Table } from 'react-bootstrap'
+import { FaEllipsisVertical } from 'react-icons/fa6'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 
 interface ContextShopSelectorType {
@@ -146,7 +147,7 @@ export default function UserManager() {
                           className='border-0 no-chevron'
                         >
                           <b>
-                            <i className='fa-solid fa-ellipsis-vertical  text-'></i>
+                            <FaEllipsisVertical />
                           </b>
                         </Dropdown.Toggle>
                         <Dropdown.Menu align='end'>

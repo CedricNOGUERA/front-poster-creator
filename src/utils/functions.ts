@@ -128,7 +128,7 @@ export const _generateInitalComponent2 = (
   setNewTemplateState: React.Dispatch<React.SetStateAction<NewTemplateType>>,
   maxPreviewHeight: number,
   h: number | undefined,
-  components: ComponentTypeMulti[],
+  // components: ComponentTypeMulti[],
   setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>,
   setDimensionFactor: React.Dispatch<React.SetStateAction<number | null>>,
 

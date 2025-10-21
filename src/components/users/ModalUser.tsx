@@ -2,6 +2,7 @@ import { Button, Modal, Spinner } from "react-bootstrap"
 import { AddUserForm } from "./AddUserForm"
 import { UserType } from "@/types/UserType"
 import { ModalDeleteUserType } from "@/types/ModalType"
+import { FaCircleXmark } from "react-icons/fa6"
 
 
 export const ModalAddUser = ({showAdd, handleCloseAdd, userDataToEdit, setUsers}: {showAdd: boolean, handleCloseAdd: () => void, userDataToEdit?: UserType | null, setUsers: React.Dispatch<React.SetStateAction<UserType[]>>}) => {
@@ -32,7 +33,9 @@ export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteUs
     <Modal show={showDelete} onHide={handleCloseDelete}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <i className='fa-solid fa-circle-xmark me-2 text-danger'></i>Suppression d'utilisateur
+          <FaCircleXmark className='me-2 text-danger' />
+          
+          Suppression d'utilisateur
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
