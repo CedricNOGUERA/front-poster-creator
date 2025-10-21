@@ -3,6 +3,8 @@ import { PictureType } from '@/types/DiversType'
 import { _getPictures } from '@/utils/apiFunctions'
 import React from 'react'
 import { Card, Form, Button, ButtonGroup } from 'react-bootstrap'
+import { FaArrowsAlt, FaExpandArrowsAlt } from 'react-icons/fa'
+import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowsLeftRight, FaArrowsUpDown, FaArrowUp, FaImage, FaPlus } from 'react-icons/fa6'
 
 interface WarrantyPictureType {
   selectedGarantie: string
@@ -226,7 +228,7 @@ export default function PictureAdder({
             <Card key={image.id} className="mb-3 border">
               <Card.Header className="d-flex justify-content-between align-items-center py-2">
                 <div className="d-flex align-items-center gap-2">
-                  <i className="fas fa-image text-secondary"></i>
+                  <FaImage className='text-secondary' />
                   <span className="fw-bold">Image {index + 1}</span>
                 </div>
                 <div className="d-flex gap-2">
@@ -289,7 +291,7 @@ export default function PictureAdder({
                       {/* Contrôles de taille */}
                       <Form.Group>
                         <Form.Label className="fw-bold small">
-                          <i className="fas fa-expand-arrows-alt me-2"></i>
+                          <FaExpandArrowsAlt className='me-2' />
                           Redimension
                         </Form.Label>
                         <Form.Range
@@ -311,7 +313,7 @@ export default function PictureAdder({
 
                       {/* Boutons de déplacement rapide */}
                       <Form.Label className="fw-bold mb-2 small">
-                        <i className="fas fa-arrows-alt me-2"></i>
+                        <FaArrowsAlt className='me-2' />
                         Position
                       </Form.Label>
 
@@ -322,28 +324,28 @@ export default function PictureAdder({
                             onClick={() => moveAdditionalImagePosition(image.id, 'up', 10)}
                             title="Déplacer vers le haut"
                           >
-                            <i className="fas fa-arrow-up"></i>
+                            <FaArrowUp />
                           </Button>
                           <Button
                             variant="outline-secondary"
                             onClick={() => moveAdditionalImagePosition(image.id, 'down', 10)}
                             title="Déplacer vers le bas"
                           >
-                            <i className="fas fa-arrow-down"></i>
+                            <FaArrowDown />
                           </Button>
                           <Button
                             variant="outline-secondary"
                             onClick={() => moveAdditionalImagePosition(image.id, 'left', 10)}
                             title="Déplacer vers la gauche"
                           >
-                            <i className="fas fa-arrow-left"></i>
+                            <FaArrowLeft />
                           </Button>
                           <Button
                             variant="outline-secondary"
                             onClick={() => moveAdditionalImagePosition(image.id, 'right', 10)}
                             title="Déplacer vers la droite"
                           >
-                            <i className="fas fa-arrow-right"></i>
+                            <FaArrowRight />
                           </Button>
                         </ButtonGroup>
                       </div>
@@ -353,7 +355,7 @@ export default function PictureAdder({
                     <div className="row g-2">
                       <div className="col-6">
                         <Form.Label className="small">
-                          <i className="fas fa-arrows-up-down me-1"></i>
+                          <FaArrowsUpDown className='me-1' />
                           Vert.
                         </Form.Label>
                         <Form.Range
@@ -395,7 +397,7 @@ export default function PictureAdder({
 
                       <div className="col-6">
                         <Form.Label className="small">
-                          <i className="fas fa-arrows-left-right me-1"></i>
+                          <FaArrowsLeftRight className='me-1' />
                           Horiz.
                         </Form.Label>
                         <Form.Range
@@ -446,7 +448,7 @@ export default function PictureAdder({
               onClick={addNewImage}
               className="d-flex align-items-center gap-2"
             >
-              <i className="fas fa-plus"></i>
+              <FaPlus />
               Ajouter une image
             </Button>
     </>

@@ -1,6 +1,7 @@
 import useStoreApp from '@/stores/storeApp'
 import { ResetConfig } from '@/types/DiversType'
 import { Button } from 'react-bootstrap'
+import { FaCheck, FaCircleArrowLeft } from 'react-icons/fa6'
 
 export const ProgressBar = () => {
   /* States
@@ -37,35 +38,36 @@ export const ProgressBar = () => {
           onClick={() => goToStep(storeApp.step - 1)}
           style={{ textDecoration: 'none' }}
         >
-          <i className='fa fa-circle-arrow-left fs-3'></i>
+          <FaCircleArrowLeft className='fs-3' />
+
         </Button>
       )}
       <div
         className={`step ${storeApp.step >= 1 ? 'current' : ''}`}
         onClick={() => goToStep(1)}
       >
-        {storeApp.step > 1 ? <i className='fas fa-check text-white'></i> : <>1</>}
+        {storeApp.step > 1 ? <FaCheck className='text-white' /> : <>1</>}
         <div className='progress-line'></div>
       </div>
       <div
         className={`step ${storeApp.step >= 2 ? 'current' : ''}`}
         onClick={storeApp.shopId !== 0 ? () => goToStep(2) : undefined}
       >
-        {storeApp.step > 2 ? <i className='fas fa-check text-white'></i> : <>2</>}
+        {storeApp.step > 2 ? <FaCheck className='text-white' /> : <>2</>}
         <div className='progress-line'></div>
       </div>
       <div
         className={`step ${storeApp.step >= 3 ? 'current' : ''}`}
         onClick={storeApp.categoryId !== 0 ? () => goToStep(3) : undefined}
       >
-        {storeApp.step > 3 ? <i className='fas fa-check text-white'></i> : <>3</>}
+        {storeApp.step > 3 ? <FaCheck className='text-white' /> : <>3</>}
         <div className='progress-line'></div>
       </div>
       <div
         className={`step ${storeApp.step >= 4 ? 'current' : ''}`}
         onClick={storeApp.templateId !== 0 ? () => goToStep(4) : undefined}
       >
-        {storeApp.step > 4 ? <i className='fas fa-check text-white'></i> : <>4</>}
+        {storeApp.step > 4 ? <FaCheck className='text-white' /> : <>4</>}
         <div className='progress-line'></div>
       </div>
       <div

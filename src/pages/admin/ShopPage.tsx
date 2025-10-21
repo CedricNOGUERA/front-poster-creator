@@ -195,17 +195,6 @@ setShops(response.data)
 
   return (
     <Container fluid className='p-0'>
-      {/* <Row className='d-flex justify-content-between align-items-center'>
-        <Col>
-          <Link to='/tableau-de-bord' className='text-muted'>
-            <i className='fa-solid fa-circle-arrow-left fs-3'></i>
-          </Link>
-        </Col>
-        <Col xs={10}>
-          <h3 className='py-3'>Gestion des Magasins</h3>
-        </Col>
-        <Col xs={1}></Col>
-      </Row> */}
       <h3 className='py-3'>Gestion des Magasins</h3>
       <Container>
         <Table striped hover responsive='sm' className='shadow'>

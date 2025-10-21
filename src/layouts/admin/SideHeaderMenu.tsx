@@ -6,6 +6,7 @@ import { Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Drawer from 'rsuite/esm/Drawer'
 import headerMenuItems from '@/data/headerMenuItems.json'
+import { FaSignOutAlt } from 'react-icons/fa'
 
 export const SideHeaderMenu = ({
   sideHeaderMenuProps,
@@ -67,7 +68,7 @@ export const SideHeaderMenu = ({
               onClick={() => handleClickLogout()}
               className='d-flex align-items-center text-decoration-none text-muted'
             >
-              <i className='fas fa-sign-out-alt me-2 fs-3'></i>
+              <FaSignOutAlt className='me-2 fs_3' />
               Déconnexion
             </Link>
           </Container>

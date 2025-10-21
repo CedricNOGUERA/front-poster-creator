@@ -8,6 +8,7 @@ import { _expiredSession, _showToast } from '@/utils/notifications'
 import { AxiosError } from 'axios'
 import React from 'react'
 import { Badge, Button, ButtonGroup, Card, Container } from 'react-bootstrap'
+import { FaCirclePlus, FaXmark } from 'react-icons/fa6'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 
 
@@ -172,8 +173,8 @@ export default function PicturesLibraryPage() {
       <h3 className='py-3'>Gestion des images</h3>
       <Container className='text-end'>
         <ButtonGroup >
-        <Button onClick={handleShowAdd} className='pe-1 border-0 border-end border-light' >
-          <i className='fas fa-circle-plus'></i>
+        <Button onClick={handleShowAdd} className='pe-1 border-0 border-end border-light'>
+          <FaCirclePlus />
         </Button>
         <Button onClick={handleShowAdd} className='ps-1'>
           Ajouter une image
@@ -196,7 +197,7 @@ export default function PicturesLibraryPage() {
                   setSelectedPicture(pict)
                 }}
               >
-                <i className='fas fa-xmark'></i>
+                <FaXmark />
               </Badge>
             </Card>
         ))}

@@ -1,6 +1,7 @@
 import { ComponentTypeMulti, NumberComponentType, PrincipalPriceComponentType, TextComponentType } from '@/types/ComponentType'
 import React from 'react'
 import { Form } from 'react-bootstrap'
+import { FaArrowsLeftRight, FaArrowsUpDown, FaTextHeight } from 'react-icons/fa6'
 interface CanvasEditorType {
     canvasData: ComponentTypeMulti[]
     setCanvasData: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>
@@ -66,7 +67,7 @@ console.log(pageWidth)
                   {/* Size */}
                   <Form.Group className='text-center mb-3' controlId='fontSize'>
                     <Form.Label>
-                      <i className='fas fa-text-height'></i>
+                      <FaTextHeight />
                     </Form.Label>
                     <div className='d-flex align-items-center gap-2'>
                       <Form.Range
@@ -89,7 +90,7 @@ console.log(pageWidth)
                   {comp.type !== 'price' && comp.type !== 'number' ? (
                     <Form.Group className='text-center mb-3' controlId='positionY'>
                       <Form.Label>
-                        <i className='fas fa-arrows-up-down'></i>
+                        <FaArrowsUpDown />
                       </Form.Label>
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
@@ -112,7 +113,7 @@ console.log(pageWidth)
                   ) : (
                     <Form.Group className='text-center mb-3' controlId='positionY'>
                       <Form.Label>
-                        <i className='fas fa-arrows-up-down'></i>
+                        <FaArrowsUpDown />
                       </Form.Label>
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
@@ -136,7 +137,7 @@ console.log(pageWidth)
                   {comp.type !== 'price' && comp.type !== 'number' ? (
                     <Form.Group className='text-center mb-3' controlId='positionX'>
                       <Form.Label>
-                        <i className='fas fa-arrows-left-right'></i>
+                        <FaArrowsLeftRight />
                       </Form.Label>
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
@@ -158,7 +159,7 @@ console.log(pageWidth)
                   ) : (
                     <Form.Group className='text-center mb-3' controlId='positionX'>
                       <Form.Label>
-                        <i className='fas fa-arrows-left-right'></i>
+                        <FaArrowsLeftRight  />
                       </Form.Label>
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range

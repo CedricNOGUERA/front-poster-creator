@@ -6,12 +6,12 @@ import { CategoriesType } from '@/types/CategoriesType'
 import { _getCategories } from '@/utils/apiFunctions'
 import categoriesServiceInstance from '@/services/CategoriesServices'
 import { ModalAddCategory } from '../ui/Modals'
-// import { ShopType } from '@/types/ShopType'
 import { ComponentTypeMulti } from '@/types/ComponentType'
 import userDataStore from '@/stores/userDataStore'
 import { _expiredSession, _showToast } from '@/utils/notifications'
 import { ShopType } from '@/types/ShopType'
-// import { _expiredSession } from '@/utils/functions'
+import { FaPlusCircle } from 'react-icons/fa'
+// import { IconType } from 'react-icons';
 
 type Props = {
   title: string
@@ -366,7 +366,7 @@ export default function CategorySelectorDrag({ title }: Props) {
           style={{ width: '200px', height: '183px' }}
           onClick={() => handleShowAdd()}
         >
-          <i className={'fa fa-plus-circle text-primary fs-1'}></i>
+          <FaPlusCircle className='text-primary fs-1' />
           <p className='mt-2 text-center fw-bold fs-5 text-primary'>
             N<sup>velle</sup> catégorie
           </p>

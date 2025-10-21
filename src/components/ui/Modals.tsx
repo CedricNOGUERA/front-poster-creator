@@ -27,8 +27,9 @@ import categoriesServiceInstance from '@/services/CategoriesServices'
 import { AxiosError } from 'axios'
 import { _expiredSession, _showToast } from '@/utils/notifications'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
-import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6'
-import { FaEdit } from 'react-icons/fa'
+import { FaCircleCheck, FaCircleXmark, FaPencil, FaShop } from 'react-icons/fa6'
+import { FaEdit, FaPlusCircle, FaTimesCircle } from 'react-icons/fa'
+import DynamicIcon from './DynamicIcon'
 const API_URL = import.meta.env.VITE_API_URL
 
 export function ModalDelete({ modalDeleteProps }: { modalDeleteProps: ModalDeleteType }) {
@@ -134,13 +135,13 @@ console.log(isTemplate)
         </Form.Group>
         {isErrorModel && (
           <Alert variant='danger'>
-            <i className='fa fa-circle-xmark me-2 text-danger'></i>
+            <FaCircleXmark className='me-2 text-danger' />
             Vous devez remplir un de ces champs
           </Alert>
         )}
         {hasModel && isTemplate && (
           <Alert variant='danger'>
-            <i className='fa fa-circle-xmark me-2 text-danger'></i>
+            <FaCircleXmark className='me-2 text-danger' />
             <small>Attention : Le modèle existant sera remplacé définitivement</small>
           </Alert>
         )}
@@ -301,6 +302,9 @@ export function ModalAddEditModel({
   )
 }
 
+
+
+
 export function ModalAddCategory({
   modalAddCategoryProps,
 }: {
@@ -331,8 +335,7 @@ export function ModalAddCategory({
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title>
-            <i className='fa fa-plus-circle text-primary fs-1'></i> &nbsp;Ajouter une nouvelle
-            catégorie
+            <FaPlusCircle className='fs-1' /> &nbsp;Ajouter une nouvelle catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -388,9 +391,10 @@ export function ModalAddCategory({
                   <Dropdown.Item
                     key={icon.name}
                     onClick={() => setFormData((prev) => ({ ...prev, icon }))}
+                    className='d-flex align-items-center'
                   >
-                    <i className={icon.value + ' fs-5 me-2 text-primary'}></i>
-                    <span style={{ fontSize: 15 }}>{icon.name}</span>
+                    <DynamicIcon iconKey={icon.value} className='me-2 text-primary' size={20} />
+                    <span>{icon.name}</span>
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -486,7 +490,7 @@ export function ModalAddCategory({
           {/* Message d'erreur global */}
           {feedBackState.isError && feedBackState.errorMessage && (
             <div className='alert alert-danger mt-3'>
-              <i className='fa fa-times-circle me-2'></i>
+              <FaTimesCircle className='me-2' />
               <small>{feedBackState.errorMessage}</small>
             </div>
           )}
@@ -550,7 +554,7 @@ export function ModalAddEditCategory({
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title className='text-primary'>
-            <i className='fa fa-pencil '></i> Modifier la catégorie
+          <FaPencil /> Modifier la catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -605,18 +609,6 @@ export function ModalAddEditCategory({
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            {/* <Form.Control
-              type='text'
-              placeholder="Saisissez le nom de l'icone"
-              value={formData?.icon.name || ''}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  icon: e.target.value,
-                }))
-              }
-              required
-            /> */}
           </Form.Group>
           <Form.Group controlId='formFile' className='mb-3'>
             <Form.Label className=''>
@@ -770,8 +762,6 @@ export function ModalAddEditCategory({
                 icon: { name: '', value: '' },
                 image: '',
                 imageRglt: '',
-                // backgroundColorHeader: '#ff0000',
-                // backgroundColorBody: '#ffea00',
                 shopIds: [],
                 canvasId: 0,
                 canvas: [],
@@ -878,7 +868,8 @@ export function ModalDuplicateCategory({
       <Form onSubmit={handleDuplicate}>
         <Modal.Header closeButton>
           <Modal.Title className='text-primary'>
-            <i className='fa fa-pencil '></i> Dupliquez la catégorie
+            <FaPencil />
+            Dupliquez la catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -888,9 +879,7 @@ export function ModalDuplicateCategory({
               type='text'
               placeholder='Saissisez le nouveau nom de la catégorie'
               value={newName || ''}
-              onChange={
-                (e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)}
               required
             />
           </Form.Group>
@@ -950,7 +939,8 @@ export function ModalAddShop({ modalAddShopProps }: { modalAddShopProps: ModalAd
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title className='text-primary'>
-            <i className='fa fa-shop fs-'></i> &nbsp;Ajouter un nouveau magasin
+            <FaShop />
+            &nbsp;Ajouter un nouveau magasin
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1082,7 +1072,7 @@ export function ModalAddPicture({
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            <i className='fa fa-plus-circle text-primary fs-1'></i> &nbsp;Ajouter une nouvelle
+            <FaPlusCircle className='fs-1' /> &nbsp;Ajouter une nouvelle
             image
           </Modal.Title>
         </Modal.Header>
