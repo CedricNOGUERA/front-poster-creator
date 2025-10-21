@@ -9,6 +9,7 @@ import { FeedBackSatateType, ToastDataType } from '@/types/DiversType'
 import { _handleFileChange } from '@/utils/functions'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import { useNavigate } from 'react-router-dom'
+import { FaPlusCircle } from 'react-icons/fa'
 
 
 type Props = {
@@ -222,7 +223,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
             style={{ width: '200px', height: '183px' }}
             onClick={() => handleShowAdd()}
           >
-            <i className={'fa fa-plus-circle text-primary fs-1'}></i>
+            <FaPlusCircle className='text-primary fs-1' />
             <p className='mt-2 text-center fw-bold fs-5 text-primary'>Magasin</p>
           </div>
         )}
@@ -231,7 +232,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>
-              <i className='fa fa-plus-circle text-primary fs-1'></i> &nbsp;Ajouter un nouveau
+              <FaPlusCircle className='fs-1' /> &nbsp;Ajouter un nouveau
               magasin
             </Modal.Title>
           </Modal.Header>

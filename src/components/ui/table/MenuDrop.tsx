@@ -2,7 +2,7 @@ import { CategoriesType } from '@/types/CategoriesType'
 import { ShopType } from '@/types/ShopType'
 import React from 'react'
 import { Dropdown } from 'react-bootstrap'
-import { FaEllipsisVertical } from 'react-icons/fa6'
+import { FaCopy, FaEllipsisVertical, FaPencil, FaTrash } from 'react-icons/fa6'
 
 export default function MenuDrop<T extends CategoriesType | ShopType>({
   trigger,
@@ -32,19 +32,22 @@ export default function MenuDrop<T extends CategoriesType | ShopType>({
       <Dropdown.Menu align='end'>
         {trigger === 'categories' && (
           <React.Fragment>
-          <Dropdown.Item onClick={() => handleShowEditModal && handleShowEditModal(data)}>
-            <i className='fa fa-pencil me-2'></i> Modifier
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => handleShowDuplicate && handleShowDuplicate(data)}>
-            <i className='fa fa-copy me-2'></i> Dupliquer
-          </Dropdown.Item>
+            <Dropdown.Item onClick={() => handleShowEditModal && handleShowEditModal(data)}>
+              <FaPencil className='me-2' />
+              Modifier
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handleShowDuplicate && handleShowDuplicate(data)}>
+              <FaCopy className='me-2 text-info' />
+              Dupliquer
+            </Dropdown.Item>
           </React.Fragment>
         )}
         <Dropdown.Item
           onClick={() => handleShowDeleteModal(data.id as number)}
-          className='text-danger'
+          className='d-flex align-items-center text-danger'
         >
-          <i className='fa-solid fa-trash me-2'></i> Supprimer
+          <FaTrash className='me-2' />
+          Supprimer
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

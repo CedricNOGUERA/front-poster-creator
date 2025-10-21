@@ -4,6 +4,7 @@ import { _getMe } from "@/utils/apiFunctions";
 import { AxiosError } from "axios";
 import React from "react";
 import { Alert, Button, Card, Form, InputGroup } from "react-bootstrap";
+import { FaCircleExclamation } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
@@ -95,7 +96,7 @@ const LoginForm = () => {
         </Form.Group>
         {error && (
           <Alert variant="danger" className="text-danger">
-            <i className="fa-solid fa-circle-exclamation me-2 "></i>
+            <FaCircleExclamation className="me-2" />
             {error}
           </Alert>
         )}

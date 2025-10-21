@@ -1,5 +1,6 @@
 import { ComponentTypeMulti } from "@/types/ComponentType"
 import { Button } from "react-bootstrap"
+import { FaXmark } from "react-icons/fa6"
 
 export const CanvasComponent = ({
     index,
@@ -57,7 +58,7 @@ export const CanvasComponent = ({
           }}
           title="Supprimer"
         >
-          <i className="fa-solid fa-xmark"></i>
+          <FaXmark />
         </Button>
       )}
     </div>

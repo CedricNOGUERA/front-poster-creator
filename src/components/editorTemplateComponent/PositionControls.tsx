@@ -1,6 +1,8 @@
 import React from 'react'
 import { Form, Button, ButtonGroup, InputGroup } from 'react-bootstrap'
 import { ComponentTypeMulti, TextComponentType, NumberComponentType, PrincipalPriceComponentType } from '@/types/ComponentType'
+import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowsLeftRight, FaArrowsUpDown, FaArrowUp } from 'react-icons/fa6'
+import { FaArrowsAlt } from 'react-icons/fa'
 
 interface PositionControlsProps {
   component: TextComponentType | NumberComponentType | PrincipalPriceComponentType
@@ -57,7 +59,7 @@ export default function PositionControls({
       {/* Contrôles de déplacement avec boutons directionnels */}
       <div className='mb-3'>
         <Form.Label className='fw-bold'>
-          <i className='fas fa-arrows-alt me-2'></i>
+          <FaArrowsAlt className='me-2' />
           Position
         </Form.Label>
 
@@ -69,28 +71,31 @@ export default function PositionControls({
               onClick={() => movePosition('up', 10)}
               title='Déplacer vers le haut'
             >
-              <i className='fas fa-arrow-up'></i>
+              <FaArrowUp />
             </Button>
             <Button
               variant='outline-secondary'
               onClick={() => movePosition('down', 10)}
               title='Déplacer vers le bas'
             >
-              <i className='fas fa-arrow-down'></i>
+              <FaArrowDown />
+
             </Button>
             <Button
               variant='outline-secondary'
               onClick={() => movePosition('left', 10)}
               title='Déplacer vers la gauche'
             >
-              <i className='fas fa-arrow-left'></i>
+              <FaArrowLeft />
+
             </Button>
             <Button
               variant='outline-secondary'
               onClick={() => movePosition('right', 10)}
               title='Déplacer vers la droite'
             >
-              <i className='fas fa-arrow-right'></i>
+              <FaArrowRight />
+
             </Button>
           </ButtonGroup>
         </div>
@@ -100,7 +105,7 @@ export default function PositionControls({
           {/* Position verticale */}
           <div className='col-6'>
             <Form.Label className='small'>
-              <i className='fas fa-arrows-up-down me-1'></i>
+              <FaArrowsUpDown className='me-1' />
               Vert.
             </Form.Label>
             <Form.Range
@@ -157,7 +162,7 @@ export default function PositionControls({
           {/* Position horizontale */}
           <div className='col-6'>
             <Form.Label className='small'>
-              <i className='fas fa-arrows-left-right me-1'></i>
+              <FaArrowsLeftRight className='me-1' />
               {/* {component.type === 'price' || component.type === 'number' ? 'Droite' : 'Gauche'} */}
               Horiz.
             </Form.Label>

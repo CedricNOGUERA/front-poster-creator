@@ -4,6 +4,8 @@ import userDataStore from '@/stores/userDataStore';
 import { RoleType } from '@/types/UserType';
 import React from 'react';
 import { Container, Row, Col, Card, Nav, Tab, Accordion, Badge, Alert, Button } from 'react-bootstrap';
+import { FaCogs, FaInfoCircle } from 'react-icons/fa';
+import { FaBook, FaCircleArrowLeft, FaRoute, FaUserTag } from 'react-icons/fa6';
 import { Link, useOutletContext } from 'react-router-dom';
 
 
@@ -37,9 +39,9 @@ const GuideUtilisateur = () => {
                 href='/editeur-de-bon-plan'
                 style={{ textDecoration: 'none' }}
               >
-                <i className='fa fa-circle-arrow-left fs-3'></i>
+                <FaCircleArrowLeft className='fs-3' />
               </Button>
-              <i className='fas fa-book me-3'></i>
+              <FaBook className='me-3' />
               Guide Utilisateur{' '}
               <span className='d-none d-md-inline'>- Générateur de Bon Plan</span>
             </h1>
@@ -55,7 +57,7 @@ const GuideUtilisateur = () => {
           <Card className='sticky-top' style={{ top: '20px' }}>
             <Card.Header>
               <h5 className='mb-0'>
-                <i className='fas fa-user-tag me-2'></i>
+                <FaUserTag className='me-2' />
                 Rôles Disponibles
               </h5>
             </Card.Header>
@@ -113,14 +115,14 @@ const GuideUtilisateur = () => {
                     </Card.Header>
                     <Card.Body>
                       <Alert variant='info' className='mb-4'>
-                        <i className='fas fa-info-circle me-2'></i>
+                        <FaInfoCircle className='me-2' />
                         <strong>Rôle {role.name}:</strong> {getRoleDescription(role.id)}
                       </Alert>
 
                       <Row>
                         <Col md={6}>
                           <h4 className='text-primary mb-3'>
-                            <i className='fas fa-cogs me-2'></i>
+                            <FaCogs className='me-2' />
                             Fonctionnalités Disponibles
                           </h4>
                           {getRoleFeatures(role.id).map((feature, index) => (
@@ -138,7 +140,7 @@ const GuideUtilisateur = () => {
                                     </p>
                                     <Link to={feature?.link ? feature?.link : '#'}>
                                       <Badge bg='secondary' className='small'>
-                                        <i className='fas fa-route me-1'></i>
+                                        <FaRoute className='me-2' />
                                         {feature.access}
                                       </Badge>
                                     </Link>
@@ -151,7 +153,7 @@ const GuideUtilisateur = () => {
 
                         <Col md={6}>
                           <h4 className='text-success mb-3'>
-                            <i className='fas fa-route me-2'></i>
+                            <FaRoute className='me-2' />
                             Workflows Principaux
                           </h4>
 
@@ -182,56 +184,9 @@ const GuideUtilisateur = () => {
                           </Accordion>
                         </Col>
                       </Row>
-
-                      {/* <hr className='my-4' /> */}
-
-                      {/* <Row>
-                        <Col>
-                          <h4 className='text-warning mb-3'>
-                            <i className='fas fa-lightbulb me-2'></i>
-                            Conseils et Bonnes Pratiques
-                          </h4>
-                          <Row>
-                            <Col md={6}>
-                              <ul className='list-unstyled'>
-                                <li className='mb-2'>
-                                  <i className='fas fa-check text-success me-2'></i>
-                                  Sauvegardez régulièrement votre travail
-                                </li>
-                                <li className='mb-2'>
-                                  <i className='fas fa-check text-success me-2'></i>
-                                  Vérifiez les dimensions avant impression
-                                </li>
-                                <li className='mb-2'>
-                                  <i className='fas fa-check text-success me-2'></i>
-                                  Utilisez des images haute résolution
-                                </li>
-                              </ul>
-                            </Col>
-                            <Col md={6}>
-                              <ul className='list-unstyled'>
-                                <li className='mb-2'>
-                                  <i className='fas fa-check text-success me-2'></i>
-                                  Respectez les chartes graphiques des magasins
-                                </li>
-                                <li className='mb-2'>
-                                  <i className='fas fa-check text-success me-2'></i>
-                                  Testez l'affichage sur différents écrans
-                                </li>
-                                <li className='mb-2'>
-                                  <i className='fas fa-check text-success me-2'></i>
-                                  Consultez les modèles existants pour l'inspiration
-                                </li>
-                              </ul>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row> */}
-
                       <div className='text-center mt-4'>
                         <Link to='/editeur-de-bon-plan' className='btn btn-primary btn-lg'>
-                          {/* <i className='fas fa-sign-in-alt me-2'></i> */}
-                          <i className='fa fa-circle-arrow-left me-2'></i>
+                          <FaCircleArrowLeft className='me-2' />
                           Retour
                         </Link>
                       </div>
