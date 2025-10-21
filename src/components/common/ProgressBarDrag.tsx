@@ -2,6 +2,7 @@ import useStoreApp from '@/stores/storeApp'
 import { ResetConfig } from '@/types/DiversType'
 import React from 'react'
 import { Button } from 'react-bootstrap'
+import { FaCheck, FaCircleArrowLeft } from 'react-icons/fa6'
 import { useOutletContext } from 'react-router-dom'
 
 interface ProgressBarContextType {
@@ -44,14 +45,14 @@ export const ProgressBarDrag = () => {
           onClick={() => goToStep(storeApp.step - 1)}
           style={{ textDecoration: 'none' }}
         >
-          <i className='fa fa-circle-arrow-left fs-3'></i>
+          <FaCircleArrowLeft className='fs-3' />
         </Button>
       )}
       <div
         className={`step ${storeApp.step >= 1 ? 'current' : ''}`}
         onClick={() => goToStep(1)}
       >
-        {storeApp.step > 1 ? <i className='fas fa-check text-white'></i> : <>1</>}
+        {storeApp.step > 1 ? <FaCheck className='text-white' /> : <>1</>}
         <div className='progress-line'></div>
       </div>
       <div
@@ -65,11 +66,11 @@ export const ProgressBarDrag = () => {
             : undefined
         }
       >
-        {storeApp.step > 2 ? <i className='fas fa-check text-white'></i> : <>2</>}
+        {storeApp.step > 2 ? <FaCheck className='text-white' /> : <>2</>}
         <div className='progress-line'></div>
       </div>
       <div className={`step ${storeApp.step >= 3 ? 'current' : ''}`}>
-        {storeApp.step > 3 ? <i className='fas fa-check text-white'></i> : <>3</>}
+        {storeApp.step > 3 ? <FaCheck className='text-white' /> : <>3</>}
       </div>
     </div>
   )

@@ -7,6 +7,8 @@ import userDataStore, {UserDataType} from '@/stores/userDataStore'
 import useStoreApp from "@/stores/storeApp";
 import { StoreType } from "@/stores/storeApp";
 import { Link } from "react-router-dom";
+import { FaEllipsisVertical } from "react-icons/fa6";
+import { FaSignOutAlt } from "react-icons/fa";
 
 export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string, setTitleHeader: React.Dispatch<React.SetStateAction<string>>}) => {
   /* States
@@ -40,8 +42,8 @@ export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string,
           </Navbar.Brand>
           <span className='d-flex align-items-center text-white pointer ' title={`Hello ${userName}`} ><Link to="/profile" className="text-decoration-none text-light">{userName}</Link></span>
           {(userRole === "admin" || userRole === "super_admin") ? ( 
-            <Button variant='transparent' onClick={() => setOpen(true)}>
-            <i className='fa-solid fa-ellipsis-vertical  text-light'></i>
+            <Button variant='transparent' onClick={() => setOpen(true)} className="d-flex align-items-center">
+            <FaEllipsisVertical className='text-light' />
           </Button>
           ) : (
             <Button variant='transparent'
@@ -50,7 +52,7 @@ export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string,
               onClick={() => handleClickLogout()}
               className='d-flex align-items-center text-decoration-none text-muted'
             >
-              <i className='fa-solid fa-sign-out-alt text-light'></i>
+              <FaSignOutAlt className='text-light' />
             </Button>
           )}
         </Container>

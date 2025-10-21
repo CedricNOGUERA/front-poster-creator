@@ -9,6 +9,7 @@ import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import { TagPicker } from 'rsuite'
 import { ToastDataType } from '@/types/DiversType'
+import { FaCircleCheck, FaCircleXmark, FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 
 interface CompanyType { idCompany: number; nameCompany: string }
 interface ContextShopSelectorType {
@@ -146,8 +147,8 @@ export const AddUserForm = ({
 
   return (
     <Form onSubmit={handleSubmit}>
-      {error && <Alert variant='danger' className='text-danger'><i className='fa fa-circle-xmark me-2'></i>{error}</Alert>}
-      {success && <Alert variant='success'><i className='fa fa-circle-check me-2 text-success'></i> {success}</Alert>}
+      {error && <Alert variant='danger' className='text-danger'><FaCircleXmark className='me-2' />{error}</Alert>}
+      {success && <Alert variant='success'><FaCircleCheck className='me-2 text-success' /> {success}</Alert>}
       <Form.Group className='mb-3' controlId='formBasicName'>
         <Form.Label>
           Prénom<span className='text-danger'>*</span>
@@ -247,9 +248,12 @@ export const AddUserForm = ({
             onClick={() => setShowPassword(!showPassword)}
           >
             {' '}
-            <i
-              className={`fa-regular fa-${!showPassword ? 'eye-slash' : 'eye'} text-secondary`}
-            ></i>
+            {!showPassword ? (
+              <FaRegEyeSlash className='text-secondary' />
+            ) : ( 
+              <FaRegEye className='text-secondary' />
+
+            )}
           </InputGroup.Text>
         </InputGroup>
     

@@ -4,6 +4,7 @@ import { _getModels, _getTemplates } from "@/utils/apiFunctions";
 import { ModelType } from "@/types/modelType";
 import React from "react";
 import { TemplateType } from "@/types/TemplatesType";
+import { FaImage } from "react-icons/fa6";
 
 type Props = {
   title: string;
@@ -105,7 +106,7 @@ export const DimensionSelector = ({ title }: Props) => {
                 }}
               >
                 <span className="fw-semibold">
-                  <i className="fas fa-image text-secondary"></i>
+                  <FaImage className="text-secondary" />
                 </span>
               </div>
               <p className="mt-2 text-center fw-bold fs-6">

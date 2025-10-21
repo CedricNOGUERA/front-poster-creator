@@ -7,6 +7,8 @@ import {
 import React from 'react'
 import { Form, Card, Accordion } from 'react-bootstrap'
 import PositionControls from './PositionControls'
+import { FaArrowsAlt } from 'react-icons/fa'
+import { FaMinus, FaPlus, FaTextHeight } from 'react-icons/fa6'
 
 interface CanvasEditorType {
   canvasData: ComponentTypeMulti[]
@@ -108,13 +110,13 @@ export default function CanvasEditorImproved({
                     {/* Taille de police */}
                     <Accordion.Item eventKey='0'>
                       <Accordion.Header>
-                        <i className='fas fa-text-height me-2'></i>
+                        <FaTextHeight className='me-2'/>
                         Taille de police
                       </Accordion.Header>
                       <Accordion.Body>
                         <div className='d-flex align-items-center gap-3'>
                           <Form.Label className='small mb-0'>
-                            <i className='fas fa-minus'></i>
+                            <FaMinus />
                           </Form.Label>
                           <Form.Range
                             min={10}
@@ -129,7 +131,7 @@ export default function CanvasEditorImproved({
                             className='flex-grow-1'
                           />
                           <Form.Label className='small mb-0'>
-                            <i className='fas fa-plus'></i>
+                            <FaPlus />
                           </Form.Label>
                           <Form.Control
                             type='number'
@@ -154,7 +156,7 @@ export default function CanvasEditorImproved({
                     {/* Position */}
                     <Accordion.Item eventKey='1'>
                       <Accordion.Header>
-                        <i className='fas fa-arrows-alt me-2'></i>
+                        <FaArrowsAlt className='me-2' />
                         Position
                       </Accordion.Header>
                       <Accordion.Body>

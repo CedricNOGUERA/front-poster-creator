@@ -123,6 +123,7 @@ import { UserType } from '@/types/UserType'
 import { _expiredSession, _showToast } from '@/utils/notifications'
 import React, { useState } from 'react'
 import { Container, Row, Col, Form, Button, Card, InputGroup, Alert, Spinner } from 'react-bootstrap'
+import { FaCircleArrowLeft, FaCircleXmark } from 'react-icons/fa6'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 
 interface ContextCategorySelectorDragType {
@@ -231,7 +232,7 @@ const Profile: React.FC = () => {
                 onClick={handleBack}
                 style={{ textDecoration: 'none' }}
               >
-                <i className='fa fa-circle-arrow-left fs-3'></i>
+                <FaCircleArrowLeft className='fs-3' />
               </Button>
               <h2 className='mb-0 fw-bold text-dark'>Profil</h2>
             </div>
@@ -308,7 +309,7 @@ const Profile: React.FC = () => {
                     </InputGroup>
                     {errorPass && (
                       <Alert variant='danger' className='text-danger'>
-                        <i className='fa fa-circle-xmark me-2 text-'></i>
+                        <FaCircleXmark className='me-2' />
                         <small>
                           Le mot de passe doit être composé de minimum: 12 caractères , 1
                           majuscule, 1 minuscule, et un caratère spécial (#, ~, $, %, *, !, @...).

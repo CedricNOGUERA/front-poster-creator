@@ -8,7 +8,7 @@ import { UserType } from '@/types/UserType'
 import {  _getAllUsers } from '@/utils/apiFunctions'
 import React from 'react'
 import { Button, Container, Dropdown, Table } from 'react-bootstrap'
-import { FaEllipsisVertical } from 'react-icons/fa6'
+import { FaEllipsisVertical, FaPencil, FaTrash } from 'react-icons/fa6'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 
 interface ContextShopSelectorType {
@@ -156,7 +156,7 @@ export default function UserManager() {
                               handleShowEdit(user)
                             }}
                           >
-                            <i className='fa fa-pencil'></i> Modifier
+                            <FaPencil /> Modifier
                           </Dropdown.Item>
                           <Dropdown.Item
                             onClick={() => {
@@ -164,7 +164,7 @@ export default function UserManager() {
                               handleShowDelete()
                             }}
                           >
-                            <i className='fa-solid fa-trash'></i> Supprimer
+                            <FaTrash /> Supprimer
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>

@@ -7,7 +7,8 @@ import { ModalDelete } from '../ui/Modals'
 import { useOutletContext } from 'react-router-dom'
 import { ComponentTypeMulti, HeaderComponentType } from '@/types/ComponentType'
 import { _getCategoryPictures, _handleUploadFile } from '@/utils/apiFunctions'
-import { FaXmark } from 'react-icons/fa6'
+import { FaCirclePlus, FaXmark } from 'react-icons/fa6'
+import { FaCheckCircle } from 'react-icons/fa'
 
 
 
@@ -87,7 +88,7 @@ React.useEffect(() => {
           <div className=' d-flex align-items-center  justify-content-center mb-4 p-2 border rounded'>
             <Form.Group controlId='formFile' className=''>
               <Form.Label className='mb-0 d-flex align-items-center  justify-content-center pointer'>
-                <i className={'fa fa-plus-circle text-success fs-5 me-2'}></i>
+                <FaCirclePlus className='text-success fs-5 me-2' />
                 ajouter une image
               </Form.Label>
               <Form.Control
@@ -117,7 +118,7 @@ React.useEffect(() => {
               }
             >
               Valider ({file.name})
-              <i className={'fa fa-check-circle text-light fs-5 ms-2'}></i>
+              <FaCheckCircle className='text-light fs-5 ms-2' />
             </span>
           </div>
         )}
