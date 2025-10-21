@@ -4,6 +4,7 @@ import { TemplateType } from "@/types/TemplatesType";
 import { _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
 import { Col, Container, Dropdown, Image, Row, Spinner, Table } from "react-bootstrap";
+import { FaEllipsisVertical } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 
 interface ContextType {
@@ -130,7 +131,7 @@ export default function ModelsPage() {
                         className='border-0 no-chevron'
                       >
                         <b>
-                          <i className='fa-solid fa-ellipsis-vertical'></i>
+                          <FaEllipsisVertical />
                         </b>
                       </Dropdown.Toggle>
                       <Dropdown.Menu align='end'>

@@ -7,6 +7,7 @@ import { ModalDelete } from '../ui/Modals'
 import { useOutletContext } from 'react-router-dom'
 import { ComponentTypeMulti, HeaderComponentType } from '@/types/ComponentType'
 import { _getCategoryPictures, _handleUploadFile } from '@/utils/apiFunctions'
+import { FaXmark } from 'react-icons/fa6'
 
 
 
@@ -168,7 +169,7 @@ React.useEffect(() => {
                       }}
                       title='Supprimer'
                     >
-                      <i className='fa-solid fa-xmark'></i>
+                      <FaXmark  />
                     </Button>
                   )}
                 </div>

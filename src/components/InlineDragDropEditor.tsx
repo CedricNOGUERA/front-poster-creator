@@ -34,6 +34,7 @@ import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
 import { ModelType } from '@/types/modelType'
 import { _showToast } from '@/utils/notifications'
+import { FaXmark } from 'react-icons/fa6'
 
 
 interface ContextInlineDragDropEditorType {
@@ -746,7 +747,7 @@ React.useEffect(() => {
           }}
           title='Supprimer'
         >
-          <i className='fa-solid fa-xmark'></i>
+          <FaXmark  />
         </Button>
       )
 
