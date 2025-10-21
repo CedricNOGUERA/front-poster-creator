@@ -30,6 +30,7 @@ import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { TemplateType } from '@/types/TemplatesType'
 import PrintOptionsModal from './PrintOptionsModal'
+import { FaXmark } from 'react-icons/fa6'
 
 interface ContextDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -581,7 +582,7 @@ export default function DragDropEditor() {
           }}
           title='Supprimer'
         >
-          <i className='fa-solid fa-xmark'></i>
+          <FaXmark  />
         </Button>
       )
 

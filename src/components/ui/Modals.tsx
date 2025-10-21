@@ -3,6 +3,8 @@ import React, { FormEvent } from 'react'
 import { Alert, Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { TagPicker } from 'rsuite'
+import { RiErrorWarningLine } from 'react-icons/ri'
+
 import {
   ContextModalValidateModelType,
   ModalAddCategoryType,
@@ -25,6 +27,8 @@ import categoriesServiceInstance from '@/services/CategoriesServices'
 import { AxiosError } from 'axios'
 import { _expiredSession, _showToast } from '@/utils/notifications'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6'
+import { FaEdit } from 'react-icons/fa'
 const API_URL = import.meta.env.VITE_API_URL
 
 export function ModalDelete({ modalDeleteProps }: { modalDeleteProps: ModalDeleteType }) {
@@ -42,7 +46,7 @@ export function ModalDelete({ modalDeleteProps }: { modalDeleteProps: ModalDelet
     <Modal show={showDelete} onHide={handleCloseDelete}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <i className='fa-solid fa-circle-xmark me-2 text-danger'></i>Suppression d'image
+          <FaCircleXmark className='me-2 text-danger' />Suppression d'image
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Etes sûr de vouloir supprimer cette image ?</Modal.Body>
@@ -91,12 +95,13 @@ export function ModalValidateModel({
   React.useEffect(() => {
     setIsTemplate(template.some((item) => item.name === imageName))
   }, [imageName, template])
-
+console.log(isTemplate)
   return (
     <Modal show={showValidateModel} onHide={handleCloseValidateModel}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          <i className='fa-solid fa-circle-check me-2 text-success'></i>Validation du model
+        <Modal.Title className='d-flex align-items-center'>
+          <FaCircleCheck className='me-2 text-success' />
+          Validation du model
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -174,8 +179,8 @@ export function ModalUpdateModel({
   return (
     <Modal show={showUpdateModel} onHide={handleCloseUpdateModel}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          <i className='fa-solid fa-edit me-2 text-success'></i>Validation du model
+        <Modal.Title className='d-flex align-items-center'>
+          <FaEdit className='me-2 text-success' />Validation du model
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Voulez-vous valider la modification ce model ?</Modal.Body>
@@ -231,8 +236,8 @@ export function ModalAddEditModel({
     <Modal show={showAddEditModal} onHide={handleCloseAddEditModal}>
         <Form onSubmit={onPatchSubmit}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          <i className='fa-solid fa-edit me-2 text-success'></i>Modififer ce model
+        <Modal.Title className='d-flex align-items-center'>
+          <FaEdit className='me-2 text-success' />Modififer ce model
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -752,7 +757,7 @@ export function ModalAddEditCategory({
         </Modal.Body>
         <Modal.Body className='pt-0'>
           <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
-            <i className='ri-error-warning-line fs-5 me-2'></i>
+            <RiErrorWarningLine className='fs-5 me-2' />
             <small>Tous les modèles associés à cette catégorie seront modifiés</small>
           </Alert>
         </Modal.Body>
@@ -816,6 +821,9 @@ export function ModalDuplicateCategory({
       isLoading: true,
       loadingMessage: "chargement..."
     }))
+
+
+
     try{
       const response = await categoriesServiceInstance.duplicateCategory(id, newName)
 
@@ -890,7 +898,7 @@ export function ModalDuplicateCategory({
         {newName === selectedCategory.name && (
           <Modal.Body className='pt-0'>
             <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
-              <i className='ri-error-warning-line fs-5 me-2'></i>
+              <RiErrorWarningLine className='fs-5 me-2' />
               <small>Le nom de nouvelle catégorie doit différent de l'ancienne</small>
             </Alert>
           </Modal.Body>
@@ -1020,14 +1028,14 @@ export function ModalGenericDelete({
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <i className='fa-solid fa-circle-xmark me-2 text-danger'></i>Supprimer {title}
+          <FaCircleXmark className='me-2 text-danger' />Supprimer {title}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Etes sûr de vouloir supprimer {title} ?</Modal.Body>
       {title === 'la catégorie' && (
         <Modal.Body className='pt-0'>
           <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
-            <i className='ri-error-warning-line fs-5 me-2'></i>
+            <RiErrorWarningLine className='fs-5 me-2' />
             <small>Tous les modèles associés à cette catégorie seront effacés</small>
           </Alert>
         </Modal.Body>

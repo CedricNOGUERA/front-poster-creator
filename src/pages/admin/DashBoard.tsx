@@ -59,7 +59,7 @@ const DashBoard = () => {
 
   return (
     <Container fluid className='px-0'>
-      <Row className='w-100 gx-0' >
+      <Row className='w-100 gx-0 relative' >
         <SideBarMenu setDisplay={setDisplay} />
         <Col className='h-100'>
           {handleDisplay(display)}

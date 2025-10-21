@@ -361,7 +361,7 @@ export default function CategoriesPage() {
     }
   }
 
-  console.log(selectedCategory)
+
 
   const handleUpdateCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -627,7 +627,7 @@ const shopDisplay = (shopData: ShopType[], shop: number, indx: number, category:
           </div>
         )}
       </Container>
-      <Button variant='primary' className='rounded-pill fab' 
+      <Button variant='primary' className='d-none rounded-pill fab' 
       onClick={handleShowAdd}
       >
         <strong>+</strong> <span>Ajouter une catégorie</span>

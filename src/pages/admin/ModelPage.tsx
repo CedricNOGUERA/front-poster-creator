@@ -4,7 +4,8 @@ import { TemplateType } from "@/types/TemplatesType";
 import { _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
 import { Col, Container, Dropdown, Image, Row, Spinner, Table } from "react-bootstrap";
-import { Link, useOutletContext } from "react-router-dom";
+import { FaEllipsisVertical } from "react-icons/fa6";
+import { useOutletContext } from "react-router-dom";
 
 interface ContextType {
   shops: ShopType[]
@@ -74,9 +75,9 @@ export default function ModelsPage() {
     <Container fluid className="relative p-0">
       <Row className="bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 ">
         <Col xs={2} sm={1} className="pt-2">
-          <Link to="/tableau-de-bord" className="text-muted">
+          {/* <Link to="/tableau-de-bord" className="text-muted">
             <i className="fa-solid fa-circle-arrow-left fs-3"></i>
-          </Link>
+          </Link> */}
         </Col>
         <Col xs={8} sm={10}>
           <h3 className="pt-3 pb-2 mb-0">Gestion des Modèles</h3>
@@ -130,7 +131,7 @@ export default function ModelsPage() {
                         className='border-0 no-chevron'
                       >
                         <b>
-                          <i className='fa-solid fa-ellipsis-vertical'></i>
+                          <FaEllipsisVertical />
                         </b>
                       </Dropdown.Toggle>
                       <Dropdown.Menu align='end'>

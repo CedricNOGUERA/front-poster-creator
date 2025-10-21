@@ -277,7 +277,7 @@ export const EditorTemplate = () => {
                       (baseFontSize / lengthAdjustmentFactor) * 0.001;
                   }
                 }
-
+                console.log(positionAdjustmentFactor)
                 const adjustedFontSize = baseFontSize * lengthAdjustmentFactor;
 
                 return (
@@ -357,6 +357,8 @@ export const EditorTemplate = () => {
                   }
                 }
                 const adjustedFontSize = baseFontSize * lengthAdjustmentFactor;
+                console.log(letterSpacing)
+                console.log(adjustedFontSize)
                 return (
                   <div
                     key={index}
