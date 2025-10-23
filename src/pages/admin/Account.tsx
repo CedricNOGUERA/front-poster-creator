@@ -1,121 +1,4 @@
-// import userDataStore, { UserDataType } from '@/stores/userDataStore'
-// import React from 'react'
-// import { Button, Form, InputGroup } from 'react-bootstrap'
-
-// export default function Account() {
-
-//     const userStoreData = userDataStore((state: UserDataType) => state)
-
-//   const [name, setName] = React.useState<string>('')
-//   const [email, setEmail] = React.useState<string>('')
-//   const [shop, setShop] = React.useState<string>('')
-//   const [role, setRole] = React.useState<string>('')
-//   const [password, setPassword] = React.useState('')
-//   const [showPassword, setShowPassword] = React.useState<boolean>(false)
-
-//   return (
-//     <div className='pt-4'>
-//       <Form>
-//         {/* {error && <Alert variant='danger'>{error}</Alert>} */}
-//         {/* {success && <Alert variant='success'>{success}</Alert>} */}
-//         <Form.Group className='mb-3 text-start' controlId='formBasicName'>
-//           <Form.Label>Prénom</Form.Label>
-//           <Form.Control
-//             type='text'
-//             value={userStoreData.name}
-//             onChange={(e) => setName(e.target.value)}
-//             readOnly
-//           />
-//         </Form.Group>
-//         <Form.Group className='mb-3 text-start' controlId='formBasicEmail'>
-//           <Form.Label>Email</Form.Label>
-//           <Form.Control
-//             type='email'
-//             value={userStoreData.email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             readOnly
-//           />
-//         </Form.Group>
-//         <Form.Group className='mb-3 text-start' controlId='categoryShops'>
-//           <Form.Label>Magasins</Form.Label>
-//           {/* <TagPicker
-//           data={shopList}
-//           style={{ width: '100%' }}
-//           placeholder='Sélectionnez le ou les magasins'
-//           onChange={(values: number[]) => {
-//             const selectedCompanies = shopList.filter((shop) => values.includes(shop.value))
-//             const selectedShop = selectedCompanies.map((item) => ({
-//               nameCompany: item.label,
-//               idCompany: item.value,
-//             }))
-//             setCompany([...selectedShop])
-//           }}
-//         /> */}
-//           <Form.Control
-//             type='text'
-//             value={userStoreData.company[0].nameCompany + ", " + userStoreData.company[1].nameCompany}
-//             onChange={(e) => setShop(e.target.value)}
-//             readOnly
-//           />
-//         </Form.Group>
-//         <Form.Group className='mb-3 text-start' controlId='formBasicRole'>
-//           <Form.Label>Rôle</Form.Label>
-//           <Form.Control
-//             type='text'
-//             value={userStoreData.role}
-//             onChange={(e) => setShop(e.target.value)}
-//             readOnly
-//           />
-//         </Form.Group>
-//         <Form.Group className='mb-3 text-start' controlId='formBasicPassword'>
-//           <Form.Label>
-//             Mot de passe<span className='text-danger'>*</span>
-//           </Form.Label>
-//           <InputGroup className='mb-3'>
-//             <Form.Control
-//               type={showPassword ? 'text' : 'password'}
-//               placeholder='Saisissez votre mot de passe'
-//               value={password}
-//               onChange={(e) => setPassword(e.target.value)}
-//               required
-//             />
-//             <InputGroup.Text
-//               id='eyeOrNot'
-//               className='bg-transparent border border-start-0'
-//               onClick={() => setShowPassword(!showPassword)}
-//             >
-//               {' '}
-//               <i
-//                 className={`fa-regular fa-${
-//                   !showPassword ? 'eye-slash' : 'eye'
-//                 } text-secondary`}
-//               ></i>
-//             </InputGroup.Text>
-//           </InputGroup>
-//           <Form.Text className='text-muted'>
-//             Le mot de passe doit contenir au moins 12 caractères.
-//           </Form.Text>
-//         </Form.Group>
-//         <div className=''>
-//           <Button variant='secondary' className='me-2'>
-//             Annuler
-//           </Button>
-
-//           <Button
-//             variant='primary'
-//             type='submit'
-//             className=''
-//             //   disabled={loading}
-//           >
-//             Valider
-//             {/* {loading ? <Spinner size='sm' animation='border' variant='light' /> : titleButton} */}
-//           </Button>
-//         </div>
-//       </Form>
-//     </div>
-//   )
-// }
-
+import DynamicIcon from '@/components/ui/DynamicIcon'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import { ToastDataType } from '@/types/DiversType'
@@ -299,12 +182,7 @@ const Profile: React.FC = () => {
                         className='bg-transparent border-2 border-start-0'
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {' '}
-                        <i
-                          className={`fa-regular fa-${
-                            !showPassword ? 'eye-slash' : 'eye'
-                          } text-secondary`}
-                        ></i>
+                        <DynamicIcon iconKey={!showPassword ? 'fa-regular eye-slash' : 'fa-regular eye'} className='text-secondary' size={22} />
                       </InputGroup.Text>
                     </InputGroup>
                     {errorPass && (
@@ -321,12 +199,6 @@ const Profile: React.FC = () => {
                     <Button
                       type='submit'
                       size='lg'
-                      style={
-                        {
-                          // background:
-                          //   'linear-gradient(135deg, #667eea 0%,rgb(134, 75, 162) 100%)',
-                        }
-                      }
                       className='shadow-sm rounded-3 p-3 border-0'
                     >
                       {feedBackState.isLoading ? (

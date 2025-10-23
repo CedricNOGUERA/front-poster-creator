@@ -6,6 +6,7 @@ import React from "react";
 import { Alert, Button, Card, Form, InputGroup } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import DynamicIcon from "../ui/DynamicIcon";
 
 const LoginForm = () => {
   /* States
@@ -58,61 +59,57 @@ const LoginForm = () => {
   /* Render
    *******************************************************************************************/
   return (
-    <Card className="p-4  border-2 shadow">
-      <h3 className="text-center text-muted mb-4">Connexion</h3>
+    <Card className='p-4  border-2 shadow'>
+      <h3 className='text-center text-muted mb-4'>Connexion</h3>
       <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Group className='mb-3' controlId='formBasicEmail'>
           <Form.Label></Form.Label>
           <Form.Control
-            type="email"
-            placeholder="Saisissez votre email"
+            type='email'
+            placeholder='Saisissez votre email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </Form.Group>
-        <Form.Group className="mb-4" controlId="formBasicPassword">
+        <Form.Group className='mb-4' controlId='formBasicPassword'>
           <InputGroup>
             <Form.Control
-              type={showPassword ? "text" : "password"}
-              placeholder="Saisissez votre mot de passe"
+              type={showPassword ? 'text' : 'password'}
+              placeholder='Saisissez votre mot de passe'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             <InputGroup.Text
-              id="eyeOrNot"
-              className="bg-transparent border border-start-0"
+              id='eyeOrNot'
+              className='bg-transparent border border-start-0'
               onClick={() => setShowPassword(!showPassword)}
             >
-              {" "}
-              <i
-                className={`fa-regular fa-${
-                  !showPassword ? "eye-slash" : "eye"
-                } text-secondary`}
-              ></i>
+              {' '}
+              <DynamicIcon
+                iconKey={!showPassword ? 'fa-regular eye-slash' : 'fa-regular eye'}
+                size={20}
+                className='text-secondary'
+              />
+              
             </InputGroup.Text>
           </InputGroup>
         </Form.Group>
         {error && (
-          <Alert variant="danger" className="text-danger">
-            <FaCircleExclamation className="me-2" />
+          <Alert variant='danger' className='text-danger'>
+            <FaCircleExclamation className='me-2' />
             {error}
           </Alert>
         )}
-        <div className="mt-3 text-center">
-          <Button
-            variant="primary"
-            type="submit"
-            className="w-100 m-auto"
-            disabled={loading}
-          >
-            {loading ? "Connexion en cours..." : "Connectez-vous"}
+        <div className='mt-3 text-center'>
+          <Button variant='primary' type='submit' className='w-100 m-auto' disabled={loading}>
+            {loading ? 'Connexion en cours...' : 'Connectez-vous'}
           </Button>
         </div>
       </Form>
     </Card>
-  );
+  )
 };
 
 export default LoginForm;
