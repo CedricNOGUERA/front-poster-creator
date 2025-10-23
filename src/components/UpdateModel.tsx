@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from 'react'
 import {
   BackgroundComponentType,
@@ -161,7 +162,6 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
       setComponents,
       setDimensionFactor
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, storeApp, maxPreviewHeight, h])
 
   /* Functions

@@ -40,7 +40,7 @@ export const DimensionSelector = ({ title }: Props) => {
   React.useEffect(() => {
     const filteredTemplate = templates.filter((temp) => temp.id === storeApp.templateId)[0]
     setSelectedTemplate(filteredTemplate)
-  }, [templates])
+  }, [templates, storeApp.templateId])
 
 
   /* Functions

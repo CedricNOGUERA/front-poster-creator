@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ModalAddCategory, ModalAddEditCategory, ModalDuplicateCategory, ModalGenericDelete } from '@/components/ui/Modals';
 import categoriesServiceInstance from '@/services/CategoriesServices';
 import { CategoriesPaginatedType, CategoriesType } from '@/types/CategoriesType';
@@ -63,7 +64,6 @@ export default function CategoriesPage() {
   const trigger = "categories"
 
   useEffect(() => {
-    // _getCategories(setCategories, setToastData, toggleShow, setFeedBackState);
     _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit);
   }, [setFeedBackState, setToastData, page, limit]);
 

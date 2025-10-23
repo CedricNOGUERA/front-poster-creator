@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import categories from "@/mocks/categories.json";
 import useStoreApp from "@/stores/storeApp";
 import { CategoriesType } from "@/types/CategoriesType";
