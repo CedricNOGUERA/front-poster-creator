@@ -3,6 +3,7 @@ import { AddUserForm } from "./AddUserForm"
 import { UserType } from "@/types/UserType"
 import { ModalDeleteUserType } from "@/types/ModalType"
 import { FaCircleXmark } from "react-icons/fa6"
+import DynamicIcon from "../ui/DynamicIcon"
 
 
 export const ModalAddUser = ({showAdd, handleCloseAdd, userDataToEdit, setUsers}: {showAdd: boolean, handleCloseAdd: () => void, userDataToEdit?: UserType | null, setUsers: React.Dispatch<React.SetStateAction<UserType[]>>}) => {
@@ -14,8 +15,8 @@ export const ModalAddUser = ({showAdd, handleCloseAdd, userDataToEdit, setUsers}
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Modal.Header>
         <Modal.Title>
-          <h2>
-            <i className={`${modalIcon} me-3`}></i>
+          <h2 className="d-flex align-items-center" >
+          <DynamicIcon iconKey={modalIcon} className='text-primary me-3' size={32} />
             {modalTitle}
           </h2>
         </Modal.Title>
@@ -34,7 +35,6 @@ export function ModalDelete({modalDeleteProps}: {modalDeleteProps: ModalDeleteUs
       <Modal.Header closeButton>
         <Modal.Title>
           <FaCircleXmark className='me-2 text-danger' />
-          
           Suppression d'utilisateur
         </Modal.Title>
       </Modal.Header>

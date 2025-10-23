@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import DynamicIcon from '@/components/ui/DynamicIcon';
 import { features, roles, Workflows } from '@/data/guideData';
 import userDataStore from '@/stores/userDataStore';
 import { RoleType } from '@/types/UserType';
@@ -90,7 +91,7 @@ const GuideUtilisateur = () => {
                             activeRole === role.id ? 'bg-actived-link' : ''
                           }`}
                         >
-                          <i className={`${role.icon} me-2 text-muted`}></i>
+                          <DynamicIcon iconKey={role.icon} className='text-muted me-2' size={22} />
                           {role.name}
                         </Nav.Link>
                       </Nav.Item>
@@ -109,7 +110,7 @@ const GuideUtilisateur = () => {
                   <Card>
                     <Card.Header className={`bg-${role.color} text-white`}>
                       <h3 className='mb-0'>
-                        <i className={`${role.icon} me-2`}></i>
+                      <DynamicIcon iconKey={role.icon} className='me-2' size={22} />
                         {role.name}
                       </h3>
                     </Card.Header>
@@ -118,7 +119,6 @@ const GuideUtilisateur = () => {
                         <FaInfoCircle className='me-2' />
                         <strong>Rôle {role.name}:</strong> {getRoleDescription(role.id)}
                       </Alert>
-
                       <Row>
                         <Col md={6}>
                           <h4 className='text-primary mb-3'>
@@ -132,7 +132,7 @@ const GuideUtilisateur = () => {
                             >
                               <Card.Body>
                                 <div className='d-flex align-items-start'>
-                                  <i className={`${feature.icon} text-primary me-3 mt-1`}></i>
+                                  <DynamicIcon iconKey={feature.icon} className='text-primary me-3 mt-1' size={22} />
                                   <div className='d-flex-col justify-content-center w-100'>
                                     <h6 className='mb-1'>{feature.title}</h6>
                                     <p className='text-muted small mb-2'>
@@ -150,20 +150,18 @@ const GuideUtilisateur = () => {
                             </Card>
                           ))}
                         </Col>
-
                         <Col md={6}>
                           <h4 className='text-success mb-3'>
                             <FaRoute className='me-2' />
                             Workflows Principaux
                           </h4>
-
                           <Accordion>
                             {Workflows.filter((data) =>
                               data.role.some((item) => item === activeRole)
                             ).map((item, indx) => (
                               <Accordion.Item key={indx} eventKey={item.name}>
                                 <Accordion.Header>
-                                  <i className={`${item.icon} me-2`}></i>
+                                <DynamicIcon iconKey={item.icon} className='me-2' size={22} />
                                   {item.name}
                                 </Accordion.Header>
                                 <Accordion.Body>

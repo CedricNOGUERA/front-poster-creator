@@ -11,6 +11,7 @@ import userDataStore from '@/stores/userDataStore'
 import { _expiredSession, _showToast } from '@/utils/notifications'
 import { ShopType } from '@/types/ShopType'
 import { FaPlusCircle } from 'react-icons/fa'
+import DynamicIcon from '../ui/DynamicIcon'
 // import { IconType } from 'react-icons';
 
 type Props = {
@@ -355,7 +356,7 @@ export default function CategorySelectorDrag({ title }: Props) {
                   style={{ width: '200px', height: '183px' }}
                   onClick={() => onHandleCategory(category.id as number)}
                 >
-                  <i className={category.icon.value + ' text-primary fs-1'}></i>
+                <DynamicIcon iconKey={category.icon.value} size={42} className="text-primary" />
                   <p className='mt-2 text-center fw-bold fs-5 text-primary'>{category.name}</p>
                 </div>
               )

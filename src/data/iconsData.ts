@@ -41,9 +41,14 @@ import {
     FaEuroSign,
     FaHashtag,
     FaCog,
+    FaRegEye,
+    FaRegEyeSlash,
+    FaAward,
+    FaHammer,
  
   } from 'react-icons/fa';
-import { FaFile, FaImages, FaList, FaStore, FaUsers } from 'react-icons/fa6';
+import { FaFile, FaImages, FaList, FaPenToSquare, FaShieldHalved, FaStore, FaUsers } from 'react-icons/fa6';
+import { RiUserAddLine, RiUserSettingsLine } from 'react-icons/ri';
   
   export const ICON_MAP = {
     'fa fa-star': FaStar,
@@ -93,5 +98,15 @@ import { FaFile, FaImages, FaList, FaStore, FaUsers } from 'react-icons/fa6';
     'fas fa-hashtag': FaHashtag,
     'fas fa-euro-sign': FaEuroSign,
     'fas fa-cog': FaCog,
+    'fa-regular eye': FaRegEye,
+    'fa-regular eye-slash': FaRegEyeSlash,
+    'fas fa-award': FaAward,
+    'fas fa-bolt': FaBolt,
+    'fas fa-gift': FaGift,
+    'fas fa-shield-halved': FaShieldHalved,
+    'fas fa-pen-to-square': FaPenToSquare,
+    'fas fa-hammer': FaHammer,
+    'ri-user-settings-line': RiUserSettingsLine,
+    'ri-user-add-line': RiUserAddLine,
 
 };

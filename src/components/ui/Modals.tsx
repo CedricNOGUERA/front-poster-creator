@@ -333,8 +333,8 @@ export function ModalAddCategory({
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            <FaPlusCircle className='fs-1' /> &nbsp;Ajouter une nouvelle catégorie
+          <Modal.Title className='text-primary'>
+            <FaPlusCircle className='fs-3 text-primary' /> &nbsp;Ajouter une nouvelle catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -367,11 +367,11 @@ export function ModalAddCategory({
               <Dropdown.Toggle
                 variant='transparente'
                 id='catIcon'
-                className='w-100 text-start border'
+                className='d-flex align-items-center w-100 text-end border'
               >
                 {formData.icon && formData.icon.value ? (
                   <>
-                    <i className={formData.icon.value + ' fs-5 text-primary'}></i>
+                    <DynamicIcon iconKey={formData.icon.value} size={23} className="text-primary" />
                     <span className='ms-2'>{formData.icon.name}</span>
                   </>
                 ) : (
@@ -552,8 +552,8 @@ export function ModalAddEditCategory({
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title className='text-primary'>
-          <FaPencil /> Modifier la catégorie
+          <Modal.Title className='d-flex align-items-center' >
+          <FaPencil className='fs-4 text-primary me-2' /> Modifier la catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -582,7 +582,7 @@ export function ModalAddEditCategory({
               >
                 {formData.icon && formData.icon.value ? (
                   <>
-                    <i className={formData.icon.value + ' fs-5 text-primary'}></i>
+                  <DynamicIcon iconKey={formData.icon.value} className='text-primary' size={16} />
                     <span className='ms-2'>{formData.icon.name}</span>
                   </>
                 ) : (
@@ -602,7 +602,7 @@ export function ModalAddEditCategory({
                     key={icon.name}
                     onClick={() => setFormData((prev) => ({ ...prev, icon }))}
                   >
-                    <i className={icon.value + ' fs-5 me-2 text-primary'}></i>
+                    <DynamicIcon iconKey={icon.value} className='text-primary me-2' size={16} />
                     <span style={{ fontSize: 15 }}>{icon.name}</span>
                   </Dropdown.Item>
                 ))}

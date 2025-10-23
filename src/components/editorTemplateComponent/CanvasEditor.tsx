@@ -1,22 +1,30 @@
-import { ComponentTypeMulti, NumberComponentType, PrincipalPriceComponentType, TextComponentType } from '@/types/ComponentType'
+import {
+  ComponentTypeMulti,
+  NumberComponentType,
+  PrincipalPriceComponentType,
+  TextComponentType,
+} from '@/types/ComponentType'
 import React from 'react'
 import { Form } from 'react-bootstrap'
 import { FaArrowsLeftRight, FaArrowsUpDown, FaTextHeight } from 'react-icons/fa6'
+import { FaCog } from 'react-icons/fa'
 interface CanvasEditorType {
-    canvasData: ComponentTypeMulti[]
-    setCanvasData: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>
-    pageWidth: number
-    pageHeight: number
-
+  canvasData: ComponentTypeMulti[]
+  setCanvasData: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>
+  pageWidth: number
+  pageHeight: number
 }
 
-export default function CanvasEditor({canvasEditorProps}: {canvasEditorProps :CanvasEditorType}) {
-
-    const {canvasData, setCanvasData, pageWidth, pageHeight} = canvasEditorProps
-console.log(pageWidth)
+export default function CanvasEditor({
+  canvasEditorProps,
+}: {
+  canvasEditorProps: CanvasEditorType
+}) {
+  const { canvasData, setCanvasData, pageWidth, pageHeight } = canvasEditorProps
+  console.log(pageWidth)
   return (
     <>
-    {canvasData?.map((component: ComponentTypeMulti, index: number) => {
+      {canvasData?.map((component: ComponentTypeMulti, index: number) => {
         if (
           component.type === 'text' ||
           component.type === 'number' ||
@@ -27,9 +35,8 @@ console.log(pageWidth)
             | NumberComponentType
             | PrincipalPriceComponentType
 
-            const maxPreviewHeight = pageHeight < 100 ? 150 : 500 // en pixels
-            const scaleFactor = maxPreviewHeight / pageHeight
-
+          const maxPreviewHeight = pageHeight < 100 ? 150 : 500 // en pixels
+          const scaleFactor = maxPreviewHeight / pageHeight
 
           return (
             <React.Fragment key={index}>
@@ -48,9 +55,8 @@ console.log(pageWidth)
                       setCanvasData(updatedCanvas)
                     }}
                   />
-                  
-                  <i
-                    className='fas fa-cog fs-5 cursor-pointer'
+                  <FaCog
+                    className='cursor-pointer'
                     onClick={() => {
                       const updatedCanvas = [...canvasData]
                       updatedCanvas[index] = {
@@ -59,7 +65,6 @@ console.log(pageWidth)
                       }
                       setCanvasData(updatedCanvas)
                     }}
-                    style={{ cursor: 'pointer' }}
                   />
                 </div>
               </Form.Group>
@@ -160,7 +165,7 @@ console.log(pageWidth)
                   ) : (
                     <Form.Group className='text-center mb-3' controlId='positionX'>
                       <Form.Label>
-                        <FaArrowsLeftRight  />
+                        <FaArrowsLeftRight />
                       </Form.Label>
                       <div className='d-flex align-items-center gap-2'>
                         <Form.Range
@@ -187,6 +192,5 @@ console.log(pageWidth)
         }
       })}
     </>
-
   )
 }
