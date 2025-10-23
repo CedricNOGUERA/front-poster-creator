@@ -2,6 +2,7 @@ import React from 'react'
 import { Col, Container } from 'react-bootstrap'
 import sideBarMenuAdmin from '@/data/sideBarMenuAdmin.json'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
+import DynamicIcon from '../ui/DynamicIcon'
 
 export const SideBarMenu = ({
   setDisplay,
@@ -37,7 +38,7 @@ export const SideBarMenu = ({
     >
 
       <div className='d-flex align-items-center text-decoration-none text-muted ps-2'>
-        <i className={`${item.icon} me-2`}></i>
+        <DynamicIcon iconKey={item.icon} className='me-2' size={22} />
         {item.title}
       </div>
     </Container>
