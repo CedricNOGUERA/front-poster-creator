@@ -12,7 +12,7 @@ import {
 } from '@/types/ComponentType'
 import useStoreApp from '@/stores/storeApp'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
-import dimensions from '@/mocks/dimensions.json'
+import dimensions from '@/data/dimensions.json'
 import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import {
   _generateInitalComponent,
@@ -83,7 +83,7 @@ export default function InlineDragDropEditor() {
     orientation: '',
   })
   const h = newTemplateState.height && newTemplateState.height
-  const maxPreviewHeight = h && h < 100 ? 150 : 500
+  const maxPreviewHeight = h && h < 98 ? 150 : 500
   const posterRef = React.useRef<HTMLDivElement>(null)
 
   const [showValidateModel, setShowValidateModel] = React.useState<boolean>(false)
@@ -950,6 +950,7 @@ React.useEffect(() => {
     isErrorModel,
     hasModel
   }
+
   /* render
    *******************************************************************************************/
   return (

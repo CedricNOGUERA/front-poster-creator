@@ -12,7 +12,7 @@ import {
 } from '@/types/ComponentType'
 import useStoreApp from '@/stores/storeApp'
 import { Button, Container } from 'react-bootstrap'
-import dimensions from '@/mocks/dimensions.json'
+import dimensions from '@/data/dimensions.json'
 import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import {
   _generateInitalComponent,
@@ -88,7 +88,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
   const selectedDim = dimensions.find((d) => d.id === selectedDimension)
   // const h = newTemplateState.height && newTemplateState.height
   const h = selectedDim?.height && selectedDim?.height
-  const maxPreviewHeight = h && h < 100 ? 150 : 500
+  const maxPreviewHeight = h && h < 98 ? 150 : 500
   const posterRef = React.useRef<HTMLDivElement>(null)
 
 

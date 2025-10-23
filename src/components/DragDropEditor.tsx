@@ -10,7 +10,7 @@ import {
 } from '@/types/ComponentType'
 import useStoreApp from '@/stores/storeApp'
 import { Button, Col, Container, Form, Row } from 'react-bootstrap'
-import dimensions from '@/mocks/dimensions.json'
+import dimensions from '@/data/dimensions.json'
 import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import {
   _generateInitalComponent,
