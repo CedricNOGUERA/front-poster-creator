@@ -1,4 +1,4 @@
-import dimensions from "@/mocks/dimensions.json";
+import dimensions from "@/data/dimensions.json";
 import useStoreApp from "@/stores/storeApp";
 import { _getModels, _getTemplates } from "@/utils/apiFunctions";
 import { ModelType } from "@/types/modelType";

@@ -96,7 +96,6 @@ export function ModalValidateModel({
   React.useEffect(() => {
     setIsTemplate(template.some((item) => item.name === imageName))
   }, [imageName, template])
-console.log(isTemplate)
   return (
     <Modal show={showValidateModel} onHide={handleCloseValidateModel}>
       <Modal.Header closeButton>

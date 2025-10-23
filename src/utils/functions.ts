@@ -266,11 +266,15 @@ export const _generateInitalComponent = (
   }))
   
   if (shopId !== undefined) {
-    const initialImageSrc = h && h >= 100 ? (canvas?.[0] as HeaderComponentType)?.src : h && h < 100 && (canvas?.[0] as HeaderComponentType)?.srcRglt  !== null
-      ? (canvas?.[0] as HeaderComponentType)?.srcRglt  : (canvas?.[0] as HeaderComponentType)?.src
+    const initialImageSrc =
+      h && h >= 98
+        ? (canvas?.[0] as HeaderComponentType)?.src
+        : h && h < 98 && (canvas?.[0] as HeaderComponentType)?.srcRglt !== null
+        ? (canvas?.[0] as HeaderComponentType)?.srcRglt
+        : (canvas?.[0] as HeaderComponentType)?.src
 
 
-    if (h && h >= 100) {
+    if (h && h >= 98) {
       const headerBgWidth = (newTemplateState.width && newTemplateState.width) ?? 500
       const initialContainerHeight = newTemplateState.height && newTemplateState.height / 3.5
 

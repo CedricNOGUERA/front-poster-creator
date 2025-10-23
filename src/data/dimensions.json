@@ -22,6 +22,14 @@
     "width": 150,
     "helper_dimensions": "petit_carre(150x150)",
     "orientation": null
+  }, 
+  {
+    "id": 13,
+    "name": "180x98",
+    "height": 98,
+    "width": 180,
+    "helper_dimensions": "petite_reglette(180x98)",
+    "orientation": null
   },
   {
     "id": 5,

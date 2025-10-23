@@ -34,7 +34,9 @@ import {
     FaLemon,
     FaPizzaSlice,
     FaSeedling,
-    FaTshirt
+    FaTshirt,
+    FaCheckCircle,
+    FaTimesCircle
   } from 'react-icons/fa';
   
   export const ICON_MAP = {
@@ -73,5 +75,8 @@ import {
     'fa fa-lemon': FaLemon,
     'fa fa-pizza-slice': FaPizzaSlice,
     'fa fa-seedling': FaSeedling,
-    'fa fa-tshirt': FaTshirt
+    'fa fa-tshirt': FaTshirt,
+    'fa fa-check-circle': FaCheckCircle,
+    'fa fa-times-circle' : FaTimesCircle
+
 };
