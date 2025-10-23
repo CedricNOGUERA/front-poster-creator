@@ -356,7 +356,9 @@ export default function CategorySelectorDrag({ title }: Props) {
                   style={{ width: '200px', height: '183px' }}
                   onClick={() => onHandleCategory(category.id as number)}
                 >
-                <DynamicIcon iconKey={category.icon.value} size={42} className="text-primary" />
+                {category.icon.value !== "" && [
+                  <DynamicIcon iconKey={category.icon.value} size={42} className="text-primary" />
+                ]}
                   <p className='mt-2 text-center fw-bold fs-5 text-primary'>{category.name}</p>
                 </div>
               )
