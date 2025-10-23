@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import Drawer from 'rsuite/esm/Drawer'
 import headerMenuItems from '@/data/headerMenuItems.json'
 import { FaSignOutAlt } from 'react-icons/fa'
+import DynamicIcon from '@/components/ui/DynamicIcon'
 
 export const SideHeaderMenu = ({
   sideHeaderMenuProps,
@@ -55,8 +56,8 @@ export const SideHeaderMenu = ({
                 onClick={() => handleClick(item.title)}
                 className='d-flex align-items-center text-decoration-none text-muted'
               >
-            <Container className='menu-link py-3 rounded-start'>
-                <i className={`${item.icon} me-2 fs-5`}></i>
+            <Container className='d-flex align-items-center menu-link py-3 rounded-start'>
+                <DynamicIcon iconKey={item.icon} className='me-2' size={24} />
                 {item.title}
             </Container>
               </Link>

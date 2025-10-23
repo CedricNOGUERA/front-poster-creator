@@ -1,6 +1,7 @@
 import { ComponentTypeMulti } from '@/types/ComponentType'
 import React from 'react'
 import { Form } from 'react-bootstrap'
+import { FaCog } from 'react-icons/fa'
 
 interface WarrantyPictureType {
   selectedGarantie: string
@@ -112,11 +113,9 @@ export default function WarrantyPicture({
           <option value='2ans'>Garantie 2 ans</option>
           <option value='aucune'>Aucune garantie</option>
         </Form.Select>
-        <i
-          className='fas fa-cog fs-5 cursor-pointer'
-          onClick={() => setShowGarantieSettings(!showGarantieSettings)}
-          style={{ cursor: 'pointer' }}
-        />
+        <FaCog className='cursor-pointer' size={20} onClick={() => setShowGarantieSettings(!showGarantieSettings)}
+                    style={{ cursor: 'pointer' }}
+                    title='Paramètres avancés' />
       </div>
       {showGarantieSettings && (
         <div className='custom-value d-flex flex-column gap-2 mt-3'>

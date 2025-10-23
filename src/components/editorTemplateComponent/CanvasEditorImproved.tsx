@@ -60,11 +60,17 @@ export default function CanvasEditorImproved({
             <Card key={index} className='mb-2 shadow-sm'>
               <Card.Header className='d-flex justify-content-between align-items-center'>
                 <div className='d-flex align-items-center gap-2'>
-                <DynamicIcon iconKey={comp.type === 'text'
+                  <DynamicIcon
+                    iconKey={
+                      comp.type === 'text'
                         ? 'fas fa-font'
                         : comp.type === 'number'
                         ? 'fas fa-hashtag'
-                        : 'fas fa-euro-sign'} className='text-primary' size={17} />
+                        : 'fas fa-euro-sign'
+                    }
+                    className='text-primary'
+                    size={17}
+                  />
                   <span className='fw-bold text-capitalize'>
                     {comp.type === 'text'
                       ? 'Texte'
@@ -80,10 +86,13 @@ export default function CanvasEditorImproved({
                     checked={comp.showCustomValue || false}
                     onChange={() => toggleCustomValue(index)}
                   />
-                  <FaCog className='cursor-pointer text-muted' size={20} onClick={() => toggleCustomValue(index)}
+                  <FaCog
+                    className='cursor-pointer text-muted'
+                    size={20}
+                    onClick={() => toggleCustomValue(index)}
                     style={{ cursor: 'pointer' }}
-                    title='Paramètres avancés' />
-                 
+                    title='Paramètres avancés'
+                  />
                 </div>
               </Card.Header>
               <Card.Body>
@@ -104,7 +113,7 @@ export default function CanvasEditorImproved({
                     {/* Taille de police */}
                     <Accordion.Item eventKey='0'>
                       <Accordion.Header>
-                        <FaTextHeight className='me-2'/>
+                        <FaTextHeight className='me-2' />
                         Taille de police
                       </Accordion.Header>
                       <Accordion.Body>
@@ -165,7 +174,6 @@ export default function CanvasEditorImproved({
                         />
                       </Accordion.Body>
                     </Accordion.Item>
-
                   </Accordion>
                 )}
               </Card.Body>
