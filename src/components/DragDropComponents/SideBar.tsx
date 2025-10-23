@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react'
 import { _handleDragStart, _handleDragStartImg, _handleFileChange } from '@/utils/functions'
 import { Button, Form, Image, Placeholder } from 'react-bootstrap'
