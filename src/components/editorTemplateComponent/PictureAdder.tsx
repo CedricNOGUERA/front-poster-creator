@@ -3,8 +3,8 @@ import { PictureType } from '@/types/DiversType'
 import { _getPictures } from '@/utils/apiFunctions'
 import React from 'react'
 import { Card, Form, Button, ButtonGroup } from 'react-bootstrap'
-import { FaArrowsAlt, FaExpandArrowsAlt } from 'react-icons/fa'
-import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowsLeftRight, FaArrowsUpDown, FaArrowUp, FaImage, FaPlus } from 'react-icons/fa6'
+import { FaArrowsAlt, FaCog, FaExpandArrowsAlt } from 'react-icons/fa'
+import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowsLeftRight, FaArrowsUpDown, FaArrowUp, FaImage, FaPlus, FaTrash } from 'react-icons/fa6'
 
 interface WarrantyPictureType {
   selectedGarantie: string
@@ -222,235 +222,234 @@ export default function PictureAdder({
 
   return (
     <>
-    
-    
-    {additionalImages.map((image, index) => (
-            <Card key={image.id} className="mb-3 border">
-              <Card.Header className="d-flex justify-content-between align-items-center py-2">
-                <div className="d-flex align-items-center gap-2">
-                  <FaImage className='text-secondary' />
-                  <span className="fw-bold">Image {index + 1}</span>
-                </div>
-                <div className="d-flex gap-2">
-                  <Form.Check
-                    type="switch"
-                    id={`toggle-${image.id}`}
-                    checked={image.showSettings}
-                    onChange={() => {
-                      setAdditionalImages(additionalImages.map(img => 
-                        img.id === image.id 
-                          ? { ...img, showSettings: !img.showSettings }
-                          : img
-                      ))
-                    }}
-                  />
-                  <i
-                    className="fas fa-cog fs-6 cursor-pointer text-muted"
-                    onClick={() => {
-                      setAdditionalImages(additionalImages.map(img => 
-                        img.id === image.id 
-                          ? { ...img, showSettings: !img.showSettings }
-                          : img
-                      ))
-                    }}
-                    style={{ cursor: 'pointer' }}
-                    title="Paramètres avancés"
-                  />
-                  <i
-                    className="fas fa-trash text-danger cursor-pointer"
-                    onClick={() => removeImage(image.id)}
-                    style={{ cursor: 'pointer' }}
-                    title="Supprimer cette image"
-                  />
-                </div>
-              </Card.Header>
-              <Card.Body className="py-2">
-                <Form.Group className="mb-3">
-                  <Form.Select
-                    value={image.selectedImage}
-                    onChange={(e) => {
-                      const imageSrc = e.target.value
-                      setAdditionalImages(additionalImages.map(img => 
-                        img.id === image.id 
-                          ? { ...img, selectedImage: imageSrc }
-                          : img
-                      ))
-                      updateImageInCanvas(image.id, imageSrc, image.params)
-                    }}
-                  >
-                    <option value="aucune">Aucune</option>
-                    {pictures.map((pict) => (
-                      <option key={pict.id} value={pict.src}>{pict.name}</option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+      {additionalImages.map((image, index) => (
+        <Card key={image.id} className='mb-3 border'>
+          <Card.Header className='d-flex justify-content-between align-items-center py-2'>
+            <div className='d-flex align-items-center gap-2'>
+              <FaImage className='text-secondary' />
+              <span className='fw-bold'>Image {index + 1}</span>
+            </div>
+            <div className='d-flex gap-2'>
+              <Form.Check
+                type='switch'
+                id={`toggle-${image.id}`}
+                checked={image.showSettings}
+                onChange={() => {
+                  setAdditionalImages(
+                    additionalImages.map((img) =>
+                      img.id === image.id ? { ...img, showSettings: !img.showSettings } : img
+                    )
+                  )
+                }}
+              />
+              <FaCog
+                className='cursor-pointer text-muted'
+                onClick={() => {
+                  setAdditionalImages(
+                    additionalImages.map((img) =>
+                      img.id === image.id ? { ...img, showSettings: !img.showSettings } : img
+                    )
+                  )
+                }}
+                style={{ cursor: 'pointer' }}
+                title='Paramètres avancés'
+              />
+              <FaTrash
+                className='cursor-pointer text-danger'
+                onClick={() => removeImage(image.id)}
+                title='Supprimer cette image'
+              />
+            </div>
+          </Card.Header>
+          <Card.Body className='py-2'>
+            <Form.Group className='mb-3'>
+              <Form.Select
+                value={image.selectedImage}
+                onChange={(e) => {
+                  const imageSrc = e.target.value
+                  setAdditionalImages(
+                    additionalImages.map((img) =>
+                      img.id === image.id ? { ...img, selectedImage: imageSrc } : img
+                    )
+                  )
+                  updateImageInCanvas(image.id, imageSrc, image.params)
+                }}
+              >
+                <option value='aucune'>Aucune</option>
+                {pictures.map((pict) => (
+                  <option key={pict.id} value={pict.src}>
+                    {pict.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
 
-                {image.showSettings && (
-                  <div className="custom-value d-flex flex-column gap-3">
-                    <div>
-                      {/* Contrôles de taille */}
-                      <Form.Group>
-                        <Form.Label className="fw-bold small">
-                          <FaExpandArrowsAlt className='me-2' />
-                          Redimension
-                        </Form.Label>
-                        <Form.Range
-                          min={40}
-                          max={300}
-                          value={image.params.width}
-                          onChange={(e) => {
-                            const newWidth = parseInt(e.target.value)
-                            const updatedParams = { ...image.params, width: newWidth }
-                            setAdditionalImages(additionalImages.map(img => 
-                              img.id === image.id 
-                                ? { ...img, params: updatedParams }
-                                : img
-                            ))
-                            updateImageInCanvas(image.id, image.selectedImage, updatedParams)
-                          }}
-                        />
-                      </Form.Group>
+            {image.showSettings && (
+              <div className='custom-value d-flex flex-column gap-3'>
+                <div>
+                  {/* Contrôles de taille */}
+                  <Form.Group>
+                    <Form.Label className='fw-bold small'>
+                      <FaExpandArrowsAlt className='me-2' />
+                      Redimension
+                    </Form.Label>
+                    <Form.Range
+                      min={40}
+                      max={300}
+                      value={image.params.width}
+                      onChange={(e) => {
+                        const newWidth = parseInt(e.target.value)
+                        const updatedParams = { ...image.params, width: newWidth }
+                        setAdditionalImages(
+                          additionalImages.map((img) =>
+                            img.id === image.id ? { ...img, params: updatedParams } : img
+                          )
+                        )
+                        updateImageInCanvas(image.id, image.selectedImage, updatedParams)
+                      }}
+                    />
+                  </Form.Group>
 
-                      {/* Boutons de déplacement rapide */}
-                      <Form.Label className="fw-bold mb-2 small">
-                        <FaArrowsAlt className='me-2' />
-                        Position
-                      </Form.Label>
+                  {/* Boutons de déplacement rapide */}
+                  <Form.Label className='fw-bold mb-2 small'>
+                    <FaArrowsAlt className='me-2' />
+                    Position
+                  </Form.Label>
 
-                      <div className="d-flex justify-content-center mb-2">
-                        <ButtonGroup size="sm">
-                          <Button
-                            variant="outline-secondary"
-                            onClick={() => moveAdditionalImagePosition(image.id, 'up', 10)}
-                            title="Déplacer vers le haut"
-                          >
-                            <FaArrowUp />
-                          </Button>
-                          <Button
-                            variant="outline-secondary"
-                            onClick={() => moveAdditionalImagePosition(image.id, 'down', 10)}
-                            title="Déplacer vers le bas"
-                          >
-                            <FaArrowDown />
-                          </Button>
-                          <Button
-                            variant="outline-secondary"
-                            onClick={() => moveAdditionalImagePosition(image.id, 'left', 10)}
-                            title="Déplacer vers la gauche"
-                          >
-                            <FaArrowLeft />
-                          </Button>
-                          <Button
-                            variant="outline-secondary"
-                            onClick={() => moveAdditionalImagePosition(image.id, 'right', 10)}
-                            title="Déplacer vers la droite"
-                          >
-                            <FaArrowRight />
-                          </Button>
-                        </ButtonGroup>
-                      </div>
-                    </div>
-
-                    {/* Contrôles de position */}
-                    <div className="row g-2">
-                      <div className="col-6">
-                        <Form.Label className="small">
-                          <FaArrowsUpDown className='me-1' />
-                          Vert.
-                        </Form.Label>
-                        <Form.Range
-                          min={0}
-                          max={pageHeight * scaleFactor}
-                          step={1}
-                          value={image.params.top}
-                          onChange={(e) => {
-                            const newTop = parseInt(e.target.value)
-                            const updatedParams = { ...image.params, top: newTop }
-                            setAdditionalImages(additionalImages.map(img => 
-                              img.id === image.id 
-                                ? { ...img, params: updatedParams }
-                                : img
-                            ))
-                            updateImageInCanvas(image.id, image.selectedImage, updatedParams)
-                          }}
-                        />
-                        <Form.Control
-                          type="number"
-                          min={0}
-                          max={pageHeight * scaleFactor}
-                          step={1}
-                          value={image.params.top}
-                          onChange={(e) => {
-                            const newTop = parseInt(e.target.value) || 0
-                            const updatedParams = { ...image.params, top: newTop }
-                            setAdditionalImages(additionalImages.map(img => 
-                              img.id === image.id 
-                                ? { ...img, params: updatedParams }
-                                : img
-                            ))
-                            updateImageInCanvas(image.id, image.selectedImage, updatedParams)
-                          }}
-                          size="sm"
-                          className="mt-1"
-                        />
-                      </div>
-
-                      <div className="col-6">
-                        <Form.Label className="small">
-                          <FaArrowsLeftRight className='me-1' />
-                          Horiz.
-                        </Form.Label>
-                        <Form.Range
-                          min={0}
-                          max={pageWidth * scaleFactor}
-                          step={1}
-                          value={image.params.left}
-                          onChange={(e) => {
-                            const newLeft = parseInt(e.target.value)
-                            const updatedParams = { ...image.params, left: newLeft }
-                            setAdditionalImages(additionalImages.map(img => 
-                              img.id === image.id 
-                                ? { ...img, params: updatedParams }
-                                : img
-                            ))
-                            updateImageInCanvas(image.id, image.selectedImage, updatedParams)
-                          }}
-                        />
-                        <Form.Control
-                          type="number"
-                          min={0}
-                          max={pageWidth * scaleFactor}
-                          step={1}
-                          value={image.params.left}
-                          onChange={(e) => {
-                            const newLeft = parseInt(e.target.value) || 0
-                            const updatedParams = { ...image.params, left: newLeft }
-                            setAdditionalImages(additionalImages.map(img => 
-                              img.id === image.id 
-                                ? { ...img, params: updatedParams }
-                                : img
-                            ))
-                            updateImageInCanvas(image.id, image.selectedImage, updatedParams)
-                          }}
-                          size="sm"
-                          className="mt-1"
-                        />
-                      </div>
-                    </div>
+                  <div className='d-flex justify-content-center mb-2'>
+                    <ButtonGroup size='sm'>
+                      <Button
+                        variant='outline-secondary'
+                        onClick={() => moveAdditionalImagePosition(image.id, 'up', 10)}
+                        title='Déplacer vers le haut'
+                      >
+                        <FaArrowUp />
+                      </Button>
+                      <Button
+                        variant='outline-secondary'
+                        onClick={() => moveAdditionalImagePosition(image.id, 'down', 10)}
+                        title='Déplacer vers le bas'
+                      >
+                        <FaArrowDown />
+                      </Button>
+                      <Button
+                        variant='outline-secondary'
+                        onClick={() => moveAdditionalImagePosition(image.id, 'left', 10)}
+                        title='Déplacer vers la gauche'
+                      >
+                        <FaArrowLeft />
+                      </Button>
+                      <Button
+                        variant='outline-secondary'
+                        onClick={() => moveAdditionalImagePosition(image.id, 'right', 10)}
+                        title='Déplacer vers la droite'
+                      >
+                        <FaArrowRight />
+                      </Button>
+                    </ButtonGroup>
                   </div>
-                )}
-              </Card.Body>
-            </Card>
-          ))}
-    <Button
-              variant="outline-primary"
-              size="sm"
-              onClick={addNewImage}
-              className="d-flex align-items-center gap-2"
-            >
-              <FaPlus />
-              Ajouter une image
-            </Button>
+                </div>
+
+                {/* Contrôles de position */}
+                <div className='row g-2'>
+                  <div className='col-6'>
+                    <Form.Label className='small'>
+                      <FaArrowsUpDown className='me-1' />
+                      Vert.
+                    </Form.Label>
+                    <Form.Range
+                      min={0}
+                      max={pageHeight * scaleFactor}
+                      step={1}
+                      value={image.params.top}
+                      onChange={(e) => {
+                        const newTop = parseInt(e.target.value)
+                        const updatedParams = { ...image.params, top: newTop }
+                        setAdditionalImages(
+                          additionalImages.map((img) =>
+                            img.id === image.id ? { ...img, params: updatedParams } : img
+                          )
+                        )
+                        updateImageInCanvas(image.id, image.selectedImage, updatedParams)
+                      }}
+                    />
+                    <Form.Control
+                      type='number'
+                      min={0}
+                      max={pageHeight * scaleFactor}
+                      step={1}
+                      value={image.params.top}
+                      onChange={(e) => {
+                        const newTop = parseInt(e.target.value) || 0
+                        const updatedParams = { ...image.params, top: newTop }
+                        setAdditionalImages(
+                          additionalImages.map((img) =>
+                            img.id === image.id ? { ...img, params: updatedParams } : img
+                          )
+                        )
+                        updateImageInCanvas(image.id, image.selectedImage, updatedParams)
+                      }}
+                      size='sm'
+                      className='mt-1'
+                    />
+                  </div>
+
+                  <div className='col-6'>
+                    <Form.Label className='small'>
+                      <FaArrowsLeftRight className='me-1' />
+                      Horiz.
+                    </Form.Label>
+                    <Form.Range
+                      min={0}
+                      max={pageWidth * scaleFactor}
+                      step={1}
+                      value={image.params.left}
+                      onChange={(e) => {
+                        const newLeft = parseInt(e.target.value)
+                        const updatedParams = { ...image.params, left: newLeft }
+                        setAdditionalImages(
+                          additionalImages.map((img) =>
+                            img.id === image.id ? { ...img, params: updatedParams } : img
+                          )
+                        )
+                        updateImageInCanvas(image.id, image.selectedImage, updatedParams)
+                      }}
+                    />
+                    <Form.Control
+                      type='number'
+                      min={0}
+                      max={pageWidth * scaleFactor}
+                      step={1}
+                      value={image.params.left}
+                      onChange={(e) => {
+                        const newLeft = parseInt(e.target.value) || 0
+                        const updatedParams = { ...image.params, left: newLeft }
+                        setAdditionalImages(
+                          additionalImages.map((img) =>
+                            img.id === image.id ? { ...img, params: updatedParams } : img
+                          )
+                        )
+                        updateImageInCanvas(image.id, image.selectedImage, updatedParams)
+                      }}
+                      size='sm'
+                      className='mt-1'
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+      ))}
+      <Button
+        variant='outline-primary'
+        size='sm'
+        onClick={addNewImage}
+        className='d-flex align-items-center gap-2'
+      >
+        <FaPlus />
+        Ajouter une image
+      </Button>
     </>
   )
 }

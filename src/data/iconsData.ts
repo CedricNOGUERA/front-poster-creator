@@ -36,8 +36,14 @@ import {
     FaSeedling,
     FaTshirt,
     FaCheckCircle,
-    FaTimesCircle
+    FaTimesCircle,
+    FaFont,
+    FaEuroSign,
+    FaHashtag,
+    FaCog,
+ 
   } from 'react-icons/fa';
+import { FaFile, FaImages, FaList, FaStore, FaUsers } from 'react-icons/fa6';
   
   export const ICON_MAP = {
     'fa fa-star': FaStar,
@@ -77,6 +83,15 @@ import {
     'fa fa-seedling': FaSeedling,
     'fa fa-tshirt': FaTshirt,
     'fa fa-check-circle': FaCheckCircle,
-    'fa fa-times-circle' : FaTimesCircle
+    'fa fa-times-circle' : FaTimesCircle,
+    'fas fa-store': FaStore,
+    'fas fa-list': FaList,
+    'fas fa-users': FaUsers,
+    'fas fa-images': FaImages,
+    'fas fa-file': FaFile,
+    'fas fa-font': FaFont,
+    'fas fa-hashtag': FaHashtag,
+    'fas fa-euro-sign': FaEuroSign,
+    'fas fa-cog': FaCog,
 
 };

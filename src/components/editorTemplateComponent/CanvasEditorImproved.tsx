@@ -7,8 +7,9 @@ import {
 import React from 'react'
 import { Form, Card, Accordion } from 'react-bootstrap'
 import PositionControls from './PositionControls'
-import { FaArrowsAlt } from 'react-icons/fa'
+import { FaArrowsAlt, FaCog } from 'react-icons/fa'
 import { FaMinus, FaPlus, FaTextHeight } from 'react-icons/fa6'
+import DynamicIcon from '../ui/DynamicIcon'
 
 interface CanvasEditorType {
   canvasData: ComponentTypeMulti[]
@@ -59,15 +60,11 @@ export default function CanvasEditorImproved({
             <Card key={index} className='mb-2 shadow-sm'>
               <Card.Header className='d-flex justify-content-between align-items-center'>
                 <div className='d-flex align-items-center gap-2'>
-                  <i
-                    className={`fas ${
-                      comp.type === 'text'
-                        ? 'fa-font'
+                <DynamicIcon iconKey={comp.type === 'text'
+                        ? 'fas fa-font'
                         : comp.type === 'number'
-                        ? 'fa-hashtag'
-                        : 'fa-euro-sign'
-                    } text-primary`}
-                  ></i>
+                        ? 'fas fa-hashtag'
+                        : 'fas fa-euro-sign'} className='text-primary' size={17} />
                   <span className='fw-bold text-capitalize'>
                     {comp.type === 'text'
                       ? 'Texte'
@@ -80,16 +77,13 @@ export default function CanvasEditorImproved({
                   <Form.Check
                     type='switch'
                     id={`toggle-${index}`}
-                    // label="Personnaliser"
                     checked={comp.showCustomValue || false}
                     onChange={() => toggleCustomValue(index)}
                   />
-                  <i
-                    className='fas fa-cog fs-5 cursor-pointer text-muted'
-                    onClick={() => toggleCustomValue(index)}
+                  <FaCog className='cursor-pointer text-muted' size={20} onClick={() => toggleCustomValue(index)}
                     style={{ cursor: 'pointer' }}
-                    title='Paramètres avancés'
-                  />
+                    title='Paramètres avancés' />
+                 
                 </div>
               </Card.Header>
               <Card.Body>
