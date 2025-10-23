@@ -48,6 +48,7 @@ console.log(pageWidth)
                       setCanvasData(updatedCanvas)
                     }}
                   />
+                  
                   <i
                     className='fas fa-cog fs-5 cursor-pointer'
                     onClick={() => {
