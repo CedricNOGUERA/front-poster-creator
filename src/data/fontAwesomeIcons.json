@@ -142,5 +142,65 @@
     {
         "name": "T-shirt",
         "value": "fa fa-tshirt"
+    },
+    {
+        "name": "Coche",
+        "value": "fa fa-check-circle"
+    },
+    {
+        "name": "Croix",
+        "value": "fa fa-times-circle"
+    },
+    {
+        "name": "Magasin",
+        "value": "fas fa-store"
+    },
+    {
+        "name": "Liste",
+        "value": "fas fa-list"
+    },
+    {
+        "name": "Utilisateurs",
+        "value": "fas fa-users"
+    },
+    {
+        "name": "Images",
+        "value": "fas fa-images"
+    },
+    {
+        "name": "Fichier",
+        "value": "fas fa-file"
+    },
+    {
+        "name": "Police",
+        "value": "fas fa-font"
+    },
+    {
+        "name": "Hashtag",
+        "value": "fas fa-hashtag"
+    },
+    {
+        "name": "Euro",
+        "value": "fas fa-euro-sign"
+    },
+    {
+        "name": "Paramètres",
+        "value": "fas fa-cog"
+    },
+    {
+        "name": "Médaille",
+        "value": "fas fa-award"
+    },
+    {
+        "name": "Bouclier",
+        "value": "fas fa-shield-halved"
+    },
+    {
+        "name": "Stylo",
+        "value": "fas fa-pen-to-square"
+    },
+    {
+        "name": "Marteau",
+        "value": "fas fa-hammer"
     }
 ]

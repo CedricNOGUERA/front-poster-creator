@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// import categories from "@/mocks/categories.json";
 import useStoreApp from "@/stores/storeApp";
 import { CategoriesType } from "@/types/CategoriesType";
 import { FeedBackSatateType, ToastDataType } from "@/types/DiversType";
@@ -51,7 +50,9 @@ export const CategorySelector = ({ title }: Props) => {
                 style={{ width: "200px", height: "183px" }}
                 onClick={() => onHandleCategory(category.id as number)}
               >
-                <DynamicIcon iconKey={category.icon.value} size={42} className="text-primary" />
+                {category.icon.value !== "" && [
+                  <DynamicIcon iconKey={category.icon.value} size={42} className="text-primary" />
+                ]}
                 <p className="mt-2 text-center fw-bold fs-5 text-primary">
                   {category.name}
                 </p>
