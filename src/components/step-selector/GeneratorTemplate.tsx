@@ -1,4 +1,4 @@
-import dimensions from "@/mocks/dimensions.json";
+import dimensions from "@/data/dimensions.json";
 
 // import pivotData from "@/mocks/model.json"; 
 import useStoreApp from "@/stores/storeApp";

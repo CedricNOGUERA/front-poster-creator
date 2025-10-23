@@ -213,7 +213,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
               className='hover-card mb-3 mx-4 border rounded-1 border-primary p-3 px-4'
               onClick={() => onHandleShop(shop.id)}
             >
-              <img src={`${API_URL}/${shop.cover}`} alt={shop.name} width={150} />
+              <img src={`${API_URL}/${shop.cover}`} alt={shop.name} width={150} height={150} />
             </div>
           )
         })}

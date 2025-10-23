@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import dimensions from '@/mocks/dimensions.json'
+import dimensions from '@/data/dimensions.json'
 import useStoreApp from '@/stores/storeApp'
 import {
   BackgroundComponentType,
@@ -117,7 +117,7 @@ export const EditorTemplate = () => {
   }
 
   const setPageForPreview = async () => {
-    const maxPreviewHeight = pageHeight < 100 ? 150 : 500 // en pixels
+    const maxPreviewHeight = pageHeight < 98 ? 150 : 500 // en pixels
     const scaleFactor = maxPreviewHeight / pageHeight
 
     setPreviewStyle({

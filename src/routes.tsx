@@ -18,7 +18,7 @@ import 'rsuite/Button/styles/index.css'
 import 'rsuite/Drawer/styles/index.css'
 import UserManager from './pages/admin/UserManager'
 import DashBoard from './pages/admin/DashBoard'
-import InlineDragDropEditor from './components/step-selector/InlineDragDropEditor'
+// import InlineDragDropEditor from './components/step-selector/InlineDragDropEditor'
 import Account from './pages/admin/Account'
 import NotFound from './pages/NotFound'
 import ShopPage from './pages/admin/ShopPage'
@@ -37,7 +37,7 @@ createRoot(document.getElementById('root')!).render(
         {/* Admin routes */}
         <Route element={<AdminLayout />}>
           <Route path='/editeur-de-bon-plan' element={<StepSelectorMockupBuilder />} />
-          <Route path='/createur-de-bon-plan-inline' element={<InlineDragDropEditor />} />
+          {/* <Route path='/createur-de-bon-plan-inline' element={<InlineDragDropEditor />} /> */}
           <Route path='/createur-de-bon-plan' element={<SchemaBuilder />} />
           <Route path='/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord' element={<DashBoard />}>
