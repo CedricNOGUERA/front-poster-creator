@@ -1,26 +1,26 @@
-import { AdminLayout } from '@/layouts/admin/Layout.tsx'
-import { StepSelectorMockupBuilder } from '@/pages/admin/StepSelectorMockupBuilder'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css' // Ensure Bootstrap is installed via npm
-import './assets/css/admin.css'
-import './assets/css/style.css'
 import RegisterPage from './pages/public/RegisterPage'
 import LoginPage from './pages/public/LoginPage'
 import GuideUtilisateur from './pages/public/GuideUtilisateur'
+import { AdminLayout } from '@/layouts/admin/Layout.tsx'
+import { StepSelectorMockupBuilder } from '@/pages/admin/StepSelectorMockupBuilder'
 import SchemaBuilder from './pages/admin/SchemaBuilder'
+import UserManager from './pages/admin/UserManager'
+import DashBoard from './pages/admin/DashBoard'
+import Account from './pages/admin/Account'
+import ShopPage from './pages/admin/ShopPage'
+import CategoriesPage from './pages/admin/CategoriesPage'
+import PicturesLibraryPage from './pages/admin/PicturesLibraryPage'
+import NotFound from './pages/NotFound'
+import 'bootstrap/dist/css/bootstrap.min.css' 
+import './assets/css/admin.css'
+import './assets/css/style.css'
 import 'rsuite/TagPicker/styles/index.css'
 import 'rsuite/Tag/styles/index.css'
 import 'rsuite/Button/styles/index.css'
 import 'rsuite/Drawer/styles/index.css'
-import UserManager from './pages/admin/UserManager'
-import DashBoard from './pages/admin/DashBoard'
-import Account from './pages/admin/Account'
-import NotFound from './pages/NotFound'
-import ShopPage from './pages/admin/ShopPage'
-import CategoriesPage from './pages/admin/CategoriesPage'
-import PicturesLibraryPage from './pages/admin/PicturesLibraryPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -34,7 +34,6 @@ createRoot(document.getElementById('root')!).render(
         {/* Admin routes */}
         <Route element={<AdminLayout />}>
           <Route path='/editeur-de-bon-plan' element={<StepSelectorMockupBuilder />} />
-          {/* <Route path='/createur-de-bon-plan-inline' element={<InlineDragDropEditor />} /> */}
           <Route path='/createur-de-bon-plan' element={<SchemaBuilder />} />
           <Route path='/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord' element={<DashBoard />}>
