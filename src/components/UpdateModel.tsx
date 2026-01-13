@@ -442,6 +442,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
             minHeight: '10px',
             borderBottom: isSelected ? '1px gray dashed' : '',
             cursor: 'move',
+            lineHeight: `${(comp as TextComponentType).fontSize}px`
           }
         case 'background-color':
           return {
@@ -831,7 +832,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         <SideBar storeApp={storeApp} selectedCanvas={selectedCategory.canvas} />
         {/* Canvas */}
         <div className='m-auto'>
-          <Container className='py-'>
+          <Container className=''>
             <h4>Modifier le modèle N°{modelId}</h4>
           </Container>
           <Container className='px-5 mb-3'>
