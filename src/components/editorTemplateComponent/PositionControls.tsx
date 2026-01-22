@@ -37,10 +37,10 @@ export default function PositionControls({
     if (component.type === 'price' || component.type === 'number') {
       // Pour les prix et nombres, on utilise bottom et right
       const updates: Partial<NumberComponentType | PrincipalPriceComponentType> = {}
-      if (direction === 'up') updates.bottom = Math.max(0, (component.bottom || 0) - step)
-      if (direction === 'down') updates.bottom = Math.min(pageHeight * scaleFactor, (component.bottom || 0) + step)
-      if (direction === 'left') updates.right = Math.max(-pageWidth * 2, (component.right || 0) - step)
-      if (direction === 'right') updates.right = Math.min(pageWidth * 2, (component.right || 0) + step)
+      if (direction === 'up') updates.bottom = Math.max(0, (component.bottom || 0) + step)
+      if (direction === 'down') updates.bottom = Math.min(pageHeight * scaleFactor, (component.bottom || 0) - step)
+      if (direction === 'left') updates.right = Math.max(-pageWidth * 2, (component.right || 0) + step)
+      if (direction === 'right') updates.right = Math.min(pageWidth * 2, (component.right || 0) - step)
       updateComponent(updates)
     } else {
       // Pour les textes, on utilise top et left
@@ -143,7 +143,8 @@ export default function PositionControls({
                 value={
                   component.type === 'price' || component.type === 'number'
                     ? component.bottom || 0
-                    : component.top || 0
+                    : 
+                    component.top || 0
                 }
                 onChange={(e) => {
                   const value = parseInt(e.target.value) || 0
