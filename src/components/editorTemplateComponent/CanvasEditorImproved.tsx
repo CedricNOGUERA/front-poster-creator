@@ -43,6 +43,7 @@ export default function CanvasEditorImproved({
     })
   }
 
+  
   return (
     <div className='canvas-editor-improved'>
       {canvasData?.map((component: ComponentTypeMulti, index: number) => {
@@ -52,10 +53,10 @@ export default function CanvasEditorImproved({
           component.type === 'price'
         ) {
           const comp = component as
-            | TextComponentType
-            | NumberComponentType
-            | PrincipalPriceComponentType
-
+          | TextComponentType
+          | NumberComponentType
+          | PrincipalPriceComponentType
+          
           return (
             <Card key={index} className='mb-2 shadow-sm'>
               <Card.Header className='d-flex justify-content-between align-items-center'>
@@ -116,9 +117,15 @@ export default function CanvasEditorImproved({
                         <FaTextHeight className='me-2' />
                         Taille de police
                       </Accordion.Header>
-                      <Accordion.Body>
+                      <Accordion.Body className='px-2'>
                         <div className='d-flex align-items-center gap-3'>
-                          <Form.Label className='small mb-0'>
+                          <Form.Label className='small mb-0 border rounded px-1'
+                          onClick={() => {
+                            updateComponent(index, {
+                                fontSize: comp.fontSize - 1 || 0,
+                              })
+                          }}
+                          >
                             <FaMinus />
                           </Form.Label>
                           <Form.Range
@@ -133,7 +140,13 @@ export default function CanvasEditorImproved({
                             }
                             className='flex-grow-1'
                           />
-                          <Form.Label className='small mb-0'>
+                          <Form.Label className='small mb-0  border rounded px-1'
+                          onClick={() => {
+                            updateComponent(index, {
+                                fontSize: comp.fontSize + 1 || 0,
+                              })
+                          }}
+                          >
                             <FaPlus />
                           </Form.Label>
                           <Form.Control
