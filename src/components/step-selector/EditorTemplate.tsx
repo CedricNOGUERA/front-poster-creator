@@ -272,18 +272,20 @@ export const EditorTemplate = () => {
       )
     }
     if (component.type === 'number') {
-    
-      const numberComp = component as NumberComponentType
-      const numberValue = parseInt(numberComp.text.replace(/\D/g, ''), 10)
-      const formattedNumber = !isNaN(numberValue)
-        ? _thousandSeparator(numberValue)
-        : numberComp.text
+     
+      const numberComp = component as NumberComponentType;
+      const numberValue = parseFloat(numberComp.text);
+
+      const formattedNumber = isNaN(numberValue)
+        ? numberComp.text
+        : _thousandSeparator(numberValue);
+
       return (
         <div
           key={index}
           className={`absolute cursor-move pointer`}
           style={{
-            position: 'absolute',
+            position: "absolute",
             bottom: `${numberComp.bottom ?? 0}px`,
             right: `${numberComp.right ?? 0}px`,
             minWidth: `${20}px`,
@@ -292,26 +294,26 @@ export const EditorTemplate = () => {
             fontSize: numberComp?.fontSize,
             fontWeight: numberComp.fontWeight,
             color: numberComp.color,
-            wordBreak: 'break-word',
+            wordBreak: "break-word",
             transform: `rotate(${numberComp.rotation}deg)`,
             padding: `0 ${5}px`,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <div style={{ whiteSpace: 'nowrap' }}>
+          <div style={{ whiteSpace: "nowrap" }}>
             <span
               style={{
-                textDecoration: numberComp.textDecoration ?? 'none',
+                textDecoration: numberComp.textDecoration ?? "none",
               }}
             >
               {formattedNumber}
             </span>
-            <sup style={{ fontSize: '0.6em', marginLeft: '1px' }}>F</sup>
+            <sup style={{ fontSize: "0.6em", marginLeft: "1px" }}>F</sup>
           </div>
         </div>
-      )
+      );
     }
     if (component.type === 'text') {
       const textComp = component as TextComponentType
