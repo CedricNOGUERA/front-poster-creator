@@ -7,7 +7,7 @@ import userDataStore, {UserDataType} from '@/stores/userDataStore'
 import useStoreApp from "@/stores/storeApp";
 import { StoreType } from "@/stores/storeApp";
 import { Link } from "react-router-dom";
-import { FaEllipsisVertical } from "react-icons/fa6";
+import { FaEllipsisVertical, FaUser } from "react-icons/fa6";
 import { FaSignOutAlt } from "react-icons/fa";
 
 export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string, setTitleHeader: React.Dispatch<React.SetStateAction<string>>}) => {
@@ -40,9 +40,9 @@ export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string,
           <Navbar.Brand className='text-white text-uppercase fw-bold mx-auto'>
             {titleHeader}
           </Navbar.Brand>
-          <span className='d-flex align-items-center text-white pointer ' title={`Hello ${userName}`} ><Link to="/profile" className="text-decoration-none text-light">{userName}</Link></span>
+          <span className='d-flex align-items-center text-white pointer ' title={`Modifier votre mot de passe`} ><Link to="/profile" className="d-flex align-items-center text-decoration-none text-light"><FaUser className='text-light me-2' />{userName}</Link></span>
           {(userRole === "admin" || userRole === "super_admin") ? ( 
-            <Button variant='transparent' onClick={() => setOpen(true)} className="d-flex align-items-center">
+            <Button variant='transparent' onClick={() => setOpen(true)} className="d-flex align-items-center ms-3">
             <FaEllipsisVertical className='text-light' />
           </Button>
           ) : (
@@ -50,7 +50,7 @@ export const AdminHeader = ({titleHeader, setTitleHeader}: {titleHeader: string,
               href='/login'
               title='Déconnexion'
               onClick={() => handleClickLogout()}
-              className='d-flex align-items-center text-decoration-none text-muted'
+              className='d-flex align-items-center text-decoration-none text-muted ms-3'
             >
               <FaSignOutAlt className='text-light' />
             </Button>

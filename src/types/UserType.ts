@@ -15,6 +15,10 @@ export interface UserType {
     idCompany: number
     nameCompany: string
   }[]
+  stores?: {
+    id: number
+    name: string
+  }[]
   role: RoleType
   passwordHash?: string
 }

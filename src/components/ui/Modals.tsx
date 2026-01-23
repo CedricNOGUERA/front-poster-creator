@@ -212,20 +212,20 @@ export function ModalAddEditModel({
 }: {
   modalAddEditModelProps: ModalEditModelType
 }) {
-  const { showAddEditModal, handleCloseAddEditModal, selectedModel, setSelectedModel, shopList } = modalAddEditModelProps
+  const { showAddEditModal, handleCloseAddEditModal, selectedTemplate, setSelectedTemplate, shopList } = modalAddEditModelProps
   const { feedBackState, setFeedBackState,  setToastData, toggleShow } = useOutletContext<ContextModalValidateModelType>()
 
   const onPatchSubmit = (e: FormEvent<HTMLFormElement>) =>{
     e.preventDefault()
     const data = {
-      name: selectedModel.name,
-      image: selectedModel.image,
-      categoryId: selectedModel.categoryId,
-      shopIds: selectedModel.shopIds,
+      name: selectedTemplate.name,
+      image: selectedTemplate.image,
+      categoryId: selectedTemplate.categoryId,
+      shopIds: selectedTemplate.shopIds,
     }
 
     try{
-      _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal, setToastData, toggleShow)
+      _patchTemplate(selectedTemplate.id, data, setFeedBackState, handleCloseAddEditModal, setToastData, toggleShow)
     }catch(error){
       console.log(error)
     }
@@ -246,8 +246,8 @@ export function ModalAddEditModel({
 
           <Form.Control
           type="text"
-          value={selectedModel?.name || ""}
-          onChange={(e) => setSelectedModel((prev) => ({
+          value={selectedTemplate?.name || ""}
+          onChange={(e) => setSelectedTemplate((prev) => ({
             ...prev,
             name: e.target.value
           }))}
@@ -259,10 +259,10 @@ export function ModalAddEditModel({
               data={shopList}
               style={{ width: '100%' }}
               placeholder='Sélectionnez un ou plusieurs magasins'
-              value={selectedModel?.shopIds}
+              value={selectedTemplate?.shopIds}
               onChange={(newValues: string[]) => {
                 const numericIds = newValues.map((val) => parseInt(val, 10))
-                setSelectedModel((prev) => ({
+                setSelectedTemplate((prev) => ({
                   ...prev,
                   shopIds: numericIds,
                 }))

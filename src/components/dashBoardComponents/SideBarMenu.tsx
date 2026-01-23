@@ -27,12 +27,12 @@ export const SideBarMenu = ({
     }
 
   })
-  .map((item) =>{ 
+  .map((item, indx) =>{ 
     
     return(
       
     <Container
-    key={item.id}
+    key={indx}
       className='dash-menu-link  py-3 rounded-end pointer '
       onClick={() => setDisplay(item.display)}
     >

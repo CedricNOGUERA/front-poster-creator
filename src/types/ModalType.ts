@@ -39,9 +39,9 @@ export interface ModalUpdateModelType {
 export interface ModalEditModelType {
   showAddEditModal: boolean
   handleCloseAddEditModal: () => void
-  selectedModel: TemplateType
+  selectedTemplate: TemplateType
   shopList: {label: string, value: number}[]
-  setSelectedModel: React.Dispatch<React.SetStateAction<TemplateType>>
+  setSelectedTemplate: React.Dispatch<React.SetStateAction<TemplateType>>
 }
 
 export interface ContextModalValidateModelType {

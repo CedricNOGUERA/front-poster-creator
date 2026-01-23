@@ -51,7 +51,7 @@ class ModelsService {
     return response;
   }
 
-  async deleteModel(modelId: string) {
+  async deleteModel(modelId: number) {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/api/models/${modelId}`,
       {
