@@ -53,10 +53,15 @@ export const AddUserForm = ({
   const navigate = useNavigate()
   const roles = ['super_admin', 'admin', 'user']
 
-  const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
-  const storeList = storeData.map((item: {"id": number,
-       "name": string
-      }) => ({ label: item.name, value: item.id }));
+ const shopList = React.useMemo(
+  () => shops.map((item: ShopType) => ({ label: item.name, value: item.id })),
+  [shops]
+);
+
+const storeList = React.useMemo(
+  () => storeData.map((item) => ({ label: item.name, value: item.id })),
+  []
+);
 
   React.useEffect(() => {
     if(role === "super_admin"){
