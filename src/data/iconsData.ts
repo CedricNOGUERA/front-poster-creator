@@ -47,7 +47,7 @@ import {
     FaHammer,
  
   } from 'react-icons/fa';
-import { FaFile, FaImages, FaList, FaPenToSquare, FaShieldHalved, FaStore, FaUsers } from 'react-icons/fa6';
+import { FaFile, FaFileLines, FaImages, FaList, FaPenToSquare, FaShieldHalved, FaStore, FaUsers } from 'react-icons/fa6';
 import { RiUserAddLine, RiUserSettingsLine } from 'react-icons/ri';
   
   export const ICON_MAP = {
@@ -94,6 +94,7 @@ import { RiUserAddLine, RiUserSettingsLine } from 'react-icons/ri';
     'fas fa-users': FaUsers,
     'fas fa-images': FaImages,
     'fas fa-file': FaFile,
+    'fas fa-file-lines': FaFileLines,
     'fas fa-font': FaFont,
     'fas fa-hashtag': FaHashtag,
     'fas fa-euro-sign': FaEuroSign,

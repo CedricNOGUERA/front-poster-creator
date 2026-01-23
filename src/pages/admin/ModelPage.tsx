@@ -1,10 +1,13 @@
-import { ModalAddEditModel } from "@/components/ui/Modals";
+import { ModalAddEditModel, ModalGenericDelete } from "@/components/ui/Modals";
+import templatesServiceInstance from "@/services/TemplatesServices";
+import { ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
-import { _getTemplates } from "@/utils/apiFunctions";
+import { _deleteModel, _deleteModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
-import { Col, Container, Dropdown, Image, Row, Spinner, Table } from "react-bootstrap";
-import { FaEllipsisVertical, FaStore } from "react-icons/fa6";
+import { Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
+import { FaTimesCircle } from "react-icons/fa";
+import { FaCross, FaEllipsisVertical, FaStore, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 
 interface ContextType {
@@ -13,63 +16,76 @@ interface ContextType {
 
 export default function ModelsPage() {
   const {shops} = useOutletContext<ContextType>()
-  const [models, setModels] = React.useState<TemplateType[]>([]);
-  const [selectedModel, setSelectedModel] = React.useState<TemplateType>({} as TemplateType);
+  const [templates, setTemplates] = React.useState<TemplateType[]>([]);
+  const [models, setModels] = React.useState<ModelType[]>([]);
+  const [selectedModel, setSelectedModel] = React.useState<ModelType>({} as ModelType);
+  const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
   const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
-  // const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [filteredModels, setFilteredModels] = React.useState<any[]>([]);
+
 
   React.useEffect(() => {
-    _getTemplates(setModels);
+    _getTemplates(setTemplates);
+    _getModels(setModels);
   }, []);
+  React.useEffect(() => {
+    setFilteredModels(
+        models.filter((model) =>
+          selectedTemplate.id === model.templateId).map((model) => model.id)
+    );
+  }, [selectedTemplate]);
 
-  // const handleShowAddModal = () => {
-  //   setSelectedModel(null);
-  //   setShowAddEditModal(true);
-  // };
+
+  const handleShowAddModal = () => {
+    setSelectedTemplate({} as TemplateType);
+    setShowAddEditModal(true);
+  };
 
   const handleShowEditModal = (model: TemplateType) => {
-    setSelectedModel(model);
+    setSelectedTemplate(model);
     setShowAddEditModal(true);
   };
 
   const handleCloseAddEditModal = () => {
     setShowAddEditModal(false);
-    setSelectedModel({} as TemplateType);
-    _getTemplates(setModels);
+    setSelectedTemplate({} as TemplateType);
+    _getTemplates(setTemplates);
   };
 
-  // const handleShowDeleteModal = (model: TemplateType) => {
-  //   // setSelectedModel(model);
-  //   setShowDeleteModal(true);
-  // };
+  const handleShowDeleteModal = (model: TemplateType) => {
+    setSelectedTemplate(model);
+    setShowDeleteModal(true);
+  };
 
-  // const handleCloseDeleteModal = () => {
-  //   setShowDeleteModal(false);
-  //   setSelectedModel(null);
-  // };
+  const handleCloseDeleteModal = () => {
+    setSelectedTemplate({} as TemplateType);
+    setShowDeleteModal(false);
+  };
 
-  // const handleDeleteModel = async () => {
-  //   if (!selectedModel) return;
-  //   setIsLoading(true);
-  //   try {
+  const handleDeleteModel = async () => {
+    if (!selectedTemplate) return;
+    setIsLoading(true);
+    try {
 
-  //     const response = await templatesServiceInstance.deleteTemplate(selectedModel.id);
-  //     if (response &&response.ok) {
-  //       handleCloseDeleteModal();
-  //       _getTemplates(setModels);
-  //     } else {
-  //       console.error("Erreur lors de la suppression du modèle");
-  //     }
-  //   } catch (err) {
-  //     console.error("Erreur lors de la suppression du modèle:", err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+      const response = await templatesServiceInstance.deleteTemplate(selectedTemplate.id);
+      if (response &&response.ok) {
+        handleCloseDeleteModal();
+        _getTemplates(setTemplates);
+      } else {
+        console.error("Erreur lors de la suppression du modèle");
+      }
+    } catch (err) {
+      console.error("Erreur lors de la suppression du modèle:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
 
-  const modalAddEditModelProps = { showAddEditModal, handleCloseAddEditModal, selectedModel, setSelectedModel, shopList };
-  // const modalDeleteModelProps = { show: showDeleteModal, handleClose: handleCloseDeleteModal, modelName: selectedModel?.name, handleDelete: handleDeleteModel, isLoading };
+  const modalAddEditModelProps = { showAddEditModal, handleCloseAddEditModal, selectedTemplate, setSelectedTemplate, shopList };
+  // const modalDeleteModelProps = { show: showDeleteModal, handleClose: handleCloseDeleteModal, modelName: selectedTemplate?.name, handleDelete: handleDeleteModel, isLoading };
 
   return (
     <Container fluid className="relative p-0">
@@ -82,7 +98,7 @@ export default function ModelsPage() {
         <Col xs={2} sm={1}></Col>
       </Row>
       <Container>
-        {models.length === 0 ? (
+        {templates.length === 0 ? (
           <div className="text-center py-5">
             <Spinner animation="border" role="status">
               <span className="visually-hidden">Chargement...</span>
@@ -99,7 +115,7 @@ export default function ModelsPage() {
               </tr>
             </thead>
             <tbody>
-              {models.map((model) => {
+              {templates.map((model) => {
                 // Récupérer les noms des magasins basés sur les IDs
                 const shopNames = model.shopIds
                   .map(shopId => shops.find(shop => shop.id === shopId)?.name)
@@ -132,9 +148,17 @@ export default function ModelsPage() {
                         </b>
                       </Dropdown.Toggle>
                       <Dropdown.Menu align='end'>
-                        <Dropdown.Item onClick={() => handleShowEditModal(model)}>
+                        <Dropdown.Item onClick={() => handleShowEditModal(model)}
+                          className="d-flex align-items-center"
+                          >
                           <FaStore className="me-2" />                          
                           Attribuer un/des magasins ou modifier le nom
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleShowDeleteModal(model)}
+                          className="d-flex align-items-center text-danger"
+                          >
+                          <FaTrash className="me-2" size={16} />                          
+                          Supprimer
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
@@ -147,6 +171,37 @@ export default function ModelsPage() {
       </Container>
   
       <ModalAddEditModel modalAddEditModelProps={modalAddEditModelProps} />
+      {/* <ModalGenericDelete modalGenericDeleteProps={modalDeleteModelProps} /> */}
+        <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Supprimer un modèle</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Etes-vous sûr de vouloir supprimer ce modèle ?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+            Annuler
+          </Button>
+          <Button variant="danger" onClick={() =>{
+            if(selectedTemplate){
+              _deleteModels(filteredModels)
+              // handleDeleteModel()
+            }
+          }}>
+            {isLoading ? (
+              <>
+              <Spinner size="sm" animation="border" role="status" className="me-2"/>
+                <span className="visually-hidden">Chargement...</span>
+              </>
+             
+            ) : (
+            <span>
+              <FaTimesCircle className="me-2" />
+              </span>
+            )}
+            Supprimer
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

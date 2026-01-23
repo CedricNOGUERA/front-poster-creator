@@ -89,6 +89,7 @@ export default function UserManager() {
         <Table striped hover responsive='sm' className='shadow'>
           <thead className='sticky-sm-top '>
             <tr>
+              <th>Enseigne</th>
               <th>Société</th>
               <th>Nom</th>
               <th>Email</th>
@@ -128,6 +129,8 @@ export default function UserManager() {
                 const companyLength = user.company?.length
                 const shopLength = shops?.length
                 const companylist = (companyLength === shopLength || user.role === 'super_admin') ? "Tous les magasins" : user.company.map((item) => item.nameCompany).join(', ')
+                const storelist = user.stores && user.stores.map((item) => item.name).join(', ')
+
 
                 // if(user.role !== 'super_admin'){
                 //   return
@@ -136,6 +139,7 @@ export default function UserManager() {
                 return (
                   <tr key={user.id}>
                     <td>{companylist}</td>
+                    <td>{storelist}</td>
                     <td>{user.name}</td>
                     <td>{user.email}</td>
                     <td>{user.role}</td>

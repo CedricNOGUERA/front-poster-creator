@@ -10,6 +10,7 @@ import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import { TagPicker } from 'rsuite'
 import { ToastDataType } from '@/types/DiversType'
 import { FaCircleCheck, FaCircleXmark, FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
+import storeData from '../../data/store.json'
 
 interface CompanyType { idCompany: number; nameCompany: string }
 interface ContextShopSelectorType {
@@ -41,6 +42,9 @@ export const AddUserForm = ({
   const [email, setEmail] = React.useState<string>('')
   const [password, setPassword] = React.useState<string>('')
   const [company, setCompany] = React.useState<CompanyType[]>([])
+  const [stores, setStores] = React.useState<{"id": number,
+       "name": string
+      }[]>([])
   const [role, setRole] = React.useState<'super_admin' | 'admin' | 'user'>('user')
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const [error, setError] = React.useState<string | null>(null)
@@ -50,6 +54,9 @@ export const AddUserForm = ({
   const roles = ['super_admin', 'admin', 'user']
 
   const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
+  const storeList = storeData.map((item: {"id": number,
+       "name": string
+      }) => ({ label: item.name, value: item.id }));
 
   React.useEffect(() => {
     if(role === "super_admin"){
@@ -66,6 +73,7 @@ export const AddUserForm = ({
       setName(initialData.name || '')
       setEmail(initialData.email || '')
       setCompany(initialData.company || [])
+      setStores(initialData.stores || [])
       setRole(initialData.role || 'user')
       setPassword('')
     }
@@ -97,7 +105,7 @@ export const AddUserForm = ({
 
     try {
       if (initialData && initialData.id) {
-        const updatedData: Partial<UserType> = { name, email, company, role } // Inclure le mot de passe seulement s'il a été modifié
+        const updatedData: Partial<UserType> = { name, email, company, stores, role } // Inclure le mot de passe seulement s'il a été modifié
         if (password && password.length > 0) {
           updatedData.password = password
         }
@@ -112,6 +120,7 @@ export const AddUserForm = ({
           email,
           password,
           company,
+          stores,
           role,
         })
         const responseData = await response.json()
@@ -143,7 +152,6 @@ export const AddUserForm = ({
       }
     }
   }
-
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -179,13 +187,13 @@ export const AddUserForm = ({
       </Form.Group>
       <Form.Group className='mb-3' controlId='company'>
         <Form.Label>
-          Magasins<span className='text-danger'>*</span>
+          Enseigne<span className='text-danger'>*</span>
         </Form.Label>
         <TagPicker
           name="company"
           data={shopList}
           style={{ width: '100%' }}
-          placeholder='Sélectionnez le ou les magasins'
+          placeholder='Sélectionnez une ou plusieurs enseignes'
           value={company.map(comp => comp.idCompany)}
           onChange={(values: number[]) => {
             const selectedCompanies = shopList.filter((shop) => values.includes(shop.value))
@@ -205,6 +213,27 @@ export const AddUserForm = ({
           }}
         />
       </Form.Group>
+      <Form.Group className='mb-3' controlId='store'>
+        <Form.Label>
+          Magasin<span className='text-danger'>*</span>
+        </Form.Label>
+        <TagPicker
+          name="store"
+          data={storeList}
+          style={{ width: '100%' }}
+          placeholder='Sélectionnez un magasin'
+          value={stores.map((store) => store.id)}
+          onChange={(values: number[]) => {
+            const selectedCompanies = storeList.filter((store) => values.includes(store.value))
+           const selectedStore = selectedCompanies.map((item) => ({
+              name: item.label,
+              id: item.value,
+            }))
+            setStores([...selectedStore])
+          }}
+        />
+      </Form.Group>
+     
       <Form.Group className='mb-3' controlId='formBasicRole'>
         <Form.Label>
           Role<span className='text-danger'>*</span>

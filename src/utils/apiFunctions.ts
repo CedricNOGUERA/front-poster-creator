@@ -255,6 +255,40 @@ export const _getModelsLength = async (
   }
 }
 
+export const _deleteModel = async (id: number) => {
+  try{
+    const response = await modelsServiceInstance.deleteModel(id)
+    return response
+  }catch(error){
+    console.log(error)
+  }
+
+}
+export const _deleteModels = async (ids: number[]) => {
+  try{
+
+    ids.map(async (id) => {
+      const response = await modelsServiceInstance.deleteModel(id)
+      console.log(response)
+    } )
+  // const results = await Promise.allSettled(
+  //   ids.map((id) => modelsServiceInstance.deleteModel(id))
+  // )
+  
+  // results.forEach((result, index) => {
+  //   if (result.status === 'rejected') {
+  //     console.error(`Failed to delete model ${ids[index]}:`, result.reason)
+  //   }
+  // })
+
+  // console.log(results)
+    
+  }catch(error){
+    console.log(error)
+  }
+
+}
+
 ///////////////////////
 //template
 ///////////////////////
