@@ -21,6 +21,7 @@ import 'rsuite/TagPicker/styles/index.css'
 import 'rsuite/Tag/styles/index.css'
 import 'rsuite/Button/styles/index.css'
 import 'rsuite/Drawer/styles/index.css'
+import { ResetPassword } from './pages/public/ResetPassword'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')!).render(
         {/* Public routes */}
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/' element={<Navigate to='/login' replace />} />
           <Route path='*' element={<NotFound />} />
         {/* Admin routes */}
