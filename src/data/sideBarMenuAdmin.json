@@ -28,7 +28,7 @@
         "role": ["super_admin"]
     },
     {
-        "id": 4,
+        "id": 5,
         "title": "Modèles",
         "icon": "fas fa-file-lines",
         "display": "models",
