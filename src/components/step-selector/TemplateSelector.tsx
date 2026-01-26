@@ -1,6 +1,6 @@
 import useStoreApp from "@/stores/storeApp";
 import { TemplateType } from "@/types/TemplatesType";
-import { _getTemplate } from "@/utils/apiFunctions";
+import { _getImagesModels, _getTemplate } from "@/utils/apiFunctions";
 import React from "react";
 
 type Props = {
@@ -18,6 +18,7 @@ export const TemplateSelector = ({ title }: Props) => {
    *******************************************************************************************/
   React.useEffect(() => {
     _getTemplate(setTemplates, storeApp.categoryId)
+    // _getImagesModels()
   }, [storeApp.categoryId])
 
 
@@ -29,6 +30,7 @@ export const TemplateSelector = ({ title }: Props) => {
       storeApp.nextStep()
     }
   }
+  
   /* Render
    *******************************************************************************************/
   return (
