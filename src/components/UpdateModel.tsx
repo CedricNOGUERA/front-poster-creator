@@ -23,7 +23,7 @@ import {
   _thousandSeparator,
 } from '@/utils/functions'
 import SideBar from './DragDropComponents/SideBar'
-import { _getCategoryById, _getModels } from '@/utils/apiFunctions'
+import { _getCategoryById, _getModels, _getTemplate } from '@/utils/apiFunctions'
 import { useOutletContext } from 'react-router-dom'
 import ComponentEditor from './DragDropComponents/ComponentEditor'
 import { ModalUpdateModel } from './ui/Modals'
@@ -31,7 +31,10 @@ import modelsServiceInstance from '@/services/modelsServices'
 import { CategoriesType } from '@/types/CategoriesType'
 import { ModelType } from '@/types/modelType'
 import { FaXmark } from 'react-icons/fa6'
+import * as htmlToImage from 'html-to-image'
+import { TemplateType } from '@/types/TemplatesType'
 // import PrintOptionsModal from './PrintOptionsModal'
+  import html2canvas from 'html2canvas'
 
 interface ContextInlineDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -71,6 +74,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
   const [selectedCategory, setSelectedCategory] = useState<CategoriesType>(
     {} as CategoriesType
   )
+   const [templates, setTemplates] = React.useState<TemplateType[]>([])
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [copiedComponent, setCopiedComponent] = useState<ComponentTypeMulti>(
     {} as ComponentTypeMulti
@@ -112,6 +116,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
   React.useEffect(() => {
     _getCategoryById(storeApp?.categoryId, setSelectedCategory)
     setSelectedDimension(storeApp?.dimensionId || 0)
+    _getTemplate(setTemplates, storeApp.categoryId)
   }, [setToastData, storeApp?.canvasId, storeApp?.dimensionId, toggleShow])
 
 
@@ -303,6 +308,24 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
         width: 150,
         height: 'auto',
         src: src,
+      }
+    } else if (type === 'horizontalLine') {
+      newComponent = {
+        type: 'horizontalLine',
+        top,
+        left,
+        width: 200,
+        color: '#000000',
+        thickness: 2,
+      }
+    } else if (type === 'verticalLine') {
+      newComponent = {
+        type: 'verticalLine',
+        top,
+        left,
+        height: 200,
+        color: '#000000',
+        thickness: 2,
       }
     } else {
       console.error('Unknown component type dropped:', type)
@@ -510,50 +533,164 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     [newTemplateState?.width, newTemplateState?.height]
   )
 
+ // ✅ Importer html2canvas
 
-  
-
-  const updateModel = async () => {
-    setIsUpdating(true)
-    try{
-      const response = await modelsServiceInstance.patchModel(modelId, components)
-
-      if(response.ok){
-        setToastData({
-          bg: 'success',
-          position: 'top-end',
-          delay: 3000,
-          icon: 'fa fa-check-circle',
-          message: 'Modèle modifier avec succès !',
-        })
-        toggleShow()
-      }else{
-        setToastData({
-          bg: 'danger',
-          position: 'top-end',
-          delay: 3000,
-          icon: 'fa fa-circle-xmark',
-          message: 'Echec de la modification du modèle !',
-        })
-        toggleShow()
-      }
-
-    }catch(error){
-      console.log(error)
-      setToastData({
-          bg: 'danger',
-          position: 'top-end',
-          delay: 3000,
-          icon: 'fa fa-circle-xmark',
-          message: 'Echec de la modification du modèle !',
-        })
-        toggleShow()
-    }finally{
-      setIsUpdating(false)
-      _getModels(setModels)
+const updateModel = async () => {
+  setIsUpdating(true)
+  try {
+    // Génère une image PNG depuis la div canvas
+    const canvasElement = posterRef.current
+    if (!canvasElement) {
+      console.error("Élément canvas non trouvé")
+      return
     }
 
+    // ✅ Utiliser html2canvas au lieu de htmlToImage
+    const canvas = await html2canvas(canvasElement, {
+      useCORS: true, // ✅ Permet de charger les ressources externes
+      allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
+      backgroundColor: null, // Fond transparent si nécessaire
+      scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
+      logging: false, // Désactive les logs de débogage
+      removeContainer: true, // Nettoie après le rendu
+      imageTimeout: 15000, // Timeout pour le chargement des images
+      onclone: (clonedDoc) => {
+        // ✅ Optionnel : ajuster le style du document cloné si nécessaire
+        const clonedElement = clonedDoc.querySelector(`[data-canvas-id="${modelId}"]`)
+        if (clonedElement) {
+          // Ajuster les styles si nécessaire
+        }
+      }
+    })
+
+    // ✅ Convertir le canvas en blob
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob)
+      }, 'image/png', 1.0) // Qualité maximale
+    })
+
+    if (!blob) {
+      console.error("Erreur de génération de l'image")
+      return
+    }
+
+    // ✅ Utiliser le nom de l'image du template
+    const imageName = templates?.[0]?.image
+
+    const patchFormData = new FormData()
+    patchFormData.append('image', blob, imageName)
+    patchFormData.append('data', JSON.stringify(components))
+    
+    const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
+
+    if (response.ok) {
+      setToastData({
+        bg: 'success',
+        position: 'top-end',
+        delay: 3000,
+        icon: 'fa fa-check-circle',
+        message: 'Modèle modifié avec succès !',
+      })
+      toggleShow()
+      // ✅ Recharger les modèles après succès
+      await _getModels(setModels)
+    } else {
+      const errorData = await response.json().catch(() => ({}))
+      console.error("Erreur serveur:", errorData)
+      setToastData({
+        bg: 'danger',
+        position: 'top-end',
+        delay: 3000,
+        icon: 'fa fa-circle-xmark',
+        message: errorData.error || 'Échec de la modification du modèle !',
+      })
+      toggleShow()
+    }
+
+  } catch (error) {
+    console.error("❌ Erreur lors de la modification:", error)
+    setToastData({
+      bg: 'danger',
+      position: 'top-end',
+      delay: 3000,
+      icon: 'fa fa-times-circle',
+      message: 'Échec de la modification du modèle !',
+    })
+    toggleShow()
+  } finally {
+    setIsUpdating(false)
   }
+}
+
+//   const updateModel = async () => {
+//     setIsUpdating(true)
+//     try{
+//       // Génère une image PNG depuis la div canvas
+//       const canvasElement = posterRef.current
+//       if (!canvasElement) return
+
+//       const blob = await htmlToImage.toBlob(canvasElement, {
+//       cacheBust: true,
+//       skipFonts: false, // Garder false pour inclure les polices
+//       preferredFontFormat: 'woff2',
+//       // ✅ Options pour gérer les CSS externes
+//       filter: () => {
+//         // Optionnel : filtrer certains éléments si nécessaire
+//         return true;
+//       },
+//       style: {
+//         // Forcer le rendu même avec des erreurs CSS
+//       }
+//     })
+//       if (!blob) {
+//         console.error("Erreur de génération de l'image")
+//         return
+//       }
+
+//       const imageName = templates?.[0]?.image
+// console.log("Generated image name:", imageName)
+//       const patchFormData = new FormData()
+//       patchFormData.append('image', blob, imageName)
+//       patchFormData.append('data', JSON.stringify(components))
+//       const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
+
+//       if(response.ok){
+//         setToastData({
+//           bg: 'success',
+//           position: 'top-end',
+//           delay: 3000,
+//           icon: 'fa fa-check-circle',
+//           message: 'Modèle modifier avec succès !',
+//         })
+//         toggleShow()
+//       }else{
+//         setToastData({
+//           bg: 'danger',
+//           position: 'top-end',
+//           delay: 3000,
+//           icon: 'fa fa-circle-xmark',
+//           message: 'Echec de la modification du modèle !',
+//         })
+//         toggleShow()
+//       }
+
+//     }catch(error){
+//       console.log(error)
+//       setToastData({
+//           bg: 'danger',
+//           position: 'top-end',
+//           delay: 3000,
+//           icon: 'fa fa-times-circle',
+//           message: 'Echec de la modification du modèle !',
+//         })
+//         toggleShow()
+//     }finally{
+//       setIsUpdating(false)
+//       _getModels(setModels)
+//     }
+
+//   }
 
 
   /* UseMemo

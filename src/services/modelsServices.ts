@@ -1,6 +1,8 @@
 //
 
-import { ComponentTypeMulti } from "@/types/ComponentType";
+// import { ComponentTypeMulti } from "@/types/ComponentType";
+import { ImagemodelType } from '@/types/modelType';
+import axios from 'axios';
 import * as htmlToImage from 'html-to-image'
 // import { ModelType } from "@/types/modelType"
 
@@ -37,15 +39,12 @@ class ModelsService {
     return response;
   }
 
-  async patchModel(modelId: number, formData: ComponentTypeMulti[]) {
+  async patchModel(modelId: number, formData: FormData) {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/api/patch-models/${modelId}`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data: JSON.stringify({ canvas: formData }) }),
+        body: formData,
       }
     );
     return response;
@@ -89,6 +88,28 @@ class ModelsService {
       return blob
     }
   }
+
+  async getModelImage(
+      // setImagesModels: React.Dispatch<React.SetStateAction<ImagemodelType[]>>,
+      // categoryId: number
+    ) {
+       const config = {
+      method: 'GET',
+      url: `${import.meta.env.VITE_API_URL}/api/images-model`,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    }
+    return axios.request(config)
+    //   const response = await fetch(`${API_URL}/api/templates`)
+    //   const data = await response.json()
+    //   const filetredTemplate = data.filter(
+    //     (temp: TemplateType) => temp.categoryId === categoryId
+    //   )
+    //   setTemplates(filetredTemplate)
+    //   return response
+    }
 
 }
 
