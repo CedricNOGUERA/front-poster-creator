@@ -1,7 +1,7 @@
 import dimensions from "@/data/dimensions.json";
 import useStoreApp from "@/stores/storeApp";
-import { _getModels, _getTemplates } from "@/utils/apiFunctions";
-import { ModelType } from "@/types/modelType";
+import { _getImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
+import { ImagemodelType, ModelType } from "@/types/modelType";
 import React from "react";
 import { TemplateType } from "@/types/TemplatesType";
 import { FaImage } from "react-icons/fa6";
@@ -19,6 +19,7 @@ export const DimensionSelector = ({ title }: Props) => {
   const [model, setModel] = React.useState<ModelType[]>([]);
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
+  const [imagesmodel, setImagesModel] = React.useState<ImagemodelType[]>([])
 
 
   // Contrainte d'affichage
@@ -36,6 +37,7 @@ export const DimensionSelector = ({ title }: Props) => {
   React.useEffect(() => {
     _getModels(setModel)
     _getTemplates(setTemplates)
+    _getImagesModels(storeApp.categoryId, setImagesModel)
   }, [])
   React.useEffect(() => {
     const filteredTemplate = templates.filter((temp) => temp.id === storeApp.templateId)[0]
@@ -92,7 +94,23 @@ export const DimensionSelector = ({ title }: Props) => {
                 minHeight: "220px",
               }}
             >
-              <div
+              {imagesmodel?.find((img) => img.modelId === modelAvailable?.id)? (
+
+                  
+                    <div className="d-flex justify-content-center align-items-center mb-2">
+                  <img
+                    src={`${import.meta.env.VITE_API_URL}/uploads/modelMiniature/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.modelId}/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.name}`}
+                    alt="Image du modèle"
+                    style={{
+                      width: `${scaledWidth}px`,
+                      height: `${scaledHeight}px`,
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                  )
+               :(
+                  <div
                 style={{
                   width: `${scaledWidth}px`,
                   height: `${scaledHeight}px`,
@@ -109,11 +127,34 @@ export const DimensionSelector = ({ title }: Props) => {
                   <FaImage className="text-secondary" />
                 </span>
               </div>
+        )}
+
+           
+       
+            
+              {/* <div
+                style={{
+                  width: `${scaledWidth}px`,
+                  height: `${scaledHeight}px`,
+                  border: "2px dashed #aaa",
+                  backgroundColor: "#f8f9fa",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "10px",
+                  transition: "transform 0.3s ease",
+                }}
+              >
+                <span className="fw-semibold">
+                  <FaImage className="text-secondary" />
+                </span>
+              </div> */}
               <p className="mt-2 text-center fw-bold fs-6">
                 {dimension.helper_dimensions}
               </p>
               <small>{dimension.orientation}</small>
             </div>
+
           );
         })}
       </div>

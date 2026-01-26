@@ -1,5 +1,5 @@
-import { ModalAddEditModel, ModalGenericDelete } from "@/components/ui/Modals";
-import templatesServiceInstance from "@/services/TemplatesServices";
+import { ModalAddEditModel } from "@/components/ui/Modals";
+// import templatesServiceInstance from "@/services/TemplatesServices";
 import { ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
@@ -7,7 +7,7 @@ import { _deleteModel, _deleteModels, _getModels, _getTemplates } from "@/utils/
 import React from "react";
 import { Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
-import { FaCross, FaEllipsisVertical, FaStore, FaTrash } from "react-icons/fa6";
+import { FaEllipsisVertical, FaStore, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 
 interface ContextType {
@@ -18,7 +18,7 @@ export default function ModelsPage() {
   const {shops} = useOutletContext<ContextType>()
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [models, setModels] = React.useState<ModelType[]>([]);
-  const [selectedModel, setSelectedModel] = React.useState<ModelType>({} as ModelType);
+  // const [selectedModel, setSelectedModel] = React.useState<ModelType>({} as ModelType);
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
   const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -38,10 +38,10 @@ export default function ModelsPage() {
   }, [selectedTemplate]);
 
 
-  const handleShowAddModal = () => {
-    setSelectedTemplate({} as TemplateType);
-    setShowAddEditModal(true);
-  };
+  // const handleShowAddModal = () => {
+  //   setSelectedTemplate({} as TemplateType);
+  //   setShowAddEditModal(true);
+  // };
 
   const handleShowEditModal = (model: TemplateType) => {
     setSelectedTemplate(model);
@@ -64,24 +64,24 @@ export default function ModelsPage() {
     setShowDeleteModal(false);
   };
 
-  const handleDeleteModel = async () => {
-    if (!selectedTemplate) return;
-    setIsLoading(true);
-    try {
+  // const handleDeleteModel = async () => {
+  //   if (!selectedTemplate) return;
+  //   setIsLoading(true);
+  //   try {
 
-      const response = await templatesServiceInstance.deleteTemplate(selectedTemplate.id);
-      if (response &&response.ok) {
-        handleCloseDeleteModal();
-        _getTemplates(setTemplates);
-      } else {
-        console.error("Erreur lors de la suppression du modèle");
-      }
-    } catch (err) {
-      console.error("Erreur lors de la suppression du modèle:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     const response = await templatesServiceInstance.deleteTemplate(selectedTemplate.id);
+  //     if (response &&response.ok) {
+  //       handleCloseDeleteModal();
+  //       _getTemplates(setTemplates);
+  //     } else {
+  //       console.error("Erreur lors de la suppression du modèle");
+  //     }
+  //   } catch (err) {
+  //     console.error("Erreur lors de la suppression du modèle:", err);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const shopList = shops.map((item: ShopType) => ({ label: item.name, value: item.id }));
 
   const modalAddEditModelProps = { showAddEditModal, handleCloseAddEditModal, selectedTemplate, setSelectedTemplate, shopList };

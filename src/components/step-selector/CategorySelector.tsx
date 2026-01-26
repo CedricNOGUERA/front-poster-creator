@@ -42,7 +42,6 @@ export const CategorySelector = ({ title }: Props) => {
       <div className="d-flex flex-wrap justify-content-center  align-items-center mt-5 mb-5">
         {categories.map((category) => {
           if (category.shopIds.includes(storeApp.shopId)) {
-            console.log(category.icon.value)
             return (
               <div
                 key={category.id}

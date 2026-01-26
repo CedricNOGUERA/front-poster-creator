@@ -606,7 +606,9 @@ React.useEffect(() => {
         const thumbnialFormData = new FormData()
         thumbnialFormData.append('image', blob, imageName)
         let responseThumbnail = null
-        const response = await modelsServiceInstance.patchModel(modelId, components)
+        const patchFormData = new FormData()
+        patchFormData.append('data', JSON.stringify(components))
+        const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
 
         if(storeApp.dimensionId === 9){
           responseThumbnail = await templatesServiceInstance.patchImageTemplate(storeApp.categoryId, imageName, thumbnialFormData)

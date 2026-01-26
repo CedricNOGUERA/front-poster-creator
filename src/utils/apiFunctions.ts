@@ -8,7 +8,7 @@ import UsersServices from '@/services/UsersServices'
 import { Canvastype } from '@/types/CanvasType'
 import { CategoriesPaginatedType, CategoriesType } from '@/types/CategoriesType'
 import { FeedBackSatateType, PictureType, ToastDataType } from '@/types/DiversType'
-import { ModelType } from '@/types/modelType'
+import { ImagemodelType, ModelType } from '@/types/modelType'
 import { ShopType } from '@/types/ShopType'
 import { TemplateType } from '@/types/TemplatesType'
 import { UserType } from '@/types/UserType'
@@ -288,6 +288,20 @@ export const _deleteModels = async (ids: number[]) => {
   }
 
 }
+
+
+export const _getImagesModels = async (categoryId: number, setImagesModels: React.Dispatch<React.SetStateAction<ImagemodelType[]>>) => {
+
+  try{
+    const response = await modelsServiceInstance.getModelImage()
+    const filteredImages = response.data.filter((img: ImagemodelType) => img.categoryId === categoryId)
+    setImagesModels(filteredImages)
+    return response
+  }catch(error){
+    console.log(error)
+  }
+}
+
 
 ///////////////////////
 //template
