@@ -160,155 +160,177 @@ const storeList = React.useMemo(
 
   return (
     <Form onSubmit={handleSubmit}>
-      {error && <Alert variant='danger' className='text-danger'><FaCircleXmark className='me-2' />{error}</Alert>}
-      {success && <Alert variant='success'><FaCircleCheck className='me-2 text-success' /> {success}</Alert>}
-      <Form.Group className='mb-3' controlId='formBasicName'>
+      {error && (
+        <Alert variant="danger" className="text-danger">
+          <FaCircleXmark className="me-2" />
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert variant="success">
+          <FaCircleCheck className="me-2 text-success" /> {success}
+        </Alert>
+      )}
+      <Form.Group className="mb-3" controlId="formBasicName">
         <Form.Label>
-          Prénom<span className='text-danger'>*</span>
+          Prénom<span className="text-danger">*</span>
         </Form.Label>
         <Form.Control
           name="UserName"
-          type='text'
-          placeholder='Saisissez votre nom'
+          type="text"
+          placeholder="Saisissez votre nom"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          autoComplete='off'
+          autoComplete="off"
           required
         />
       </Form.Group>
-      <Form.Group className='mb-3' controlId='formBasicEmail'>
+      <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>
-          Email<span className='text-danger'>*</span>
+          Email<span className="text-danger">*</span>
         </Form.Label>
         <Form.Control
           name="userEmail"
-          type='email'
-          placeholder='Saisissez votre email'
+          type="email"
+          placeholder="Saisissez votre email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          autoComplete='off'
+          autoComplete="off"
           required
         />
       </Form.Group>
-      <Form.Group className='mb-3' controlId='company'>
+      <Form.Group className="mb-3" controlId="company">
         <Form.Label>
-          Enseigne<span className='text-danger'>*</span>
+          Enseigne<span className="text-danger">*</span>
         </Form.Label>
         <TagPicker
           name="company"
           data={shopList}
-          style={{ width: '100%' }}
-          placeholder='Sélectionnez une ou plusieurs enseignes'
-          value={company.map(comp => comp.idCompany)}
+          style={{ width: "100%" }}
+          placeholder="Sélectionnez une ou plusieurs enseignes"
+          value={company.map((comp) => comp.idCompany)}
           onChange={(values: number[]) => {
-            const selectedCompanies = shopList.filter((shop) => values.includes(shop.value))
-            if(role === "super_admin"){
+            const selectedCompanies = shopList.filter((shop) =>
+              values.includes(shop.value),
+            );
+            if (role === "super_admin") {
               const selectedShop = shopList.map((item) => ({
                 nameCompany: item.label,
                 idCompany: item.value,
-              }))
-              setCompany([...selectedShop])
-            }else{
-            const selectedShop = selectedCompanies.map((item) => ({
-              nameCompany: item.label,
-              idCompany: item.value,
-            }))
-            setCompany([...selectedShop])
-          }
+              }));
+              setCompany([...selectedShop]);
+            } else {
+              const selectedShop = selectedCompanies.map((item) => ({
+                nameCompany: item.label,
+                idCompany: item.value,
+              }));
+              setCompany([...selectedShop]);
+            }
           }}
         />
       </Form.Group>
-      <Form.Group className='mb-3' controlId='store'>
+      <Form.Group className="mb-3" controlId="store">
         <Form.Label>
-          Magasin<span className='text-danger'>*</span>
+          Magasin<span className="text-danger">*</span>
         </Form.Label>
         <TagPicker
           name="store"
           data={storeList}
-          style={{ width: '100%' }}
-          placeholder='Sélectionnez un magasin'
+          style={{ width: "100%" }}
+          placeholder="Sélectionnez un magasin"
           value={stores.map((store) => store.id)}
           onChange={(values: number[]) => {
-            const selectedCompanies = storeList.filter((store) => values.includes(store.value))
-           const selectedStore = selectedCompanies.map((item) => ({
+            const selectedCompanies = storeList.filter((store) =>
+              values.includes(store.value),
+            );
+            const selectedStore = selectedCompanies.map((item) => ({
               name: item.label,
               id: item.value,
-            }))
-            setStores([...selectedStore])
+            }));
+            setStores([...selectedStore]);
           }}
+          menuMaxHeight={310}
+          virtualized
         />
       </Form.Group>
-     
-      <Form.Group className='mb-3' controlId='formBasicRole'>
+
+      <Form.Group className="mb-3" controlId="formBasicRole">
         <Form.Label>
-          Role<span className='text-danger'>*</span>
+          Role<span className="text-danger">*</span>
         </Form.Label>
-        <Form.Select  
+        <Form.Select
           name="role"
           value={role}
-          onChange={(e) => setRole(e.target.value as 'super_admin' | 'admin' | 'user')}
+          onChange={(e) =>
+            setRole(e.target.value as "super_admin" | "admin" | "user")
+          }
         >
-          <option value=''>Sélectionné un rôle</option>
+          <option value="">Sélectionné un rôle</option>
           {roles?.map((role: string, index: number) => {
-            if (userStoreData.role !== 'super_admin' && role === 'super_admin') {
-              return null
+            if (
+              userStoreData.role !== "super_admin" &&
+              role === "super_admin"
+            ) {
+              return null;
             }
             return (
               <option key={index} value={role}>
                 {role}
               </option>
-            )
+            );
           })}
         </Form.Select>
       </Form.Group>
       {userRlole === "super_admin" && (
-      <Form.Group className='mb-3' controlId='formBasicPassword'>
-        <Form.Label>
-          Mot de passe{!initialData && <span className='text-danger'>*</span>}
-        </Form.Label>
-        <InputGroup className='mb-3'>
-          <Form.Control
-            name="password"
-            type={showPassword ? 'text' : 'password'}
-            placeholder='Saisissez votre mot de passe'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required={initialData ? false : true}
-            autoComplete='off'
-          />
-          <InputGroup.Text
-            id='eyeOrNot'
-            className='bg-transparent border border-start-0'
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {' '}
-            {!showPassword ? (
-              <FaRegEyeSlash className='text-secondary' />
-            ) : ( 
-              <FaRegEye className='text-secondary' />
-
-            )}
-          </InputGroup.Text>
-        </InputGroup>
-    
-      </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>
+            Mot de passe{!initialData && <span className="text-danger">*</span>}
+          </Form.Label>
+          <InputGroup className="mb-3">
+            <Form.Control
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Saisissez votre mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required={initialData ? false : true}
+              autoComplete="off"
+            />
+            <InputGroup.Text
+              id="eyeOrNot"
+              className="bg-transparent border border-start-0"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {" "}
+              {!showPassword ? (
+                <FaRegEyeSlash className="text-secondary" />
+              ) : (
+                <FaRegEye className="text-secondary" />
+              )}
+            </InputGroup.Text>
+          </InputGroup>
+        </Form.Group>
       )}
 
-      <div className={handleCloseAdd ? 'text-end mt-' : 'text-center mt-3'}>
+      <div className={handleCloseAdd ? "text-end mt-" : "text-center mt-3"}>
         {handleCloseAdd && (
-          <Button variant='secondary' onClick={handleCloseAdd} className='me-2'>
+          <Button variant="secondary" onClick={handleCloseAdd} className="me-2">
             Annuler
           </Button>
         )}
         <Button
-          variant='primary'
-          type='submit'
-          className={handleCloseAdd ? '' : 'w-100'}
+          variant="primary"
+          type="submit"
+          className={handleCloseAdd ? "" : "w-100"}
           disabled={loading}
         >
-          {loading ? <Spinner size='sm' animation='border' variant='light' /> : titleButton}
+          {loading ? (
+            <Spinner size="sm" animation="border" variant="light" />
+          ) : (
+            titleButton
+          )}
         </Button>
       </div>
     </Form>
-  )
+  );
 }

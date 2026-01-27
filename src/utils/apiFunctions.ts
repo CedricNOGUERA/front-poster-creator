@@ -264,6 +264,7 @@ export const _deleteModel = async (id: number) => {
   }
 
 }
+
 export const _deleteModels = async (ids: number[]) => {
   try{
 
@@ -296,6 +297,18 @@ export const _getImagesModels = async (categoryId: number, setImagesModels: Reac
     const response = await modelsServiceInstance.getModelImage()
     const filteredImages = response.data.filter((img: ImagemodelType) => img.categoryId === categoryId)
     setImagesModels(filteredImages)
+    return response
+  }catch(error){
+    console.log(error)
+  }
+}
+
+export const _getAllImagesModels = async (setImagesModels: React.Dispatch<React.SetStateAction<ImagemodelType[]>>) => {
+
+  try{
+    const response = await modelsServiceInstance.getModelImage()
+
+    setImagesModels(response.data)
     return response
   }catch(error){
     console.log(error)

@@ -7,7 +7,7 @@ import { _deleteModel, _deleteModels, _getAllImagesModels, _getImagesModels, _ge
 import React from "react";
 import { Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
-import { FaEllipsisVertical, FaStore, FaTrash } from "react-icons/fa6";
+import { FaEllipsisVertical, FaHelmetSafety, FaStore, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 import dimensions from "@/data/dimensions.json";
 import modelsServiceInstance from "@/services/modelsServices";
@@ -20,7 +20,7 @@ interface ContextType {
   toggleShow: () => void
 }
 
-export default function ModelsPage() {
+export default function TemplatePage() {
     
   const {setToastData, toggleShow, } = useOutletContext<ContextType>()
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
@@ -111,11 +111,15 @@ export default function ModelsPage() {
 
   return (
     <Container fluid className="relative p-0">
-      <Row className="bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 ">
+        <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+            <FaHelmetSafety size={150} color="" />
+            Cette page est en construction, revenez plus tard !
+        </div>
+      {/* <Row className="bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 ">
         <Col xs={2} sm={1} className="pt-2">
         </Col>
         <Col xs={8} sm={10}>
-          <h3 className="pt-3 pb-2 mb-0">Gestion des Modèles</h3>
+          <h3 className="pt-3 pb-2 mb-0">Gestion des templates</h3>
         </Col>
         <Col xs={2} sm={1}></Col>
       </Row>
@@ -180,7 +184,7 @@ export default function ModelsPage() {
                           >
                           <FaStore className="me-2" />                          
                           Attribuer un/des magasins ou modifier le nom
-                        </Dropdown.Item> */}
+                        </Dropdown.Item>
                         <Dropdown.Item 
                         onClick={() => handleShowDeleteModal(model)}
                           className="d-flex align-items-center text-danger"
@@ -196,7 +200,7 @@ export default function ModelsPage() {
             </tbody>
           </Table>
         )}
-      </Container>
+      </Container> */}
   
       {/* <ModalAddEditModel modalAddEditModelProps={modalAddEditModelProps} /> */}
       {/* <ModalGenericDelete modalGenericDeleteProps={modalDeleteModelProps} /> */}

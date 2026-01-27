@@ -602,7 +602,7 @@ const updateModel = async () => {
         bg: 'danger',
         position: 'top-end',
         delay: 3000,
-        icon: 'fa fa-circle-xmark',
+        icon: 'fa fa-times-circle',
         message: errorData.error || 'Échec de la modification du modèle !',
       })
       toggleShow()
