@@ -67,19 +67,20 @@ const shopDisplay = (shops: ShopType[]) => {
   ))
 }
 
-const getAllShops = async () => {
-  setIsLoading(true);
-  try {
-    const response = await shopServiceInstance.getShops();
+  const getAllShops = async () => {
+    setIsLoading(true);
+    try {
+      const response = await shopServiceInstance.getShops();
 
-setShops(response.data)
+  setShops(response.data)
 
-  } catch (err) {
-    console.error("Erreur lors de la récupération des magasins:", err);
-  } finally {
-    setIsLoading(false);
-  }
-};
+    } catch (err) {
+      console.error("Erreur lors de la récupération des magasins:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   const handleShowAddModal = () => {
     setShowAddEditModal(true);
   };
@@ -128,7 +129,6 @@ setShops(response.data)
       setIsLoading(false)
     }
   };
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -195,7 +195,7 @@ setShops(response.data)
 
   return (
     <Container fluid className='p-0'>
-      <h3 className='py-3'>Gestion des Magasins</h3>
+      <h3 className='py-3'>Gestion des Enseignes</h3>
       <Container>
         <Table striped hover responsive='sm' className='shadow'>
           <TableHeader columnsData={columnsData} />

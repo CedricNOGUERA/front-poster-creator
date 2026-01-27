@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "title": "Magasins",
+        "title": "Enseinges",
         "icon": "fas fa-store",
         "display": "shops",
         "role": ["super_admin"]
@@ -14,7 +14,21 @@
         "role": ["super_admin"]
     },
     {
+        "id": 6,
+        "title": "Templates",
+        "icon": "fas fa-folder-open",
+        "display": "templates",
+        "role": ["super_admin"]
+    },
+    {
         "id": 3,
+        "title": "Modèles",
+        "icon": "fas fa-file-lines",
+        "display": "models",
+        "role": ["super_admin"]
+    },
+    {
+        "id": 5,
         "title": "Utilisateurs",
         "icon": "fas fa-users",
         "display": "utilisateurs",
@@ -26,12 +40,6 @@
         "icon": "fas fa-images",
         "display": "phototheque",
         "role": ["super_admin"]
-    },
-    {
-        "id": 5,
-        "title": "Modèles",
-        "icon": "fas fa-file-lines",
-        "display": "models",
-        "role": ["super_admin"]
     }
+    
 ]

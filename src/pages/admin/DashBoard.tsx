@@ -8,6 +8,7 @@ import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import PicturesLibraryPage from './PicturesLibraryPage'
 import { useLocation, useOutletContext } from 'react-router-dom'
 import ModelsPage from './ModelPage'
+import TemplatePage from './TemplatePage'
 
 interface ContextType {
   setTitleHeader: React.Dispatch<React.SetStateAction<string>>
@@ -25,6 +26,9 @@ const DashBoard = () => {
     }
     if (location.pathname.includes('/categories')) {
       return 'categories'
+    }
+    if (location.pathname.includes('/templates')) {
+      return 'templates'
     }
     if (location.pathname.includes('/phototheque')) {
       return 'phototheque'
@@ -54,6 +58,8 @@ const DashBoard = () => {
       return <PicturesLibraryPage />
     }else if (display === 'models') {
       return <ModelsPage />
+    }else if (display === 'templates') {
+      return <TemplatePage />
     }
   }
 

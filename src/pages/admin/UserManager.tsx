@@ -128,7 +128,7 @@ export default function UserManager() {
               .map((user: UserType) => {
                 const companyLength = user.company?.length
                 const shopLength = shops?.length
-                const companylist = (companyLength === shopLength || user.role === 'super_admin') ? "Tous les magasins" : user.company.map((item) => item.nameCompany).join(', ')
+                const companylist = (companyLength === shopLength || user.role === 'super_admin') ? "Toutes les enseignes" : user.company.map((item) => item.nameCompany).join(', ')
                 const storelist = user.stores && user.stores.map((item) => item.name).join(', ')
 
 

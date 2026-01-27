@@ -17,7 +17,7 @@
     },
     {
        "id": 5,
-        "name": "Carrefour Raiatea"
+        "name": "Carrefour Market Raiatea"
     },
     {
        "id": 6,
@@ -37,14 +37,22 @@
     },
     {
        "id": 10,
-        "name": "Easy Market Faa'a"
+        "name": "Champion Paea"
     },
     {
        "id": 11,
-        "name": "Easy Market Prince Hinoi"
+        "name": "Champion Moorea"
     },
     {
        "id": 12,
+        "name": "Easy Market Faa'a"
+    },
+    {
+       "id": 13,
+        "name": "Easy Market Prince Hinoi"
+    },
+    {
+       "id": 14,
         "name": "Easy Go"
     }
 ]
