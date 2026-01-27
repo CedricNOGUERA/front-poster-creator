@@ -13,7 +13,7 @@ class ModelsService {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     return response;
@@ -33,7 +33,7 @@ class ModelsService {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      },
     );
 
     return response;
@@ -45,72 +45,59 @@ class ModelsService {
       {
         method: "PATCH",
         body: formData,
-      }
+      },
     );
     return response;
   }
 
   async deleteModel(modelId: number) {
-    const response = await fetch(
+    const response = await axios.delete(
       `${import.meta.env.VITE_API_URL}/api/models/${modelId}`,
       {
-        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      },
     );
     return response;
   }
 
-
-  formattedModelPicture(name: string){
+  formattedModelPicture(name: string) {
     const formattedImage = name
-    .normalize('NFD') // transforme é → e + ́
-    .replace(/[\u0300-\u036f]/g, '') // retire les accents
-    .replace(/[^a-zA-Z0-9]/g, '-') //transforme les espaces en -
-    .toLowerCase()
+      .normalize("NFD") // transforme é → e + ́
+      .replace(/[\u0300-\u036f]/g, "") // retire les accents
+      .replace(/[^a-zA-Z0-9]/g, "-") //transforme les espaces en -
+      .toLowerCase();
 
-  const imageName = formattedImage + '.png'
-  return imageName
+    const imageName = formattedImage + ".png";
+    return imageName;
   }
 
   async miniatureModel(posterRef: React.RefObject<HTMLDivElement | null>) {
-    const canvasElement = posterRef.current
-    if (!canvasElement) return
-    
-    const blob = await htmlToImage.toBlob(canvasElement)
+    const canvasElement = posterRef.current;
+    if (!canvasElement) return;
+
+    const blob = await htmlToImage.toBlob(canvasElement);
     if (!blob) {
-      console.error("Erreur de génération de l'image")
-      return
-    }else {
-      return blob
+      console.error("Erreur de génération de l'image");
+      return;
+    } else {
+      return blob;
     }
   }
 
-  async getModelImage(
-      // setImagesModels: React.Dispatch<React.SetStateAction<ImagemodelType[]>>,
-      // categoryId: number
-    ) {
-       const config = {
-      method: 'GET',
+  async getModelImage() {
+    const config = {
+      method: "GET",
       url: `${import.meta.env.VITE_API_URL}/api/images-model`,
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-    }
-    return axios.request(config)
-    //   const response = await fetch(`${API_URL}/api/templates`)
-    //   const data = await response.json()
-    //   const filetredTemplate = data.filter(
-    //     (temp: TemplateType) => temp.categoryId === categoryId
-    //   )
-    //   setTemplates(filetredTemplate)
-    //   return response
-    }
-
+    };
+    return axios.request(config);
+  }
 }
 
 const modelsServiceInstance = new ModelsService();
