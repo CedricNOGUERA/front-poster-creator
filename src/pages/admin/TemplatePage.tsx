@@ -1,16 +1,12 @@
-// import { ModalAddEditModel } from "@/components/ui/Modals";
-// import templatesServiceInstance from "@/services/TemplatesServices";
-import { ImagemodelType, ModelType } from "@/types/modelType";
+
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { _deleteModel, _deleteModels, _getAllImagesModels, _getImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
 import { Alert, Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
-import { FaEllipsisVertical, FaHelmetSafety, FaStore, FaTrash } from "react-icons/fa6";
+import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
-import dimensions from "@/data/dimensions.json";
-import modelsServiceInstance from "@/services/modelsServices";
 import { _showToast } from "@/utils/notifications";
 import { ToastDataType } from "@/types/DiversType";
 import templatesServiceInstance from "@/services/TemplatesServices";

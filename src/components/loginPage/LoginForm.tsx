@@ -97,13 +97,14 @@ const LoginForm = () => {
    *******************************************************************************************/
   return (
     <Card className="p-4  border-2 shadow">
-      <h3 className="text-center text-muted mb-4">Connexion</h3>
+      <h2 className="text-center text-muted mb-0">Générateur</h2>
+      <h2 className="text-center text-muted mb-4">d'affiche</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label></Form.Label>
           <Form.Control
             type="email"
-            placeholder="Saisissez votre email"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -113,7 +114,7 @@ const LoginForm = () => {
           <InputGroup>
             <Form.Control
               type={showPassword ? "text" : "password"}
-              placeholder="Saisissez votre mot de passe"
+              placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
