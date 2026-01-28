@@ -6,11 +6,13 @@ import React from "react";
 import { Button, Col, Container, Dropdown, Form, Image, InputGroup, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaEllipsisVertical, FaMagnifyingGlass, FaTrash } from "react-icons/fa6";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import dimensions from "@/data/dimensions.json";
 import modelsServiceInstance from "@/services/modelsServices";
-import { _showToast } from "@/utils/notifications";
+import { _expiredSession, _showToast } from "@/utils/notifications";
 import { ToastDataType } from "@/types/DiversType";
+import { AxiosError } from "axios";
+import userDataStore, { UserDataType } from "@/stores/userDataStore";
 
 interface ContextType {
   shops: ShopType[]
@@ -20,6 +22,8 @@ interface ContextType {
 
 export default function ModelsPage() {
     
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
+  const navigate = useNavigate()
   const {setToastData, toggleShow, } = useOutletContext<ContextType>()
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   
@@ -83,16 +87,27 @@ export default function ModelsPage() {
       console.log(response);
     } catch (err) {
       console.error("Erreur lors de la suppression du modèle:", err);
+      if (err instanceof AxiosError) {
+        if (err.status === 401) {
+          _expiredSession(
+            (success, message, delay) =>
+              _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate,
+          );
+        }
+      }else{
 
-      _showToast(
-        false,
-        err instanceof Error
+        _showToast(
+          false,
+          err instanceof Error
           ? err.message
           : "Erreur lors de la suppression du modèle",
-        setToastData,
-        toggleShow,
-        3000,
-      );
+          setToastData,
+          toggleShow,
+          3000,
+        );
+      }
     } finally {
       setIsLoading(false);
     }

@@ -41,7 +41,7 @@ export default function CategoriesPage() {
   const [file, setFile] = React.useState<File| null>(null)
   const [imgRglt, setImgRglt] = React.useState<File| null>(null)
   const [page, setPage] = React.useState<number>(1);
-  const [limit, setLimit] = React.useState<number>(10);
+  const [limit, setLimit] = React.useState<number>(40);
   const [activePage, setActivePage] = React.useState<number>(1);
 
   const [formData, setFormData] = React.useState<FormCategoryDataType>({
@@ -299,13 +299,10 @@ export default function CategoriesPage() {
       if (imgRglt) {
         categoryFormData.append('imageRglt', imgRglt)
       }
-      // Log entries to properly inspect FormData
-      // for (const pair of categoryFormData.entries()) {
-      //   console.log(pair[0] + ': ', pair[1])
-      // }
-      const addCatResponse = await categoriesServiceInstance.postCategory(categoryFormData)
+      
+      await categoriesServiceInstance.postCategory(categoryFormData)
 
-      if (addCatResponse.ok) {
+    
         setValidated(true)
         setCategories((prev: CategoriesType[]) => [...prev, newCategory as unknown as CategoriesType])
         _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit);
@@ -330,13 +327,7 @@ export default function CategoriesPage() {
         })
         toggleShow()
         handleCloseAdd()
-      }else if (!addCatResponse.ok && addCatResponse.status === 403) {
-          _expiredSession(
-            (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
-            userLogOut,
-            navigate
-        )
-    }
+     
     } catch (error) {
       console.log(error)
       setFeedBackState((prev) => ({
@@ -344,14 +335,28 @@ export default function CategoriesPage() {
         error: true,
         errorMessage: "Une erreur s'est produite lors de l'ajout de la catégorie",
       }))
-      setToastData({
-        bg: 'danger',
-        position: 'top-end',
-        delay: 4000,
-        icon: 'fa fa-times-circle',
-        message: "Une erreur s'est produite lors de l'ajout de la catégorie",
-      })
-      toggleShow()
+       if (error instanceof AxiosError) {
+              if (error.status === 401) {
+                _expiredSession(
+                  (success, message, delay) =>
+                    _showToast(success, message, setToastData, toggleShow, delay),
+                  userLogOut,
+                  navigate,
+                );
+              }
+            }else{
+      
+              _showToast(
+                false,
+                error instanceof Error
+                ? error.message
+                : "Erreur lors de la suppression du modèle",
+                setToastData,
+                toggleShow,
+                3000,
+              );
+            }
+     
     } finally {
       setFeedBackState((prev) => ({
         ...prev,
