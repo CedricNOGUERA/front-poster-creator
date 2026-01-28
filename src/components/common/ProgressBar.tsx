@@ -30,7 +30,7 @@ export const ProgressBar = () => {
   /* Render
    *******************************************************************************************/
   return (
-    <div className={`progress-bar bg-light border-bottom`}>
+    <div className={`progress-bar bg-light border-bottom sticky-top` }>
       {storeApp.step > 1 && (
         <Button
           variant='link'
