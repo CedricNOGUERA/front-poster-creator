@@ -70,13 +70,22 @@ class TemplatesServices {
 
   async deleteTemplate(templateId: number | undefined) {
     if (!templateId) return
-    const response = await fetch(`${API_URL}/api/templates/${templateId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+    // const responseOld = await fetch(`${API_URL}/api/templates/${templateId}`, {
+    //   method: 'DELETE',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${localStorage.getItem('token')}`,
+    //   },
+    // })
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/templates/${templateId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       },
-    })
+    );
     return response
   }
 }
