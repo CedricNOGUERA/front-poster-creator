@@ -521,7 +521,7 @@ export const EditorTemplate = () => {
                 <CanvasEditorImproved canvasEditorProps={canvasEditorProps} />
                   <PictureAdder warrantyPictureProps={warrantyPictureProps} />
               </div>
-              <Container className='d-flex flex-md-column flex-lg-row justify-content-between align-items-center mt-4'>
+              <Container className='d-flex flex-column flex-xl-row justify-content-between align-items-center mt-4'>
                 {adminRole ||
                   (superAdminRole && (
                     <Button

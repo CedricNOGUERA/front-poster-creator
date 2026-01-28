@@ -134,7 +134,6 @@ export default function ModelsPage() {
                 <th className="py-3">Nom</th>
                 <th className="py-3">Dimension</th>
                 <th className="py-3">Miniature</th>
-                <th className="py-3">Magasin</th>
                 <th className="py-3">Actions</th>
               </tr>
             </thead>
@@ -161,7 +160,6 @@ export default function ModelsPage() {
                       height={dimension && factor && dimension?.height*factor}
                       />
                   </td>
-                  <td>{model.id}</td>
                   <td>
                     <Dropdown>
                       <Dropdown.Toggle

@@ -5,17 +5,17 @@ const API_URL = import.meta.env.VITE_API_URL
 
 class CategoriesService {
 
-
     async postCategory(newCategory: FormData){
-        const response = await fetch(`${API_URL}/api/add-categories`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-              },
-              body:  newCategory,
-            })
-            
-            return response
+      const response = await axios.post(
+        `${API_URL}/api/add-categories`,
+        newCategory,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      return response;
     }
 
     

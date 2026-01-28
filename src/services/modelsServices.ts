@@ -1,7 +1,5 @@
-//
-
 // import { ComponentTypeMulti } from "@/types/ComponentType";
-import { ImagemodelType } from '@/types/modelType';
+// import { ImagemodelType } from '@/types/modelType';
 import axios from 'axios';
 import * as htmlToImage from 'html-to-image'
 // import { ModelType } from "@/types/modelType"

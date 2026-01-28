@@ -12,6 +12,7 @@ import { _expiredSession, _showToast } from '@/utils/notifications'
 import { ShopType } from '@/types/ShopType'
 import { FaPlusCircle } from 'react-icons/fa'
 import DynamicIcon from '../ui/DynamicIcon'
+import { AxiosError } from 'axios'
 // import { IconType } from 'react-icons';
 
 type Props = {
@@ -132,72 +133,76 @@ export default function CategorySelectorDrag({ title }: Props) {
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const form = e.currentTarget
+    e.preventDefault();
+    const form = e.currentTarget;
 
     // Validation du formulaire
     if (form.checkValidity() === false) {
-      e.preventDefault()
-      e.stopPropagation()
-      setValidated(true)
-      return
+      e.preventDefault();
+      e.stopPropagation();
+      setValidated(true);
+      return;
     }
 
     // Validation personnalisée
-    if (formData.name.trim() === '') {
+    if (formData.name.trim() === "") {
       setFeedBackState((prev) => ({
         ...prev,
         isError: true,
-        errorMessage: 'Veuillez saisir un nom de catégorie',
+        errorMessage: "Veuillez saisir un nom de catégorie",
         isLoading: false,
-        loadingMessage: '',
-      }))
-      setValidated(true)
-      return
+        loadingMessage: "",
+      }));
+      setValidated(true);
+      return;
     }
 
     if (formData.name.trim().length < 2) {
       setFeedBackState((prev) => ({
         ...prev,
         isError: true,
-        errorMessage: 'Le nom de la catégorie doit contenir au moins 2 caractères',
+        errorMessage:
+          "Le nom de la catégorie doit contenir au moins 2 caractères",
         isLoading: false,
-        loadingMessage: '',
-      }))
-      setValidated(true)
-      return
+        loadingMessage: "",
+      }));
+      setValidated(true);
+      return;
     }
 
     if (formData.shopIds.length === 0) {
       setFeedBackState((prev) => ({
         ...prev,
         isError: true,
-        errorMessage: 'Veuillez sélectionner au moins un magasin',
+        errorMessage: "Veuillez sélectionner au moins un magasin",
         isLoading: false,
-        loadingMessage: '',
-      }))
-      setValidated(true)
-      return
+        loadingMessage: "",
+      }));
+      setValidated(true);
+      return;
     }
 
-    setValidated(true)
+    setValidated(true);
     setFeedBackState((prev) => ({
       ...prev,
       isLoading: true,
-      loadingMessage: 'Chargement...',
+      loadingMessage: "Chargement...",
       isError: false,
-      errorMessage: '',
-    }))
+      errorMessage: "",
+    }));
 
-    const lastId = cat.reduce((maxId, item) => Math.max(maxId, item.id || 0), 0)
-    const nextId = lastId + 1
+    const lastId = cat.reduce(
+      (maxId, item) => Math.max(maxId, item.id || 0),
+      0,
+    );
+    const nextId = lastId + 1;
 
     const imageName = file?.name
       ? `/uploads/categories/headerPictures/${nextId}/${file?.name}`
-      : null
+      : null;
     const imageRgltName = imgRglt?.name
       ? `/uploads/categories/headerPictures/${nextId}/${imgRglt?.name}`
-      : null
+      : null;
 
     try {
       const newCategory = {
@@ -210,7 +215,7 @@ export default function CategorySelectorDrag({ title }: Props) {
         canvasId: cat.length + 1,
         canvas: [
           {
-            type: 'header',
+            type: "header",
             top: 0,
             left: 0,
             width: 500,
@@ -220,7 +225,7 @@ export default function CategorySelectorDrag({ title }: Props) {
             backgroundColor: formData.backgroundColorHeader,
           },
           {
-            type: 'background-color',
+            type: "background-color",
             top: 125,
             left: 0,
             width: 500,
@@ -228,77 +233,85 @@ export default function CategorySelectorDrag({ title }: Props) {
             backgroundColor: formData.backgroundColorBody,
           },
         ],
-      }
+      };
 
-      const categoryFormData = new FormData()
-      categoryFormData.append('data', JSON.stringify(newCategory))
+      const categoryFormData = new FormData();
+      categoryFormData.append("data", JSON.stringify(newCategory));
       if (file) {
-        categoryFormData.append('image', file)
+        categoryFormData.append("image", file);
       }
       if (imgRglt) {
-        categoryFormData.append('imageRglt', imgRglt)
+        categoryFormData.append("imageRglt", imgRglt);
       }
-      // Log entries to properly inspect FormData
-      for (const pair of categoryFormData.entries()) {
-        console.log(pair[0] + ': ', pair[1])
-      }
-      const addCatResponse = await categoriesServiceInstance.postCategory(categoryFormData)
 
-      if (addCatResponse.ok) {
-        setValidated(true)
-        setCat((prev: CategoriesType[]) => [...prev, newCategory as unknown as CategoriesType])
-        setFormData({
-          name: '',
-          icon: { name: '', value: '' },
-          image: '',
-          imageRglt: '',
-          backgroundColorHeader: '#ff0000',
-          backgroundColorBody: '#ffea00',
-          shopIds: [],
-          canvas: [],
-        })
-        setValidated(false)
+      await categoriesServiceInstance.postCategory(categoryFormData);
 
-        setToastData({
-          bg: 'success',
-          position: 'top-end',
-          delay: 3000,
-          icon: 'fa fa-check-circle',
-          message: 'Catégorie ajoutée avec succès',
-        })
-        toggleShow()
-        handleCloseAdd()
-      }else if (!addCatResponse.ok && addCatResponse.status === 403) {
-          _expiredSession(
-            (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
-            userLogOut,
-            navigate
-        )
-      
-    }
-    } catch (error) {
-      console.log(error)
-      setFeedBackState((prev) => ({
+      setValidated(true);
+      setCat((prev: CategoriesType[]) => [
         ...prev,
-        error: true,
-        errorMessage: "Une erreur s'est produite lors de l'ajout de la catégorie",
-      }))
+        newCategory as unknown as CategoriesType,
+      ]);
+      setFormData({
+        name: "",
+        icon: { name: "", value: "" },
+        image: "",
+        imageRglt: "",
+        backgroundColorHeader: "#ff0000",
+        backgroundColorBody: "#ffea00",
+        shopIds: [],
+        canvas: [],
+      });
+      setValidated(false);
+
       setToastData({
-        bg: 'danger',
-        position: 'top-end',
-        delay: 4000,
-        icon: 'fa fa-times-circle',
-        message: "Une erreur s'est produite lors de l'ajout de la catégorie",
-      })
-      toggleShow()
+        bg: "success",
+        position: "top-end",
+        delay: 3000,
+        icon: "fa fa-check-circle",
+        message: "Catégorie ajoutée avec succès",
+      });
+      toggleShow();
+      handleCloseAdd();
+    } catch (error: unknown) {
+      console.log(error);
+
+      if (error instanceof AxiosError) {
+        if (
+          error.status === 401 &&
+          error.response?.data.error === "Token expiré"
+        ) {
+          _expiredSession(
+            (success, message, delay) =>
+              _showToast(success, message, setToastData, toggleShow, delay),
+            userLogOut,
+            navigate,
+          );
+        } else {
+          setFeedBackState((prev) => ({
+            ...prev,
+            error: true,
+            errorMessage:
+              "Une erreur s'est produite lors de l'ajout de la catégorie",
+          }));
+          setToastData({
+            bg: "danger",
+            position: "top-end",
+            delay: 4000,
+            icon: "fa fa-times-circle",
+            message:
+              "Une erreur s'est produite lors de l'ajout de la catégorie",
+          });
+          toggleShow();
+        }
+      }
     } finally {
       setFeedBackState((prev) => ({
         ...prev,
         isLoading: false,
-        loadingMessage: '',
-      }))
+        loadingMessage: "",
+      }));
     }
-  }
+  };
 
   const resetForm = () => {
     setFormData({
