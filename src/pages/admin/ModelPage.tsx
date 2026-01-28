@@ -3,9 +3,9 @@ import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { _deleteModel, _deleteModels, _getAllImagesModels, _getImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
-import { Button, Col, Container, Dropdown, Form, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Container, Dropdown, Form, Image, InputGroup, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
-import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
+import { FaEllipsisVertical, FaMagnifyingGlass, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 import dimensions from "@/data/dimensions.json";
 import modelsServiceInstance from "@/services/modelsServices";
@@ -99,7 +99,7 @@ export default function ModelsPage() {
   };
 
   /**
-   * Fonction de recherche améliorée
+   * Fonction de recherche
    * Recherche sur : ID, nom du template, nom de la dimension
    */
   const searchModels = (term: string) => {
@@ -138,27 +138,34 @@ export default function ModelsPage() {
         </Col>
         <Col xs={2} sm={1}></Col>
       </Row>
-      <Container>
+      <Container className="d-flex align-items-center">
         <Form.Group className="mb-3 mt-2" controlId="search">
-          <Form.Control
-            name="searchBar"
-            type="text"
-            placeholder="🔍 Rechercher par ID, nom ou dimension..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            autoComplete="off"
-            required
-          />
+          <InputGroup>
+            <InputGroup.Text className="rounded-end rounded-pill border-end-0">
+              <FaMagnifyingGlass />
+            </InputGroup.Text>
+            <Form.Control
+            className="rounded-start rounded-pill"
+              name="searchBar"
+              type="text"
+              placeholder="Id, nom ou dimension..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              autoComplete="off"
+              required
+            />
+          </InputGroup>
         </Form.Group>
-        
+
         {/* Affichage du nombre de résultats */}
         {searchTerm && (
-          <div className="text-muted mb-2">
-            {models.length} résultat{models.length > 1 ? 's' : ''} trouvé{models.length > 1 ? 's' : ''}
+          <div className="text-muted ms-2 mb-2">
+            {models.length} résultat{models.length > 1 ? "s" : ""} trouvé
+            {models.length > 1 ? "s" : ""}
           </div>
         )}
       </Container>
-      
+
       <Container>
         {allModels.length === 0 ? (
           <div className="text-center py-5">
