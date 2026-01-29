@@ -3,12 +3,11 @@ import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import { _getMe } from "@/utils/apiFunctions";
 import { AxiosError } from "axios";
 import React from "react";
-import { Alert, Button, Card, Form, InputGroup, Modal } from "react-bootstrap";
+import { Alert, Button, Card, Form, InputGroup } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import DynamicIcon from "../ui/DynamicIcon";
 import logo from '@/assets/images/poster_app_logo.svg'
-import { HiH3 } from "react-icons/hi2";
 
 const LoginForm = () => {
   /* States
@@ -21,15 +20,15 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const authLogin = userDataStore((state: UserDataType) => state.authLogin);
 
-  const [show, setShow] = React.useState<boolean>(false);
+  // const [show, setShow] = React.useState<boolean>(false);
 
-  const [forgotEmail, setForgotEmail] = React.useState<string>('');
-    const [message, setMessage] = React.useState<string>('');
-    const [forgotError, setForgotError] = React.useState<string>('');
-    const [forgotLoading, setForgotLoading] = React.useState<boolean>(false);
+  // const [forgotEmail, setForgotEmail] = React.useState<string>('');
+  //   const [message, setMessage] = React.useState<string>('');
+  //   const [forgotError, setForgotError] = React.useState<string>('');
+  //   const [forgotLoading, setForgotLoading] = React.useState<boolean>(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
   /* Functions
    *******************************************************************************************/
@@ -67,33 +66,33 @@ const LoginForm = () => {
       setLoading(false);
     }
   };
-   const handleForgotSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setForgotError('');
-      setMessage('');
-      setForgotLoading(true);
+  //  const handleForgotSubmit = async (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     setForgotError('');
+  //     setMessage('');
+  //     setForgotLoading(true);
   
-      try {
-        const response = await fetch('http://localhost:8080/api/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ forgotEmail })
-        });
+  //     try {
+  //       const response = await fetch('http://localhost:8080/api/forgot-password', {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ forgotEmail })
+  //       });
   
-        const data = await response.json();
+  //       const data = await response.json();
   
-        if (response.ok) {
-          setMessage(data.message);
-          setForgotEmail('');
-        } else {
-          setForgotError(data.error);
-        }
-      } catch (err) {
-        setForgotError('Une erreur est survenue.');
-      } finally {
-        setForgotLoading(false);
-      }
-    };
+  //       if (response.ok) {
+  //         setMessage(data.message);
+  //         setForgotEmail('');
+  //       } else {
+  //         setForgotError(data.error);
+  //       }
+  //     } catch (err) {
+  //       setForgotError('Une erreur est survenue.');
+  //     } finally {
+  //       setForgotLoading(false);
+  //     }
+  //   };
 
   /* Render
    *******************************************************************************************/
@@ -158,7 +157,7 @@ const LoginForm = () => {
           </Button>
         </div>
       </Form>
-      <Modal show={show} onHide={handleClose} centered>
+      {/* <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Mot de passe oublié</Modal.Title>
         </Modal.Header>
@@ -185,7 +184,7 @@ const LoginForm = () => {
             {forgotLoading ? "Envoi..." : "Envoyer le lien de réinitialisation"}
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </Card>
   );
 };
