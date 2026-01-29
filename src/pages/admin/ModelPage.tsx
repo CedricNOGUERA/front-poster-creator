@@ -1,11 +1,11 @@
 import { ImagemodelType, ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
-import { _deleteModel, _deleteModels, _getAllImagesModels, _getImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
+import { _getAllImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
-import { Button, Col, Container, Dropdown, Form, Image, InputGroup, Modal, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
-import { FaEllipsisVertical, FaMagnifyingGlass, FaTrash } from "react-icons/fa6";
+import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import dimensions from "@/data/dimensions.json";
 import modelsServiceInstance from "@/services/modelsServices";
@@ -146,7 +146,7 @@ export default function ModelsPage() {
             <thead className="sticky-sm-top">
               <tr>
                 <th className="py-3">Id</th>
-                <th className="py-3">Nom</th>
+                <th className="py-3">Template</th>
                 <th className="py-3">Dimension</th>
                 <th className="py-3">Miniature</th>
                 <th className="py-3">Actions</th>
@@ -254,7 +254,7 @@ export default function ModelsPage() {
           </Button>
         </Modal.Footer>
       </Modal>
-      
+
     </Container>
   );
 }

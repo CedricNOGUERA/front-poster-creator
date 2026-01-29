@@ -58,6 +58,7 @@ export const ResetPassword = () => {
         setError(data.error);
       }
     } catch (err) {
+      console.error(err);
       setError('Une erreur est survenue.');
     } finally {
       setLoading(false);
