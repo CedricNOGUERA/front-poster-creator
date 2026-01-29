@@ -13,6 +13,7 @@ import { _expiredSession, _showToast } from "@/utils/notifications";
 import { ToastDataType } from "@/types/DiversType";
 import { AxiosError } from "axios";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
+import SearchBar from "@/components/dashBoardComponents/SearchBar";
 
 interface ContextType {
   shops: ShopType[]
@@ -26,13 +27,7 @@ export default function ModelsPage() {
   const navigate = useNavigate()
   const {setToastData, toggleShow, } = useOutletContext<ContextType>()
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
-  
-  // État pour les données originales (non filtrées)
   const [allModels, setAllModels] = React.useState<ModelType[]>([]);
-  
-  // État pour les données affichées (filtrées)
-  const [models, setModels] = React.useState<ModelType[]>([]);
-  
   const [imageModels, setImageModels] = React.useState<ImagemodelType[]>([]);
   const [selectedModel, setSelectedModel] = React.useState<ModelType>({} as ModelType);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -44,18 +39,32 @@ export default function ModelsPage() {
     _getTemplates(setTemplates);
     _getAllImagesModels(setImageModels);
     _getModels(setAllModels);
-    _getModels(setModels);
   }, []);
 
-  // Effet de recherche
-  React.useEffect(() => {
+   const models = React.useMemo(() => {
     if (searchTerm.trim() === "") {
-      // Si la recherche est vide, afficher tous les modèles
-      setModels(allModels);
-    } else {
-      // Sinon, filtrer les modèles
-      searchModels(searchTerm);
+      return allModels;
     }
+
+    const lowerTerm = searchTerm.toLowerCase().trim();
+    
+    return allModels.filter((model) => {
+      const templateData = templates.find(
+        (temp) =>
+          temp.categoryId === model.categoryId &&
+          temp.id === model.templateId,
+      );
+      
+      const dimension = dimensions.find(
+        (dim) => dim.id === model.dimensionId,
+      );
+
+      const matchesId = model.id.toString().includes(lowerTerm);
+      const matchesTemplateName = templateData?.name.toLowerCase().includes(lowerTerm) || false;
+      const matchesDimension = dimension?.name.toLowerCase().includes(lowerTerm) || false;
+
+      return matchesId || matchesTemplateName || matchesDimension;
+    });
   }, [searchTerm, allModels, templates]);
 
   const handleShowDeleteModal = (model: ModelType) => {
@@ -72,19 +81,17 @@ export default function ModelsPage() {
     if (!selectedModel) return;
     setIsLoading(true);
     try {
-      const response = await modelsServiceInstance.deleteModel(
+      await modelsServiceInstance.deleteModel(
         selectedModel.id,
       );
       handleCloseDeleteModal();
       
       // Recharger les données originales après suppression
       _getModels(setAllModels);
-      _getModels(setModels);
       _getAllImagesModels(setImageModels);
 
       _showToast(true, "Suppression réussie", setToastData, toggleShow, 3000);
 
-      console.log(response);
     } catch (err) {
       console.error("Erreur lors de la suppression du modèle:", err);
       if (err instanceof AxiosError) {
@@ -113,37 +120,6 @@ export default function ModelsPage() {
     }
   };
 
-  /**
-   * Fonction de recherche
-   * Recherche sur : ID, nom du template, nom de la dimension
-   */
-  const searchModels = (term: string) => {
-    const lowerTerm = term.toLowerCase().trim();
-    
-    const filteredModels = allModels.filter((model) => {
-      // Recherche dans le nom du template
-      const templateData = templates.find(
-        (temp) =>
-          temp.categoryId === model.categoryId &&
-          temp.id === model.templateId,
-      );
-      
-      // Recherche dans la dimension
-      const dimension = dimensions.find(
-        (dim) => dim.id === model.dimensionId,
-      );
-
-      // Vérifier si le terme de recherche correspond à l'un des champs
-      const matchesId = model.id.toString().includes(lowerTerm);
-      const matchesTemplateName = templateData?.name.toLowerCase().includes(lowerTerm) || false;
-      const matchesDimension = dimension?.name.toLowerCase().includes(lowerTerm) || false;
-
-      return matchesId || matchesTemplateName || matchesDimension;
-    });
-    
-    setModels(filteredModels);
-  };
-
   return (
     <Container fluid className="relative p-0">
       <Row className="bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 ">
@@ -153,34 +129,7 @@ export default function ModelsPage() {
         </Col>
         <Col xs={2} sm={1}></Col>
       </Row>
-      <Container className="d-flex align-items-center">
-        <Form.Group className="mb-3 mt-2" controlId="search">
-          <InputGroup>
-            <InputGroup.Text className="rounded-end rounded-pill border-end-0">
-              <FaMagnifyingGlass />
-            </InputGroup.Text>
-            <Form.Control
-            className="rounded-start rounded-pill"
-              name="searchBar"
-              type="text"
-              placeholder="Id, nom ou dimension..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              autoComplete="off"
-              required
-            />
-          </InputGroup>
-        </Form.Group>
-
-        {/* Affichage du nombre de résultats */}
-        {searchTerm && (
-          <div className="text-muted ms-2 mb-2">
-            {models.length} résultat{models.length > 1 ? "s" : ""} trouvé
-            {models.length > 1 ? "s" : ""}
-          </div>
-        )}
-      </Container>
-
+      <SearchBar seachBarProps={{searchTerm, setSearchTerm, data: models}} />
       <Container>
         {allModels.length === 0 ? (
           <div className="text-center py-5">
@@ -305,6 +254,7 @@ export default function ModelsPage() {
           </Button>
         </Modal.Footer>
       </Modal>
+      
     </Container>
   );
 }
