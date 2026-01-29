@@ -11,6 +11,7 @@ import { _showToast } from "@/utils/notifications";
 import { ToastDataType } from "@/types/DiversType";
 import templatesServiceInstance from "@/services/TemplatesServices";
 import { AxiosError } from "axios";
+import SearchBar from "@/components/dashBoardComponents/SearchBar";
 
 interface ContextType {
   shops: ShopType[]
@@ -21,21 +22,38 @@ interface ContextType {
 export default function TemplatePage() {
     
   const {setToastData, toggleShow, } = useOutletContext<ContextType>()
+  const [allTemplates, setAllTemplates] = React.useState<TemplateType[]>([]);
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [selectedModel, setSelectedModel] = React.useState<TemplateType>({} as TemplateType);
-  // const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = React.useState<string>("");
 
 
   React.useEffect(() => {
+    _getTemplates(setAllTemplates);
     _getTemplates(setTemplates);
-
   }, []);
-  React.useEffect(() => {
-   
-  }, []);
+  
 
+  const templateData = React.useMemo(() => {
+    if (searchTerm.trim() === "") {
+      // Si la recherche est vide, afficher tous les modèles
+      return allTemplates
+    }
+
+    const lowerTerm = searchTerm.toLowerCase().trim();
+
+    return allTemplates.filter((temp) => {
+
+      // Vérifier si le terme de recherche correspond à l'un des champs
+      const matchesId = temp.id && temp.id.toString().includes(lowerTerm);
+      const matchesTemplateName = temp?.name.toLowerCase().includes(lowerTerm);
+
+      return matchesId || matchesTemplateName;
+    });
+
+  }, [searchTerm, allTemplates]);
 
   const handleShowDeleteModal = (temp: TemplateType) => {
     setSelectedModel(temp);
@@ -47,7 +65,7 @@ export default function TemplatePage() {
     setShowDeleteModal(false);
   };
 
-  const handleDeleteModel = async () => {
+  const handleDeleteTemplate = async () => {
     if (!selectedModel) return;
     setIsLoading(true);
     try {
@@ -77,7 +95,6 @@ export default function TemplatePage() {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <Container fluid className="relative p-0">
@@ -89,8 +106,9 @@ export default function TemplatePage() {
         </Col>
         <Col xs={2} sm={1}></Col>
       </Row>
+      <SearchBar seachBarProps={{searchTerm, setSearchTerm, data: templates}} />
        <Container>
-        {templates.length === 0 ? (
+        {templateData.length === 0 ? (
           <div className="text-center py-5">
             <Spinner animation="border" role="status">
               <span className="visually-hidden">Chargement...</span>
@@ -107,7 +125,7 @@ export default function TemplatePage() {
               </tr>
             </thead>
             <tbody>
-              {templates.map((temp, indx) =>{ 
+              {templateData.map((temp, indx) =>{ 
                
                 return(
                  <tr key={indx} className="align-middle">
@@ -135,13 +153,6 @@ export default function TemplatePage() {
                         </b>
                       </Dropdown.Toggle>
                       <Dropdown.Menu align='end'>
-                     {/* <Dropdown.Item 
-                        // onClick={}
-                          className="d-flex align-items-center"
-                          >
-                          <FaStore className="me-2" />                          
-                          Attribuer un/des magasins ou modifier le nom
-                        </Dropdown.Item> */}
                         <Dropdown.Item 
                         onClick={() => handleShowDeleteModal(temp)}
                           className="d-flex align-items-center text-danger"
@@ -159,11 +170,11 @@ export default function TemplatePage() {
         )}
       </Container>
 
-        <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Supprimer un modèle</Modal.Title>
+          <Modal.Title>Supprimer un template</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Etes-vous sûr de vouloir supprimer ce modèle ?
+        <Modal.Body>Etes-vous sûr de vouloir supprimer ce template ?
             <Alert variant="danger" className="mt-3">
 
             ⚠️ Ce template est utilisé par des modèles.
@@ -177,7 +188,7 @@ export default function TemplatePage() {
           </Button>
           <Button variant="danger" onClick={() =>{
             if(selectedModel){
-              handleDeleteModel()
+              handleDeleteTemplate()
             }
           }}>
             {isLoading ? (
@@ -195,6 +206,7 @@ export default function TemplatePage() {
           </Button>
         </Modal.Footer>
       </Modal>
+
     </Container>
   );
 }
