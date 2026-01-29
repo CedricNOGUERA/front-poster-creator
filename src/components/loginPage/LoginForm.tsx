@@ -7,6 +7,8 @@ import { Alert, Button, Card, Form, InputGroup, Modal } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import DynamicIcon from "../ui/DynamicIcon";
+import logo from '@/assets/images/poster_app_logo.svg'
+import { HiH3 } from "react-icons/hi2";
 
 const LoginForm = () => {
   /* States
@@ -97,8 +99,9 @@ const LoginForm = () => {
    *******************************************************************************************/
   return (
     <Card className="p-4  border-2 shadow">
-      <h2 className="text-center text-muted mb-0">Générateur</h2>
-      <h2 className="text-center text-muted mb-4">d'affiche</h2>
+      <img src={logo} alt="Logo" className="mb-3 d-block mx-auto" width={90} />
+      <h3 className="text-center text-muted mb-0">Générateur</h3>
+      {/* <h2 className="text-center text-muted mb-4">d'affiche</h2> */}
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label></Form.Label>

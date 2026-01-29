@@ -146,7 +146,7 @@ export default function ModelsPage() {
             <thead className="sticky-sm-top">
               <tr>
                 <th className="py-3">Id</th>
-                <th className="py-3">Nom</th>
+                <th className="py-3">Template</th>
                 <th className="py-3">Dimension</th>
                 <th className="py-3">Miniature</th>
                 <th className="py-3">Actions</th>

@@ -55,57 +55,54 @@ export default function PositionControls({
 
 
   return (
-    <div className='position-controls'>
+    <div className="position-controls">
       {/* Contrôles de déplacement avec boutons directionnels */}
-      <div className='mb-3'>
-        <Form.Label className='fw-bold'>
-          <FaArrowsAlt className='me-2' />
+      <div className="mb-3">
+        <Form.Label className="fw-bold">
+          <FaArrowsAlt className="me-2" />
           Position
         </Form.Label>
 
         {/* Boutons de déplacement rapide */}
-        <div className='d-flex justify-content-center mb-2'>
-          <ButtonGroup size='sm'>
+        <div className="d-flex justify-content-center mb-2">
+          <ButtonGroup size="sm">
             <Button
-              variant='outline-secondary'
-              onClick={() => movePosition('up', 10)}
-              title='Déplacer vers le haut'
+              variant="outline-secondary"
+              onClick={() => movePosition("up", 10)}
+              title="Déplacer vers le haut"
             >
               <FaArrowUp />
             </Button>
             <Button
-              variant='outline-secondary'
-              onClick={() => movePosition('down', 10)}
-              title='Déplacer vers le bas'
+              variant="outline-secondary"
+              onClick={() => movePosition("down", 10)}
+              title="Déplacer vers le bas"
             >
               <FaArrowDown />
-
             </Button>
             <Button
-              variant='outline-secondary'
-              onClick={() => movePosition('left', 10)}
-              title='Déplacer vers la gauche'
+              variant="outline-secondary"
+              onClick={() => movePosition("left", 10)}
+              title="Déplacer vers la gauche"
             >
               <FaArrowLeft />
-
             </Button>
             <Button
-              variant='outline-secondary'
-              onClick={() => movePosition('right', 10)}
-              title='Déplacer vers la droite'
+              variant="outline-secondary"
+              onClick={() => movePosition("right", 10)}
+              title="Déplacer vers la droite"
             >
               <FaArrowRight />
-
             </Button>
           </ButtonGroup>
         </div>
 
         {/* Contrôles précis avec inputs numériques */}
-        <div className='row g-2'>
+        <div className="row g-2">
           {/* Position verticale */}
-          <div className='col-6'>
-            <Form.Label className='small'>
-              <FaArrowsUpDown className='me-1' />
+          <div className="col-6">
+            <Form.Label className="small">
+              <FaArrowsUpDown className="me-1" />
               Vert.
             </Form.Label>
             <Form.Range
@@ -113,63 +110,68 @@ export default function PositionControls({
               max={pageHeight * scaleFactor}
               step={1}
               value={
-                component.type === 'price' || component.type === 'number'
+                component.type === "price" || component.type === "number"
                   ? component.bottom || 0
                   : component.top || 0
               }
               onChange={(e) => {
-                const value = parseInt(e.target.value) || 0
-                if (component.type === 'price' || component.type === 'number') {
+                const value = parseInt(e.target.value) || 0;
+                if (component.type === "price" || component.type === "number") {
                   updateComponent({
                     bottom: value,
-                  } as Partial<NumberComponentType | PrincipalPriceComponentType>)
+                  } as Partial<
+                    NumberComponentType | PrincipalPriceComponentType
+                  >);
                 } else {
                   updateComponent({
                     top: value,
-                  } as Partial<TextComponentType>)
+                  } as Partial<TextComponentType>);
                 }
               }}
             />
-            <InputGroup size='sm'>
+            <InputGroup size="sm">
               <Form.Control
-                type='number'
+                type="number"
                 min={0}
                 max={
-                  component.type === 'price' || component.type === 'number'
+                  component.type === "price" || component.type === "number"
                     ? pageHeight * scaleFactor
                     : pageHeight * scaleFactor
                 }
                 step={1}
                 value={
-                  component.type === 'price' || component.type === 'number'
+                  component.type === "price" || component.type === "number"
                     ? component.bottom || 0
-                    : 
-                    component.top || 0
+                    : component.top || 0
                 }
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || 0
-                  if (component.type === 'price' || component.type === 'number') {
+                  const value = parseInt(e.target.value) || 0;
+                  if (
+                    component.type === "price" ||
+                    component.type === "number"
+                  ) {
                     updateComponent({ bottom: value } as Partial<
                       NumberComponentType | PrincipalPriceComponentType
-                    >)
+                    >);
                   } else {
-                    updateComponent({ top: value } as Partial<TextComponentType>)
+                    updateComponent({
+                      top: value,
+                    } as Partial<TextComponentType>);
                   }
                 }}
               />
             </InputGroup>
           </div>
 
-          {/* Position horizontale */}
-          <div className='col-6'>
+          {/* Position horizontale (old) */}
+          {/* <div className='col-6'>
             <Form.Label className='small'>
               <FaArrowsLeftRight className='me-1' />
-              {/* {component.type === 'price' || component.type === 'number' ? 'Droite' : 'Gauche'} */}
               Horiz.
             </Form.Label>
             <Form.Range
               min={
-                component.type === 'price' || component.type === 'number' ? -pageWidth * 2 : 0
+                component.type === 'price' || component.type === 'number' ? - pageWidth * 2 : 0
               }
               max={
                 component.type === 'price' || component.type === 'number'
@@ -228,9 +230,71 @@ export default function PositionControls({
               />
 
             </InputGroup>
+          </div> */}
+
+          {/* Position horizontale */}
+          <div className="col-6">
+            <Form.Label className="small">
+              <FaArrowsLeftRight className="me-1" />
+              Horiz.
+            </Form.Label>
+            <Form.Range
+              min={0}
+              max={pageWidth * scaleFactor}
+              step={1}
+              value={
+                component.type === "price" || component.type === "number"
+                  ? pageWidth * scaleFactor - (component.right || 0) // Inversion ici
+                  : component.left || 0
+              }
+              onChange={(e) => {
+                const value = parseInt(e.target.value) || 0;
+                if (component.type === "price" || component.type === "number") {
+                  updateComponent({
+                    right: pageWidth * scaleFactor - value, // Inversion ici
+                  } as Partial<
+                    NumberComponentType | PrincipalPriceComponentType
+                  >);
+                } else {
+                  updateComponent({
+                    left: value,
+                  } as Partial<TextComponentType>);
+                }
+              }}
+            />
+            <InputGroup size="sm">
+              <Form.Control
+                type="number"
+                min={0}
+                max={pageWidth * scaleFactor}
+                step={1}
+                value={
+                  component.type === "price" || component.type === "number"
+                    ? pageWidth * scaleFactor - (component.right || 0) // Inversion ici
+                    : component.left || 0
+                }
+                onChange={(e) => {
+                  const value = parseInt(e.target.value) || 0;
+                  if (
+                    component.type === "price" ||
+                    component.type === "number"
+                  ) {
+                    updateComponent({
+                      right: pageWidth * scaleFactor - value,
+                    } as Partial<
+                      NumberComponentType | PrincipalPriceComponentType
+                    >);
+                  } else {
+                    updateComponent({
+                      left: value,
+                    } as Partial<TextComponentType>);
+                  }
+                }}
+              />
+            </InputGroup>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
