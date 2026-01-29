@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#6366f1" opacity="0.1"/>
+  
+  <!-- Main poster shape with gradient -->
+  <defs>
+    <linearGradient id="posterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="sparkleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main poster rectangle -->
+  <rect x="60" y="45" width="80" height="110" rx="4" fill="url(#posterGradient)" stroke="#4f46e5" stroke-width="2"/>
+  
+  <!-- Poster details (representing content) -->
+  <rect x="70" y="60" width="30" height="4" rx="2" fill="white" opacity="0.9"/>
+  <rect x="70" y="70" width="60" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  <rect x="70" y="77" width="50" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  
+  <!-- Image placeholder on poster -->
+  <rect x="70" y="90" width="60" height="40" rx="3" fill="white" opacity="0.3"/>
+  <circle cx="85" cy="105" r="6" fill="white" opacity="0.6"/>
+  <path d="M 70 120 L 85 110 L 100 115 L 130 100 L 130 130 L 70 130 Z" fill="white" opacity="0.5"/>
+  
+  <!-- Bottom text lines on poster -->
+  <rect x="70" y="138" width="45" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  <rect x="70" y="145" width="55" height="3" rx="1.5" fill="white" opacity="0.7"/>
+  
+  <!-- Creative sparkle/magic wand effect -->
+  <path d="M 145 55 L 148 65 L 158 68 L 148 71 L 145 81 L 142 71 L 132 68 L 142 65 Z" fill="url(#sparkleGradient)"/>
+  <path d="M 155 75 L 157 82 L 164 84 L 157 86 L 155 93 L 153 86 L 146 84 L 153 82 Z" fill="url(#sparkleGradient)" opacity="0.8"/>
+  <path d="M 50 70 L 52 76 L 58 78 L 52 80 L 50 86 L 48 80 L 42 78 L 48 76 Z" fill="url(#sparkleGradient)" opacity="0.7"/>
+  
+  <!-- Shadow effect -->
+  <ellipse cx="100" cy="158" rx="30" ry="4" fill="#000" opacity="0.15"/>
+</svg>
