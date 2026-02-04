@@ -42,7 +42,7 @@ export default function UserManager() {
       navigate('/editeur-de-bon-plan')
       return
     }
-    _getAllUsers(setUsers)
+    _getAllUsers(setUsers, setIsLoading)
     
   }, [userRole, navigate])
 
@@ -72,7 +72,7 @@ export default function UserManager() {
         const response =  await UsersServices.deleteUser(id)
         if(response.ok){
             handleCloseAdd()
-            _getAllUsers(setUsers)
+            _getAllUsers(setUsers, setIsLoading)
         }
     }catch(error){
         console.log(error)

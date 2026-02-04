@@ -46,7 +46,7 @@ export const SideBarMenu = ({
 )
 
   return (
-    <Col sm={2} className='border-end h-100  height-container pt-2 pe-2 sticky-top'>
+    <Col sm={2} className='border rounded h-100  height-container mt-2 pt-2 pe-2 sticky-top'>
       {menuMap}
     </Col>
   )
