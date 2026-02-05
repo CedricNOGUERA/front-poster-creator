@@ -31,7 +31,6 @@ class TemplatesServices {
     const filetredTemplate = data.filter(
       (temp: TemplateType) => temp.id === templateId
     )
-    console.log(filetredTemplate)
     setTemplates(filetredTemplate[0])
     return response
   }
