@@ -3,7 +3,7 @@ export interface LoginFormDataType{
     password: string
 }
 
-export type RoleType = 'super_admin' | 'admin' | 'user'
+export type RoleType = 'mega_admin' | 'super_admin' | 'admin' | 'user'
 
 
 export interface UserType {

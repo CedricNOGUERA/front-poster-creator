@@ -22,6 +22,19 @@ class TemplatesServices {
     setTemplates(filetredTemplate)
     return response
   }
+  async getTemplateById(
+    setTemplates: React.Dispatch<React.SetStateAction<TemplateType>>,
+    templateId: number
+  ) {
+    const response = await fetch(`${API_URL}/api/templates`)
+    const data = await response.json()
+    const filetredTemplate = data.filter(
+      (temp: TemplateType) => temp.id === templateId
+    )
+    console.log(filetredTemplate)
+    setTemplates(filetredTemplate[0])
+    return response
+  }
 
   async postTemplate(newTemplate: TemplateType) {
     const response = await fetch(`${API_URL}/api/add-template`, {

@@ -332,6 +332,13 @@ export const _getTemplate = async (
   await templatesServiceInstance.getTemplate(setTemplates, categoryId)
 }
 
+export const _getTemplateById = async (
+  setTemplates: React.Dispatch<React.SetStateAction<TemplateType>>,
+  templateId: number
+) => {
+  await templatesServiceInstance.getTemplateById(setTemplates, templateId)
+}
+
 export const _getTemplateLength = async (
   setTemplateLength: React.Dispatch<React.SetStateAction<number>>
 ) => {

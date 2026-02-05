@@ -48,6 +48,7 @@ import {
   FaFolder,
 } from "react-icons/fa";
 import {
+  FaBug,
   FaCircleXmark,
   FaFile,
   FaFileLines,
@@ -60,7 +61,7 @@ import {
   FaStore,
   FaUsers,
 } from "react-icons/fa6";
-import { RiUserAddLine, RiUserSettingsLine } from "react-icons/ri";
+import { RiErrorWarningFill, RiUserAddLine, RiUserSettingsLine } from "react-icons/ri";
 
 export const ICON_MAP = {
   "fa fa-apple": FaAppleAlt,
@@ -106,6 +107,7 @@ export const ICON_MAP = {
   "fa-regular eye-slash": FaRegEyeSlash,
   "fas fa-award": FaAward,
   "fas fa-bolt": FaBolt,
+  "fas fa-bug": FaBug,
   "fas fa-cog": FaCog,
   "fas fa-euro-sign": FaEuroSign,
   "fas fa-file": FaFile,
@@ -125,4 +127,5 @@ export const ICON_MAP = {
   "fas fa-users": FaUsers,
   "ri-user-add-line": RiUserAddLine,
   "ri-user-settings-line": RiUserSettingsLine,
+  "ri-error-warning": RiErrorWarningFill,
 };
