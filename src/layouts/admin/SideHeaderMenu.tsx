@@ -25,6 +25,9 @@ export const SideHeaderMenu = ({
   const resetStore = useStoreApp((state) => state.resetAll)
   const authLogout = userDataStore((state: UserDataType) => state.authLogout)
   const userRole = userDataStore((state: UserDataType) => state.role)
+  
+  const userData = userDataStore((state: UserDataType) => state)
+  console.log(userData.name)
   /* Functions
    *******************************************************************************************/
   const handleClick = (title: string) => {
@@ -41,40 +44,57 @@ export const SideHeaderMenu = ({
   }
 
   return (
-    <Drawer size='xs' open={open} onClose={() => setOpen(false)} className='drawer-menu'>
-      <Drawer.Header className=''>
+    <Drawer
+      size="xs"
+      open={open}
+      onClose={() => setOpen(false)}
+      className="drawer-menu"
+    >
+      <Drawer.Header className="">
         <Drawer.Title>Menu</Drawer.Title>
         <Drawer.Actions></Drawer.Actions>
       </Drawer.Header>
-      <Drawer.Body className='bg-light ps-2 pe-0'>
+      <Drawer.Body className="bg-light ps-2 pe-0">
         {headerMenuItems
           .filter((item) => !item.roles || item.roles.includes(userRole))
           .map((item) => (
-              <Link
-              key={item.id} 
-                to={item.href}
-                onClick={() => handleClick(item.title)}
-                className='d-flex align-items-center text-decoration-none text-muted'
-              >
-            <Container className='d-flex align-items-center menu-link py-3 rounded-start'>
-                <DynamicIcon iconKey={item.icon} className='me-2' size={24} />
-                {item.title}
-            </Container>
-              </Link>
-          ))}
-        <Container className=' log-out  py-3 px-0 border-top'>
-          <Container className=' menu-link py-3 rounded-start'>
             <Link
-              to='/login'
-              onClick={() => handleClickLogout()}
-              className='d-flex align-items-center text-decoration-none text-muted'
+              key={item.id}
+              to={item.href}
+              onClick={() => handleClick(item.title)}
+              className="d-flex align-items-center text-decoration-none text-muted"
             >
-              <FaSignOutAlt className='me-2 fs_3' />
+              <Container className="d-flex align-items-center menu-link py-3 rounded-start">
+                <DynamicIcon iconKey={item.icon} className="me-2" size={24} />
+                {item.title}
+              </Container>
+            </Link>
+          ))}
+        {userData.name === "Cédric" && (
+          <Link
+            to="/error-log"
+            onClick={() => handleClick("Monitoring")}
+            className="d-flex align-items-center text-decoration-none text-muted"
+          >
+            <Container className="d-flex align-items-center menu-link py-3 rounded-start">
+              <DynamicIcon iconKey={"fas fa-bug"} className="me-2" size={24} />
+              {"Monitoring"}
+            </Container>
+          </Link>
+        )}
+        <Container className=" log-out  py-3 px-0 border-top">
+          <Container className=" menu-link py-3 rounded-start">
+            <Link
+              to="/login"
+              onClick={() => handleClickLogout()}
+              className="d-flex align-items-center text-decoration-none text-muted"
+            >
+              <FaSignOutAlt className="me-2 fs_3" />
               Déconnexion
             </Link>
           </Container>
         </Container>
       </Drawer.Body>
     </Drawer>
-  )
+  );
 }

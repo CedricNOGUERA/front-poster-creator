@@ -89,7 +89,8 @@ export const calculateOptimalLayout = (
 export const generateMultipleCopiesPDF = async (
   canvasElement: HTMLElement,
   templateState: NewTemplateType,
-  options: PrintOptions
+  options: PrintOptions,
+   templateName: string
 ): Promise<void> => {
   if (!templateState.width || !templateState.height) {
     throw new Error('Dimensions du template non définies')
@@ -147,7 +148,7 @@ export const generateMultipleCopiesPDF = async (
     }
   }
 
-  const filename = `affiche-multiple-${layout.totalCopies}-copies.pdf`
+  const filename = `affiche-multiple-${templateName}-${templateState.width}x${templateState.height}-${layout.totalCopies}-copies.pdf`
   pdf.save(filename)
 }
 
@@ -157,11 +158,11 @@ export const generateMultipleCopiesPDF = async (
 export const generateSinglePDF = async (
   canvasElement: HTMLElement,
   templateState: NewTemplateType,
-  options: PrintOptions
+  options: PrintOptions,
+  templateName: string
 ): Promise<void> => {
   // Marque le paramètre comme utilisé pour la linter
   void options
-
   // Capturer le canvas
   const canvas = await html2canvas(canvasElement, {
     scale: 4,
@@ -193,7 +194,7 @@ export const generateSinglePDF = async (
     'FAST'
   )
 
-  pdf.save('affiche-simple.pdf')
+  pdf.save(`affiche-simple-${templateName}-${templateState.width}x${templateState.height}.pdf`)
 }
 
 /**
@@ -364,15 +365,16 @@ export const generateCombinedPDF = async (
 export const generatePDF = async (
   canvasElement: HTMLElement,
   templateState: NewTemplateType,
-  options: PrintOptions
+  options: PrintOptions,
+  templateName: string
 ): Promise<void> => {
   try {
     switch (options.mode) {
       case 'single':
-        await generateSinglePDF(canvasElement, templateState, options)
+        await generateSinglePDF(canvasElement, templateState, options, templateName)
         break
       case 'multiple':
-        await generateMultipleCopiesPDF(canvasElement, templateState, options)
+        await generateMultipleCopiesPDF(canvasElement, templateState, options, templateName)
         break
       case 'combine':
         await generateCombinedPDF(canvasElement, templateState, options)
