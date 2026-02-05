@@ -332,6 +332,13 @@ export const _getTemplate = async (
   await templatesServiceInstance.getTemplate(setTemplates, categoryId)
 }
 
+export const _getTemplateById = async (
+  setTemplates: React.Dispatch<React.SetStateAction<TemplateType>>,
+  templateId: number
+) => {
+  await templatesServiceInstance.getTemplateById(setTemplates, templateId)
+}
+
 export const _getTemplateLength = async (
   setTemplateLength: React.Dispatch<React.SetStateAction<number>>
 ) => {
@@ -682,11 +689,19 @@ export const _handleDeleteImg = async (
 ///////////////////////
 
 export const _getAllUsers = async (
-  setUsers: React.Dispatch<React.SetStateAction<UserType[]>>
+  setUsers: React.Dispatch<React.SetStateAction<UserType[]>>,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const response = await UsersServices.getAllUsers()
-  const data = await response.json()
-  setUsers(data)
+    setIsLoading(true)
+  try{
+    const response = await UsersServices.getAllUsers()
+    const data = await response.json()
+    setUsers(data)
+  }catch(error){
+    console.log(error)
+  }finally{
+      setIsLoading(false)
+  }
 }
 
 ///////////////////////

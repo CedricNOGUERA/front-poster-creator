@@ -1,178 +1,222 @@
-import React, { useState } from 'react'
-import { Modal, Button, Form, Row, Col, Card, Alert } from 'react-bootstrap'
-import { NewTemplateType } from '@/types/DiversType'
-import { generatePDF, PrintOptions, PAGE_DIMENSIONS } from '@/utils/printUtils'
-import PrintHelpModal from './PrintHelpModal'
-import { FaRegCircleQuestion } from 'react-icons/fa6'
+import React, { useState } from "react";
+import { Modal, Button, Form, Row, Col, Card, Alert } from "react-bootstrap";
+import { NewTemplateType } from "@/types/DiversType";
+import { generatePDF, PrintOptions, PAGE_DIMENSIONS } from "@/utils/printUtils";
+import PrintHelpModal from "./PrintHelpModal";
+import { FaRegCircleQuestion } from "react-icons/fa6";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 interface PrintOptionsModalProps {
-  show: boolean
-  onHide: () => void
-  templateState: NewTemplateType
-  canvasRef: React.RefObject<HTMLDivElement | null>
+  show: boolean;
+  onHide: () => void;
+  templateState: NewTemplateType;
+  canvasRef: React.RefObject<HTMLDivElement | null>;
+  templateName: string;
 }
 
 interface PrintLayout {
-  rows: number
-  cols: number
-  totalCopies: number
-  spacing: number
+  rows: number;
+  cols: number;
+  totalCopies: number;
+  spacing: number;
 }
 
 interface PDFFile {
-  id: string
-  name: string
-  file: File
-  width: number
-  height: number
-  preview?: string
-  status: 'pending' | 'processing' | 'ready' | 'error'
+  id: string;
+  name: string;
+  file: File;
+  width: number;
+  height: number;
+  preview?: string;
+  status: "pending" | "processing" | "ready" | "error";
 }
 
 const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
   show,
   onHide,
   templateState,
-  canvasRef
+  canvasRef,
+  templateName,
 }) => {
-  const [printMode, setPrintMode] = useState<'single' | 'multiple' | 'combine'>('single')
-  const [copiesPerPage, setCopiesPerPage] = useState(4)
-  const [pageFormat, setPageFormat] = useState<'A4' | 'A3' | 'custom'>('A4')
-  const [customWidth, setCustomWidth] = useState(210)
-  const [customHeight, setCustomHeight] = useState(297)
-  const [spacing, setSpacing] = useState(1)
-  const [uploadedPDFs, setUploadedPDFs] = useState<PDFFile[]>([])
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [showHelp, setShowHelp] = useState(false)
+  const [printMode, setPrintMode] = useState<"single" | "multiple" | "combine">(
+    "single",
+  );
+  const [copiesPerPage, setCopiesPerPage] = useState(4);
+  const [pageFormat, setPageFormat] = useState<"A4" | "A3" | "custom">("A4");
+  const [customWidth, setCustomWidth] = useState(210);
+  const [customHeight, setCustomHeight] = useState(297);
+  const [spacing, setSpacing] = useState(1);
+  const [uploadedPDFs, setUploadedPDFs] = useState<PDFFile[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [totalHeight, setTotalHeight] = useState(0);
 
-  const currentPageDimensions = pageFormat === 'custom' 
-    ? { width: customWidth, height: customHeight }
-    : PAGE_DIMENSIONS[pageFormat]
+  const currentPageDimensions =
+    pageFormat === "custom"
+      ? { width: customWidth, height: customHeight }
+      : PAGE_DIMENSIONS[pageFormat];
+  React.useEffect(() => {
+    setTotalHeight(
+      uploadedPDFs.reduce((acc: any, pdf: any) => {
+        return acc + Math.round(pdf.height);
+      }, templateState.height),
+    );
+  }, [uploadedPDFs]);
 
   // Calculer le layout optimal pour les copies multiples
   const calculateLayout = (): PrintLayout => {
     if (!templateState.width || !templateState.height) {
-      return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 }
+      return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 };
     }
 
-    const posterWidth = templateState.width
-    const posterHeight = templateState.height
-    const availableWidth = currentPageDimensions.width - (spacing * 2)
-    const availableHeight = currentPageDimensions.height - (spacing * 2)
+    const posterWidth = templateState.width;
+    const posterHeight = templateState.height;
+    const availableWidth = currentPageDimensions.width - spacing * 2;
+    const availableHeight = currentPageDimensions.height - spacing * 2;
 
-    let bestLayout = { rows: 1, cols: 1, totalCopies: 1, spacing }
-    let maxCopies = 1
+    let bestLayout = { rows: 1, cols: 1, totalCopies: 1, spacing };
+    let maxCopies = 1;
 
     // Essayer différentes configurations
     for (let cols = 1; cols <= 10; cols++) {
       for (let rows = 1; rows <= 10; rows++) {
-        const totalCopies = cols * rows
-        if (totalCopies > copiesPerPage) continue
+        const totalCopies = cols * rows;
+        if (totalCopies > copiesPerPage) continue;
 
-        const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1))
-        const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1))
+        const requiredWidth = posterWidth * cols + spacing * (cols - 1);
+        const requiredHeight = posterHeight * rows + spacing * (rows - 1);
 
-        if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
+        if (
+          requiredWidth <= availableWidth &&
+          requiredHeight <= availableHeight
+        ) {
           if (totalCopies > maxCopies) {
-            maxCopies = totalCopies
-            bestLayout = { rows, cols, totalCopies, spacing }
+            maxCopies = totalCopies;
+            bestLayout = { rows, cols, totalCopies, spacing };
           }
         }
       }
     }
 
-    return bestLayout
-  }
+    return bestLayout;
+  };
 
-  const layout = calculateLayout()
+  const layout = calculateLayout();
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files) return
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = event.target.files;
+    if (!files) return;
 
     for (const file of Array.from(files)) {
-      if (file.type === 'application/pdf') {
+      if (file.type === "application/pdf") {
         const pdfFile: PDFFile = {
           id: Date.now().toString() + Math.random(),
           name: file.name,
           file: file,
           width: 210, // Dimensions par défaut
           height: 297,
-          status: 'processing'
-        }
-        
-        setUploadedPDFs(prev => [...prev, pdfFile])
-        
+          status: "processing",
+        };
+
+        setUploadedPDFs((prev) => [...prev, pdfFile]);
+
         try {
           // Essayer de générer un aperçu du PDF
-          const { convertPDFToSingleImage } = await import('@/utils/pdfConverterReal')
-          const pdfPage = await convertPDFToSingleImage(file)
-          
-          setUploadedPDFs(prev => prev.map(pdf => 
-            pdf.id === pdfFile.id 
-              ? { 
-                  ...pdf, 
-                  width: (pdfPage.width) / 5.67, 
-                  height: (pdfPage.height) / 5.67, 
-                  preview: pdfPage.imageData,
-                  status: 'ready' as const
-                }
-              : pdf
-          ))
+          const { convertPDFToSingleImage } =
+            await import("@/utils/pdfConverterReal");
+          const pdfPage = await convertPDFToSingleImage(file);
+
+          setUploadedPDFs((prev) =>
+            prev.map((pdf) =>
+              pdf.id === pdfFile.id
+                ? {
+                    ...pdf,
+                    width: pdfPage.width / 5.67,
+                    height: pdfPage.height / 5.67,
+                    preview: pdfPage.imageData,
+                    status: "ready" as const,
+                  }
+                : pdf,
+            ),
+          );
         } catch (error) {
-          console.error('Erreur lors du traitement du PDF:', error)
-          setUploadedPDFs(prev => prev.map(pdf => 
-            pdf.id === pdfFile.id 
-              ? { ...pdf, status: 'error' as const }
-              : pdf
-          ))
+          console.error("Erreur lors du traitement du PDF:", error);
+          setUploadedPDFs((prev) =>
+            prev.map((pdf) =>
+              pdf.id === pdfFile.id
+                ? { ...pdf, status: "error" as const }
+                : pdf,
+            ),
+          );
         }
       }
     }
-  }
+  };
 
   const removePDF = (id: string) => {
-    setUploadedPDFs(prev => prev.filter(pdf => pdf.id !== id))
-  }
-
+    setUploadedPDFs((prev) => prev.filter((pdf) => pdf.id !== id));
+  };
 
   const handleGenerate = async () => {
-    if (!canvasRef.current) return
+    if (!canvasRef.current) return;
 
     // Validation pour le mode combinaison
-    if (printMode === 'combine' && uploadedPDFs.length === 0) {
-      alert('Veuillez sélectionner au moins un PDF à combiner.')
-      return
+    if (printMode === "combine" && uploadedPDFs.length === 0) {
+      alert("Veuillez sélectionner au moins un PDF à combiner.");
+      return;
     }
 
     // Vérifier que tous les PDFs sont prêts
-    const processingPDFs = uploadedPDFs.filter(pdf => pdf.status === 'processing')
+    const processingPDFs = uploadedPDFs.filter(
+      (pdf) => pdf.status === "processing",
+    );
     if (processingPDFs.length > 0) {
-      alert('Veuillez attendre que tous les PDFs soient traités.')
-      return
+      alert("Veuillez attendre que tous les PDFs soient traités.");
+      return;
     }
 
-    setIsGenerating(true)
+    setIsGenerating(true);
     try {
       const options: PrintOptions = {
         mode: printMode,
         pageFormat: pageFormat,
-        customDimensions: pageFormat === 'custom' ? { width: customWidth, height: customHeight } : undefined,
+        customDimensions:
+          pageFormat === "custom"
+            ? { width: customWidth, height: customHeight }
+            : undefined,
         copiesPerPage: copiesPerPage,
         spacing: spacing,
-        uploadedPDFs: uploadedPDFs.filter(pdf => pdf.status === 'ready').map(pdf => pdf.file)
-      }
+        uploadedPDFs: uploadedPDFs
+          .filter((pdf) => pdf.status === "ready")
+          .map((pdf) => pdf.file),
+      };
 
-      
-
-      await generatePDF(canvasRef.current, templateState, options)
+      await generatePDF(
+        canvasRef.current,
+        templateState,
+        options,
+        templateName,
+      );
     } catch (error) {
-      console.error('Erreur lors de la génération du PDF:', error)
-      alert('Erreur lors de la génération du PDF. Vérifiez la console pour plus de détails.')
+      console.error("Erreur lors de la génération du PDF:", error);
+      alert(
+        "Erreur lors de la génération du PDF. Vérifiez la console pour plus de détails.",
+      );
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
-  }
+  };
+  console.log(uploadedPDFs);
+  console.log(totalHeight);
+  console.log(currentPageDimensions.height);
+
+  // const totalWidth = uploadedPDFs.reduce((acc: any, pdf: any) => {
+  // return  acc + Math.round(pdf.height)
+  // }, templateState.height )
+
+  console.log(totalHeight > currentPageDimensions.height);
 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
@@ -180,11 +224,10 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
         <Modal.Title>Options d'impression avancées</Modal.Title>
         <Button
           variant="outline-info"
-          size="sm"
           onClick={() => setShowHelp(true)}
-          className="d-flex align-items-center ms-2 border-0"
+          className="d-flex align-items-center ms-3 "
         >
-          <FaRegCircleQuestion />
+          <FaRegCircleQuestion /> <span className="ms-2">Guide</span>
           {/* Aide */}
         </Button>
       </Modal.Header>
@@ -194,40 +237,59 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
             <Col md={12}>
               <Form.Group className="mb-3">
                 <Form.Label>Mode d'impression</Form.Label>
-                <div className='d-flex flex-row justify-content-around border rounded-3 py-3'>
-                  <Form.Check
-                    type="radio"
-                    label="Extraction simple"
-                    name="printMode"
-                    value="single"
-                    checked={printMode === 'single'}
-                    onChange={(e) => setPrintMode(e.target.value as "single" | "multiple" | "combine")}
-                    inline
-                  />
-                  <Form.Check
-                    type="radio"
-                    label="Duplication sur une page"
-                    name="printMode"
-                    value="multiple"
-                    checked={printMode === 'multiple'}
-                    onChange={(e) => setPrintMode(e.target.value as "single" | "multiple" | "combine")}
-                    inline
-                  />
-                  <Form.Check
-                    type="radio"
-                    label="Combinaison de PDFs"
-                    name="printMode"
-                    value="combine"
-                    checked={printMode === 'combine'}
-                    onChange={(e) => setPrintMode(e.target.value as "single" | "multiple" | "combine")}
-                    inline
-                  />
+                <div className="d-flex flex-row justify-content-around border rounded-3 py-3">
+                  <Form.Label className="pointer">
+                    <Form.Check
+                      type="radio"
+                      name="printMode"
+                      value="single"
+                      checked={printMode === "single"}
+                      onChange={(e) =>
+                        setPrintMode(
+                          e.target.value as "single" | "multiple" | "combine",
+                        )
+                      }
+                      inline
+                    />
+                    Extraction simple
+                  </Form.Label>
+                  <Form.Label className="pointer">
+                    <Form.Check
+                      type="radio"
+                      // label="Duplication sur une page"
+                      name="printMode"
+                      value="multiple"
+                      checked={printMode === "multiple"}
+                      onChange={(e) =>
+                        setPrintMode(
+                          e.target.value as "single" | "multiple" | "combine",
+                        )
+                      }
+                      inline
+                    />
+                    Duplication sur une page
+                  </Form.Label>
+                  <Form.Label className="pointer">
+                    <Form.Check
+                      type="radio"
+                      name="printMode"
+                      value="combine"
+                      checked={printMode === "combine"}
+                      onChange={(e) =>
+                        setPrintMode(
+                          e.target.value as "single" | "multiple" | "combine",
+                        )
+                      }
+                      inline
+                    />
+                    Combinaison de PDFs
+                  </Form.Label>
                 </div>
               </Form.Group>
             </Col>
           </Row>
 
-          {printMode === 'multiple' && (
+          {printMode === "multiple" && (
             <>
               <Row>
                 <Col md={6}>
@@ -235,7 +297,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                     <Form.Label>Format de page</Form.Label>
                     <Form.Select
                       value={pageFormat}
-                      onChange={(e) => setPageFormat(e.target.value as "A4" | "A3" | "custom")}
+                      onChange={(e) =>
+                        setPageFormat(e.target.value as "A4" | "A3" | "custom")
+                      }
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
                       <option value="A3">A3 (297 x 420 mm)</option>
@@ -244,20 +308,38 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                   </Form.Group>
                 </Col>
                 <Col md={6}>
-                  <Form.Group className="mb-3">
+                  <Form.Group className="mb-">
                     <Form.Label>Nombre de copies souhaitées</Form.Label>
                     <Form.Control
                       type="number"
                       min="1"
                       max="20"
                       value={copiesPerPage}
-                      onChange={(e) => setCopiesPerPage(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        setCopiesPerPage(parseInt(e.target.value))
+                      }
                     />
                   </Form.Group>
+                  {layout.totalCopies < copiesPerPage && (
+                    <>
+                      <small className="text-danger">
+                        {" "}
+                        <RiErrorWarningLine size={16} /> Vous ne pouvez placer
+                        que {layout.totalCopies} copies sur ce format{" "}
+                      </small>
+                    </>
+                  )}
+                  {layout.totalCopies === 1 && (
+                    <div>
+                      <small className="text-danger">
+                        Faites une extraction simple
+                      </small>
+                    </div>
+                  )}
                 </Col>
               </Row>
 
-              {pageFormat === 'custom' && (
+              {pageFormat === "custom" && (
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
@@ -265,7 +347,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                       <Form.Control
                         type="number"
                         value={customWidth}
-                        onChange={(e) => setCustomWidth(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          setCustomWidth(parseInt(e.target.value))
+                        }
                       />
                     </Form.Group>
                   </Col>
@@ -275,7 +359,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                       <Form.Control
                         type="number"
                         value={customHeight}
-                        onChange={(e) => setCustomHeight(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          setCustomHeight(parseInt(e.target.value))
+                        }
                       />
                     </Form.Group>
                   </Col>
@@ -298,15 +384,30 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
               </Row>
 
               <Alert variant="info">
-                <strong>Configuration calculée:</strong><br />
-                {layout.rows} rangée(s) × {layout.cols} colonne(s) = {layout.totalCopies} copie(s)<br />
-                Dimensions de l'affiche: {templateState.width} × {templateState.height} mm<br />
-                Dimensions de la page: {currentPageDimensions.width} × {currentPageDimensions.height} mm
+                <strong>Configuration calculée:</strong>
+                <br />
+                {layout.rows} rangée(s) × {layout.cols} colonne(s) ={" "}
+                {layout.totalCopies} copie(s)
+                <br />
+                Dimensions de l'affiche: {templateState.width} ×{" "}
+                {templateState.height} mm
+                <br />
+                <span
+                  className={
+                    templateState.width &&
+                    templateState.width > currentPageDimensions.width
+                      ? "text-danger"
+                      : ""
+                  }
+                >
+                  Dimensions de la page: {currentPageDimensions.width} ×{" "}
+                  {currentPageDimensions.height} mm
+                </span>
               </Alert>
             </>
           )}
 
-          {printMode === 'combine' && (
+          {printMode === "combine" && (
             <>
               <Row>
                 <Col md={6}>
@@ -314,7 +415,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                     <Form.Label>Format de page de sortie</Form.Label>
                     <Form.Select
                       value={pageFormat}
-                      onChange={(e) => setPageFormat(e.target.value as "A4" | "A3" | "custom")}
+                      onChange={(e) =>
+                        setPageFormat(e.target.value as "A4" | "A3" | "custom")
+                      }
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
                       <option value="A3">A3 (297 x 420 mm)</option>
@@ -335,8 +438,8 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                   </Form.Group>
                 </Col>
               </Row>
-            
-              {pageFormat === 'custom' && (
+
+              {pageFormat === "custom" && (
                 <Row>
                   <Col md={6}>
                     <Form.Group className="mb-3">
@@ -344,7 +447,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                       <Form.Control
                         type="number"
                         value={customWidth}
-                        onChange={(e) => setCustomWidth(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          setCustomWidth(parseInt(e.target.value))
+                        }
                       />
                     </Form.Group>
                   </Col>
@@ -354,7 +459,9 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                       <Form.Control
                         type="number"
                         value={customHeight}
-                        onChange={(e) => setCustomHeight(parseInt(e.target.value))}
+                        onChange={(e) =>
+                          setCustomHeight(parseInt(e.target.value))
+                        }
                       />
                     </Form.Group>
                   </Col>
@@ -372,7 +479,8 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                       onChange={handleFileUpload}
                     />
                     <Form.Text className="text-muted">
-                      Sélectionnez un ou plusieurs fichiers PDF à combiner avec l'affiche actuelle
+                      Sélectionnez un ou plusieurs fichiers PDF à combiner avec
+                      l'affiche actuelle
                     </Form.Text>
                   </Form.Group>
                 </Col>
@@ -382,54 +490,58 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                 <Row>
                   <Col md={12}>
                     <h6>PDFs sélectionnés:</h6>
-                    {uploadedPDFs.map(pdf => {
-                      const width = (50* Math.round(pdf.width))/Math.round(pdf.height)
+                    {uploadedPDFs.map((pdf) => {
+                      const width =
+                        (50 * Math.round(pdf.width)) / Math.round(pdf.height);
                       return (
-                        <Card key={pdf.id} className='mb-2'>
-                          <Card.Body className='py-2'>
-                            <div className='d-flex justify-content-between align-items-center'>
-                              <div className='d-flex align-items-center'>
-                                {pdf.status === 'processing' && (
+                        <Card key={pdf.id} className="mb-2">
+                          <Card.Body className="py-2">
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div className="d-flex align-items-center">
+                                {pdf.status === "processing" && (
                                   <div
-                                    className='spinner-border spinner-border-sm me-2'
-                                    role='status'
+                                    className="spinner-border spinner-border-sm me-2"
+                                    role="status"
                                   >
-                                    <span className='visually-hidden'>Chargement...</span>
+                                    <span className="visually-hidden">
+                                      Chargement...
+                                    </span>
                                   </div>
                                 )}
-                                {pdf.status === 'ready' && pdf.preview && (
+                                {pdf.status === "ready" && pdf.preview && (
                                   <img
                                     src={pdf.preview}
-                                    alt='Aperçu'
+                                    alt="Aperçu"
                                     style={{
                                       width: `${width}px`,
                                       // width: '30px',
-                                      height: '50px',
-                                      objectFit: 'cover',
-                                      marginRight: '10px',
+                                      height: "50px",
+                                      objectFit: "cover",
+                                      marginRight: "10px",
                                     }}
                                   />
                                 )}
-                                {pdf.status === 'error' && (
-                                  <span className='text-danger me-2'>❌</span>
+                                {pdf.status === "error" && (
+                                  <span className="text-danger me-2">❌</span>
                                 )}
                                 <div>
                                   <div>{pdf.name}</div>
-                                  {pdf.status === 'ready' && (
-                                    <small className='text-muted'>
-                                      {Math.round(pdf.width)} × {Math.round(pdf.height)} px
+                                  {pdf.status === "ready" && (
+                                    <small className="text-muted">
+                                      {Math.round(pdf.width)} ×{" "}
+                                      {Math.round(pdf.height)} px
                                     </small>
                                   )}
-                                  {pdf.status === 'error' && (
-                                    <small className='text-danger'>
+                                  {pdf.status === "error" && (
+                                    <small className="text-danger">
                                       Erreur lors du traitement
                                     </small>
                                   )}
                                 </div>
                               </div>
                               <Button
-                                variant='outline-danger'
-                                size='sm'
+                                variant="outline-danger"
+                                size="sm"
                                 onClick={() => removePDF(pdf.id)}
                               >
                                 Supprimer
@@ -437,9 +549,16 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
                             </div>
                           </Card.Body>
                         </Card>
-                      )}
-                    )}
+                      );
+                    })}
                   </Col>
+                  {totalHeight > currentPageDimensions.height && (
+                    <Form.Text className="text-danger">
+                      <RiErrorWarningLine size={16} /> Votre sélection dépasse
+                      la taille de la page, le dernier pdf ne figurera pas sur
+                      l'impression, supprimez le
+                    </Form.Text>
+                  )}
                 </Row>
               )}
             </>
@@ -453,17 +572,22 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
         <Button
           variant="primary"
           onClick={handleGenerate}
-          disabled={isGenerating || (printMode === 'combine' && uploadedPDFs.length === 0) || uploadedPDFs.some(pdf => pdf.status === 'processing')}
+          disabled={
+            isGenerating ||
+            (printMode === "combine" && uploadedPDFs.length === 0) ||
+            uploadedPDFs.some(
+              (pdf) =>
+                pdf.status === "processing" ||
+                totalHeight > currentPageDimensions.height,
+            )
+          }
         >
-          {isGenerating ? 'Génération...' : 'Générer PDF'}
+          {isGenerating ? "Génération..." : "Générer PDF"}
         </Button>
       </Modal.Footer>
-      <PrintHelpModal
-        show={showHelp}
-        onHide={() => setShowHelp(false)}
-      />
+      <PrintHelpModal show={showHelp} onHide={() => setShowHelp(false)} />
     </Modal>
-  )
-}
+  );
+};
 
-export default PrintOptionsModal
+export default PrintOptionsModal;

@@ -13,7 +13,7 @@ import {
   VerticalLineComponentType,
 } from '@/types/ComponentType'
 import { ModelType } from '@/types/modelType'
-import { _getModels } from '@/utils/apiFunctions'
+import { _getModels, _getTemplate, _getTemplateById } from '@/utils/apiFunctions'
 import { _thousandSeparator } from '@/utils/functions'
 // import html2canvas from 'html2canvas'
 // import jsPDF from 'jspdf'
@@ -24,7 +24,7 @@ import userDataStore from '@/stores/userDataStore'
 import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
 import PrintOptionsModal from '../PrintOptionsModal'
 import PictureAdder from '../editorTemplateComponent/PictureAdder'
-// import PrintOptionsModalAdvanced from '../PrintOptionsModalAdvanced'
+import { TemplateType } from '@/types/TemplatesType'
 
 export const EditorTemplate = () => {
   /* States / Hooks
@@ -34,6 +34,7 @@ export const EditorTemplate = () => {
   const superAdminRole = userDataStore((state) => state.role) === 'super_admin'
   const printRef = useRef(null)
   const [canvasData, setCanvasData] = useState<ComponentTypeMulti[]>([])
+  const [currentTemplate, setCurrentTemplate] = React.useState<TemplateType>({} as TemplateType)
   const [models, setModels] = React.useState<ModelType[]>([])
   const [modelId, setModelId] = useState<number>(0)
   const [pageWidth, setPageWidth] = useState<number>(0)
@@ -45,6 +46,7 @@ export const EditorTemplate = () => {
     top: 0,
     left: 0,
   });
+
   
   const [previewStyle, setPreviewStyle] = useState<React.CSSProperties>({
     width: '100%',
@@ -58,15 +60,16 @@ export const EditorTemplate = () => {
   
   const [isUpdating, setIsUpdating] = useState<boolean>(false)
   const [showPrintOptions, setShowPrintOptions] = useState(false)
-
+  
   /* UseEffect
-   *******************************************************************************************/
-  React.useEffect(() => {
-    const init = async () => {
-      await getCanvasData()
-      await getPageDimensions()
-      await setPageForPrint()
-      await setPageForPreview()
+  *******************************************************************************************/
+ React.useEffect(() => {
+   const init = async () => {
+     await getCanvasData()
+     await getPageDimensions()
+     await setPageForPrint()
+     await setPageForPreview()
+     await _getTemplateById(setCurrentTemplate, storeApp.templateId)
     }
     init()
   }, [storeApp, storeApp.dimensionId, pageWidth, pageHeight, models])
@@ -76,8 +79,8 @@ export const EditorTemplate = () => {
   }, [])
   
   /* Functions
-   *******************************************************************************************/
-  const getCanvasData = async () => {
+  *******************************************************************************************/
+ const getCanvasData = async () => {
     const selectedSchema = models.find(
       (p) =>
         p.dimensionId === storeApp.dimensionId &&
@@ -88,7 +91,6 @@ export const EditorTemplate = () => {
     setCanvasData(selectedSchema?.canvas as ComponentTypeMulti[])
     setModelId(selectedSchema?.id ?? 0)
   }
-
   const getPageDimensions = async () => {
     const selectedDimension = dimensions.find((d) => d.id === storeApp.dimensionId)
     setPageHeight(selectedDimension?.height ?? 0)
@@ -532,9 +534,7 @@ export const EditorTemplate = () => {
                       Modifier le modèle
                     </Button>
                   ))}
-                {/* <Button variant='primary' onClick={handleExportToPDF} className='mt-4 me-2'>
-                  Génerer le PDF
-                </Button> */}
+                
                 <Button variant='info' onClick={() => setShowPrintOptions(true)} className='text-muted mt-4'>
                   Options d'impression
                 </Button>
@@ -555,6 +555,7 @@ export const EditorTemplate = () => {
           idCategory: storeApp.categoryId
         }}
         canvasRef={printRef}
+        templateName={currentTemplate.name}
       />
     </>
   )
