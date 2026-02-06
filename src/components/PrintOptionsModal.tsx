@@ -3,7 +3,7 @@ import { Modal, Button, Form, Row, Col, Card, Alert } from "react-bootstrap";
 import { NewTemplateType } from "@/types/DiversType";
 import { generatePDF, PrintOptions, PAGE_DIMENSIONS } from "@/utils/printUtils";
 import PrintHelpModal from "./PrintHelpModal";
-import { FaRegCircleQuestion } from "react-icons/fa6";
+import { FaBook, FaRegCircleQuestion } from "react-icons/fa6";
 import { RiErrorWarningLine } from "react-icons/ri";
 
 interface PrintOptionsModalProps {
@@ -336,13 +336,6 @@ const calculateLayout = (): PrintLayout => {
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title>Options d'impression avancées</Modal.Title>
-        <Button
-          variant="outline-info"
-          onClick={() => setShowHelp(true)}
-          className="d-flex align-items-center ms-3 "
-        >
-          <FaRegCircleQuestion /> <span className="ms-2">Aide</span>
-        </Button>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -677,25 +670,36 @@ const calculateLayout = (): PrintLayout => {
           )}
         </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Annuler
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleGenerate}
-          disabled={
-            isGenerating ||
-            (printMode === "combine" && uploadedPDFs.length === 0) ||
-            uploadedPDFs.some(
-              (pdf) =>
-                pdf.status === "processing" ||
-                totalHeight > currentPageDimensions.height,
-            )
-          }
-        >
-          {isGenerating ? "Génération..." : "Générer PDF"}
-        </Button>
+      <Modal.Footer className="d-flex justify-content-between">
+        <div>
+          <Button
+            variant="outline-info"
+            onClick={() => setShowHelp(true)}
+            className="d-flex align-items-center"
+          >
+            <FaBook /> <span className="ms-2">Aide</span>
+          </Button>
+        </div>
+        <div>
+          <Button variant="secondary" onClick={onHide} className="me-3">
+            Annuler
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleGenerate}
+            disabled={
+              isGenerating ||
+              (printMode === "combine" && uploadedPDFs.length === 0) ||
+              uploadedPDFs.some(
+                (pdf) =>
+                  pdf.status === "processing" ||
+                  totalHeight > currentPageDimensions.height,
+              )
+            }
+          >
+            {isGenerating ? "Génération..." : "Générer PDF"}
+          </Button>
+        </div>
       </Modal.Footer>
       <PrintHelpModal show={showHelp} onHide={() => setShowHelp(false)} />
     </Modal>
