@@ -19,6 +19,7 @@ interface PrintLayout {
   cols: number;
   totalCopies: number;
   spacing: number;
+  customLayout?: string;
 }
 
 interface PDFFile {
@@ -64,6 +65,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
   }, [uploadedPDFs, templateState.height]);
 
   // Calculer le layout optimal pour les copies multiples
+  //original
   // const calculateLayout = (): PrintLayout => {
   //   if (!templateState.width || !templateState.height) {
   //     return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 };
@@ -100,7 +102,54 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
 
   //   return bestLayout;
   // };
-  const calculateLayout = (): PrintLayout => {
+  
+  //2 good, 3 pas good, 4 good
+//   const calculateLayout = (): PrintLayout => {
+//   if (!templateState.width || !templateState.height) {
+//     return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 };
+//   }
+
+//   const posterWidth = templateState.width;
+//   const posterHeight = templateState.height;
+  
+//   // Marges minimales
+//   const margin = Math.max(spacing, 1); // Au moins 1mm de marge
+//   const availableWidth = currentPageDimensions.width - (margin * 2);
+//   const availableHeight = currentPageDimensions.height - (margin * 2);
+
+//   let bestLayout = { rows: 1, cols: 1, totalCopies: 1, spacing: margin };
+//   let maxCopies = 0;
+
+//   // Calculer le nombre maximum de colonnes et rangées possibles
+//   const maxPossibleCols = Math.floor((availableWidth + spacing) / (posterWidth + spacing));
+//   const maxPossibleRows = Math.floor((availableHeight + spacing) / (posterHeight + spacing));
+
+//   // Essayer différentes configurations
+//   for (let cols = 1; cols <= maxPossibleCols && cols <= 10; cols++) {
+//     for (let rows = 1; rows <= maxPossibleRows && rows <= 10; rows++) {
+//       const totalCopies = cols * rows;
+      
+//       // Ne pas dépasser le nombre demandé
+//       if (totalCopies > copiesPerPage) continue;
+
+//       // Calculer l'espace requis
+//       const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1));
+//       const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1));
+
+//       // Vérifier si ça rentre
+//       if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
+//         if (totalCopies > maxCopies) {
+//           maxCopies = totalCopies;
+//           bestLayout = { rows, cols, totalCopies, spacing: margin };
+//         }
+//       }
+//     }
+//   }
+
+//   return bestLayout;
+// };
+
+const calculateLayout = (): PrintLayout => {
   if (!templateState.width || !templateState.height) {
     return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 };
   }
@@ -108,35 +157,64 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
   const posterWidth = templateState.width;
   const posterHeight = templateState.height;
   
-  // Marges minimales
-  const margin = Math.max(spacing, 1); // Au moins 1mm de marge
+  const margin = Math.max(spacing, 1);
   const availableWidth = currentPageDimensions.width - (margin * 2);
   const availableHeight = currentPageDimensions.height - (margin * 2);
 
+  // CAS SPÉCIAL : 3 copies (2 en haut, 1 en bas)
+  if (copiesPerPage === 3) {
+    // Vérifier si on peut mettre 2 affiches côte à côte
+    const twoWidthHorizontal = (posterWidth * 2) + spacing;
+    const twoHeightVertical = (posterHeight * 2) + spacing;
+    
+    // Configuration portrait : 2 en haut, 1 en bas
+    if (twoWidthHorizontal <= availableWidth && twoHeightVertical <= availableHeight) {
+      return { 
+        rows: 2, 
+        cols: 2, 
+        totalCopies: 3, 
+        spacing: margin,
+        customLayout: 'portrait-3' // Pour indiquer le layout spécial
+      };
+    }
+    
+    // Fallback : essayer 3×1 horizontal
+    const threeWidthHorizontal = (posterWidth * 3) + (spacing * 2);
+    if (threeWidthHorizontal <= availableWidth && posterHeight <= availableHeight) {
+      return { rows: 1, cols: 3, totalCopies: 3, spacing: margin };
+    }
+    
+    // Fallback : essayer 1×3 vertical
+    const threeHeightVertical = (posterHeight * 3) + (spacing * 2);
+    if (posterWidth <= availableWidth && threeHeightVertical <= availableHeight) {
+      return { rows: 3, cols: 1, totalCopies: 3, spacing: margin };
+    }
+  }
+
+  // ALGORITHME STANDARD pour les autres cas
   let bestLayout = { rows: 1, cols: 1, totalCopies: 1, spacing: margin };
   let maxCopies = 0;
 
-  // Calculer le nombre maximum de colonnes et rangées possibles
   const maxPossibleCols = Math.floor((availableWidth + spacing) / (posterWidth + spacing));
   const maxPossibleRows = Math.floor((availableHeight + spacing) / (posterHeight + spacing));
 
-  // Essayer différentes configurations
   for (let cols = 1; cols <= maxPossibleCols && cols <= 10; cols++) {
     for (let rows = 1; rows <= maxPossibleRows && rows <= 10; rows++) {
       const totalCopies = cols * rows;
       
-      // Ne pas dépasser le nombre demandé
       if (totalCopies > copiesPerPage) continue;
 
-      // Calculer l'espace requis
       const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1));
       const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1));
 
-      // Vérifier si ça rentre
       if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
-        if (totalCopies > maxCopies) {
+        if (totalCopies > maxCopies || totalCopies === copiesPerPage) {
           maxCopies = totalCopies;
           bestLayout = { rows, cols, totalCopies, spacing: margin };
+          
+          if (totalCopies === copiesPerPage) {
+            return bestLayout;
+          }
         }
       }
     }
