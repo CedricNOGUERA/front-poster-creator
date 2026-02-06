@@ -8,6 +8,7 @@ export interface PrintLayout {
   cols: number
   totalCopies: number
   spacing: number
+  customLayout?: 'portrait-3'
 }
 
 export interface PageDimensions {
@@ -48,33 +49,106 @@ export const PAGE_DIMENSIONS = {
 /**
  * Calcule le layout optimal pour placer plusieurs copies d'une affiche sur une page
  */
+//original
+// export const calculateOptimalLayout = (
+//   posterWidth: number,
+//   posterHeight: number,
+//   pageWidth: number,
+//   pageHeight: number,
+//   maxCopies: number,
+//   spacing: number = 5
+// ): PrintLayout => {
+//   const availableWidth = pageWidth - (spacing * 2)
+//   const availableHeight = pageHeight - (spacing * 2)
+
+//   let bestLayout: PrintLayout = { rows: 1, cols: 1, totalCopies: 1, spacing }
+//   let maxCopiesFound = 1
+
+//   // Essayer différentes configurations
+//   for (let cols = 1; cols <= 20; cols++) {
+//     for (let rows = 1; rows <= 20; rows++) {
+//       const totalCopies = cols * rows
+//       if (totalCopies > maxCopies) continue
+
+//       const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1))
+//       const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1))
+
+//       if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
+//         if (totalCopies > maxCopiesFound) {
+//           maxCopiesFound = totalCopies
+//           bestLayout = { rows, cols, totalCopies, spacing }
+//         }
+//       }
+//     }
+//   }
+
+//   return bestLayout
+// }
 export const calculateOptimalLayout = (
   posterWidth: number,
   posterHeight: number,
   pageWidth: number,
   pageHeight: number,
-  maxCopies: number,
-  spacing: number = 5
+  copiesPerPage: number,
+  spacing: number
 ): PrintLayout => {
-  const availableWidth = pageWidth - (spacing * 2)
-  const availableHeight = pageHeight - (spacing * 2)
+  const margin = Math.max(spacing, 1)
+  const availableWidth = pageWidth - (margin * 2)
+  const availableHeight = pageHeight - (margin * 2)
 
-  let bestLayout: PrintLayout = { rows: 1, cols: 1, totalCopies: 1, spacing }
-  let maxCopiesFound = 1
+  // CAS SPÉCIAL : 3 copies (2 en haut, 1 en bas centré)
+  if (copiesPerPage === 3) {
+    const twoWidthHorizontal = (posterWidth * 2) + spacing
+    const twoHeightVertical = (posterHeight * 2) + spacing
+    
+    // Configuration portrait : 2 en haut, 1 en bas
+    if (twoWidthHorizontal <= availableWidth && twoHeightVertical <= availableHeight) {
+      return { 
+        rows: 2, 
+        cols: 2, 
+        totalCopies: 3, 
+        spacing: margin,
+        customLayout: 'portrait-3'
+      }
+    }
+    
+    // Fallback : essayer 3×1 horizontal
+    const threeWidthHorizontal = (posterWidth * 3) + (spacing * 2)
+    if (threeWidthHorizontal <= availableWidth && posterHeight <= availableHeight) {
+      return { rows: 1, cols: 3, totalCopies: 3, spacing: margin }
+    }
+    
+    // Fallback : essayer 1×3 vertical
+    const threeHeightVertical = (posterHeight * 3) + (spacing * 2)
+    if (posterWidth <= availableWidth && threeHeightVertical <= availableHeight) {
+      return { rows: 3, cols: 1, totalCopies: 3, spacing: margin }
+    }
+  }
 
-  // Essayer différentes configurations
-  for (let cols = 1; cols <= 20; cols++) {
-    for (let rows = 1; rows <= 20; rows++) {
+  // ALGORITHME STANDARD
+  let bestLayout: PrintLayout = { rows: 1, cols: 1, totalCopies: 1, spacing: margin }
+  let maxCopies = 0
+
+  const maxPossibleCols = Math.floor((availableWidth + spacing) / (posterWidth + spacing))
+  const maxPossibleRows = Math.floor((availableHeight + spacing) / (posterHeight + spacing))
+
+  for (let cols = 1; cols <= maxPossibleCols && cols <= 10; cols++) {
+    for (let rows = 1; rows <= maxPossibleRows && rows <= 10; rows++) {
       const totalCopies = cols * rows
-      if (totalCopies > maxCopies) continue
+      
+      if (totalCopies > copiesPerPage) continue
 
       const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1))
       const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1))
 
       if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
-        if (totalCopies > maxCopiesFound) {
-          maxCopiesFound = totalCopies
-          bestLayout = { rows, cols, totalCopies, spacing }
+        if (totalCopies > maxCopies || totalCopies === copiesPerPage) {
+          maxCopies = totalCopies
+          bestLayout = { rows, cols, totalCopies, spacing: margin }
+          
+          if (totalCopies === copiesPerPage) {
+            return bestLayout
+          }
         }
       }
     }
@@ -86,11 +160,78 @@ export const calculateOptimalLayout = (
 /**
  * Génère un PDF avec plusieurs copies de la même affiche
  */
+//original
+// export const generateMultipleCopiesPDF = async (
+//   canvasElement: HTMLElement,
+//   templateState: NewTemplateType,
+//   options: PrintOptions,
+//    templateName: string
+// ): Promise<void> => {
+//   if (!templateState.width || !templateState.height) {
+//     throw new Error('Dimensions du template non définies')
+//   }
+
+//   const pageDimensions = getPageDimensions(options)
+
+//   const layout = calculateOptimalLayout(
+//     templateState.width,
+//     templateState.height,
+//     pageDimensions.width,
+//     pageDimensions.height,
+//     options.copiesPerPage || 4,
+//     options.spacing || 5
+//   )
+
+//   // Capturer le canvas avec haute résolution
+//   const canvas = await html2canvas(canvasElement, {
+//     scale: 4,
+//     useCORS: true,
+//     logging: false,
+//     backgroundColor: '#ffffff',
+//     allowTaint: true,
+//     imageTimeout: 0,
+//     removeContainer: false,
+//   })
+
+//   const imgData = canvas.toDataURL('image/png', 1.0)
+//   const posterWidth = templateState.width
+//   const posterHeight = templateState.height
+
+//   // Créer le PDF
+//   const pdf = new jsPDF({
+//     orientation: pageDimensions.height > pageDimensions.width ? 'portrait' : 'landscape',
+//     unit: 'mm',
+//     format: [pageDimensions.width, pageDimensions.height],
+//   })
+
+//   // Ajouter les copies
+//   for (let row = 0; row < layout.rows; row++) {
+//     for (let col = 0; col < layout.cols; col++) {
+//       const x = layout.spacing + (col * (posterWidth + layout.spacing))
+//       const y = layout.spacing + (row * (posterHeight + layout.spacing))
+      
+//       pdf.addImage(
+//         imgData,
+//         'PNG',
+//         x,
+//         y,
+//         posterWidth,
+//         posterHeight,
+//         undefined,
+//         'FAST'
+//       )
+//     }
+//   }
+
+//   const filename = `affiche-multiple-${templateName}-${templateState.width}x${templateState.height}-${layout.totalCopies}-copies.pdf`
+//   pdf.save(filename)
+// }
+
 export const generateMultipleCopiesPDF = async (
   canvasElement: HTMLElement,
   templateState: NewTemplateType,
   options: PrintOptions,
-   templateName: string
+  templateName: string
 ): Promise<void> => {
   if (!templateState.width || !templateState.height) {
     throw new Error('Dimensions du template non définies')
@@ -129,11 +270,17 @@ export const generateMultipleCopiesPDF = async (
     format: [pageDimensions.width, pageDimensions.height],
   })
 
-  // Ajouter les copies
-  for (let row = 0; row < layout.rows; row++) {
-    for (let col = 0; col < layout.cols; col++) {
-      const x = layout.spacing + (col * (posterWidth + layout.spacing))
-      const y = layout.spacing + (row * (posterHeight + layout.spacing))
+  // CAS SPÉCIAL : 3 copies en portrait (2 en haut, 1 en bas à droite)
+  if (layout.customLayout === 'portrait-3') {
+    const positions = [
+      { row: 0, col: 0 },     // Haut gauche
+      { row: 0, col: 1 },     // Haut droite
+      { row: 1, col: 0 },   // Bas droite
+    ]
+    
+    positions.forEach((pos) => {
+      const x = layout.spacing + (pos.col * (posterWidth + layout.spacing))
+      const y = layout.spacing + (pos.row * (posterHeight + layout.spacing))
       
       pdf.addImage(
         imgData,
@@ -145,6 +292,28 @@ export const generateMultipleCopiesPDF = async (
         undefined,
         'FAST'
       )
+    })
+  } else {
+    // DISPOSITION STANDARD (grille rectangulaire)
+    for (let row = 0; row < layout.rows; row++) {
+      for (let col = 0; col < layout.cols; col++) {
+        const index = row * layout.cols + col
+        if (index >= layout.totalCopies) break
+        
+        const x = layout.spacing + (col * (posterWidth + layout.spacing))
+        const y = layout.spacing + (row * (posterHeight + layout.spacing))
+        
+        pdf.addImage(
+          imgData,
+          'PNG',
+          x,
+          y,
+          posterWidth,
+          posterHeight,
+          undefined,
+          'FAST'
+        )
+      }
     }
   }
 
