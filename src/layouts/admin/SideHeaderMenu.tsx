@@ -27,7 +27,7 @@ export const SideHeaderMenu = ({
   const userRole = userDataStore((state: UserDataType) => state.role)
   
   const userData = userDataStore((state: UserDataType) => state)
-  console.log(userData.name)
+  
   /* Functions
    *******************************************************************************************/
   const handleClick = (title: string) => {
