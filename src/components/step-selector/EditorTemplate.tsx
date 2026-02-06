@@ -91,6 +91,7 @@ export const EditorTemplate = () => {
     setCanvasData(selectedSchema?.canvas as ComponentTypeMulti[])
     setModelId(selectedSchema?.id ?? 0)
   }
+  
   const getPageDimensions = async () => {
     const selectedDimension = dimensions.find((d) => d.id === storeApp.dimensionId)
     setPageHeight(selectedDimension?.height ?? 0)
