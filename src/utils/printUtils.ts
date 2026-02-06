@@ -218,7 +218,6 @@ export const generateCombinedPDF = async (
     imageTimeout: 0,
     removeContainer: false,
   })
-  console.log(templateState)
 
   const imgData = canvas.toDataURL('image/png', 1.0)
   const posterWidth = templateState.width || 210
