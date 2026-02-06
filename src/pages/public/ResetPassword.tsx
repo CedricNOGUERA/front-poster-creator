@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Form, Button, Alert } from 'react-bootstrap';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 export const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -18,7 +20,7 @@ export const ResetPassword = () => {
     // Vérifier le token au chargement
     const verifyToken = async () => {
       const response = await fetch(
-        `http://localhost:8080/api/verify-reset-token?token=${token}&email=${email}`
+        `${API_URL}/api/verify-reset-token?token=${token}&email=${email}`
       );
       const data = await response.json();
       setTokenValid(data.valid);
@@ -43,7 +45,7 @@ export const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/api/reset-password', {
+      const response = await fetch(`${API_URL}/api/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, token, newPassword: password })

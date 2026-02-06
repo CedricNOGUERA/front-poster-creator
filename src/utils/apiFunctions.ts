@@ -44,6 +44,41 @@ export const _getMe = async (
   return response
 }
 
+export const handleForgotSubmit = async (
+  e: React.FormEvent,
+  forgotEmail: string,
+  setForgotEmail: React.Dispatch<React.SetStateAction<string>>,
+  setForgotError: React.Dispatch<React.SetStateAction<string>>,
+  setMessage: React.Dispatch<React.SetStateAction<string>>,
+  setForgotLoading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+  e.preventDefault();
+  setForgotError("");
+  setMessage("");
+  setForgotLoading(true);
+
+  try {
+    const response = await fetch("http://localhost:8080/api/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ forgotEmail }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setMessage(data.message);
+      setForgotEmail("");
+    } else {
+      setForgotError(data.error);
+    }
+  } catch (err) {
+    setForgotError("Une erreur est survenue.");
+  } finally {
+    setForgotLoading(false);
+  }
+};
+
 ///////////////////////
 //shop
 ///////////////////////

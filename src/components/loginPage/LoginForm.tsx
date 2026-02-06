@@ -66,33 +66,7 @@ const LoginForm = () => {
       setLoading(false);
     }
   };
-  //  const handleForgotSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     setForgotError('');
-  //     setMessage('');
-  //     setForgotLoading(true);
-  
-  //     try {
-  //       const response = await fetch('http://localhost:8080/api/forgot-password', {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify({ forgotEmail })
-  //       });
-  
-  //       const data = await response.json();
-  
-  //       if (response.ok) {
-  //         setMessage(data.message);
-  //         setForgotEmail('');
-  //       } else {
-  //         setForgotError(data.error);
-  //       }
-  //     } catch (err) {
-  //       setForgotError('Une erreur est survenue.');
-  //     } finally {
-  //       setForgotLoading(false);
-  //     }
-  //   };
+  console.log("API =", import.meta.env.VITE_API_URL);
 
   /* Render
    *******************************************************************************************/
