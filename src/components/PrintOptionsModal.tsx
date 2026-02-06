@@ -3,7 +3,7 @@ import { Modal, Button, Form, Row, Col, Card, Alert } from "react-bootstrap";
 import { NewTemplateType } from "@/types/DiversType";
 import { generatePDF, PrintOptions, PAGE_DIMENSIONS } from "@/utils/printUtils";
 import PrintHelpModal from "./PrintHelpModal";
-import { FaBook, FaRegCircleQuestion } from "react-icons/fa6";
+import { FaBook } from "react-icons/fa6";
 import { RiErrorWarningLine } from "react-icons/ri";
 
 interface PrintOptionsModalProps {
