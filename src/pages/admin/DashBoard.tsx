@@ -9,6 +9,7 @@ import PicturesLibraryPage from './PicturesLibraryPage'
 import { useLocation, useOutletContext } from 'react-router-dom'
 import ModelsPage from './ModelPage'
 import TemplatePage from './TemplatePage'
+import MonitoringPage from './MonitoringPage'
 
 interface ContextType {
   setTitleHeader: React.Dispatch<React.SetStateAction<string>>
@@ -36,6 +37,9 @@ const DashBoard = () => {
     if (location.pathname.includes('/shops')) {
       return 'shops'
     }
+    if (location.pathname.includes('/logs')) {
+      return 'logs'
+    }
     // Par défaut selon le rôle
     return userRole === 'super_admin' ? 'shops' : 'utilisateurs'
   }, [location.pathname, userRole])
@@ -60,6 +64,8 @@ const DashBoard = () => {
       return <ModelsPage />
     }else if (display === 'templates') {
       return <TemplatePage />
+    }else if (display === 'logs') {
+      return <MonitoringPage />
     }
   }
 

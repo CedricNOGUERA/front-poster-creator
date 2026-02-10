@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { Canvastype } from '@/types/CanvasType'
 import { NavigateOptions, To } from 'react-router-dom'
+import moment from 'moment'
 
 export const _thousandSeparator = (number: number, locale: string = 'fr-FR'): string => {
   return number?.toLocaleString(locale, {
@@ -510,5 +511,26 @@ export const _expiredSession = (setToastData: React.Dispatch<React.SetStateActio
   setTimeout(() => {
     navigate('/login')
   }, 5000)
+}
+
+export const _formattedDate = (date: string) => {
+const formattedDate = moment(date).format('DD/MM/YYYY à hh:mm:ss')
+
+return formattedDate
+}
+
+type Status = 'succes' | 'error' | 'warning' | 'pending';
+type BadgeColor = 'success' | 'danger' | 'warning' | 'info' | 'primary';
+
+export const _statusBadge = (status: Status): BadgeColor => {
+
+  const colorMap: Record<Status, BadgeColor> = {
+    succes: 'success',
+    error: 'danger',
+    warning: 'warning',
+    pending: 'info',
+  };
+  
+  return colorMap[status] ?? 'primary';
 }
 
