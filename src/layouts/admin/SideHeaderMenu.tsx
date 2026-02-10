@@ -72,7 +72,7 @@ export const SideHeaderMenu = ({
           ))}
         {userData.name === "Cédric" && (
           <Link
-            to="/error-log"
+            to="tableau-de-bord/logs"
             onClick={() => handleClick("Monitoring")}
             className="d-flex align-items-center text-decoration-none text-muted"
           >

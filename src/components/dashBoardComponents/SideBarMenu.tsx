@@ -17,8 +17,11 @@ export const SideBarMenu = ({
   const menuMap = sideBarMenuAdmin
   .filter((data) => {
     if(userRole === "super_admin"){
-      return true
+      return data.role.some((item) => 
+      item === userRole
+    )
     }
+   
     
     if(userRole === "admin"){
       return data.role.some((item) => 
@@ -33,7 +36,7 @@ export const SideBarMenu = ({
       
     <Container
     key={indx}
-      className='dash-menu-link  py-3 rounded-end pointer '
+      className={`dash-menu-link  py-3 rounded-end pointer}`}
       onClick={() => setDisplay(item.display)}
     >
 
