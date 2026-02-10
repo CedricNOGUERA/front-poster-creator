@@ -1,7 +1,7 @@
 import authServiceInstance from "@/services/AuthService";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import { _getMe } from "@/utils/apiFunctions";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import React from "react";
 import { Alert, Button, Card, Form, InputGroup } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
@@ -30,6 +30,11 @@ const LoginForm = () => {
   // const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
 
+  // React.useEffect(() => {
+  //   // isServerUp()
+  //   // serverStatus()
+  // }, [])
+
   /* Functions
    *******************************************************************************************/
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,6 +52,7 @@ const LoginForm = () => {
       }
     } catch (err) {
       if (err instanceof AxiosError) {
+        isServerUp()
         console.log(err);
         if (err.response?.data.message) {
           setError(err.response?.data.message);
@@ -66,6 +72,50 @@ const LoginForm = () => {
       setLoading(false);
     }
   };
+
+  // Vérification simple - appel fréquent
+  async function isServerUp() {
+    try {
+      const res = await fetch("http://localhost:8080/api/health", {
+        method: "GET",
+        // timeout: 5000 // 5 secondes timeout
+      });
+      if (res.ok) {
+        console.log("serveur ok");
+      }
+      return res.ok; // true si HTTP 200-299
+    } catch (error) {
+      console.log("serveur hors ligne");
+      return false; // serveur coupé, réseau indisponible, etc.
+    }
+  }
+  async function serverStatus() { 
+    try {
+      const res = await axios.get("http://localhost:8080/api/server-status", {
+        method: "GET",
+        // timeout: 5000 // 5 secondes timeout
+      });
+      if (res) {
+        console.log(res.status);
+      }
+      return res; // true si HTTP 200-299
+    } catch (error) {
+      console.log(error);
+      return false; // serveur coupé, réseau indisponible, etc.
+    }
+  }
+
+// Utilisation avec un heartbeat toutes les 30 secondes
+// setInterval(async () => {
+//   const isUp = await isServerUp();
+//   if (!isUp) {
+//     console.warn('⚠️ Serveur indisponible');
+//     // Afficher un message à l'utilisateur, désactiver les appels API, etc.
+//   } else {
+//     console.log('✅ Serveur disponible');
+//   }
+// }, 30000);
+
   //  const handleForgotSubmit = async (e: React.FormEvent) => {
   //     e.preventDefault();
   //     setForgotError('');
