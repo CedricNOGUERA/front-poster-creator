@@ -35,6 +35,7 @@ import { TemplateType } from '@/types/TemplatesType'
 import { ModelType } from '@/types/modelType'
 import { _showToast } from '@/utils/notifications'
 import { FaXmark } from 'react-icons/fa6'
+import html2canvas from 'html2canvas'
 
 
 interface ContextInlineDragDropEditorType {
@@ -142,7 +143,6 @@ export default function InlineDragDropEditor() {
 
   React.useEffect(() => {
     const hasTemplate = template.find((model) => model.name === imageName)
-
     if (hasTemplate) {
       setHasModel(
         models.some(
@@ -156,7 +156,7 @@ export default function InlineDragDropEditor() {
 
     const idModel = models.find(
       (model) =>
-        model.categoryId === storeApp.categoryId && model.dimensionId === storeApp.dimensionId
+        model.categoryId === storeApp.categoryId && model.dimensionId === storeApp.dimensionId && hasTemplate?.id === model.templateId
     )?.id
 
     if (idModel) {
@@ -164,21 +164,28 @@ export default function InlineDragDropEditor() {
     }
   }, [imageName, storeApp, models, template, setHasModel])
 
-React.useEffect(() => {
-  
-  _generateInitalComponent(
-    selectedCategory.canvas,
+  React.useEffect(() => {
+    _generateInitalComponent(
+      selectedCategory.canvas,
+      storeApp,
+      newTemplateState,
+      setNewTemplateState,
+      maxPreviewHeight,
+      h,
+      components,
+      setComponents,
+      setDimensionFactor,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    selectedCategory,
     storeApp,
-    newTemplateState,
-    setNewTemplateState,
     maxPreviewHeight,
     h,
-    components,
-    setComponents,
-    setDimensionFactor
-  )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, storeApp, maxPreviewHeight, h, storeApp, models, selectedDimension])
+    storeApp,
+    models,
+    selectedDimension,
+  ]);
 
   /* Functions
    *******************************************************************************************/
@@ -550,7 +557,6 @@ React.useEffect(() => {
     [newTemplateState?.width, newTemplateState?.height]
   )
 
-
   const addModel = async (name: string) => {
     if (name === '') {
       setIsErrorModel(true)
@@ -566,11 +572,53 @@ React.useEffect(() => {
     //formattage du nom de l'image
     const imageName = modelsServiceInstance.formattedModelPicture(name)
 
-    // Génère une image PNG depuis la div canvas
-    const canvasElement = posterRef.current
-    if (!canvasElement) return
+    // // Génère une image PNG depuis la div canvas
+    // const canvasElement = posterRef.current
+    // if (!canvasElement) return
 
-    const blob = await htmlToImage.toBlob(canvasElement)
+    // const blob = await htmlToImage.toBlob(canvasElement)
+    // if (!blob) {
+    //   console.error("Erreur de génération de l'image")
+    //   return
+    // }
+     // Génère une image PNG depuis la div canvas
+   
+
+
+
+    try {
+         const canvasElement = posterRef.current
+    if (!canvasElement) {
+      console.error("Élément canvas non trouvé")
+      return
+    }
+
+    // ✅ Utiliser html2canvas au lieu de htmlToImage
+    const canvas = await html2canvas(canvasElement, {
+      useCORS: true, // ✅ Permet de charger les ressources externes
+      allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
+      backgroundColor: null, // Fond transparent si nécessaire
+      scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
+      logging: false, // Désactive les logs de débogage
+      removeContainer: true, // Nettoie après le rendu
+      imageTimeout: 15000, // Timeout pour le chargement des images
+      onclone: (clonedDoc) => {
+        // ✅ Optionnel : ajuster le style du document cloné si nécessaire
+        const clonedElement = clonedDoc.querySelector(`[data-canvas-id="${modelId}"]`)
+        if (clonedElement) {
+          // Ajuster les styles si nécessaire
+        }
+      }
+    })
+    
+    // ✅ Convertir le canvas en blob
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(blob)
+      }, 'image/png', 1.0) // Qualité maximale
+    })
+    console.log(blob)
+
     if (!blob) {
       console.error("Erreur de génération de l'image")
       return
@@ -580,9 +628,12 @@ React.useEffect(() => {
     //   (tmp: TemplateType) => tmp.categoryId === storeApp.categoryId
     // )
     const imageExists = template.some((img: TemplateType) => img.image === imageName.trim())
-
+    const tempData = template.find((img: TemplateType) => img.image === imageName.trim())
+const imageModel = tempData?.image
+// const imageModel = `${tempData?.name}_${Date.now()}.png`
+    console.log(tempData)
     const newModelData = {
-      image: imageName,
+      image: imageModel,
       categoryId: storeApp.categoryId,
       dimensionId: storeApp.dimensionId,
       canvas: components,
@@ -601,12 +652,13 @@ React.useEffect(() => {
 
 
 
-    try {
+
       if (hasModel && imageExists) {
         const thumbnialFormData = new FormData()
         thumbnialFormData.append('image', blob, imageName)
         let responseThumbnail = null
         const patchFormData = new FormData()
+        patchFormData.append('image', blob, imageModel)
         patchFormData.append('data', JSON.stringify(components))
         const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
 
