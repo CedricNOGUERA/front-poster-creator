@@ -99,13 +99,27 @@ export default function CanvasEditorImproved({
               <Card.Body>
                 {/* Contrôle du texte */}
                 <Form.Group className='mb-'>
+                {
+                  comp.type === "text" ? (
+                    //textarea pour les élément textes
+                  <Form.Control
+                   as="textarea"
+                   placeholder='Entrez la valeur'
+                   value={comp.text || ''}
+                   onChange={(e) => updateComponent(index, { text: e.target.value })}
+                   className='border-secondary'
+                   />
+                  ): (
+                    //input pour les autres
                   <Form.Control
                     type='text'
                     placeholder='Entrez la valeur'
                     value={comp.text || ''}
                     onChange={(e) => updateComponent(index, { text: e.target.value })}
                     className='border-secondary'
-                  />
+                    />
+                    )
+                  }
                 </Form.Group>
 
                 {/* Paramètres avancés */}
@@ -168,7 +182,6 @@ export default function CanvasEditorImproved({
                         </div>
                       </Accordion.Body>
                     </Accordion.Item>
-
                     {/* Position */}
                     <Accordion.Item eventKey='1'>
                       <Accordion.Header>
