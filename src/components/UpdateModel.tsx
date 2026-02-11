@@ -843,13 +843,13 @@ const updateModel = async () => {
                 overflow: 'visible',
               }}
             >
-              <input
-                type='text'
+              <textarea
+                // type='text'
                 value={textComp.text}
                 onChange={(e) => updateComponent({ text: e.target.value })}
                 onBlur={() => setEditingIndex(null)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Escape') {
+                  if (e.key === 'Escape') {
                     setEditingIndex(null)
                   }
                 }}
@@ -871,10 +871,10 @@ const updateModel = async () => {
           )
         }
         return (
-          <div key={index} {...commonProps}>
+          <div key={index} {...commonProps}  className='text-start'>
           
               <span 
-              style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}
+              style={{fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none', whiteSpace: 'pre-line' }}
               dangerouslySetInnerHTML={{ __html: textComp.text }}
             />
             {deleteButton}
