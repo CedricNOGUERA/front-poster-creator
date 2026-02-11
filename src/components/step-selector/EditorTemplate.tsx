@@ -134,41 +134,7 @@ export const EditorTemplate = () => {
     })
   }
 
-  // const handleExportToPDF = async () => {
-  //   if (!printRef.current) return
 
-  //   try {
-  //     // Capture le contenu de l'aperçu avec une meilleure résolution
-  //     const canvas = await html2canvas(printRef.current, {
-  //       scale: 4, // Augmente significativement la qualité
-  //       useCORS: true,
-  //       logging: false,
-  //       backgroundColor: '#ffffff',
-  //       allowTaint: true,
-  //       imageTimeout: 0,
-  //       removeContainer: false,
-  //     })
-
-  //     // Crée un nouveau PDF avec les dimensions en millimètres
-  //     const pdf = new jsPDF({
-  //       orientation: pageHeight > pageWidth ? 'portrait' : 'landscape',
-  //       unit: 'mm',
-  //       format: [pageHeight, pageWidth],
-  //     })
-
-  //     // Convertit le canvas en image et l'ajoute au PDF
-  //     const imgData = canvas.toDataURL('image/png', 1.0) // Qualité maximale
-  //     const imgWidth = pageWidth
-  //     const imgHeight = pageHeight
-
-  //     // Ajoute l'image au PDF avec les dimensions exactes
-  //     pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST')
-  //     // pdf.save(template?.templateId?.name + ".pdf");
-  //     pdf.save('document.pdf')
-  //   } catch (error) {
-  //     console.error('Erreur lors de la génération du PDF:', error)
-  //   }
-  // }
 
   const updateModelProps = {
     canvasData, setIsUpdating, previewStyle, modelId, setModels
@@ -325,7 +291,7 @@ export const EditorTemplate = () => {
           key={index}
           className={`absolute cursor-move pointer text-start`}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: `${textComp?.top ?? 0}px`,
             left: `${textComp?.left ?? 0}px`,
             fontSize: `${textComp?.fontSize ?? 16}px`,
@@ -333,17 +299,28 @@ export const EditorTemplate = () => {
             color: textComp?.color,
             minWidth: `${20}px`,
             minHeight: `${10}px`,
-            wordBreak: 'break-word',
+            wordBreak: "break-word",
             transform: `rotate(${textComp?.rotation}deg)`,
             padding: `0 ${5}px`,
             fontFamily: textComp.fontFamily,
-            textDecoration: textComp.textDecoration ?? 'none',
-            lineHeight: `${textComp.fontSize}px`
+            textDecoration: textComp.textDecoration ?? "none",
+            lineHeight: `${textComp.fontSize}px`,
           }}
         >
-          {textComp?.text}
+          <div>
+            <span
+              style={{
+                fontFamily: textComp.fontFamily,
+                textDecoration: textComp.textDecoration ?? "none",
+                whiteSpace: "pre-line",
+              }}
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHTML(textComp?.text || ""),
+              }}
+            />
+          </div>
         </div>
-      )
+      );
     }
     if (component.type === 'enableText') {
       const textComp = component as TextComponentType
@@ -368,7 +345,9 @@ export const EditorTemplate = () => {
             lineHeight: `${textComp.fontSize}px`
           }}
         >
-          <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(textComp?.text || '') }} />
+          <div 
+          
+          dangerouslySetInnerHTML={{ __html: sanitizeHTML(textComp?.text || '') }} />
         </div>
       )
     }

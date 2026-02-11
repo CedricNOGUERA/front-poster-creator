@@ -2,6 +2,7 @@
 // import { ImagemodelType } from '@/types/modelType';
 import axios from 'axios';
 import * as htmlToImage from 'html-to-image'
+import html2canvas from 'html2canvas';
 // import { ModelType } from "@/types/modelType"
 
 class ModelsService {
@@ -73,16 +74,51 @@ class ModelsService {
   }
 
   async miniatureModel(posterRef: React.RefObject<HTMLDivElement | null>) {
-    const canvasElement = posterRef.current;
-    if (!canvasElement) return;
+   
+     const canvasElement = posterRef.current;
+      if (!canvasElement) {
+        console.error("Élément canvas non trouvé");
+        return;
+      }
 
-    const blob = await htmlToImage.toBlob(canvasElement);
-    if (!blob) {
-      console.error("Erreur de génération de l'image");
-      return;
-    } else {
-      return blob;
-    }
+      // ✅ Utiliser html2canvas au lieu de htmlToImage
+      const canvas = await html2canvas(canvasElement, {
+        useCORS: true, // ✅ Permet de charger les ressources externes
+        allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
+        backgroundColor: null, // Fond transparent si nécessaire
+        scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
+        logging: false, // Désactive les logs de débogage
+        removeContainer: true, // Nettoie après le rendu
+        imageTimeout: 15000, // Timeout pour le chargement des images
+        // onclone: (clonedDoc) => {
+        //   // ✅ Optionnel : ajuster le style du document cloné si nécessaire
+        //   const clonedElement = clonedDoc.querySelector(
+        //     `[data-canvas-id="${modelId}"]`,
+        //   );
+        //   if (clonedElement) {
+        //     // Ajuster les styles si nécessaire
+        //   }
+        // },
+      });
+
+      // ✅ Convertir le canvas en blob
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          "image/png",
+          1.0,
+        ); // Qualité maximale
+      });
+     
+
+      if (!blob) {
+        console.error("Erreur de génération de l'image");
+        return;
+      }else{
+        return blob
+      }
   }
 
   async getModelImage() {
@@ -96,6 +132,8 @@ class ModelsService {
     };
     return axios.request(config);
   }
+
+
 }
 
 const modelsServiceInstance = new ModelsService();

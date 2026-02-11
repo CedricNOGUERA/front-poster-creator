@@ -27,7 +27,6 @@ import { _getCategoryById, _getModels, _getTemplates } from '@/utils/apiFunction
 import { useOutletContext } from 'react-router-dom'
 import ComponentEditor from './DragDropComponents/ComponentEditor'
 import { ModalValidateModel } from './ui/Modals'
-import * as htmlToImage from 'html-to-image'
 import modelsServiceInstance from '@/services/modelsServices'
 import templatesServiceInstance from '@/services/TemplatesServices'
 import { CategoriesType } from '@/types/CategoriesType'
@@ -572,160 +571,174 @@ export default function InlineDragDropEditor() {
     //formattage du nom de l'image
     const imageName = modelsServiceInstance.formattedModelPicture(name)
 
-    // // Génère une image PNG depuis la div canvas
-    // const canvasElement = posterRef.current
-    // if (!canvasElement) return
-
-    // const blob = await htmlToImage.toBlob(canvasElement)
-    // if (!blob) {
-    //   console.error("Erreur de génération de l'image")
-    //   return
-    // }
-     // Génère une image PNG depuis la div canvas
-   
-
-
-
     try {
-         const canvasElement = posterRef.current
-    if (!canvasElement) {
-      console.error("Élément canvas non trouvé")
-      return
-    }
 
-    // ✅ Utiliser html2canvas au lieu de htmlToImage
-    const canvas = await html2canvas(canvasElement, {
-      useCORS: true, // ✅ Permet de charger les ressources externes
-      allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
-      backgroundColor: null, // Fond transparent si nécessaire
-      scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
-      logging: false, // Désactive les logs de débogage
-      removeContainer: true, // Nettoie après le rendu
-      imageTimeout: 15000, // Timeout pour le chargement des images
-      onclone: (clonedDoc) => {
-        // ✅ Optionnel : ajuster le style du document cloné si nécessaire
-        const clonedElement = clonedDoc.querySelector(`[data-canvas-id="${modelId}"]`)
-        if (clonedElement) {
-          // Ajuster les styles si nécessaire
-        }
+      const canvasElement = posterRef.current;
+      if (!canvasElement) {
+        console.error("Élément canvas non trouvé");
+        return;
       }
-    })
-    
-    // ✅ Convertir le canvas en blob
-    const blob = await new Promise<Blob | null>((resolve) => {
-      canvas.toBlob((blob) => {
-        resolve(blob)
-      }, 'image/png', 1.0) // Qualité maximale
-    })
-    console.log(blob)
 
-    if (!blob) {
-      console.error("Erreur de génération de l'image")
-      return
-    }
-    //on vérifie l'existance d'une miniature pour ce template
-    // const hasTemplate = template.some(
-    //   (tmp: TemplateType) => tmp.categoryId === storeApp.categoryId
-    // )
-    const imageExists = template.some((img: TemplateType) => img.image === imageName.trim())
-    const tempData = template.find((img: TemplateType) => img.image === imageName.trim())
-const imageModel = tempData?.image
-// const imageModel = `${tempData?.name}_${Date.now()}.png`
-    console.log(tempData)
-    const newModelData = {
-      image: imageModel,
-      categoryId: storeApp.categoryId,
-      dimensionId: storeApp.dimensionId,
-      canvas: components,
-    }
+      // ✅ Utiliser html2canvas au lieu de htmlToImage
+      const canvas = await html2canvas(canvasElement, {
+        useCORS: true, // ✅ Permet de charger les ressources externes
+        allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
+        backgroundColor: null, // Fond transparent si nécessaire
+        scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
+        logging: false, // Désactive les logs de débogage
+        removeContainer: true, // Nettoie après le rendu
+        imageTimeout: 15000, // Timeout pour le chargement des images
+        onclone: (clonedDoc) => {
+          // ✅ Optionnel : ajuster le style du document cloné si nécessaire
+          const clonedElement = clonedDoc.querySelector(
+            `[data-canvas-id="${modelId}"]`,
+          );
+          if (clonedElement) {
+            // Ajuster les styles si nécessaire
+          }
+        },
+      });
 
-    const newTemplate = {
-      name: name,
-      image: imageName,
-      categoryId: storeApp.categoryId,
-      shopIds: selectedCategory.shopIds,
-    }
+      // ✅ Convertir le canvas en blob
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(
+          (blob) => {
+            resolve(blob);
+          },
+          "image/png",
+          1.0,
+        ); // Qualité maximale
+      });
+     
 
-    const formData = new FormData()
-    formData.append('image', blob, imageName)
-    formData.append('data', JSON.stringify(newModelData))
+      if (!blob) {
+        console.error("Erreur de génération de l'image");
+        return;
+      }
+      //on vérifie l'existance d'une miniature pour ce template
+      // const hasTemplate = template.some(
+      //   (tmp: TemplateType) => tmp.categoryId === storeApp.categoryId
+      // )
+      const imageExists = template.some(
+        (img: TemplateType) => img.image === imageName.trim(),
+      );
+      const tempData = template.find(
+        (img: TemplateType) => img.image === imageName.trim(),
+      );
+      const imageModel = tempData?.image;
 
+      const newModelData = {
+        image: imageModel,
+        categoryId: storeApp.categoryId,
+        dimensionId: storeApp.dimensionId,
+        canvas: components,
+      };
 
+      const newTemplate = {
+        name: name,
+        image: imageName,
+        categoryId: storeApp.categoryId,
+        shopIds: selectedCategory.shopIds,
+      };
 
+      const formData = new FormData();
+      formData.append("image", blob, imageName);
+      formData.append("data", JSON.stringify(newModelData));
 
       if (hasModel && imageExists) {
-        const thumbnialFormData = new FormData()
-        thumbnialFormData.append('image', blob, imageName)
-        let responseThumbnail = null
-        const patchFormData = new FormData()
-        patchFormData.append('image', blob, imageModel)
-        patchFormData.append('data', JSON.stringify(components))
-        const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
+        const thumbnialFormData = new FormData();
+        thumbnialFormData.append("image", blob, imageName);
 
-        if(storeApp.dimensionId === 9){
-          responseThumbnail = await templatesServiceInstance.patchImageTemplate(storeApp.categoryId, imageName, thumbnialFormData)
+        let responseThumbnail = null;
+
+        const patchFormData = new FormData();
+        patchFormData.append("image", blob, imageModel);
+        patchFormData.append("data", JSON.stringify(components));
+
+        const response = await modelsServiceInstance.patchModel(
+          modelId,
+          patchFormData,
+        );
+
+        if (storeApp.dimensionId === 9) {
+          responseThumbnail = await templatesServiceInstance.patchImageTemplate(
+            storeApp.categoryId,
+            imageName,
+            thumbnialFormData,
+          );
         }
 
-        if (response.ok ) {
-          handleCloseValidateModel()
+        if (response.ok) {
+          handleCloseValidateModel();
           _showToast(
             response.ok,
             response.ok
-              ? 'Modèle modifié avec succès !'
-              : 'Échec de la modification du modèle !',
+              ? "Modèle modifié avec succès !"
+              : "Échec de la modification du modèle !",
             setToastData,
             toggleShow,
-            3000
-          )
-          setIsErrorModel(false)
+            3000,
+          );
+          setIsErrorModel(false);
         }
 
-        if(responseThumbnail && responseThumbnail.ok) {
-          handleCloseValidateModel()
+        if (responseThumbnail && responseThumbnail.ok) {
+          handleCloseValidateModel();
           _showToast(
             responseThumbnail.ok,
             responseThumbnail.ok
-              ? 'Miniature modifié avec succès !'
-              : 'Échec de la modification de la miniature !',
+              ? "Miniature modifié avec succès !"
+              : "Échec de la modification de la miniature !",
             setToastData,
             toggleShow,
-            3000
-          )
-          setIsErrorModel(false)
+            3000,
+          );
+          setIsErrorModel(false);
         }
-
       } else {
-        const responseModel = await modelsServiceInstance.postModel(formData)
+        const responseModel = await modelsServiceInstance.postModel(formData);
 
         if (!imageExists) {
-        // if (newTemplateState.width === newTemplateState.height && !imageExists) {
-          await templatesServiceInstance.postTemplate(newTemplate)
+          // if (newTemplateState.width === newTemplateState.height && !imageExists) {
+          await templatesServiceInstance.postTemplate(newTemplate);
         }
 
         if (responseModel.ok) {
-          handleCloseValidateModel()
-          _getTemplates(setTemplate)
-          _getModels(setModels)
-          _showToast(true, "Modèle ajouté avec succès !", setToastData, toggleShow, 3000);
-      
-          setIsErrorModel(false)
+          handleCloseValidateModel();
+          _getTemplates(setTemplate);
+          _getModels(setModels);
+          _showToast(
+            true,
+            "Modèle ajouté avec succès !",
+            setToastData,
+            toggleShow,
+            3000,
+          );
+
+          setIsErrorModel(false);
           // setImageName('')
         } else {
-          const err = await responseModel.json()
-          throw new Error(err?.error || 'Erreur serveur')
+          const err = await responseModel.json();
+          throw new Error(err?.error || "Erreur serveur");
         }
       }
     } catch (error) {
-      console.error('Error adding model:', error)
-      _showToast(false, "Une erreur est survenue lors de la validation du modèle.", setToastData, toggleShow, 3000)
+      console.error("Error adding model:", error);
+      _showToast(
+        false,
+        "Une erreur est survenue lors de la validation du modèle.",
+        setToastData,
+        toggleShow,
+        3000,
+      );
     } finally {
-      _getTemplates(setTemplate)
-      _getModels(setModels)
+      _getTemplates(setTemplate);
+      _getModels(setModels);
       setFeedBackState((prev) => ({
         ...prev,
         isLoading: false,
-        loadingMessage: '',
-      }))
+        loadingMessage: "",
+      }));
     }
   }
   /* UseMemo
@@ -884,13 +897,13 @@ const imageModel = tempData?.image
                 
               }}
             >
-              <input
-                type='text'
+              <textarea
+                // type='text'
                 value={textComp.text}
                 onChange={(e) => updateComponent({ text: e.target.value })}
                 onBlur={() => setEditingIndex(null)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Escape') {
+                  if (e.key === 'Escape') {
                     setEditingIndex(null)
                   }
                 }}
@@ -914,8 +927,8 @@ const imageModel = tempData?.image
         return (
           <div key={index} {...commonProps} className='text-start'>
             <span 
-              style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none' }}
-              dangerouslySetInnerHTML={{ __html: textComp.text }}
+              style={{ fontFamily: textComp.fontFamily, textDecoration: textComp.textDecoration ?? 'none',whiteSpace: 'pre-line' }}
+              dangerouslySetInnerHTML={{ __html: textComp.text}}
             />
             {deleteButton}
           </div>
