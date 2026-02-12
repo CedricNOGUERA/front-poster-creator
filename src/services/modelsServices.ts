@@ -1,9 +1,5 @@
-// import { ComponentTypeMulti } from "@/types/ComponentType";
-// import { ImagemodelType } from '@/types/modelType';
 import axios from 'axios';
-import * as htmlToImage from 'html-to-image'
 import html2canvas from 'html2canvas';
-// import { ModelType } from "@/types/modelType"
 
 class ModelsService {
   async postModel(formData: FormData) {
