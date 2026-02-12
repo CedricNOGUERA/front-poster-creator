@@ -35,16 +35,23 @@ class TemplatesServices {
     return response
   }
 
-  async postTemplate(newTemplate: TemplateType) {
+  async postTemplate(newTemplate: FormData) {
     const response = await fetch(`${API_URL}/api/add-template`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newTemplate),
+      body: newTemplate,
     })
     return response
   }
+  // async postTemplate(newTemplate: TemplateType) {
+  //   const response = await fetch(`${API_URL}/api/add-template`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(newTemplate),
+  //   })
+  //   return response
+  // }
 
   async patchTemplates(id: number | undefined, data: Partial<TemplateType>) {
     const response = await axios.patch(
