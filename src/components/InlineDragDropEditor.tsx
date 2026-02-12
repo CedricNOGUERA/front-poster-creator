@@ -555,192 +555,402 @@ export default function InlineDragDropEditor() {
     },
     [newTemplateState?.width, newTemplateState?.height]
   )
+const addModel = async (name: string) => {
+  if (name === '') {
+    setIsErrorModel(true);
+    return;
+  }
 
-  const addModel = async (name: string) => {
-    if (name === '') {
-      setIsErrorModel(true)
-      return
+  setFeedBackState((prev) => ({
+    ...prev,
+    isLoading: true,
+    loadingMessage: 'Chargement',
+  }));
+
+  // Formattage du nom de l'image
+  const imageName = modelsServiceInstance.formattedModelPicture(name);
+
+  try {
+    const canvasElement = posterRef.current;
+    if (!canvasElement) {
+      console.error("Élément canvas non trouvé");
+      return;
     }
 
-    setFeedBackState((prev) => ({
-      ...prev,
-      isLoading: true,
-      loadingMessage: 'Chargement',
-    }))
+    // ✅ Utiliser html2canvas pour capturer l'affiche
+    const canvas = await html2canvas(canvasElement, {
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      scale: 2,
+      logging: false,
+      removeContainer: true,
+      imageTimeout: 15000,
+      onclone: (clonedDoc) => {
+        const clonedElement = clonedDoc.querySelector(
+          `[data-canvas-id="${modelId}"]`,
+        );
+        if (clonedElement) {
+          // Ajuster les styles si nécessaire
+        }
+      },
+    });
 
-    //formattage du nom de l'image
-    const imageName = modelsServiceInstance.formattedModelPicture(name)
-
-    try {
-
-      const canvasElement = posterRef.current;
-      if (!canvasElement) {
-        console.error("Élément canvas non trouvé");
-        return;
-      }
-
-      // ✅ Utiliser html2canvas au lieu de htmlToImage
-      const canvas = await html2canvas(canvasElement, {
-        useCORS: true, // ✅ Permet de charger les ressources externes
-        allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
-        backgroundColor: null, // Fond transparent si nécessaire
-        scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
-        logging: false, // Désactive les logs de débogage
-        removeContainer: true, // Nettoie après le rendu
-        imageTimeout: 15000, // Timeout pour le chargement des images
-        onclone: (clonedDoc) => {
-          // ✅ Optionnel : ajuster le style du document cloné si nécessaire
-          const clonedElement = clonedDoc.querySelector(
-            `[data-canvas-id="${modelId}"]`,
-          );
-          if (clonedElement) {
-            // Ajuster les styles si nécessaire
-          }
+    // ✅ Convertir le canvas en blob
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob(
+        (blob) => {
+          resolve(blob);
         },
-      });
-
-      // ✅ Convertir le canvas en blob
-      const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(
-          (blob) => {
-            resolve(blob);
-          },
-          "image/png",
-          1.0,
-        ); // Qualité maximale
-      });
-     
-
-      if (!blob) {
-        console.error("Erreur de génération de l'image");
-        return;
-      }
-      //on vérifie l'existance d'une miniature pour ce template
-      // const hasTemplate = template.some(
-      //   (tmp: TemplateType) => tmp.categoryId === storeApp.categoryId
-      // )
-      const imageExists = template.some(
-        (img: TemplateType) => img.image === imageName.trim(),
+        "image/png",
+        1.0,
       );
-      const tempData = template.find(
-        (img: TemplateType) => img.image === imageName.trim(),
+    });
+
+    if (!blob) {
+      console.error("Erreur de génération de l'image");
+      return;
+    }
+
+    // Vérifier l'existence d'une miniature pour ce template
+    const imageExists = template.some(
+      (img: TemplateType) => img.image === imageName.trim(),
+    );
+    const tempData = template.find(
+      (img: TemplateType) => img.image === imageName.trim(),
+    );
+    const imageModel = tempData?.image || imageName;
+
+    // Préparer les données du modèle
+    const newModelData = {
+      image: imageModel,
+      categoryId: storeApp.categoryId,
+      dimensionId: storeApp.dimensionId,
+      canvas: components,
+    };
+
+    // Préparer le FormData pour le modèle
+    const modelFormData = new FormData();
+    modelFormData.append("image", blob, imageName);
+    modelFormData.append("data", JSON.stringify(newModelData));
+
+    if (hasModel && imageExists) {
+      // ========== MODE ÉDITION ==========
+      
+      // FormData pour le patch du modèle
+      const patchFormData = new FormData();
+      patchFormData.append("image", blob, imageModel);
+      patchFormData.append("data", JSON.stringify(components));
+
+      const responseModel = await modelsServiceInstance.patchModel(
+        modelId,
+        patchFormData,
       );
-      const imageModel = tempData?.image;
 
-      const newModelData = {
-        image: imageModel,
-        categoryId: storeApp.categoryId,
-        dimensionId: storeApp.dimensionId,
-        canvas: components,
-      };
+      // Mettre à jour la miniature du template si nécessaire
+      if (storeApp.dimensionId === 9) {
+        const thumbnailFormData = new FormData();
+        thumbnailFormData.append("image", blob, imageName);
 
-      const newTemplate = {
-        name: name,
-        image: imageName,
-        categoryId: storeApp.categoryId,
-        shopIds: selectedCategory.shopIds,
-      };
-
-      const formData = new FormData();
-      formData.append("image", blob, imageName);
-      formData.append("data", JSON.stringify(newModelData));
-
-      if (hasModel && imageExists) {
-        const thumbnialFormData = new FormData();
-        thumbnialFormData.append("image", blob, imageName);
-
-        let responseThumbnail = null;
-
-        const patchFormData = new FormData();
-        patchFormData.append("image", blob, imageModel);
-        patchFormData.append("data", JSON.stringify(components));
-
-        const response = await modelsServiceInstance.patchModel(
-          modelId,
-          patchFormData,
+        const responseThumbnail = await templatesServiceInstance.patchImageTemplate(
+          storeApp.categoryId,
+          imageName,
+          thumbnailFormData,
         );
 
-        if (storeApp.dimensionId === 9) {
-          responseThumbnail = await templatesServiceInstance.patchImageTemplate(
-            storeApp.categoryId,
-            imageName,
-            thumbnialFormData,
-          );
-        }
-
-        if (response.ok) {
-          handleCloseValidateModel();
-          _showToast(
-            response.ok,
-            response.ok
-              ? "Modèle modifié avec succès !"
-              : "Échec de la modification du modèle !",
-            setToastData,
-            toggleShow,
-            3000,
-          );
-          setIsErrorModel(false);
-        }
-
-        if (responseThumbnail && responseThumbnail.ok) {
-          handleCloseValidateModel();
-          _showToast(
-            responseThumbnail.ok,
-            responseThumbnail.ok
-              ? "Miniature modifié avec succès !"
-              : "Échec de la modification de la miniature !",
-            setToastData,
-            toggleShow,
-            3000,
-          );
-          setIsErrorModel(false);
-        }
-      } else {
-        const responseModel = await modelsServiceInstance.postModel(formData);
-
-        if (!imageExists) {
-          // if (newTemplateState.width === newTemplateState.height && !imageExists) {
-          await templatesServiceInstance.postTemplate(newTemplate);
-        }
-
-        if (responseModel.ok) {
-          handleCloseValidateModel();
-          _getTemplates(setTemplate);
-          _getModels(setModels);
+        if (responseThumbnail?.ok) {
           _showToast(
             true,
-            "Modèle ajouté avec succès !",
+            "Miniature modifiée avec succès !",
             setToastData,
             toggleShow,
             3000,
           );
-
-          setIsErrorModel(false);
-          // setImageName('')
-        } else {
-          const err = await responseModel.json();
-          throw new Error(err?.error || "Erreur serveur");
         }
       }
-    } catch (error) {
-      console.error("Error adding model:", error);
-      _showToast(
-        false,
-        "Une erreur est survenue lors de la validation du modèle.",
-        setToastData,
-        toggleShow,
-        3000,
-      );
-    } finally {
-      _getTemplates(setTemplate);
-      _getModels(setModels);
-      setFeedBackState((prev) => ({
-        ...prev,
-        isLoading: false,
-        loadingMessage: "",
-      }));
+
+      if (responseModel.ok) {
+        handleCloseValidateModel();
+        _showToast(
+          true,
+          "Modèle modifié avec succès !",
+          setToastData,
+          toggleShow,
+          3000,
+        );
+        setIsErrorModel(false);
+      }
+    } else {
+      // ========== MODE CRÉATION ==========
+      
+      // 1. Créer le template avec miniature (si nouveau)
+      if (!imageExists) {
+        const templateFormData = new FormData();
+        templateFormData.append("data", JSON.stringify({
+          name: name,
+          image: imageName,
+          categoryId: storeApp.categoryId,
+          shopIds: selectedCategory.shopIds,
+        }));
+        templateFormData.append("image", blob, imageName);
+
+        const responseTemplate = await templatesServiceInstance.postTemplate(
+          templateFormData
+        );
+
+        if (!responseTemplate.ok) {
+          const errTemplate = await responseTemplate.json();
+          throw new Error(errTemplate?.error || "Erreur lors de la création du template");
+        }
+
+        console.log("✅ Template créé avec miniature");
+      }
+
+      // 2. Créer le modèle
+      const responseModel = await modelsServiceInstance.postModel(modelFormData);
+
+      if (responseModel.ok) {
+        handleCloseValidateModel();
+        
+        // Rafraîchir les données
+        await Promise.all([
+          _getTemplates(setTemplate),
+          _getModels(setModels),
+        ]);
+
+        _showToast(
+          true,
+          "Modèle ajouté avec succès !",
+          setToastData,
+          toggleShow,
+          3000,
+        );
+
+        setIsErrorModel(false);
+      } else {
+        const err = await responseModel.json();
+        throw new Error(err?.error || "Erreur serveur");
+      }
     }
+  } catch (error) {
+    console.error("Error adding model:", error);
+    _showToast(
+      false,
+      error instanceof Error 
+        ? error.message 
+        : "Une erreur est survenue lors de la validation du modèle.",
+      setToastData,
+      toggleShow,
+      3000,
+    );
+  } finally {
+    // Rafraîchir les données
+    await Promise.all([
+      _getTemplates(setTemplate),
+      _getModels(setModels),
+    ]);
+    
+    setFeedBackState((prev) => ({
+      ...prev,
+      isLoading: false,
+      loadingMessage: "",
+    }));
   }
+};
+  // const addModel = async (name: string) => {
+  //   if (name === '') {
+  //     setIsErrorModel(true)
+  //     return
+  //   }
+
+  //   setFeedBackState((prev) => ({
+  //     ...prev,
+  //     isLoading: true,
+  //     loadingMessage: 'Chargement',
+  //   }))
+
+  //   //formattage du nom de l'image
+  //   const imageName = modelsServiceInstance.formattedModelPicture(name)
+
+  //   try {
+
+  //     const canvasElement = posterRef.current;
+  //     if (!canvasElement) {
+  //       console.error("Élément canvas non trouvé");
+  //       return;
+  //     }
+
+  //     // ✅ Utiliser html2canvas au lieu de htmlToImage
+  //     const canvas = await html2canvas(canvasElement, {
+  //       useCORS: true, // ✅ Permet de charger les ressources externes
+  //       allowTaint: true, // ✅ Permet de capturer même avec des ressources cross-origin
+  //       backgroundColor: null, // Fond transparent si nécessaire
+  //       scale: 2, // ✅ Améliore la qualité de l'image (2x la résolution)
+  //       logging: false, // Désactive les logs de débogage
+  //       removeContainer: true, // Nettoie après le rendu
+  //       imageTimeout: 15000, // Timeout pour le chargement des images
+  //       onclone: (clonedDoc) => {
+  //         // ✅ Optionnel : ajuster le style du document cloné si nécessaire
+  //         const clonedElement = clonedDoc.querySelector(
+  //           `[data-canvas-id="${modelId}"]`,
+  //         );
+  //         if (clonedElement) {
+  //           // Ajuster les styles si nécessaire
+  //         }
+  //       },
+  //     });
+
+  //     // ✅ Convertir le canvas en blob
+  //     const blob = await new Promise<Blob | null>((resolve) => {
+  //       canvas.toBlob(
+  //         (blob) => {
+  //           resolve(blob);
+  //         },
+  //         "image/png",
+  //         1.0,
+  //       ); // Qualité maximale
+  //     });
+     
+
+  //     if (!blob) {
+  //       console.error("Erreur de génération de l'image");
+  //       return;
+  //     }
+  //     //on vérifie l'existance d'une miniature pour ce template
+  //     // const hasTemplate = template.some(
+  //     //   (tmp: TemplateType) => tmp.categoryId === storeApp.categoryId
+  //     // )
+  //     const imageExists = template.some(
+  //       (img: TemplateType) => img.image === imageName.trim(),
+  //     );
+  //     const tempData = template.find(
+  //       (img: TemplateType) => img.image === imageName.trim(),
+  //     );
+  //     const imageModel = tempData?.image;
+
+  //     const newModelData = {
+  //       image: imageModel,
+  //       categoryId: storeApp.categoryId,
+  //       dimensionId: storeApp.dimensionId,
+  //       canvas: components,
+  //     };
+
+  //     // const newTemplate = {
+  //     //   name: name,
+  //     //   image: imageName,
+  //     //   categoryId: storeApp.categoryId,
+  //     //   shopIds: selectedCategory.shopIds,
+  //     // };
+
+
+  //     const newTemplateFormData = new FormData();
+  //     newTemplateFormData.append("name", name);
+  //     newTemplateFormData.append("image", blob, imageName);
+  //     newTemplateFormData.append("categoryId", storeApp.categoryId.toString());
+  //     newTemplateFormData.append("shopIds", JSON.stringify(selectedCategory.shopIds));
+
+  //     const formData = new FormData();
+  //     formData.append("image", blob, imageName);
+  //     formData.append("data", JSON.stringify(newModelData));
+
+  //     if (hasModel && imageExists) {
+  //       const thumbnialFormData = new FormData();
+  //       thumbnialFormData.append("image", blob, imageName);
+
+  //       let responseThumbnail = null;
+
+  //       const patchFormData = new FormData();
+  //       patchFormData.append("image", blob, imageModel);
+  //       patchFormData.append("data", JSON.stringify(components));
+
+  //       const response = await modelsServiceInstance.patchModel(
+  //         modelId,
+  //         patchFormData,
+  //       );
+
+  //       if (storeApp.dimensionId === 9) {
+  //         responseThumbnail = await templatesServiceInstance.patchImageTemplate(
+  //           storeApp.categoryId,
+  //           imageName,
+  //           thumbnialFormData,
+  //         );
+  //       }
+
+  //       if (response.ok) {
+  //         handleCloseValidateModel();
+  //         _showToast(
+  //           response.ok,
+  //           response.ok
+  //             ? "Modèle modifié avec succès !"
+  //             : "Échec de la modification du modèle !",
+  //           setToastData,
+  //           toggleShow,
+  //           3000,
+  //         );
+  //         setIsErrorModel(false);
+  //       }
+
+  //       if (responseThumbnail && responseThumbnail.ok) {
+  //         handleCloseValidateModel();
+  //         _showToast(
+  //           responseThumbnail.ok,
+  //           responseThumbnail.ok
+  //             ? "Miniature modifié avec succès !"
+  //             : "Échec de la modification de la miniature !",
+  //           setToastData,
+  //           toggleShow,
+  //           3000,
+  //         );
+  //         setIsErrorModel(false);
+  //       }
+  //     } else {
+  //       const responseModel = await modelsServiceInstance.postModel(formData);
+  //       console.log(imageExists)
+  //       if (!imageExists) {
+  //         // if (newTemplateState.width === newTemplateState.height && !imageExists) {
+  //         await templatesServiceInstance.postTemplate(newTemplateFormData);
+  //         // await templatesServiceInstance.postTemplate(newTemplate);
+  //         // await templatesServiceInstance.postImageTemplate(newTemplateFormData);
+  //       }
+
+  //       if (responseModel.ok) {
+  //         handleCloseValidateModel();
+  //         _getTemplates(setTemplate);
+  //         _getModels(setModels);
+  //         _showToast(
+  //           true,
+  //           "Modèle ajouté avec succès !",
+  //           setToastData,
+  //           toggleShow,
+  //           3000,
+  //         );
+
+  //         setIsErrorModel(false);
+  //         // setImageName('')
+  //       } else {
+  //         const err = await responseModel.json();
+  //         throw new Error(err?.error || "Erreur serveur");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding model:", error);
+  //     _showToast(
+  //       false,
+  //       "Une erreur est survenue lors de la validation du modèle.",
+  //       setToastData,
+  //       toggleShow,
+  //       3000,
+  //     );
+  //   } finally {
+  //     _getTemplates(setTemplate);
+  //     _getModels(setModels);
+  //     setFeedBackState((prev) => ({
+  //       ...prev,
+  //       isLoading: false,
+  //       loadingMessage: "",
+  //     }));
+  //   }
+  // }
   /* UseMemo
    *******************************************************************************************/
   const renderedComponents = React.useMemo(() => {
