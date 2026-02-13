@@ -387,7 +387,7 @@ export const EditorTemplate = () => {
             padding:
               headerComp?.width &&
               headerComp?.height &&
-              headerComp?.width > headerComp?.height
+              headerComp?.width < headerComp?.height
                 ? '5%'
                 : '1%',
           }}
