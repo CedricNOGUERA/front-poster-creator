@@ -1,7 +1,7 @@
 import authServiceInstance from "@/services/AuthService";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import { _getMe } from "@/utils/apiFunctions";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import React from "react";
 import { Alert, Button, Card, Form, InputGroup } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
@@ -20,20 +20,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const authLogin = userDataStore((state: UserDataType) => state.authLogin);
 
-  // const [show, setShow] = React.useState<boolean>(false);
 
-  // const [forgotEmail, setForgotEmail] = React.useState<string>('');
-  //   const [message, setMessage] = React.useState<string>('');
-  //   const [forgotError, setForgotError] = React.useState<string>('');
-  //   const [forgotLoading, setForgotLoading] = React.useState<boolean>(false);
-
-  // const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
-
-  // React.useEffect(() => {
-  //   // isServerUp()
-  //   // serverStatus()
-  // }, [])
 
   /* Functions
    *******************************************************************************************/
@@ -52,7 +39,6 @@ const LoginForm = () => {
       }
     } catch (err) {
       if (err instanceof AxiosError) {
-        isServerUp()
         console.log(err);
         if (err.response?.data.message) {
           setError(err.response?.data.message);
@@ -74,75 +60,36 @@ const LoginForm = () => {
   };
 
   // Vérification simple - appel fréquent
-  async function isServerUp() {
-    try {
-      const res = await fetch("http://localhost:8080/api/health", {
-        method: "GET",
-        // timeout: 5000 // 5 secondes timeout
-      });
-      if (res.ok) {
-        console.log("serveur ok");
-      }
-      return res.ok; // true si HTTP 200-299
-    } catch (error) {
-      console.log("serveur hors ligne");
-      return false; // serveur coupé, réseau indisponible, etc.
-    }
-  }
-  async function serverStatus() { 
-    try {
-      const res = await axios.get("http://localhost:8080/api/server-status", {
-        method: "GET",
-        // timeout: 5000 // 5 secondes timeout
-      });
-      if (res) {
-        console.log(res.status);
-      }
-      return res; // true si HTTP 200-299
-    } catch (error) {
-      console.log(error);
-      return false; // serveur coupé, réseau indisponible, etc.
-    }
-  }
-
-// Utilisation avec un heartbeat toutes les 30 secondes
-// setInterval(async () => {
-//   const isUp = await isServerUp();
-//   if (!isUp) {
-//     console.warn('⚠️ Serveur indisponible');
-//     // Afficher un message à l'utilisateur, désactiver les appels API, etc.
-//   } else {
-//     console.log('✅ Serveur disponible');
-//   }
-// }, 30000);
-
-  //  const handleForgotSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     setForgotError('');
-  //     setMessage('');
-  //     setForgotLoading(true);
-  
-  //     try {
-  //       const response = await fetch('http://localhost:8080/api/forgot-password', {
-  //         method: 'POST',
-  //         headers: { 'Content-Type': 'application/json' },
-  //         body: JSON.stringify({ forgotEmail })
-  //       });
-  
-  //       const data = await response.json();
-  
-  //       if (response.ok) {
-  //         setMessage(data.message);
-  //         setForgotEmail('');
-  //       } else {
-  //         setForgotError(data.error);
-  //       }
-  //     } catch (err) {
-  //       setForgotError('Une erreur est survenue.');
-  //     } finally {
-  //       setForgotLoading(false);
+  // async function isServerUp() {
+  //   try {
+  //     const res = await fetch("http://localhost:8080/api/health", {
+  //       method: "GET",
+  //       // timeout: 5000 // 5 secondes timeout
+  //     });
+  //     if (res.ok) {
+  //       console.log("serveur ok");
   //     }
-  //   };
+  //     return res.ok; // true si HTTP 200-299
+  //   } catch (error) {
+  //     console.log("serveur hors ligne");
+  //     return false; // serveur coupé, réseau indisponible, etc.
+  //   }
+  // }
+  // async function serverStatus() { 
+  //   try {
+  //     const res = await axios.get("http://localhost:8080/api/server-status", {
+  //       method: "GET",
+  //       // timeout: 5000 // 5 secondes timeout
+  //     });
+  //     if (res) {
+  //       console.log(res.status);
+  //     }
+  //     return res; // true si HTTP 200-299
+  //   } catch (error) {
+  //     console.log(error);
+  //     return false; // serveur coupé, réseau indisponible, etc.
+  //   }
+  // }
 
   /* Render
    *******************************************************************************************/
@@ -187,9 +134,6 @@ const LoginForm = () => {
             </InputGroup.Text>
           </InputGroup>
         </Form.Group>
-        {/* <div className="text-end text-primary pointer">
-          <u onClick={handleShow}>Mot de passe oublié</u>
-        </div> */}
         {error && (
           <Alert variant="danger" className="text-danger">
             <FaCircleExclamation className="me-2" />
@@ -207,34 +151,6 @@ const LoginForm = () => {
           </Button>
         </div>
       </Form>
-      {/* <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Mot de passe oublié</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="container mt-5">
-            {forgotError && <Alert variant="danger">{forgotError}</Alert>}
-            {message && <Alert variant="success">{message}</Alert>}
-
-            <Form onSubmit={handleForgotSubmit}>
-              <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                  required
-                />
-              </Form.Group>
-            </Form>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button type="submit" disabled={forgotLoading}>
-            {forgotLoading ? "Envoi..." : "Envoyer le lien de réinitialisation"}
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
     </Card>
   );
 };

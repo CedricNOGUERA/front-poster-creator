@@ -35,15 +35,13 @@ class ModelsService {
   }
 
   async patchModel(modelId: number, formData: FormData) {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/patch-models/${modelId}`,
-      {
-        method: "PATCH",
-        body: formData,
-      },
-    );
-    return response;
-  }
+  const response = await axios.patch(
+    `${import.meta.env.VITE_API_URL}/api/patch-models/${modelId}`,
+    formData
+  );
+
+  return response;
+}
 
   async deleteModel(modelId: number) {
     const response = await axios.delete(
