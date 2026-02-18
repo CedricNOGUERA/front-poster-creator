@@ -24,6 +24,7 @@ import 'rsuite/Drawer/styles/index.css'
 import { ResetPassword } from './pages/public/ResetPassword'
 import ModelsPage from './pages/admin/ModelPage'
 import MonitoringPage from './pages/admin/MonitoringPage'
+import TemplatePage from './pages/admin/TemplatePage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -43,6 +44,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/tableau-de-bord' element={<DashBoard />}>
             <Route path='/tableau-de-bord/magasins' element={<ShopPage />} />
             <Route path='/tableau-de-bord/categories' element={<CategoriesPage />} />
+            <Route path='/tableau-de-bord/templates' element={<TemplatePage />} />
             <Route path='/tableau-de-bord/modeles' element={<ModelsPage />} />
             <Route path='/tableau-de-bord/phototheque' element={<PicturesLibraryPage />} />
             <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />

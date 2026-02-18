@@ -6,7 +6,7 @@ import { Button, Form, Modal, Spinner } from 'react-bootstrap'
 import shopServiceInstance from '@/services/ShopsServices'
 import { useOutletContext } from 'react-router-dom'
 import { FeedBackSatateType, ToastDataType } from '@/types/DiversType'
-import { _handleFileChange } from '@/utils/functions'
+import { _handleFileChange, _sanitizeString } from '@/utils/functions'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import { useNavigate } from 'react-router-dom'
 import { FaPlusCircle } from 'react-icons/fa'
@@ -107,6 +107,8 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     setFieldErrors(errors);
   };
 
+  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -131,18 +133,24 @@ export const ShopSelectorDrag = ({ title }: Props) => {
       setValidated(true);
       return;
     }
+    console.log(file)
+    const shopThumbnailName = file ? _sanitizeString(file.name) : ""
+console.log(shopThumbnailName)
     setValidated(true);
     const shopFormData = new FormData()
     shopFormData.append(
       'data',
       JSON.stringify({
         name: formData.name,
-        cover: file && `uploads/shopMiniatures/${formData.name}/${file.name}`,
+        cover: file && `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}`,
       })
     )
     if (file) {
       shopFormData.append('image', file)
     }
+    for (const [key, value] of shopFormData.entries()) {
+  console.log(key, value);
+}
     setFeedBackState((prev) => ({
       ...prev,
       isLoading: true,
@@ -155,16 +163,16 @@ export const ShopSelectorDrag = ({ title }: Props) => {
         const newShop = {
           id: shops?.length + 1,
           name: formData.name,
-          cover: file ? `uploads/shopMiniatures/${formData.name}/${file.name}` : '',
+          cover: file ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}` : '',
         }
 
-        setShops((prev) => [...prev, newShop])
+        // setShops((prev) => [...prev, newShop])
         _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)
         setToastData({
           bg: 'success',
           position: 'top-end',
           delay: 3000,
-          icon: 'fa fa-check',
+          icon: 'fa fa-check-circle',
           message: 'Nouveau magasin ajouté avec succès',
         })
         toggleShow()

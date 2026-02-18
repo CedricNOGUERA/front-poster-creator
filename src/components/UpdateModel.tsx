@@ -582,9 +582,9 @@ const updateModel = async () => {
     patchFormData.append('image', blob, imageName)
     patchFormData.append('data', JSON.stringify(components))
     
-    const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
+    // const response = 
+    await modelsServiceInstance.patchModel(modelId, patchFormData)
 
-    if (response.ok) {
       setToastData({
         bg: 'success',
         position: 'top-end',
@@ -592,24 +592,12 @@ const updateModel = async () => {
         icon: 'fa fa-check-circle',
         message: 'Modèle modifié avec succès !',
       })
-      toggleShow()
-      // ✅ Recharger les modèles après succès
-      await _getModels(setModels)
-    } else {
-      const errorData = await response.json().catch(() => ({}))
-      console.error("Erreur serveur:", errorData)
-      setToastData({
-        bg: 'danger',
-        position: 'top-end',
-        delay: 3000,
-        icon: 'fa fa-times-circle',
-        message: errorData.error || 'Échec de la modification du modèle !',
-      })
-      toggleShow()
-    }
+    // ✅ Recharger laliste des modèles après succès
+    await _getModels(setModels)
 
   } catch (error) {
     console.error("❌ Erreur lors de la modification:", error)
+    console.log(error)
     setToastData({
       bg: 'danger',
       position: 'top-end',
@@ -617,80 +605,11 @@ const updateModel = async () => {
       icon: 'fa fa-times-circle',
       message: 'Échec de la modification du modèle !',
     })
-    toggleShow()
   } finally {
     setIsUpdating(false)
+    toggleShow()
   }
 }
-
-//   const updateModel = async () => {
-//     setIsUpdating(true)
-//     try{
-//       // Génère une image PNG depuis la div canvas
-//       const canvasElement = posterRef.current
-//       if (!canvasElement) return
-
-//       const blob = await htmlToImage.toBlob(canvasElement, {
-//       cacheBust: true,
-//       skipFonts: false, // Garder false pour inclure les polices
-//       preferredFontFormat: 'woff2',
-//       // ✅ Options pour gérer les CSS externes
-//       filter: () => {
-//         // Optionnel : filtrer certains éléments si nécessaire
-//         return true;
-//       },
-//       style: {
-//         // Forcer le rendu même avec des erreurs CSS
-//       }
-//     })
-//       if (!blob) {
-//         console.error("Erreur de génération de l'image")
-//         return
-//       }
-
-//       const imageName = templates?.[0]?.image
-// console.log("Generated image name:", imageName)
-//       const patchFormData = new FormData()
-//       patchFormData.append('image', blob, imageName)
-//       patchFormData.append('data', JSON.stringify(components))
-//       const response = await modelsServiceInstance.patchModel(modelId, patchFormData)
-
-//       if(response.ok){
-//         setToastData({
-//           bg: 'success',
-//           position: 'top-end',
-//           delay: 3000,
-//           icon: 'fa fa-check-circle',
-//           message: 'Modèle modifier avec succès !',
-//         })
-//         toggleShow()
-//       }else{
-//         setToastData({
-//           bg: 'danger',
-//           position: 'top-end',
-//           delay: 3000,
-//           icon: 'fa fa-circle-xmark',
-//           message: 'Echec de la modification du modèle !',
-//         })
-//         toggleShow()
-//       }
-
-//     }catch(error){
-//       console.log(error)
-//       setToastData({
-//           bg: 'danger',
-//           position: 'top-end',
-//           delay: 3000,
-//           icon: 'fa fa-times-circle',
-//           message: 'Echec de la modification du modèle !',
-//         })
-//         toggleShow()
-//     }finally{
-//       setIsUpdating(false)
-//       _getModels(setModels)
-//     }
-
-//   }
 
 
   /* UseMemo

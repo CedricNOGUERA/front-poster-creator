@@ -4,42 +4,57 @@
         "title": "Enseignes",
         "icon": "fas fa-store",
         "display": "shops",
-        "role": ["super_admin"]
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/magasins"
     },
     {
         "id": 2,
         "title": "Catégories",
         "icon": "fas fa-list",
         "display": "categories",
-        "role": ["super_admin"]
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/categories"
     },
     {
         "id": 6,
         "title": "Templates",
         "icon": "fas fa-folder-open",
         "display": "templates",
-        "role": ["super_admin"]
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/templates"
     },
     {
         "id": 3,
         "title": "Modèles",
         "icon": "fas fa-file-lines",
         "display": "models",
-        "role": ["super_admin"]
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/modeles"
     },
     {
         "id": 5,
         "title": "Utilisateurs",
         "icon": "fas fa-users",
         "display": "utilisateurs",
-        "role": ["super_admin", "admin"]
+        "role": ["super_admin", "admin"],
+        "href": "/tableau-de-bord/utilisateurs"
     },
     {
         "id": 4,
         "title": "Photothèque",
         "icon": "fas fa-images",
         "display": "phototheque",
-        "role": ["super_admin"]
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/phototheque"
+    
+    },
+    {
+        "id": 4,
+        "title": "Logs",
+        "icon": "fas fa-bug",
+        "display": "logs",
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/logs"
     }
     
 ]

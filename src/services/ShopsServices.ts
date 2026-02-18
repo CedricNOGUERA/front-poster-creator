@@ -14,7 +14,7 @@ class ShopsServices {
   async getShops() {
     const config = {
       method: 'GET',
-      url: `${import.meta.env.VITE_API_URL}/api/shops`,
+      url: `${API_URL}/api/shops`,
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',

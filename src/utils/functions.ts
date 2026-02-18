@@ -534,3 +534,25 @@ export const _statusBadge = (status: Status): BadgeColor => {
   return colorMap[status] ?? 'primary';
 }
 
+export const _sanitizeString = (input: string): string => {
+  // Preserve extension if any
+  const lastDot = input.lastIndexOf('.')
+  let name = input
+  let ext = ''
+  if (lastDot > 0) {
+    name = input.substring(0, lastDot)
+    ext = input.substring(lastDot) // includes the dot
+  }
+
+  const sanitizedName = name
+    .normalize('NFD')                 // separate accents
+    .replace(/\p{Diacritic}/gu, '')  // remove diacritics (using Unicode property)
+    .replace(/[^a-zA-Z0-9-_ ]/g, '')  // remove special chars
+    .trim()
+    .replace(/\s+/g, '-')           // replace spaces by '-'
+    .toLowerCase();
+
+  const sanitizedExt = ext.toLowerCase();
+  return sanitizedName + sanitizedExt;
+}
+

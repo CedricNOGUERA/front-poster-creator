@@ -40,6 +40,9 @@ const DashBoard = () => {
     if (location.pathname.includes('/logs')) {
       return 'logs'
     }
+    if (location.pathname.includes('/modeles')) {
+      return 'modeles'
+    }
     // Par défaut selon le rôle
     return userRole === 'super_admin' ? 'shops' : 'utilisateurs'
   }, [location.pathname, userRole])
@@ -66,6 +69,8 @@ const DashBoard = () => {
       return <TemplatePage />
     }else if (display === 'logs') {
       return <MonitoringPage />
+    }else if (display === 'modeles') {
+      return <ModelsPage />
     }
   }
 

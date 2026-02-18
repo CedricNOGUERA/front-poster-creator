@@ -103,15 +103,12 @@ const shopDisplay = (shops: ShopType[]) => {
     if (!id) return;
     setIsLoading(true);
     try {
-      // const response = await shopServiceInstance.deleteShop(id)
       const deleteResponse = await shopServiceInstance.deleteShop(id)
-      console.log(deleteResponse)
       if(deleteResponse.status === 200){
 
         handleCloseDeleteModal()
         getAllShops()
         _showToast(true, deleteResponse?.data.message, setToastData, toggleShow, 4000)
-
       }
     } catch (err) {
       console.error('Erreur lors de la suppression du magasin:', err)
