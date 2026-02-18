@@ -3,6 +3,7 @@ import { Col, Container } from 'react-bootstrap'
 import sideBarMenuAdmin from '@/data/sideBarMenuAdmin.json'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
 import DynamicIcon from '../ui/DynamicIcon'
+import { Link } from 'react-router-dom'
 
 export const SideBarMenu = ({
   setDisplay,
@@ -37,13 +38,16 @@ export const SideBarMenu = ({
     <Container
     key={indx}
       className={`dash-menu-link  py-3 rounded-end pointer}`}
+    
       onClick={() => setDisplay(item.display)}
-    >
+    > 
+    <Link to={item.href} className='text-decoration-none'>
 
       <div className='d-flex align-items-center text-decoration-none text-muted ps-2'>
         <DynamicIcon iconKey={item.icon} className='me-2' size={22} />
         {item.title}
       </div>
+    </Link>
     </Container>
   )}
 )
