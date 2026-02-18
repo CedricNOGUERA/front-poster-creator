@@ -35,6 +35,7 @@ import { ModelType } from '@/types/modelType'
 import { _showToast } from '@/utils/notifications'
 import { FaXmark } from 'react-icons/fa6'
 import html2canvas from 'html2canvas'
+import { AxiosError } from 'axios'
 
 
 interface ContextInlineDragDropEditorType {
@@ -669,7 +670,7 @@ const addModel = async (name: string) => {
         }
       }
 
-      if (responseModel.ok) {
+      // if (responseModel.ok) {
         handleCloseValidateModel();
         _showToast(
           true,
@@ -679,7 +680,7 @@ const addModel = async (name: string) => {
           3000,
         );
         setIsErrorModel(false);
-      }
+      // }
     } else {
       // ========== MODE CRÉATION ==========
       
@@ -692,16 +693,11 @@ const addModel = async (name: string) => {
           categoryId: storeApp.categoryId,
           shopIds: selectedCategory.shopIds,
         }));
-        templateFormData.append("image", blob, imageName);
+      
 
-        const responseTemplate = await templatesServiceInstance.postTemplate(
+        await templatesServiceInstance.postTemplate(
           templateFormData
         );
-
-        if (!responseTemplate.ok) {
-          const errTemplate = await responseTemplate.json();
-          throw new Error(errTemplate?.error || "Erreur lors de la création du template");
-        }
 
         console.log("✅ Template créé avec miniature");
       }
@@ -732,17 +728,20 @@ const addModel = async (name: string) => {
         throw new Error(err?.error || "Erreur serveur");
       }
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error adding model:", error);
-    _showToast(
-      false,
-      error instanceof Error 
-        ? error.message 
+    if(error instanceof AxiosError){
+
+      _showToast(
+        false,
+        error instanceof Error 
+        ? error.response?.data.error 
         : "Une erreur est survenue lors de la validation du modèle.",
-      setToastData,
-      toggleShow,
-      3000,
-    );
+        setToastData,
+        toggleShow,
+        3000,
+      );
+    }
   } finally {
     // Rafraîchir les données
     await Promise.all([
