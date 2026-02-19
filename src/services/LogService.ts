@@ -43,22 +43,6 @@ class LogService {
     return response
   }
 
-  // Vérification simple - appel fréquent
-  // async isServerUp() {
-  //   try {
-  //     const res = await fetch(`${API_URL}/api/health`, {
-  //       method: "GET",
-  //       // timeout: 5000 // 5 secondes timeout
-  //     });
-  //     if (res.ok) {
-  //       console.log("serveur ok");
-  //     }
-  //     return res.ok; // true si HTTP 200-299
-  //   } catch (error) {
-  //     console.log("serveur hors ligne");
-  //     return false; // serveur coupé, réseau indisponible, etc.
-  //   }
-  // }
   async isServerUp(): Promise<boolean> {
   try {
     const res = await axios.get(`${API_URL}/api/health`);

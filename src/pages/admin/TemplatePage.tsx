@@ -3,8 +3,8 @@ import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { _getTemplates } from "@/utils/apiFunctions";
 import React from "react";
-import { Alert, Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
-import { FaTimesCircle } from "react-icons/fa";
+import { Alert, Button, Col, Container, Dropdown, Form, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
+import { FaEdit, FaTimesCircle } from "react-icons/fa";
 import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 import { _showToast } from "@/utils/notifications";
@@ -28,6 +28,7 @@ export default function TemplatePage() {
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
+  const [formData, setFormData] = React.useState<Partial<TemplateType>>({});
 
 
   React.useEffect(() => {
@@ -65,6 +66,17 @@ export default function TemplatePage() {
     setShowDeleteModal(false);
   };
 
+  const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
+
+  const handleShowEditModal = (temp: TemplateType) => {
+    setSelectedModel(temp);
+    setShowEditModal(true);
+  };  
+  const handleCloseEditModal = () => {
+    setSelectedModel({} as TemplateType);
+    setShowEditModal(false);
+  }
+
   const handleDeleteTemplate = async () => {
     if (!selectedModel) return;
     setIsLoading(true);
@@ -95,6 +107,29 @@ export default function TemplatePage() {
       setIsLoading(false);
     }
   };
+  const editTemplate = async () => {
+    if (!selectedModel) return;
+    setIsLoading(true);
+    try { 
+      const response = await templatesServiceInstance.patchTemplates(
+        selectedModel.id,
+        { name: formData.name },
+      );
+      _getTemplates(setAllTemplates);
+      handleCloseEditModal();
+      _showToast(
+        true,
+        response.data.message || "Template modifié avec succès",
+        setToastData,
+        toggleShow,
+        3000,
+      );
+    }catch(error){
+      console.log(error)
+    }finally{
+        setIsLoading(false);
+    }
+  }
 
   return (
     <Container fluid className="relative p-0">
@@ -154,6 +189,13 @@ export default function TemplatePage() {
                       </Dropdown.Toggle>
                       <Dropdown.Menu align='end'>
                         <Dropdown.Item 
+                        onClick={() => handleShowEditModal(temp)}
+                          className="d-flex align-items-center text-"
+                          >
+                          <FaEdit className="me-2" size={16} color="green" />                          
+                          Modifier
+                        </Dropdown.Item>
+                        <Dropdown.Item 
                         onClick={() => handleShowDeleteModal(temp)}
                           className="d-flex align-items-center text-danger"
                           >
@@ -170,6 +212,62 @@ export default function TemplatePage() {
         )}
       </Container>
 
+      <Modal show={showEditModal} onHide={handleCloseEditModal}>
+        <Form onSubmit={(e) => {
+          e.preventDefault();
+          editTemplate();
+        }}>
+
+        <Modal.Header closeButton>
+          <Modal.Title>Modifier un template</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Etes-vous sûr de vouloir modifier ce template ?
+             <Form.Group className='mb-3' controlId='categoryName'>
+            <Form.Label>
+              Nom<span className='text-danger'>*</span>
+            </Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Saissisez le nom du template'
+              value={formData.name || ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+                // validateField('name', e.target.value)
+              }}
+              // onBlur={(e) => validateField('name', e.target.value)}
+              required
+              // isInvalid={(validated && !formData.name.trim()) || !!fieldErrors.name}
+            />
+            <Form.Control.Feedback type='invalid'>
+              {/* {fieldErrors.name || 'Veuillez saisir un nom de catégorie.'} */}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEditModal}>
+            Annuler
+          </Button>
+          <Button type="submit" variant="success" >
+            {isLoading ? (
+              <>
+              <Spinner size="sm" animation="border" role="status" className="me-2"/>
+                <span className="visually-hidden">Chargement...</span>
+              </>
+             
+            ) : (
+            <span>
+              <FaEdit className="me-2" />
+              </span>
+            )}
+            Modifier
+          </Button>
+        </Modal.Footer>
+        </Form>
+
+      </Modal>
       <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
         <Modal.Header closeButton>
           <Modal.Title>Supprimer un template</Modal.Title>

@@ -47,14 +47,6 @@
         "role": ["super_admin"],
         "href": "/tableau-de-bord/phototheque"
     
-    },
-    {
-        "id": 4,
-        "title": "Logs",
-        "icon": "fas fa-bug",
-        "display": "logs",
-        "role": ["super_admin"],
-        "href": "/tableau-de-bord/logs"
     }
     
 ]
