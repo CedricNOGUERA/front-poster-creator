@@ -648,6 +648,16 @@ const addModel = async (name: string) => {
         patchFormData,
       );
 
+      if(responseModel.status === 200){
+         _showToast(
+            true,
+            "Model modifiée avec succès !",
+            setToastData,
+            toggleShow,
+            3000,
+          );
+      }
+
       // Mettre à jour la miniature du template si nécessaire
       if (storeApp.dimensionId === 9) {
         const thumbnailFormData = new FormData();
