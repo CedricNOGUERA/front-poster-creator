@@ -26,8 +26,6 @@ export const SideHeaderMenu = ({
   const authLogout = userDataStore((state: UserDataType) => state.authLogout)
   const userRole = userDataStore((state: UserDataType) => state.role)
   
-  const userData = userDataStore((state: UserDataType) => state)
-  
   /* Functions
    *******************************************************************************************/
   const handleClick = (title: string) => {
@@ -70,18 +68,6 @@ export const SideHeaderMenu = ({
               </Container>
             </Link>
           ))}
-        {userData.name === "Cédric" && (
-          <Link
-            to="tableau-de-bord/logs"
-            onClick={() => handleClick("Monitoring")}
-            className="d-flex align-items-center text-decoration-none text-muted"
-          >
-            <Container className="d-flex align-items-center menu-link py-3 rounded-start">
-              <DynamicIcon iconKey={"fas fa-bug"} className="me-2" size={24} />
-              {"Monitoring"}
-            </Container>
-          </Link>
-        )}
         <Container className=" log-out  py-3 px-0 border-top">
           <Container className=" menu-link py-3 rounded-start">
             <Link
