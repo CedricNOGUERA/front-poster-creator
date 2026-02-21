@@ -2,7 +2,7 @@ import { ImagemodelType, ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { _getAllImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
-import React from "react";
+import React, { Suspense } from "react";
 import { Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
@@ -20,6 +20,8 @@ interface ContextType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>> 
   toggleShow: () => void
 }
+
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function ModelsPage() {
     
@@ -170,6 +172,7 @@ export default function ModelsPage() {
                   (dim) => dim.id === model.dimensionId,
                 );
                 const factor = dimension && 120 / dimension?.width;
+                const baseSlug = `${API_URL}/uploads/modelMiniature/`
 
                 return (
                   <tr key={indx} className="align-middle">
@@ -177,16 +180,17 @@ export default function ModelsPage() {
                     <td>{templateData?.name}</td>
                     <td>{dimension?.name}</td>
                     <td>
-                      <Image
-                        src={`${
-                          import.meta.env.VITE_API_URL
-                        }/uploads/modelMiniature/${model.id}/${modelImage?.name}`}
-                        alt={`Miniature du model #${model.id}`}
-                        width={dimension && factor && dimension?.width * factor}
-                        height={
-                          dimension && factor && dimension?.height * factor
-                        }
-                      />
+                        <Image
+                          loading="lazy"
+                          src={`${baseSlug}${model.id}/${modelImage?.name}`}
+                          alt={`Miniature du model #${model.id}`}
+                          width={
+                            dimension && factor && dimension?.width * factor
+                          }
+                          height={
+                            dimension && factor && dimension?.height * factor
+                          }
+                        />
                     </td>
                     <td>
                       <Dropdown>

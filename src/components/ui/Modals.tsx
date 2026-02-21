@@ -19,10 +19,10 @@ import {
 } from '@/types/ModalType'
 import { ShopType } from '@/types/ShopType'
 import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
-import { _getCategoriesPaginated, _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
+import { _getCategories, _getCategoriesPaginated, _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
 import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
 import { TemplateType } from '@/types/TemplatesType'
-import { CategoriesPaginatedType, CategoriesType } from '@/types/CategoriesType'
+import { CategoriesType } from '@/types/CategoriesType'
 import categoriesServiceInstance from '@/services/CategoriesServices'
 import { AxiosError } from 'axios'
 import { _expiredSession, _showToast } from '@/utils/notifications'
@@ -787,9 +787,9 @@ interface ModalDuplicateCategoryType {
   handleCloseDuplicate: () => void
   selectedCategory: CategoriesType
   setSelectedCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
-  setCategoriesPaginated: React.Dispatch<React.SetStateAction<CategoriesPaginatedType>>
-  page: number 
-  limit: number
+  setAllCategories: React.Dispatch<React.SetStateAction<CategoriesType[]>>
+  // page: number 
+  // limit: number
 }
 export function ModalDuplicateCategory({
   modalDuplicateCategoryProps,
@@ -798,7 +798,7 @@ export function ModalDuplicateCategory({
 }) {
   const { feedBackState, setFeedBackState,  setToastData, toggleShow } = useOutletContext<ContextModalValidateModelType>()
   const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
-  const {showDuplicate, handleCloseDuplicate, selectedCategory, setSelectedCategory, setCategoriesPaginated, page, limit} = modalDuplicateCategoryProps
+  const {showDuplicate, handleCloseDuplicate, selectedCategory, setSelectedCategory, setAllCategories } = modalDuplicateCategoryProps
   const [newName, setNewName] = React.useState<string>("")
   const navigate = useNavigate()
 
@@ -817,7 +817,7 @@ export function ModalDuplicateCategory({
       const response = await categoriesServiceInstance.duplicateCategory(id, newName)
 
       if(response.status === 201){
-        _getCategoriesPaginated(setCategoriesPaginated, setToastData, toggleShow, setFeedBackState, page, limit)
+        _getCategories(setAllCategories, setToastData, toggleShow, setFeedBackState)
         handleCloseDuplicate()
         setToastData({
           bg: 'success',

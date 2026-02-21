@@ -6,7 +6,7 @@ import { FaCircleXmark } from "react-icons/fa6"
 import DynamicIcon from "../ui/DynamicIcon"
 
 
-export const ModalAddUser = ({showAdd, handleCloseAdd, userDataToEdit, setUsers}: {showAdd: boolean, handleCloseAdd: () => void, userDataToEdit?: UserType | null, setUsers: React.Dispatch<React.SetStateAction<UserType[]>>}) => {
+export const ModalAddUser = ({showAdd, handleCloseAdd, userDataToEdit, setAllUsers}: {showAdd: boolean, handleCloseAdd: () => void, userDataToEdit?: UserType | null, setAllUsers: React.Dispatch<React.SetStateAction<UserType[]>>}) => {
     const titleButton = userDataToEdit ? "Modifier" : "Ajouter"
     const modalTitle = userDataToEdit ? "Modifier l'utilisateur" : "Ajouter l'utilisateur"
     const modalIcon = userDataToEdit ? "ri-user-settings-line" : "ri-user-add-line"
@@ -22,7 +22,7 @@ export const ModalAddUser = ({showAdd, handleCloseAdd, userDataToEdit, setUsers}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <AddUserForm titleButton={titleButton} handleCloseAdd={handleCloseAdd} initialData={userDataToEdit} setUsers={setUsers} />
+        <AddUserForm titleButton={titleButton} handleCloseAdd={handleCloseAdd} initialData={userDataToEdit} setUsers={setAllUsers} />
       </Modal.Body>
     </Modal>
   )

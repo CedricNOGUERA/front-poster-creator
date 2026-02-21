@@ -1,11 +1,12 @@
 import { StoreType } from '@/stores/storeApp'
 import { BackgroundComponentType, ComponentTypeMulti, HeaderComponentType } from '@/types/ComponentType'
-import { NewTemplateType, ToastDataType } from '@/types/DiversType'
+import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { Canvastype } from '@/types/CanvasType'
 import { NavigateOptions, To } from 'react-router-dom'
 import moment from 'moment'
+import { FormCategoryDataType } from '@/components/step-selector/CategorySelectorDrag'
 
 export const _thousandSeparator = (number: number, locale: string = 'fr-FR'): string => {
   return number?.toLocaleString(locale, {
@@ -554,5 +555,44 @@ export const _sanitizeString = (input: string): string => {
 
   const sanitizedExt = ext.toLowerCase();
   return sanitizedName + sanitizedExt;
+}
+
+
+export const _validateFormData =(formData: FormCategoryDataType, setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>, setValidated: React.Dispatch<React.SetStateAction<boolean>>) => {
+    if (formData.name.trim() === '') {
+      setFeedBackState((prev) => ({
+        ...prev,
+        isError: true,
+        errorMessage: 'Veuillez saisir un nom de catégorie',
+        isLoading: false,
+        loadingMessage: '',
+      }))
+      setValidated(true)
+      return
+    }
+
+    if (formData.name.trim().length < 2) {
+      setFeedBackState((prev) => ({
+        ...prev,
+        isError: true,
+        errorMessage: 'Le nom de la catégorie doit contenir au moins 2 caractères',
+        isLoading: false,
+        loadingMessage: '',
+      }))
+      setValidated(true)
+      return
+    }
+
+    if (formData.shopIds.length === 0) {
+      setFeedBackState((prev) => ({
+        ...prev,
+        isError: true,
+        errorMessage: 'Veuillez sélectionner au moins un magasin',
+        isLoading: false,
+        loadingMessage: '',
+      }))
+      setValidated(true)
+      return
+    }
 }
 

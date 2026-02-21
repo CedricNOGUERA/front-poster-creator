@@ -1,4 +1,4 @@
-import { UserDataType } from "@/stores/userDataStore"
+import { UserType } from "@/types/UserType"
 // import { UserDataType } from "@/types/UserType"
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -21,7 +21,7 @@ class UsersServices {
         return response
     }
     
-    async updateUser(id: number, data: Partial<UserDataType>){
+    async updateUser(id: number, data: Partial<UserType>){
         const response = await fetch(`${API_URL}/api/users/${id}`, {
             method: 'PATCH',
             headers: {
