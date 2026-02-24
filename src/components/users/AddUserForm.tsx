@@ -45,7 +45,7 @@ export const AddUserForm = ({
   const [stores, setStores] = React.useState<{"id": number,
        "name": string
       }[]>([])
-  const [role, setRole] = React.useState<'super_admin' | 'admin' | 'user'>('user')
+  const [role, setRole] = React.useState<'mega_admin' | 'super_admin' | 'admin' | 'user'>('user')
   const [showPassword, setShowPassword] = React.useState<boolean>(false)
   const [error, setError] = React.useState<string | null>(null)
   const [success, setSuccess] = React.useState<string | null>(null)
@@ -153,7 +153,7 @@ const storeList = React.useMemo(
     } finally {
       setLoading(false)
       if(setUsers){
-        _getAllUsers(setUsers)
+        _getAllUsers(setUsers, setLoading)
       }
     }
   }

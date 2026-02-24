@@ -1,3 +1,4 @@
+import SearchBar from '@/components/dashBoardComponents/SearchBar'
 import { ModalGenericDelete } from '@/components/ui/Modals'
 import { ModalAddUser} from '@/components/users/ModalUser'
 import UsersServices from '@/services/UsersServices'
@@ -27,12 +28,13 @@ export default function UserManager() {
   // const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
   const userRole = userDataStore((state: UserDataType) => state.role)
   const userCompany = userDataStore((state: UserDataType) => state.company )
-  const [users, setUsers] = React.useState<UserType[]>([])
+  const [allUsers, setAllUsers] = React.useState<UserType[]>([])
   const [showAdd, setShowAdd] = React.useState<boolean>(false)
   const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [showDelete, setShowDelete] = React.useState<boolean>(false)
+  const [searchTerm, setSearchTerm] = React.useState<string>('')
 
   /* UseEffect
    *******************************************************************************************/
@@ -42,9 +44,31 @@ export default function UserManager() {
       navigate('/editeur-de-bon-plan')
       return
     }
-    _getAllUsers(setUsers, setIsLoading)
+    _getAllUsers(setAllUsers, setIsLoading)
     
   }, [userRole, navigate])
+
+  const users = React.useMemo(() => {
+    if (searchTerm.trim() === "") {
+      return allUsers;
+    }
+
+    const lowerTerm = searchTerm.toLowerCase().trim();
+    
+    return allUsers.filter((user) => {
+      // const companyMatch = user.company.some((item) =>
+      //   item.nameCompany.toLowerCase().includes(lowerTerm))
+      const matchUserName = user.name.toLowerCase().includes(lowerTerm)
+      const matchUserEmail = user.email.toLowerCase().includes(lowerTerm)
+      const matchUserRole = user.role.toLowerCase().includes(lowerTerm)
+
+      // const matchesId = model.id.toString().includes(lowerTerm);
+      // const matchesTemplateName = templateData?.name.toLowerCase().includes(lowerTerm) || false;
+      // const matchesDimension = dimension?.name.toLowerCase().includes(lowerTerm) || false;
+
+      return matchUserName || matchUserEmail || matchUserRole;
+  });
+  }, [searchTerm, allUsers]);
 
   /* Functions
    *******************************************************************************************/
@@ -72,7 +96,7 @@ export default function UserManager() {
         const response =  await UsersServices.deleteUser(id)
         if(response.ok){
             handleCloseAdd()
-            _getAllUsers(setUsers, setIsLoading)
+            _getAllUsers(setAllUsers, setIsLoading)
         }
     }catch(error){
         console.log(error)
@@ -85,6 +109,7 @@ export default function UserManager() {
   return (
     <Container fluid className='p-0'>
       <h3 className='py-3'>Gestion des utilisateurs</h3>
+      <SearchBar seachBarProps={{searchTerm, setSearchTerm, data: users}} />
       <Container>
         <Table striped hover responsive='sm' className='shadow'>
           <thead className='sticky-sm-top '>
@@ -186,7 +211,7 @@ export default function UserManager() {
         showAdd={showAdd}
         handleCloseAdd={handleCloseAdd}
         userDataToEdit={selectedUser}
-        setUsers={setUsers}
+        setAllUsers={setAllUsers}
       />
       <ModalGenericDelete modalGenericDeleteProps={modalGenericDeleteProps} />
     </Container>
