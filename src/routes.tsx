@@ -25,6 +25,7 @@ import { ResetPassword } from './pages/public/ResetPassword'
 import ModelsPage from './pages/admin/ModelPage'
 import MonitoringPage from './pages/admin/MonitoringPage'
 import TemplatePage from './pages/admin/TemplatePage'
+import ConnexionCount from './pages/admin/ConnexionCount'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -49,6 +50,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path='/tableau-de-bord/phototheque' element={<PicturesLibraryPage />} />
             <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
             <Route path='/tableau-de-bord/logs' element={<MonitoringPage />} />
+            <Route path='/tableau-de-bord/connexions' element={<ConnexionCount />} />
           </Route>
           <Route path='/profile' element={<Account />} />
           <Route path='/guide-plv' element={<GuideUtilisateur />} />

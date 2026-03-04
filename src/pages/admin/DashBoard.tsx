@@ -10,69 +10,52 @@ import { useLocation, useOutletContext } from 'react-router-dom'
 import ModelsPage from './ModelPage'
 import TemplatePage from './TemplatePage'
 import MonitoringPage from './MonitoringPage'
+import ConnexionCount from './ConnexionCount'
 
 interface ContextType {
   setTitleHeader: React.Dispatch<React.SetStateAction<string>>
 }
 
+const ADMIN_PAGES: Record<string, { path: string; component: React.ReactNode }> = {
+  utilisateurs: { path: '/utilisateurs', component: <UserManager /> },
+  categories: { path: '/categories', component: <CategoriesPage /> },
+  templates: { path: '/templates', component: <TemplatePage /> },
+  phototheque: { path: '/phototheque', component: <PicturesLibraryPage /> },
+  shops: { path: '/shops', component: <ShopPage /> },
+  logs: { path: '/logs', component: <MonitoringPage /> },
+  modeles: { path: '/modeles', component: <ModelsPage /> },
+  connexions: { path: '/connexions', component: <ConnexionCount /> },
+};
+
 const DashBoard = () => {
   const { setTitleHeader} = useOutletContext<ContextType>()
   const location = useLocation()
   const userRole = userDataStore((state: UserDataType) => state.role)
-  
-  // Déterminer la section à afficher basée sur l'URL
+
+
   const getDisplayFromUrl = React.useCallback(() => {
-    if (location.pathname.includes('/utilisateurs')) {
-      return 'utilisateurs'
-    }
-    if (location.pathname.includes('/categories')) {
-      return 'categories'
-    }
-    if (location.pathname.includes('/templates')) {
-      return 'templates'
-    }
-    if (location.pathname.includes('/phototheque')) {
-      return 'phototheque'
-    }
-    if (location.pathname.includes('/shops')) {
-      return 'shops'
-    }
-    if (location.pathname.includes('/logs')) {
-      return 'logs'
-    }
-    if (location.pathname.includes('/modeles')) {
-      return 'modeles'
-    }
-    // Par défaut selon le rôle
-    return userRole === 'super_admin' ? 'shops' : 'utilisateurs'
-  }, [location.pathname, userRole])
+  // On cherche la clé dont le path est inclus dans l'URL
+  const found = Object.keys(ADMIN_PAGES).find(key => 
+    location.pathname.includes(ADMIN_PAGES[key].path)
+  );
 
-  const [display, setDisplay] = React.useState(getDisplayFromUrl)
+  if (found) return found;
 
-  React.useEffect(() => {
+  // Par défaut selon le rôle
+  return userRole === 'super_admin' ? 'shops' : 'utilisateurs';
+}, [location.pathname, userRole]);
+
+    const [display, setDisplay] = React.useState(getDisplayFromUrl)
+
+    React.useEffect(() => {
     setDisplay(getDisplayFromUrl())
     setTitleHeader('Administration')
   }, [getDisplayFromUrl, setTitleHeader])
 
-  const handleDisplay = (display: string) => {
-    if (display === 'shops') {
-      return <ShopPage />
-    } else if (display === 'categories') {
-      return <CategoriesPage />
-    } else if (display === 'utilisateurs') {
-      return <UserManager />
-    } else if (display === 'phototheque') {
-      return <PicturesLibraryPage />
-    }else if (display === 'models') {
-      return <ModelsPage />
-    }else if (display === 'templates') {
-      return <TemplatePage />
-    }else if (display === 'logs') {
-      return <MonitoringPage />
-    }else if (display === 'modeles') {
-      return <ModelsPage />
-    }
-  }
+const handleDisplay = (displayKey: string) => {
+  // On récupère directement le composant via la clé
+  return ADMIN_PAGES[displayKey]?.component || null;
+};
 
   return (
     <Container fluid className='px-0'>

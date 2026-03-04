@@ -46,6 +46,14 @@
         "display": "phototheque",
         "role": ["super_admin"],
         "href": "/tableau-de-bord/phototheque"
+    },
+    {
+        "id": 6,
+        "title": "Stat connexions",
+        "icon": "fas fa-sign-in-alt",
+        "display": "connexions",
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/connexions"
     
     }
     
