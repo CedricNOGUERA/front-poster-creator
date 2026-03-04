@@ -46,6 +46,7 @@ import {
   FaAward,
   FaHammer,
   FaFolder,
+  FaSignInAlt,
 } from "react-icons/fa";
 import {
   FaBug,
@@ -123,6 +124,7 @@ export const ICON_MAP = {
   "fas fa-list": FaList,
   "fas fa-pen-to-square": FaPenToSquare,
   "fas fa-shield-halved": FaShieldHalved,
+  "fas fa-sign-in-alt": FaSignInAlt,
   "fas fa-store": FaStore,
   "fas fa-users": FaUsers,
   "ri-user-add-line": RiUserAddLine,
