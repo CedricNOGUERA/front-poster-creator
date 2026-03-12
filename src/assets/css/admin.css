@@ -212,7 +212,7 @@ footer .text-small{
   right: 2%;
   background-color: #fff;
   border: 2px solid #ffffff;
-  z-index:15000;
+  z-index:1000;
   color: #5e5d5d;
 }
 .p-absolute:hover{
