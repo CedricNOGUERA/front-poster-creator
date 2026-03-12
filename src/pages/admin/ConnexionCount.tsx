@@ -24,6 +24,7 @@ export default function ConnexionCount() {
     }
   };
 
+
   return (
     <Container fluid className="p-0">
       <h3 className="py-3 mb-0">Gestion des Connexions</h3>
@@ -43,8 +44,7 @@ export default function ConnexionCount() {
               (conn: ConnexionType, index: number) => (
                 <tr key={index}>
                   <td>
-                    {moment(conn.dateOfConnexion).add(10, "days").calendar()} à{" "}
-                    {moment(conn.dateOfConnexion).format("h:mm:ss")}
+                    {moment.utc(conn.dateOfConnexion).local().format("DD/MM/YYYY à HH:mm")}
                   </td>
                   <td>{conn.name}</td>
                   <td>{conn.email}</td>
