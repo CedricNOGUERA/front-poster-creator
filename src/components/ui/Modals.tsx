@@ -19,7 +19,7 @@ import {
 } from '@/types/ModalType'
 import { ShopType } from '@/types/ShopType'
 import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
-import { _getCategories, _getCategoriesPaginated, _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
+import { _getCategories, _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
 import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
 import { TemplateType } from '@/types/TemplatesType'
 import { CategoriesType } from '@/types/CategoriesType'

@@ -56,7 +56,8 @@ class ModelsService {
     return response;
   }
 
-  formattedModelPicture(name: string) {
+  formattedModelPicture(name: string | undefined) {
+    if (!name) return "";
     const formattedImage = name
       .normalize("NFD") // transforme é → e + ́
       .replace(/[\u0300-\u036f]/g, "") // retire les accents

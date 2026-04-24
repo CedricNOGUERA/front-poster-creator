@@ -87,6 +87,8 @@
 }
 .dash-menu-link{
   border-right: 6px solid #f8f9fa;
+  transition: background-color 0.9s ease, color 0.9s ease;
+  transition: border-right 0.5s ease, color 0.9s ease;
 }
   .menu-link:hover{
   background-color: #e5e6e7;
@@ -214,10 +216,15 @@ footer .text-small{
   border: 2px solid #ffffff;
   z-index:1000;
   color: #5e5d5d;
+  /* color: inherit;  */
+  
+  /* C'est ici que l'animation se joue */
+  /* duration: 0.3s | timing-function: ease */
+  transition: background-color 0.8s ease, color 0.8s ease;
 }
 .p-absolute:hover{
-  background-color: #f1f1f1;
- color: green;
+  background-color: #dddddd;
+ color: rgb(232, 9, 5);
 }
 
 
