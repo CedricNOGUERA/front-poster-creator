@@ -38,7 +38,7 @@ export const SideBarMenu = ({
       
     <Container
     key={indx}
-      className={`dash-menu-link  py-3 rounded-end pointer}`}
+      className={`dash-menu-link  py-3  rounded-end-3 pointer}`}
     
       onClick={() => setDisplay(item.display)}
     > 

@@ -12,6 +12,7 @@ import { ToastDataType } from "@/types/DiversType";
 import templatesServiceInstance from "@/services/TemplatesServices";
 import { AxiosError } from "axios";
 import SearchBar from "@/components/dashBoardComponents/SearchBar";
+import { formattedName } from "@/utils/functions";
 
 interface ContextType {
   shops: ShopType[]
@@ -85,8 +86,8 @@ export default function TemplatePage() {
       const response = await templatesServiceInstance.deleteTemplate(
         selectedModel.id,
       );
+      _getTemplates(setAllTemplates);
       handleCloseDeleteModal();
-        _getTemplates(setTemplates);
       _showToast(true, "Suppression réussie", setToastData, toggleShow, 3000);
 
       console.log(response);
@@ -109,11 +110,13 @@ export default function TemplatePage() {
   };
   const editTemplate = async () => {
     if (!selectedModel) return;
+
+
     setIsLoading(true);
     try { 
       const response = await templatesServiceInstance.patchTemplates(
         selectedModel.id,
-        { name: formData.name },
+        { name: formattedName(formData?.name) },
       );
       _getTemplates(setAllTemplates);
       handleCloseEditModal();

@@ -135,7 +135,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     }
     console.log(file)
     const shopThumbnailName = file ? _sanitizeString(file.name) : ""
-console.log(shopThumbnailName)
+
     setValidated(true);
     const shopFormData = new FormData()
     shopFormData.append(
@@ -160,11 +160,11 @@ console.log(shopThumbnailName)
     try {
       const response = await shopServiceInstance.addShop(shopFormData)
       if (response.ok) {
-        const newShop = {
-          id: shops?.length + 1,
-          name: formData.name,
-          cover: file ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}` : '',
-        }
+        // const newShop = {
+        //   id: shops?.length + 1,
+        //   name: formData.name,
+        //   cover: file ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}` : '',
+        // }
 
         // setShops((prev) => [...prev, newShop])
         _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow)
