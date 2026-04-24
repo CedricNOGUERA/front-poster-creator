@@ -594,5 +594,20 @@ export const _validateFormData =(formData: FormCategoryDataType, setFeedBackStat
       setValidated(true)
       return
     }
+
+
 }
+
+
+export const formattedName = (name: string | undefined) => {
+    if (!name) return "";
+    const formattedImage = name
+      .normalize("NFD") // transforme é → e + ́
+      .replace(/[\u0300-\u036f]/g, "") // retire les accents
+      .replace(/[^a-zA-Z0-9]/g, "-") //transforme les espaces en -
+      .toLowerCase();
+
+  
+    return formattedImage;
+  }
 

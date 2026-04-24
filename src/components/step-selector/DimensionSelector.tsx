@@ -21,7 +21,6 @@ export const DimensionSelector = ({ title }: Props) => {
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
   const [imagesmodel, setImagesModel] = React.useState<ImagemodelType[]>([])
 
-
   // Contrainte d'affichage
   const maxDisplayWidth = 260;
   const maxDisplayHeight = 180;
