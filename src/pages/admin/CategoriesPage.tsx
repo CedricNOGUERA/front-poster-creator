@@ -4,7 +4,10 @@ import categoriesServiceInstance from '@/services/CategoriesServices';
 import { CategoriesType } from '@/types/CategoriesType';
 import { FeedBackSatateType, ToastDataType } from '@/types/DiversType';
 import { ShopType } from '@/types/ShopType';
-import { _getCategories, _getCategoriesPaginated } from '@/utils/apiFunctions';
+import { _getCategories
+  // , _getCategoriesPaginated
+
+ } from '@/utils/apiFunctions';
 import React, { useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
 import {useNavigate, useOutletContext } from 'react-router-dom';
@@ -16,7 +19,7 @@ import userDataStore, { UserDataType } from '@/stores/userDataStore';
 import { AxiosError } from 'axios';
 import { _expiredSession, _showToast } from '@/utils/notifications';
 import SearchBar from '@/components/dashBoardComponents/SearchBar';
-import { _validateFormData } from '@/utils/functions';
+// import { _validateFormData } from '@/utils/functions';
 interface ContextSideBarType {
     toggleShow: () => void
     setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
