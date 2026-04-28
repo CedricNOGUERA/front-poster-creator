@@ -590,7 +590,6 @@ export default function InlineDragDropEditor() {
     },
     [newTemplateState?.width, newTemplateState?.height],
   );
-  console.log(imageName);
 
   const addModel = async (name: string) => {
     if (name === "") {
@@ -653,10 +652,7 @@ export default function InlineDragDropEditor() {
       const imageExists = template.some(
         (img: TemplateType) => img.image === imageName.trim(),
       );
-      console.log(template);
-      console.log(imageName);
-      console.log(imageExists);
-      console.log(hasModel);
+
       const tempData = template.find(
         (img: TemplateType) => img.image === imageName.trim(),
       );
@@ -675,7 +671,7 @@ export default function InlineDragDropEditor() {
       modelFormData.append("image", blob, imageName);
       modelFormData.append("data", JSON.stringify(newModelData));
 
-      if (hasModel || imageExists) {
+      if (hasModel && imageExists) {
         // ========== MODE ÉDITION ==========
 
         // FormData pour le patch du modèle
