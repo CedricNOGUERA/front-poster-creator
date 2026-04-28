@@ -94,7 +94,6 @@ export const DimensionSelector = ({ title }: Props) => {
               }}
             >
               {imagesmodel?.find((img) => img.modelId === modelAvailable?.id)? (
-
                   
                     <div className="d-flex justify-content-center align-items-center mb-2">
                   <img
