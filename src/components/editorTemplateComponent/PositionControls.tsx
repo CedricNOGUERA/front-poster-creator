@@ -1,17 +1,42 @@
-import React from 'react'
-import { Form, Button, ButtonGroup, InputGroup } from 'react-bootstrap'
-import { ComponentTypeMulti, TextComponentType, NumberComponentType, PrincipalPriceComponentType } from '@/types/ComponentType'
-import { FaArrowDown, FaArrowLeft, FaArrowRight, FaArrowsLeftRight, FaArrowsUpDown, FaArrowUp } from 'react-icons/fa6'
-import { FaArrowsAlt } from 'react-icons/fa'
+import React from "react";
+import { Form, Button, ButtonGroup, InputGroup } from "react-bootstrap";
+import {
+  ComponentTypeMulti,
+  TextComponentType,
+  NumberComponentType,
+  PrincipalPriceComponentType,
+} from "@/types/ComponentType";
+import {
+  FaArrowDown,
+  FaArrowLeft,
+  FaArrowRight,
+  FaArrowsLeftRight,
+  FaArrowsUpDown,
+  FaArrowUp,
+} from "react-icons/fa6";
+import { FaArrowsAlt } from "react-icons/fa";
+import {
+  movePosition,
+  updateComponent,
+} from "@/utils/positionControlFunctions";
 
 interface PositionControlsProps {
-  component: TextComponentType | NumberComponentType | PrincipalPriceComponentType
-  index: number
-  canvasData: ComponentTypeMulti[]
-  setCanvasData: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>
-  pageWidth: number
-  pageHeight: number
-  scaleFactor: number
+  component:
+    | TextComponentType
+    | NumberComponentType
+    | PrincipalPriceComponentType;
+  index: number;
+  canvasData: ComponentTypeMulti[];
+  setCanvasData: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>;
+  pageWidth: number;
+  pageHeight: number;
+  scaleFactor: number;
+}
+
+interface MoveButtonType {
+  direction: "up" | "down" | "left" | "right";
+  icon: React.ReactNode;
+  title: string;
 }
 
 export default function PositionControls({
@@ -21,38 +46,75 @@ export default function PositionControls({
   setCanvasData,
   pageWidth,
   pageHeight,
-  scaleFactor
+  scaleFactor,
 }: PositionControlsProps) {
-  
-  const updateComponent = (updates: Partial<ComponentTypeMulti>) => {
-    const updatedCanvas = [...canvasData]
-    updatedCanvas[index] = {
-      ...updatedCanvas[index],
-      ...updates,
-    }
-    setCanvasData(updatedCanvas)
-  }
 
-  const movePosition = (direction: 'up' | 'down' | 'left' | 'right', step: number = 5) => {
-    if (component.type === 'price' || component.type === 'number') {
-      // Pour les prix et nombres, on utilise bottom et right
-      const updates: Partial<NumberComponentType | PrincipalPriceComponentType> = {}
-      if (direction === 'up') updates.bottom = Math.max(0, (component.bottom || 0) + step)
-      if (direction === 'down') updates.bottom = Math.min(pageHeight * scaleFactor, (component.bottom || 0) - step)
-      if (direction === 'left') updates.right = Math.max(-pageWidth * 2, (component.right || 0) + step)
-      if (direction === 'right') updates.right = Math.min(pageWidth * 2, (component.right || 0) - step)
-      updateComponent(updates)
-    } else {
-      // Pour les textes, on utilise top et left
-      const updates: Partial<TextComponentType> = {}
-      if (direction === 'up') updates.top = Math.max(0, (component.top || 0) - step)
-      if (direction === 'down') updates.top = Math.min(pageHeight * scaleFactor, (component.top || 0) + step)
-      if (direction === 'left') updates.left = Math.max(0, (component.left || 0) - step)
-      if (direction === 'right') updates.left = Math.min(pageWidth * scaleFactor, (component.left || 0) + step)
-      updateComponent(updates)
-    }
-  }
+  const isPriceOrNumber =
+    component.type === "price" || component.type === "number";
 
+
+  const moveButton: MoveButtonType[] = [
+    { direction: "up", icon: <FaArrowUp />, title: "Déplacer vers le haut" },
+    { direction: "down", icon: <FaArrowDown />, title: "Déplacer vers le bas" },
+    {
+      direction: "left",
+      icon: <FaArrowLeft />,
+      title: "Déplacer vers la gauche",
+    },
+    {
+      direction: "right",
+      icon: <FaArrowRight />,
+      title: "Déplacer vers la droite",
+    },
+  ];
+
+//   const numericInput = [
+//     {
+//         icon: <FaArrowsUpDown className="me-1" />, 
+//         name: "Vert.",
+//         rangeValue: isPriceOrNumber ? component.bottom || 0 : component.top || 0,
+//         rangeFunction:  updateComponent(
+//                     {
+//                       bottom: value,
+//                     } as Partial<
+//                       NumberComponentType | PrincipalPriceComponentType
+//                     >,
+//                     canvasData,
+//                     setCanvasData,
+//                     index,
+//                   ),
+//         rangeFunction2:  updateComponent(
+//                     {
+//                       top: value,
+//                     } as Partial<TextComponentType>,
+//                     canvasData,
+//                     setCanvasData,
+//                     index,
+//                   ),
+//         inputFunction:  updateComponent(
+//                       { bottom: value } as Partial<
+//                         NumberComponentType | PrincipalPriceComponentType
+//                       >,
+//                       canvasData,
+//                       setCanvasData,
+//                       index,
+//                     ),
+//         inputFunction2: updateComponent(
+//                       {
+//                         top: value,
+//                       } as Partial<TextComponentType>,
+//                       canvasData,
+//                       setCanvasData,
+//                       index,
+//                     )
+        
+
+//     }
+// ]
+
+
+
+ 
 
   return (
     <div className="position-controls">
@@ -66,34 +128,28 @@ export default function PositionControls({
         {/* Boutons de déplacement rapide */}
         <div className="d-flex justify-content-center mb-2">
           <ButtonGroup size="sm">
-            <Button
-              variant="outline-secondary"
-              onClick={() => movePosition("up", 10)}
-              title="Déplacer vers le haut"
-            >
-              <FaArrowUp />
-            </Button>
-            <Button
-              variant="outline-secondary"
-              onClick={() => movePosition("down", 10)}
-              title="Déplacer vers le bas"
-            >
-              <FaArrowDown />
-            </Button>
-            <Button
-              variant="outline-secondary"
-              onClick={() => movePosition("left", 10)}
-              title="Déplacer vers la gauche"
-            >
-              <FaArrowLeft />
-            </Button>
-            <Button
-              variant="outline-secondary"
-              onClick={() => movePosition("right", 10)}
-              title="Déplacer vers la droite"
-            >
-              <FaArrowRight />
-            </Button>
+            {moveButton.map((btn) => (
+              <Button
+                key={btn.direction}
+                variant="outline-secondary"
+                onClick={() =>
+                  movePosition(
+                    btn.direction,
+                    10,
+                    component,
+                    canvasData,
+                    setCanvasData,
+                    index,
+                    pageHeight,
+                    pageWidth,
+                    scaleFactor,
+                  )
+                }
+                title={btn.title}
+              >
+                {btn.icon}
+              </Button>
+            ))}
           </ButtonGroup>
         </div>
 
@@ -110,22 +166,30 @@ export default function PositionControls({
               max={pageHeight * scaleFactor}
               step={1}
               value={
-                component.type === "price" || component.type === "number"
-                  ? component.bottom || 0
-                  : component.top || 0
+                isPriceOrNumber ? component.bottom || 0 : component.top || 0
               }
               onChange={(e) => {
                 const value = parseInt(e.target.value) || 0;
-                if (component.type === "price" || component.type === "number") {
-                  updateComponent({
-                    bottom: value,
-                  } as Partial<
-                    NumberComponentType | PrincipalPriceComponentType
-                  >);
+                if (isPriceOrNumber) {
+                  updateComponent(
+                    {
+                      bottom: value,
+                    } as Partial<
+                      NumberComponentType | PrincipalPriceComponentType
+                    >,
+                    canvasData,
+                    setCanvasData,
+                    index,
+                  );
                 } else {
-                  updateComponent({
-                    top: value,
-                  } as Partial<TextComponentType>);
+                  updateComponent(
+                    {
+                      top: value,
+                    } as Partial<TextComponentType>,
+                    canvasData,
+                    setCanvasData,
+                    index,
+                  );
                 }
               }}
             />
@@ -134,15 +198,13 @@ export default function PositionControls({
                 type="number"
                 min={0}
                 max={
-                  component.type === "price" || component.type === "number"
+                  isPriceOrNumber
                     ? pageHeight * scaleFactor
                     : pageHeight * scaleFactor
                 }
                 step={1}
                 value={
-                  component.type === "price" || component.type === "number"
-                    ? component.bottom || 0
-                    : component.top || 0
+                  isPriceOrNumber ? component.bottom || 0 : component.top || 0
                 }
                 onChange={(e) => {
                   const value = parseInt(e.target.value) || 0;
@@ -150,87 +212,28 @@ export default function PositionControls({
                     component.type === "price" ||
                     component.type === "number"
                   ) {
-                    updateComponent({ bottom: value } as Partial<
-                      NumberComponentType | PrincipalPriceComponentType
-                    >);
+                    updateComponent(
+                      { bottom: value } as Partial<
+                        NumberComponentType | PrincipalPriceComponentType
+                      >,
+                      canvasData,
+                      setCanvasData,
+                      index,
+                    );
                   } else {
-                    updateComponent({
-                      top: value,
-                    } as Partial<TextComponentType>);
+                    updateComponent(
+                      {
+                        top: value,
+                      } as Partial<TextComponentType>,
+                      canvasData,
+                      setCanvasData,
+                      index,
+                    );
                   }
                 }}
               />
             </InputGroup>
           </div>
-
-          {/* Position horizontale (old) */}
-          {/* <div className='col-6'>
-            <Form.Label className='small'>
-              <FaArrowsLeftRight className='me-1' />
-              Horiz.
-            </Form.Label>
-            <Form.Range
-              min={
-                component.type === 'price' || component.type === 'number' ? - pageWidth * 2 : 0
-              }
-              max={
-                component.type === 'price' || component.type === 'number'
-                  ? pageWidth * 2
-                  : pageWidth * scaleFactor
-              }
-              step={1}
-              value={
-                component.type === 'price' || component.type === 'number'
-                  ? component.right || 0
-                  : component.left || 0
-              }
-              onChange={(e) => {
-                const value = parseInt(e.target.value) || 0
-                if (component.type === 'price' || component.type === 'number') {
-                  updateComponent({
-                    right: value,
-                  } as Partial<NumberComponentType | PrincipalPriceComponentType>)
-                } else {
-                  updateComponent({
-                    left: value,
-                  } as Partial<TextComponentType>)
-                }
-              }}
-            />
-            <InputGroup size='sm'>
-
-              <Form.Control
-                type='number'
-                min={
-                  component.type === 'price' || component.type === 'number'
-                    ? -pageWidth * 2
-                    : 0
-                }
-                max={
-                  component.type === 'price' || component.type === 'number'
-                    ? pageWidth * 2
-                    : pageWidth * scaleFactor
-                }
-                step={1}
-                value={
-                  component.type === 'price' || component.type === 'number'
-                    ? component.right || 0
-                    : component.left || 0
-                }
-                onChange={(e) => {
-                  const value = parseInt(e.target.value) || 0
-                  if (component.type === 'price' || component.type === 'number') {
-                    updateComponent({ right: value } as Partial<
-                      NumberComponentType | PrincipalPriceComponentType
-                    >)
-                  } else {
-                    updateComponent({ left: value } as Partial<TextComponentType>)
-                  }
-                }}
-              />
-
-            </InputGroup>
-          </div> */}
 
           {/* Position horizontale */}
           <div className="col-6">
@@ -243,22 +246,32 @@ export default function PositionControls({
               max={pageWidth * scaleFactor}
               step={1}
               value={
-                component.type === "price" || component.type === "number"
+                isPriceOrNumber
                   ? pageWidth * scaleFactor - (component.right || 0) // Inversion ici
                   : component.left || 0
               }
               onChange={(e) => {
                 const value = parseInt(e.target.value) || 0;
-                if (component.type === "price" || component.type === "number") {
-                  updateComponent({
-                    right: pageWidth * scaleFactor - value, // Inversion ici
-                  } as Partial<
-                    NumberComponentType | PrincipalPriceComponentType
-                  >);
+                if (isPriceOrNumber) {
+                  updateComponent(
+                    {
+                      right: pageWidth * scaleFactor - value, // Inversion ici
+                    } as Partial<
+                      NumberComponentType | PrincipalPriceComponentType
+                    >,
+                    canvasData,
+                    setCanvasData,
+                    index,
+                  );
                 } else {
-                  updateComponent({
-                    left: value,
-                  } as Partial<TextComponentType>);
+                  updateComponent(
+                    {
+                      left: value,
+                    } as Partial<TextComponentType>,
+                    canvasData,
+                    setCanvasData,
+                    index,
+                  );
                 }
               }}
             />
@@ -269,7 +282,7 @@ export default function PositionControls({
                 max={pageWidth * scaleFactor}
                 step={1}
                 value={
-                  component.type === "price" || component.type === "number"
+                  isPriceOrNumber
                     ? pageWidth * scaleFactor - (component.right || 0) // Inversion ici
                     : component.left || 0
                 }
@@ -279,15 +292,25 @@ export default function PositionControls({
                     component.type === "price" ||
                     component.type === "number"
                   ) {
-                    updateComponent({
-                      right: pageWidth * scaleFactor - value,
-                    } as Partial<
-                      NumberComponentType | PrincipalPriceComponentType
-                    >);
+                    updateComponent(
+                      {
+                        right: pageWidth * scaleFactor - value,
+                      } as Partial<
+                        NumberComponentType | PrincipalPriceComponentType
+                      >,
+                      canvasData,
+                      setCanvasData,
+                      index,
+                    );
                   } else {
-                    updateComponent({
-                      left: value,
-                    } as Partial<TextComponentType>);
+                    updateComponent(
+                      {
+                        left: value,
+                      } as Partial<TextComponentType>,
+                      canvasData,
+                      setCanvasData,
+                      index,
+                    );
                   }
                 }}
               />

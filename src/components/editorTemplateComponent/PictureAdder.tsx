@@ -70,52 +70,6 @@ export default function PictureAdder({
   const maxPreviewHeight = pageHeight < 100 ? 150 : 500
   const scaleFactor = maxPreviewHeight / pageHeight
 
-  // Fonction utilitaire pour synchroniser les paramètres avec canvasData
-    // const syncImageWithCanvas = (updates: Partial<{ width: number; top: number; left: number }>) => {
-    //   if (selectedGarantie) {
-    //     const updatedCanvas = canvasData.map((comp) => {
-    //       if (
-    //         comp.type === 'image' &&
-    //         'src' in comp &&
-    //         typeof comp.src === 'string' &&
-    //         comp.src === selectedGarantie
-    //       ) {
-    //         return {
-    //           ...comp,
-    //           ...updates,
-    //         }
-    //       }
-    //       return comp
-    //     })
-    //     setCanvasData(updatedCanvas)
-    //   }
-    // }
-
-  // const moveImagePosition = (
-  //   direction: 'up' | 'down' | 'left' | 'right',
-  //   step: number = 10
-  // ) => {
-  //   const updates = { ...garantieImageParams }
-
-  //   if (direction === 'up') {
-  //     updates.top = Math.max(0, garantieImageParams.top - step)
-  //   } else if (direction === 'down') {
-  //     updates.top = Math.min(
-  //       pageHeight * scaleFactor - garantieImageParams.width,
-  //       garantieImageParams.top + step
-  //     )
-  //   } else if (direction === 'left') {
-  //     updates.left = Math.max(0, garantieImageParams.left - step)
-  //   } else if (direction === 'right') {
-  //     updates.left = Math.min(
-  //       pageWidth * scaleFactor - garantieImageParams.width,
-  //       garantieImageParams.left + step
-  //     )
-  //   }
-
-  //   setGarantieImageParams(updates)
-  //   syncImageWithCanvas(updates)
-  // }
 
   // Fonctions pour gérer les images supplémentaires
   const addNewImage = () => {

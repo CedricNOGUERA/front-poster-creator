@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import dimensions from "@/data/dimensions.json";
 import useStoreApp from "@/stores/storeApp";
 import { _getImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";

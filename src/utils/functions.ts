@@ -8,11 +8,155 @@ import { NavigateOptions, To } from 'react-router-dom'
 import moment from 'moment'
 import { FormCategoryDataType } from '@/components/step-selector/CategorySelectorDrag'
 
+////////////////////////////////
+//test prio
+////////////////////////////////
+export const _formattedDate = (date: string) => {
+const formattedDate = moment(date).format('DD/MM/YYYY à hh:mm:ss')
+
+return formattedDate
+}
+
+export const formattedName = (name: string | undefined) => {
+    if (!name) return "";
+    const formattedImage = name
+      .normalize("NFD") // transforme é → e + ́
+      .replace(/[\u0300-\u036f]/g, "") // retire les accents
+      .replace(/[^a-zA-Z0-9]/g, "-") //transforme les espaces en -
+      .toLowerCase();
+
+  
+    return formattedImage;
+  }
+
 export const _thousandSeparator = (number: number, locale: string = 'fr-FR'): string => {
   return number?.toLocaleString(locale, {
     minimumFractionDigits: 0, // Pas de décimales
   })
 }
+
+type Status = 'succes' | 'error' | 'warning' | 'pending';
+type BadgeColor = 'success' | 'danger' | 'warning' | 'info' | 'primary';
+
+export const _statusBadge = (status: Status): BadgeColor => {
+
+  const colorMap: Record<Status, BadgeColor> = {
+    succes: 'success',
+    error: 'danger',
+    warning: 'warning',
+    pending: 'info',
+  };
+  
+  return colorMap[status] ?? 'primary';
+}
+
+export const _sanitizeString = (input: string): string => {
+  // Preserve extension if any
+  const lastDot = input.lastIndexOf('.')
+  let name = input
+  let ext = ''
+  if (lastDot > 0) {
+    name = input.substring(0, lastDot)
+    ext = input.substring(lastDot) // includes the dot
+  }
+
+  const sanitizedName = name
+    .normalize('NFD')                 // separate accents
+    .replace(/\p{Diacritic}/gu, '')  // remove diacritics (using Unicode property)
+    .replace(/[^a-zA-Z0-9-_ ]/g, '')  // remove special chars
+    .trim()
+    .replace(/\s+/g, '-')           // replace spaces by '-'
+    .toLowerCase();
+
+  const sanitizedExt = ext.toLowerCase();
+  return sanitizedName + sanitizedExt;
+}
+
+export const _validateFormData =(formData: FormCategoryDataType, setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>, setValidated: React.Dispatch<React.SetStateAction<boolean>>) => {
+    if (formData.name.trim() === '') {
+      setFeedBackState((prev) => ({
+        ...prev,
+        isError: true,
+        errorMessage: 'Veuillez saisir un nom de catégorie',
+        isLoading: false,
+        loadingMessage: '',
+      }))
+      setValidated(true)
+      return
+    }
+
+    if (formData.name.trim().length < 2) {
+      setFeedBackState((prev) => ({
+        ...prev,
+        isError: true,
+        errorMessage: 'Le nom de la catégorie doit contenir au moins 2 caractères',
+        isLoading: false,
+        loadingMessage: '',
+      }))
+      setValidated(true)
+      return
+    }
+
+    if (formData.shopIds.length === 0) {
+      setFeedBackState((prev) => ({
+        ...prev,
+        isError: true,
+        errorMessage: 'Veuillez sélectionner au moins un magasin',
+        isLoading: false,
+        loadingMessage: '',
+      }))
+      setValidated(true)
+      return
+    }
+
+
+}
+
+/////////////////////////
+//Test avec mocks
+/////////////////////////
+
+export const _updateComponent = (updatedFields: Partial<ComponentTypeMulti>, selectedIndex: number |null, components: ComponentTypeMulti[],setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>) => {
+    if (selectedIndex === null) return
+
+    const updated = [...components]
+    if (updated[selectedIndex]) {
+      updated[selectedIndex] = {
+        ...updated[selectedIndex],
+        ...updatedFields,
+      }
+      setComponents(updated)
+    } else {
+      console.error('Attempted to update non-existent component at index:', selectedIndex)
+    }
+}
+
+export const _handleDeleteComponent = (indexToDelete: number, setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>> ,setSelectedIndex: React.Dispatch<React.SetStateAction<number |null>>) => {
+  setComponents((prevComponents) =>
+    prevComponents.filter((_, index) => index !== indexToDelete)
+  )
+  setSelectedIndex(null)
+}
+
+export const _expiredSession = (setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>, toggleShow: () => void, userLogOut: () => void, navigate: (to: To, options?: NavigateOptions) => void) => {
+  setToastData({
+    bg: 'danger',
+    position: 'top-end',
+    delay: 4000,
+    icon: 'fa fa-times-circle',
+    message: "Votre session est expirée, veuillez vous reconnecter",
+  })
+  toggleShow()
+  userLogOut()
+  setTimeout(() => {
+    navigate('/login')
+  }, 5000)
+}
+
+
+/////////////////////////
+// Très peu utile de tester
+/////////////////////////
 
 export const _downloadJSON = (components: ComponentTypeMulti[]) => {
   const json = JSON.stringify(components, null, 2)
@@ -101,27 +245,7 @@ export const _handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
 }
 
-export const _updateComponent = (updatedFields: Partial<ComponentTypeMulti>, selectedIndex: number |null, components: ComponentTypeMulti[],setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>) => {
-    if (selectedIndex === null) return
 
-    const updated = [...components]
-    if (updated[selectedIndex]) {
-      updated[selectedIndex] = {
-        ...updated[selectedIndex],
-        ...updatedFields,
-      }
-      setComponents(updated)
-    } else {
-      console.error('Attempted to update non-existent component at index:', selectedIndex)
-    }
-}
-
-export const _handleDeleteComponent = (indexToDelete: number, setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>> ,setSelectedIndex: React.Dispatch<React.SetStateAction<number |null>>) => {
-  setComponents((prevComponents) =>
-    prevComponents.filter((_, index) => index !== indexToDelete)
-  )
-  setSelectedIndex(null)
-}
 
 export const _generateInitalComponent2 = (
   canvas: ComponentTypeMulti[],
@@ -499,115 +623,18 @@ export const _handleFileChange = (
   }
 }
 
-export const _expiredSession = (setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>, toggleShow: () => void, userLogOut: () => void, navigate: (to: To, options?: NavigateOptions) => void) => {
-  setToastData({
-    bg: 'danger',
-    position: 'top-end',
-    delay: 4000,
-    icon: 'fa fa-times-circle',
-    message: "Votre session est expirée, veuillez vous reconnecter",
-  })
-  toggleShow()
-  userLogOut()
-  setTimeout(() => {
-    navigate('/login')
-  }, 5000)
-}
-
-export const _formattedDate = (date: string) => {
-const formattedDate = moment(date).format('DD/MM/YYYY à hh:mm:ss')
-
-return formattedDate
-}
-
-type Status = 'succes' | 'error' | 'warning' | 'pending';
-type BadgeColor = 'success' | 'danger' | 'warning' | 'info' | 'primary';
-
-export const _statusBadge = (status: Status): BadgeColor => {
-
-  const colorMap: Record<Status, BadgeColor> = {
-    succes: 'success',
-    error: 'danger',
-    warning: 'warning',
-    pending: 'info',
-  };
-  
-  return colorMap[status] ?? 'primary';
-}
-
-export const _sanitizeString = (input: string): string => {
-  // Preserve extension if any
-  const lastDot = input.lastIndexOf('.')
-  let name = input
-  let ext = ''
-  if (lastDot > 0) {
-    name = input.substring(0, lastDot)
-    ext = input.substring(lastDot) // includes the dot
-  }
-
-  const sanitizedName = name
-    .normalize('NFD')                 // separate accents
-    .replace(/\p{Diacritic}/gu, '')  // remove diacritics (using Unicode property)
-    .replace(/[^a-zA-Z0-9-_ ]/g, '')  // remove special chars
-    .trim()
-    .replace(/\s+/g, '-')           // replace spaces by '-'
-    .toLowerCase();
-
-  const sanitizedExt = ext.toLowerCase();
-  return sanitizedName + sanitizedExt;
-}
 
 
-export const _validateFormData =(formData: FormCategoryDataType, setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>, setValidated: React.Dispatch<React.SetStateAction<boolean>>) => {
-    if (formData.name.trim() === '') {
-      setFeedBackState((prev) => ({
-        ...prev,
-        isError: true,
-        errorMessage: 'Veuillez saisir un nom de catégorie',
-        isLoading: false,
-        loadingMessage: '',
-      }))
-      setValidated(true)
-      return
-    }
-
-    if (formData.name.trim().length < 2) {
-      setFeedBackState((prev) => ({
-        ...prev,
-        isError: true,
-        errorMessage: 'Le nom de la catégorie doit contenir au moins 2 caractères',
-        isLoading: false,
-        loadingMessage: '',
-      }))
-      setValidated(true)
-      return
-    }
-
-    if (formData.shopIds.length === 0) {
-      setFeedBackState((prev) => ({
-        ...prev,
-        isError: true,
-        errorMessage: 'Veuillez sélectionner au moins un magasin',
-        isLoading: false,
-        loadingMessage: '',
-      }))
-      setValidated(true)
-      return
-    }
 
 
-}
 
 
-export const formattedName = (name: string | undefined) => {
-    if (!name) return "";
-    const formattedImage = name
-      .normalize("NFD") // transforme é → e + ́
-      .replace(/[\u0300-\u036f]/g, "") // retire les accents
-      .replace(/[^a-zA-Z0-9]/g, "-") //transforme les espaces en -
-      .toLowerCase();
 
-  
-    return formattedImage;
-  }
+
+
+
+
+
+
+
 

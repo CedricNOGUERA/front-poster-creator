@@ -9,7 +9,7 @@ import { _sanitizeString } from "@/utils/functions";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import { useNavigate } from "react-router-dom";
 import { FaPlusCircle } from "react-icons/fa";
-import { AddShopModal } from "../modals/Modals";
+import { ModalAddShop } from "../ui/Modals";
 
 type Props = {
   title: string;
@@ -43,10 +43,6 @@ export const ShopSelectorDrag = ({ title }: Props) => {
 
   const storeApp = useStoreApp();
   const [file, setFile] = React.useState<File | null>(null);
-  const [validated, setValidated] = React.useState(false);
-  const [fieldErrors, setFieldErrors] = React.useState<{
-    [key: string]: string;
-  }>({});
   const [formData, setFormData] = React.useState<{
     name: string;
     image: string;
@@ -80,40 +76,14 @@ export const ShopSelectorDrag = ({ title }: Props) => {
   };
 
   const resetForm = () => {
-    setFieldErrors({});
+    // setFieldErrors({});
     setFormData({
       name: "",
       image: "",
     });
   };
 
-  const validateField = (fieldName: string, value: string) => {
-    const errors = { ...fieldErrors };
-    console.log(errors);
-
-    switch (fieldName) {
-      case "name":
-        if (!value.trim()) {
-          errors.name = "Le nom est requis";
-        } else if (value.trim().length < 2) {
-          errors.name = "Le nom doit contenir au moins 2 caractères";
-        } else {
-          delete errors.name;
-        }
-        break;
-      case "image":
-        if (!value.trim()) {
-          errors.image = "L'image est requise";
-        } else {
-          delete errors.image;
-        }
-        break;
-      default:
-        break;
-    }
-
-    setFieldErrors(errors);
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -124,7 +94,6 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     if (form.checkValidity() === false) {
       e.preventDefault();
       e.stopPropagation();
-      setValidated(true);
       return;
     }
 
@@ -136,13 +105,11 @@ export const ShopSelectorDrag = ({ title }: Props) => {
         isLoading: false,
         loadingMessage: "",
       }));
-      setValidated(true);
       return;
     }
     console.log(file);
     const shopThumbnailName = file ? _sanitizeString(file.name) : "";
 
-    setValidated(true);
     const shopFormData = new FormData();
     shopFormData.append(
       "data",
@@ -168,13 +135,13 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     try {
       const response = await shopServiceInstance.addShop(shopFormData);
       if (response.ok) {
-        // const newShop = {
-        //   id: shops?.length + 1,
-        //   name: formData.name,
-        //   cover: file ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}` : '',
-        // }
+        const newShop = {
+          id: shops?.length + 1,
+          name: formData.name,
+          cover: file ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}` : '',
+        }
 
-        // setShops((prev) => [...prev, newShop])
+        setShops((prev) => [...prev, newShop])
         _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow);
         setToastData({
           bg: "success",
@@ -205,17 +172,14 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     }
   };
 
-  const addShopModalProps = {
+  const modalAddShopProps = {
     showAdd,
     handleCloseAdd,
+    handleSubmit,
     formData,
     setFormData,
-    validateField,
-    fieldErrors,
-    feedBackState,
-    validated,
     setFile,
-    handleSubmit,
+    feedBackState,
   };
 
   /* Render
@@ -261,7 +225,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
           </div>
         )}
       </div>
-      <AddShopModal addShopModalProps={addShopModalProps} />
+      <ModalAddShop modalAddShopProps={modalAddShopProps} />
     </>
   );
 };

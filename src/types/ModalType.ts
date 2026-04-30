@@ -130,3 +130,15 @@ export interface ModalAddPictureType {
   // validateField: (fieldName: string, value: string) => void
 }
 
+
+export interface ModalDuplicateCategoryType {
+  showDuplicate: boolean
+  handleCloseDuplicate: () => void
+  selectedCategory: CategoriesType
+  setSelectedCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
+  setAllCategories: React.Dispatch<React.SetStateAction<CategoriesType[]>>
+  // page: number 
+  // limit: number
+}
+
+
