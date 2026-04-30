@@ -51,6 +51,7 @@ import {
 import {
   FaBug,
   FaCircleXmark,
+  FaCrown,
   FaFile,
   FaFileLines,
   FaFolderOpen,
@@ -60,7 +61,9 @@ import {
   FaPenToSquare,
   FaShieldHalved,
   FaStore,
+  FaUser,
   FaUsers,
+  FaUserShield,
 } from "react-icons/fa6";
 import { RiErrorWarningFill, RiUserAddLine, RiUserSettingsLine } from "react-icons/ri";
 
@@ -110,6 +113,7 @@ export const ICON_MAP = {
   "fas fa-bolt": FaBolt,
   "fas fa-bug": FaBug,
   "fas fa-cog": FaCog,
+  "fas fa-crown": FaCrown,
   "fas fa-euro-sign": FaEuroSign,
   "fas fa-file": FaFile,
   "fas fa-file-lines": FaFileLines,
@@ -126,7 +130,9 @@ export const ICON_MAP = {
   "fas fa-shield-halved": FaShieldHalved,
   "fas fa-sign-in-alt": FaSignInAlt,
   "fas fa-store": FaStore,
+  "fas fa-user": FaUser,
   "fas fa-users": FaUsers,
+  "fas fa-user-shield": FaUserShield,
   "ri-user-add-line": RiUserAddLine,
   "ri-user-settings-line": RiUserSettingsLine,
   "ri-error-warning": RiErrorWarningFill,
