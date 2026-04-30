@@ -2,7 +2,7 @@ import { ImagemodelType, ModelType } from "@/types/modelType";
 import { ShopType } from "@/types/ShopType";
 import { TemplateType } from "@/types/TemplatesType";
 import { _getAllImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
-import React, { Suspense } from "react";
+import React from "react";
 import { Button, Col, Container, Dropdown, Image, Modal, Row, Spinner, Table } from "react-bootstrap";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
