@@ -142,3 +142,19 @@ export interface ModalDuplicateCategoryType {
 }
 
 
+export interface ModalEditTemplateType {
+  showEditModal: boolean
+  handleCloseEditModal: () => void
+  editTemplate: () => Promise<void> 
+  formData: Partial<TemplateType>
+   setFormData: React.Dispatch<React.SetStateAction<Partial<TemplateType>>>
+   isLoading: boolean
+}
+
+export interface ModalDeleteTemplateType { 
+  showDeleteModal: boolean
+  handleCloseDeleteModal: () => void
+  handleDeleteTemplate: () => Promise<void>
+  selectedModel: TemplateType
+  isLoading: boolean
+}

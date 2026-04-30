@@ -1,6 +1,6 @@
 import { StoreType } from '@/stores/storeApp'
 import { BackgroundComponentType, ComponentTypeMulti, HeaderComponentType } from '@/types/ComponentType'
-import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
+import { BadgeColor, FeedBackSatateType, NewTemplateType, Status, ToastDataType } from '@/types/DiversType'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { Canvastype } from '@/types/CanvasType'
@@ -35,8 +35,6 @@ export const _thousandSeparator = (number: number, locale: string = 'fr-FR'): st
   })
 }
 
-type Status = 'succes' | 'error' | 'warning' | 'pending';
-type BadgeColor = 'success' | 'danger' | 'warning' | 'info' | 'primary';
 
 export const _statusBadge = (status: Status): BadgeColor => {
 
