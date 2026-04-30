@@ -84,19 +84,23 @@ export type HorizontalLineComponentType = {
   top: number
   left: number
   width: number
+  height: number
   color: string
   thickness: number
   showCustomValue?: boolean;
+  backgroundColor?: string
 }
 
 export type VerticalLineComponentType = {
   type: string
   top: number
   left: number
+  width: number
   height: number
   color: string
   thickness: number
   showCustomValue?: boolean;
+  backgroundColor?: string
 }
 
 export type ComponentTypeMulti =

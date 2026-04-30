@@ -1,9 +1,17 @@
-import { _handleFileChange } from '@/utils/functions'
-import React, { FormEvent } from 'react'
-import { Alert, Button, Dropdown, Form, Image, Modal, Spinner } from 'react-bootstrap'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { TagPicker } from 'rsuite'
-import { RiErrorWarningLine } from 'react-icons/ri'
+import { _handleFileChange } from "@/utils/functions";
+import React, { FormEvent } from "react";
+import {
+  Alert,
+  Button,
+  Dropdown,
+  Form,
+  Image,
+  Modal,
+  Spinner,
+} from "react-bootstrap";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { TagPicker } from "rsuite";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 import {
   ContextModalValidateModelType,
@@ -16,115 +24,99 @@ import {
   ModalUpdateModelType,
   ModalAddPictureType,
   ModalEditModelType,
-} from '@/types/ModalType'
-import { ShopType } from '@/types/ShopType'
-import { HeaderComponentType, BackgroundComponentType } from '@/types/ComponentType'
-import { _getCategories, _getTemplates, _handleDeleteImg, _patchTemplate } from '@/utils/apiFunctions'
-import fontAwesomeIcons from '../../data/fontAwesomeIcons.json'
-import { TemplateType } from '@/types/TemplatesType'
-import { CategoriesType } from '@/types/CategoriesType'
-import categoriesServiceInstance from '@/services/CategoriesServices'
-import { AxiosError } from 'axios'
-import { _expiredSession, _showToast } from '@/utils/notifications'
-import userDataStore, { UserDataType } from '@/stores/userDataStore'
-import { FaCircleCheck, FaCircleXmark, FaPencil, FaShop } from 'react-icons/fa6'
-import { FaEdit, FaPlusCircle, FaTimesCircle } from 'react-icons/fa'
-import DynamicIcon from './DynamicIcon'
-const API_URL = import.meta.env.VITE_API_URL
-
-export function ModalDelete({ modalDeleteProps }: { modalDeleteProps: ModalDeleteType }) {
-  const {
-    showDelete,
-    handleCloseDelete,
-    selectedIndex,
-    sideBarData,
-    setSideBarData,
-    setToastData,
-    toggleShow,
-    categoryId,
-  } = modalDeleteProps
-  return (
-    <Modal show={showDelete} onHide={handleCloseDelete}>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          <FaCircleXmark className='me-2 text-danger' />Suppression d'image
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>Etes sûr de vouloir supprimer cette image ?</Modal.Body>
-      <Modal.Footer>
-        <Button variant='secondary' onClick={handleCloseDelete}>
-          Annuler
-        </Button>
-        <Button
-          variant='danger'
-          onClick={() => {
-            _handleDeleteImg(
-              selectedIndex,
-              sideBarData,
-              setSideBarData,
-              setToastData,
-              toggleShow,
-              categoryId
-            )
-            handleCloseDelete()
-          }}
-        >
-          Valider
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  )
-}
+  ModalDuplicateCategoryType,
+  // AddShopModalType,
+} from "@/types/ModalType";
+import { ShopType } from "@/types/ShopType";
+import {
+  HeaderComponentType,
+  BackgroundComponentType,
+} from "@/types/ComponentType";
+import {
+  _getCategories,
+  _getTemplates,
+  _handleDeleteImg,
+  _patchTemplate,
+} from "@/utils/apiFunctions";
+import fontAwesomeIcons from "../../data/fontAwesomeIcons.json";
+import { TemplateType } from "@/types/TemplatesType";
+import { CategoriesType } from "@/types/CategoriesType";
+import categoriesServiceInstance from "@/services/CategoriesServices";
+import { AxiosError } from "axios";
+import { _expiredSession, _showToast } from "@/utils/notifications";
+import userDataStore, { UserDataType } from "@/stores/userDataStore";
+import {
+  FaCircleCheck,
+  FaCircleXmark,
+  FaPencil,
+  FaShop,
+} from "react-icons/fa6";
+import { FaEdit, FaPlusCircle, FaTimesCircle } from "react-icons/fa";
+import DynamicIcon from "./DynamicIcon";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function ModalValidateModel({
   modalValidateModelProps,
 }: {
-  modalValidateModelProps: ModalValidateModelType
+  modalValidateModelProps: ModalValidateModelType;
 }) {
-  const { showValidateModel, handleCloseValidateModel, addModel, imageName, setImageName, template, setTemplate,  isErrorModel, hasModel } =
-    modalValidateModelProps
-  const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
+  const {
+    showValidateModel,
+    handleCloseValidateModel,
+    addModel,
+    imageName,
+    setImageName,
+    template,
+    setTemplate,
+    isErrorModel,
+    hasModel,
+  } = modalValidateModelProps;
+  const { feedBackState } = useOutletContext<ContextModalValidateModelType>();
 
-  const [isTemplate, setIsTemplate] = React.useState<boolean>(false)
+  const [isTemplate, setIsTemplate] = React.useState<boolean>(false);
 
   /* UseEffect
    *******************************************************************************************/
   React.useEffect(() => {
-    _getTemplates(setTemplate)
-  }, [setTemplate])
-  
+    _getTemplates(setTemplate);
+  }, [setTemplate]);
+
   React.useEffect(() => {
-    setIsTemplate(template.some((item) => item.name === imageName))
-  }, [imageName, template])
+    setIsTemplate(template.some((item) => item.name === imageName));
+  }, [imageName, template]);
   return (
     <Modal show={showValidateModel} onHide={handleCloseValidateModel}>
       <Modal.Header closeButton>
-        <Modal.Title className='d-flex align-items-center'>
-          <FaCircleCheck className='me-2 text-success' />
+        <Modal.Title className="d-flex align-items-center">
+          <FaCircleCheck className="me-2 text-success" />
           Validation du model
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Voulez-vous {hasModel  ? "modifier" : "valider"} ce model ?
-        <Form.Group className='mb-3' controlId='exampleForm.ControlInput1'>
-          <Form.Label>{hasModel ? "Nom du modèle" : "Ajouter un nom au model"}</Form.Label>
+        Voulez-vous {hasModel ? "modifier" : "valider"} ce model ?
+        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Label>
+            {hasModel ? "Nom du modèle" : "Ajouter un nom au model"}
+          </Form.Label>
           <Form.Control
-            type='text'
-            placeholder='Saisissez un nom'
+            type="text"
+            placeholder="Saisissez un nom"
             value={imageName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImageName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setImageName(e.target.value)
+            }
           />
         </Form.Group>
-        <Form.Group className='mb-3' controlId='exampleForm.ControlInput1'>
+        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Model existant</Form.Label>
           <Form.Select
-            value={imageName || ''}
+            value={imageName || ""}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-              const templateName = e.target.value
-              setImageName(templateName)
+              const templateName = e.target.value;
+              setImageName(templateName);
             }}
           >
-            <option value=''>Sélectionnez un model existant</option>
+            <option value="">Sélectionnez un model existant</option>
             {template.map((template: TemplateType, index: number) => (
               <option key={index} value={template.name}>
                 {template.name}
@@ -133,31 +125,33 @@ export function ModalValidateModel({
           </Form.Select>
         </Form.Group>
         {isErrorModel && (
-          <Alert variant='danger'>
-            <FaCircleXmark className='me-2 text-danger' />
+          <Alert variant="danger">
+            <FaCircleXmark className="me-2 text-danger" />
             Vous devez remplir un de ces champs
           </Alert>
         )}
         {hasModel && isTemplate && (
-          <Alert variant='danger'>
-            <FaCircleXmark className='me-2 text-danger' />
-            <small>Attention : Le modèle existant sera remplacé définitivement</small>
+          <Alert variant="danger">
+            <FaCircleXmark className="me-2 text-danger" />
+            <small>
+              Attention : Le modèle existant sera remplacé définitivement
+            </small>
           </Alert>
         )}
       </Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={handleCloseValidateModel}>
+        <Button variant="secondary" onClick={handleCloseValidateModel}>
           Annuler
         </Button>
         <Button
-          variant='success'
+          variant="success"
           onClick={() => {
-            addModel(imageName)
+            addModel(imageName);
           }}
         >
           {feedBackState.isLoading ? (
             <>
-              <Spinner size='sm' /> {feedBackState.loadingMessage}
+              <Spinner size="sm" /> {feedBackState.loadingMessage}
             </>
           ) : (
             <span>Valider</span>
@@ -165,38 +159,40 @@ export function ModalValidateModel({
         </Button>
       </Modal.Footer>
     </Modal>
-  )
+  );
 }
 
 export function ModalUpdateModel({
   modalUpdateModelProps,
 }: {
-  modalUpdateModelProps: ModalUpdateModelType
+  modalUpdateModelProps: ModalUpdateModelType;
 }) {
-  const { showUpdateModel, handleCloseUpdateModel, updateModel } = modalUpdateModelProps
-  const { feedBackState } = useOutletContext<ContextModalValidateModelType>()
+  const { showUpdateModel, handleCloseUpdateModel, updateModel } =
+    modalUpdateModelProps;
+  const { feedBackState } = useOutletContext<ContextModalValidateModelType>();
 
   return (
     <Modal show={showUpdateModel} onHide={handleCloseUpdateModel}>
       <Modal.Header closeButton>
-        <Modal.Title className='d-flex align-items-center'>
-          <FaEdit className='me-2 text-success' />Validation du model
+        <Modal.Title className="d-flex align-items-center">
+          <FaEdit className="me-2 text-success" />
+          Validation du model
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Voulez-vous valider la modification ce model ?</Modal.Body>
       <Modal.Footer>
-        <Button variant='secondary' onClick={handleCloseUpdateModel}>
+        <Button variant="secondary" onClick={handleCloseUpdateModel}>
           Annuler
         </Button>
         <Button
-          variant='success'
+          variant="success"
           onClick={() => {
-            updateModel()
+            updateModel();
           }}
         >
           {feedBackState.isLoading ? (
             <>
-              <Spinner size='sm' /> {feedBackState.loadingMessage}
+              <Spinner size="sm" /> {feedBackState.loadingMessage}
             </>
           ) : (
             <span>Valider</span>
@@ -204,110 +200,123 @@ export function ModalUpdateModel({
         </Button>
       </Modal.Footer>
     </Modal>
-  )
+  );
 }
 
 export function ModalAddEditModel({
   modalAddEditModelProps,
 }: {
-  modalAddEditModelProps: ModalEditModelType
+  modalAddEditModelProps: ModalEditModelType;
 }) {
-  const { showAddEditModal, handleCloseAddEditModal, selectedTemplate, setSelectedTemplate, shopList } = modalAddEditModelProps
-  const { feedBackState, setFeedBackState,  setToastData, toggleShow } = useOutletContext<ContextModalValidateModelType>()
+  const {
+    showAddEditModal,
+    handleCloseAddEditModal,
+    selectedTemplate,
+    setSelectedTemplate,
+    shopList,
+  } = modalAddEditModelProps;
+  const { feedBackState, setFeedBackState, setToastData, toggleShow } =
+    useOutletContext<ContextModalValidateModelType>();
 
-  const onPatchSubmit = (e: FormEvent<HTMLFormElement>) =>{
-    e.preventDefault()
+  const onPatchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const data = {
       name: selectedTemplate.name,
       image: selectedTemplate.image,
       categoryId: selectedTemplate.categoryId,
       shopIds: selectedTemplate.shopIds,
-    }
+    };
 
-    try{
-      _patchTemplate(selectedTemplate.id, data, setFeedBackState, handleCloseAddEditModal, setToastData, toggleShow)
-    }catch(error){
-      console.log(error)
+    try {
+      _patchTemplate(
+        selectedTemplate.id,
+        data,
+        setFeedBackState,
+        handleCloseAddEditModal,
+        setToastData,
+        toggleShow,
+      );
+    } catch (error) {
+      console.log(error);
     }
-  
-  }
+  };
 
   return (
     <Modal show={showAddEditModal} onHide={handleCloseAddEditModal}>
-        <Form onSubmit={onPatchSubmit}>
-      <Modal.Header closeButton>
-        <Modal.Title className='d-flex align-items-center'>
-          <FaEdit className='me-2 text-success' />Modififer ce model
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form.Group className='mb-3' controlId='modelName'>
-          <Form.Label>Nom du model</Form.Label>
+      <Form onSubmit={onPatchSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center">
+            <FaEdit className="me-2 text-success" />
+            Modififer ce model
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="modelName">
+            <Form.Label>Nom du model</Form.Label>
 
-          <Form.Control
-          type="text"
-          value={selectedTemplate?.name || ""}
-          onChange={(e) => setSelectedTemplate((prev) => ({
-            ...prev,
-            name: e.target.value
-          }))}
-          />
-        </Form.Group>
-        <Form.Group className='mb-3' controlId='shops'>
-          <Form.Label>Magasins</Form.Label>
-          <TagPicker
+            <Form.Control
+              type="text"
+              value={selectedTemplate?.name || ""}
+              onChange={(e) =>
+                setSelectedTemplate((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="shops">
+            <Form.Label>Magasins</Form.Label>
+            <TagPicker
               data={shopList}
-              style={{ width: '100%' }}
-              placeholder='Sélectionnez un ou plusieurs magasins'
+              style={{ width: "100%" }}
+              placeholder="Sélectionnez un ou plusieurs magasins"
               value={selectedTemplate?.shopIds}
               onChange={(newValues: string[]) => {
-                const numericIds = newValues.map((val) => parseInt(val, 10))
+                const numericIds = newValues.map((val) => parseInt(val, 10));
                 setSelectedTemplate((prev) => ({
                   ...prev,
                   shopIds: numericIds,
-                }))
+                }));
               }}
             />
-        </Form.Group>
+          </Form.Group>
         </Modal.Body>
-      <Modal.Footer>
-        <Button variant='secondary' onClick={handleCloseAddEditModal}>
-          Annuler
-        </Button>
-        <Button
-          variant='success'
-          type="submit"
-          // onClick={() => {
-          //   const data = {
-          //     name: selectedModel.name,
-          //     image: selectedModel.image,
-          //     categoryId: selectedModel.categoryId,
-          //     shopIds: selectedModel.shopIds,
-          //   }
-          //   _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal)
-          // }}
-        >
-          {feedBackState?.isLoading ? (
-            <>
-              <Spinner size='sm' /> {feedBackState?.loadingMessage}
-            </>
-          ) : (
-            <span>Valider</span>
-          )}
-        </Button>
-      </Modal.Footer>
-          </Form>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseAddEditModal}>
+            Annuler
+          </Button>
+          <Button
+            variant="success"
+            type="submit"
+            // onClick={() => {
+            //   const data = {
+            //     name: selectedModel.name,
+            //     image: selectedModel.image,
+            //     categoryId: selectedModel.categoryId,
+            //     shopIds: selectedModel.shopIds,
+            //   }
+            //   _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal)
+            // }}
+          >
+            {feedBackState?.isLoading ? (
+              <>
+                <Spinner size="sm" /> {feedBackState?.loadingMessage}
+              </>
+            ) : (
+              <span>Valider</span>
+            )}
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
-  )
+  );
 }
-
-
-
 
 export function ModalAddCategory({
   modalAddCategoryProps,
 }: {
-  modalAddCategoryProps: ModalAddCategoryType
+  modalAddCategoryProps: ModalAddCategoryType;
 }) {
   const {
     showAdd,
@@ -322,66 +331,76 @@ export function ModalAddCategory({
     validated,
     fieldErrors,
     validateField,
-  } = modalAddCategoryProps
+  } = modalAddCategoryProps;
 
   const shopList = shops.map((item: ShopType) => ({
     label: item.name,
     value: String(item.id),
-  }))
+  }));
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title className='text-primary'>
-            <FaPlusCircle className='fs-3 text-primary' /> &nbsp;Ajouter une nouvelle catégorie
+          <Modal.Title className="text-primary">
+            <FaPlusCircle className="fs-3 text-primary" /> &nbsp;Ajouter une
+            nouvelle catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className='mb-3' controlId='categoryName'>
+          <Form.Group className="mb-3" controlId="categoryName">
             <Form.Label>
-              Nom<span className='text-danger'>*</span>
+              Nom<span className="text-danger">*</span>
             </Form.Label>
             <Form.Control
-              type='text'
-              placeholder='Saissisez le nom de la catégorie'
-              value={formData.name || ''}
+              type="text"
+              placeholder="Saissisez le nom de la catégorie"
+              value={formData.name || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prev) => ({
                   ...prev,
                   name: e.target.value,
-                }))
-                validateField('name', e.target.value)
+                }));
+                validateField("name", e.target.value);
               }}
-              onBlur={(e) => validateField('name', e.target.value)}
+              onBlur={(e) => validateField("name", e.target.value)}
               required
-              isInvalid={(validated && !formData.name.trim()) || !!fieldErrors.name}
+              isInvalid={
+                (validated && !formData.name.trim()) || !!fieldErrors.name
+              }
             />
-            <Form.Control.Feedback type='invalid'>
-              {fieldErrors.name || 'Veuillez saisir un nom de catégorie.'}
+            <Form.Control.Feedback type="invalid">
+              {fieldErrors.name || "Veuillez saisir un nom de catégorie."}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group className='mb-3' controlId='categoryIcon'>
+          <Form.Group className="mb-3" controlId="categoryIcon">
             <Form.Label>Icône</Form.Label>
             <Dropdown>
               <Dropdown.Toggle
-                variant='transparente'
-                id='catIcon'
-                className='d-flex align-items-center w-100 text-end border'
+                variant="transparente"
+                id="catIcon"
+                className="d-flex align-items-center w-100 text-end border"
               >
                 {formData.icon && formData.icon.value ? (
                   <>
-                    <DynamicIcon iconKey={formData.icon.value} size={23} className="text-primary" />
-                    <span className='ms-2'>{formData.icon.name}</span>
+                    <DynamicIcon
+                      iconKey={formData.icon.value}
+                      size={23}
+                      className="text-primary"
+                    />
+                    <span className="ms-2">{formData.icon.name}</span>
                   </>
                 ) : (
-                  'Sélectionnez une icone'
+                  "Sélectionnez une icone"
                 )}
               </Dropdown.Toggle>
-              <Dropdown.Menu className='w-100'>
+              <Dropdown.Menu className="w-100">
                 <Dropdown.Item
                   onClick={() =>
-                    setFormData((prev) => ({ ...prev, icon: { name: '', value: '' } }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      icon: { name: "", value: "" },
+                    }))
                   }
                 >
                   Annuler
@@ -390,97 +409,101 @@ export function ModalAddCategory({
                   <Dropdown.Item
                     key={icon.name}
                     onClick={() => setFormData((prev) => ({ ...prev, icon }))}
-                    className='d-flex align-items-center'
+                    className="d-flex align-items-center"
                   >
-                    <DynamicIcon iconKey={icon.value} className='me-2 text-primary' size={20} />
+                    <DynamicIcon
+                      iconKey={icon.value}
+                      className="me-2 text-primary"
+                      size={20}
+                    />
                     <span>{icon.name}</span>
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
             </Dropdown>
           </Form.Group>
-          <Form.Group controlId='formFile' className='mb-3'>
-            <Form.Label className=''>Ajouter une image(header)</Form.Label>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label className="">Ajouter une image(header)</Form.Label>
             <Form.Control
-              type='file'
-              accept='image/*'
+              type="file"
+              accept="image/*"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 _handleFileChange(e, setFile)
               }
             />
           </Form.Group>
-          <Form.Group controlId='formFileRglt' className='mb-3'>
-            <Form.Label className=''>
+          <Form.Group controlId="formFileRglt" className="mb-3">
+            <Form.Label className="">
               Ajouter une image (header) (<b>mode réglette</b>)
             </Form.Label>
             <Form.Control
-              type='file'
-              accept='image/*'
+              type="file"
+              accept="image/*"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 _handleFileChange(e, setImgRglt)
               }
             />
           </Form.Group>
-          <Form.Group className='mb-3' controlId='backgroundColorHeader'>
+          <Form.Group className="mb-3" controlId="backgroundColorHeader">
             <Form.Label>Couleur de fond (entête)</Form.Label>
             <Form.Control
-              type='color'
-              className='w-100'
-              value={formData.backgroundColorHeader || ''}
+              type="color"
+              className="w-100"
+              value={formData.backgroundColorHeader || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prev) => ({
                   ...prev,
                   backgroundColorHeader: e.target.value,
-                }))
-                validateField('backgroundColorHeader', e.target.value)
+                }));
+                validateField("backgroundColorHeader", e.target.value);
               }}
               isInvalid={!!fieldErrors.backgroundColorHeader}
             />
             {fieldErrors.backgroundColorHeader && (
-              <Form.Control.Feedback type='invalid'>
+              <Form.Control.Feedback type="invalid">
                 {fieldErrors.backgroundColorHeader}
               </Form.Control.Feedback>
             )}
           </Form.Group>
-          <Form.Group className='mb-3' controlId='backgroundColorBody'>
+          <Form.Group className="mb-3" controlId="backgroundColorBody">
             <Form.Label>Couleur de fond (corps)</Form.Label>
             <Form.Control
-              type='color'
-              className='w-100'
-              value={formData.backgroundColorBody || ''}
+              type="color"
+              className="w-100"
+              value={formData.backgroundColorBody || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prev) => ({
                   ...prev,
                   backgroundColorBody: e.target.value,
-                }))
-                validateField('backgroundColorBody', e.target.value)
+                }));
+                validateField("backgroundColorBody", e.target.value);
               }}
               isInvalid={!!fieldErrors.backgroundColorBody}
             />
             {fieldErrors.backgroundColorBody && (
-              <Form.Control.Feedback type='invalid'>
+              <Form.Control.Feedback type="invalid">
                 {fieldErrors.backgroundColorBody}
               </Form.Control.Feedback>
             )}
           </Form.Group>
-          <Form.Group className='mb-3' controlId='categoryShops'>
+          <Form.Group className="mb-3" controlId="categoryShops">
             <Form.Label>
-              Magasins<span className='text-danger'>*</span>
+              Magasins<span className="text-danger">*</span>
             </Form.Label>
             <TagPicker
               data={shopList}
-              style={{ width: '100%' }}
-              placeholder='Sélectionnez le ou les magasins'
+              style={{ width: "100%" }}
+              placeholder="Sélectionnez le ou les magasins"
               onChange={(newValues: string[]) => {
-                const numericIds = newValues.map((val) => parseInt(val, 10))
+                const numericIds = newValues.map((val) => parseInt(val, 10));
                 setFormData((prev) => ({
                   ...prev,
                   shopIds: numericIds,
-                }))
+                }));
               }}
             />
             {validated && formData.shopIds.length === 0 && (
-              <div className='invalid-feedback d-block'>
+              <div className="invalid-feedback d-block">
                 Veuillez sélectionner au moins un magasin.
               </div>
             )}
@@ -488,15 +511,15 @@ export function ModalAddCategory({
 
           {/* Message d'erreur global */}
           {feedBackState.isError && feedBackState.errorMessage && (
-            <div className='alert alert-danger mt-3'>
-              <FaTimesCircle className='me-2' />
+            <div className="alert alert-danger mt-3">
+              <FaTimesCircle className="me-2" />
               <small>{feedBackState.errorMessage}</small>
             </div>
           )}
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='secondary'
+            variant="secondary"
             onClick={() => {
               // setFormData({
               //   name: '',
@@ -509,27 +532,37 @@ export function ModalAddCategory({
               //   canvas: [],
               // })
               // resetForm()
-              handleCloseAdd()
+              handleCloseAdd();
             }}
           >
             Annuler
           </Button>
-          <Button variant='success' disabled={feedBackState.isLoading} type='submit'>
+          <Button
+            variant="success"
+            disabled={feedBackState.isLoading}
+            type="submit"
+          >
             {feedBackState.isLoading && (
-              <Spinner size='sm' animation='border' role='status' aria-hidden='true' />
+              <Spinner
+                size="sm"
+                animation="border"
+                role="status"
+                aria-hidden="true"
+              />
             )}
-            &nbsp;{feedBackState.isLoading ? feedBackState.loadingMessage : 'Valider'}
+            &nbsp;
+            {feedBackState.isLoading ? feedBackState.loadingMessage : "Valider"}
           </Button>
         </Modal.Footer>
       </Form>
     </Modal>
-  )
+  );
 }
 
 export function ModalAddEditCategory({
   modalAddEditCategoryProps,
 }: {
-  modalAddEditCategoryProps: ModalAddEditCategoryType
+  modalAddEditCategoryProps: ModalAddEditCategoryType;
 }) {
   const {
     showAdd,
@@ -541,28 +574,29 @@ export function ModalAddEditCategory({
     setImgRglt,
     feedBackState,
     shopData,
-  } = modalAddEditCategoryProps
+  } = modalAddEditCategoryProps;
 
   const shopList = shopData.map((item: ShopType) => ({
     label: item.name,
     value: String(item.id),
-  }))
+  }));
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title className='d-flex align-items-center' >
-          <FaPencil className='fs-4 text-primary me-2' /> Modifier la catégorie
+          <Modal.Title className="d-flex align-items-center">
+            <FaPencil className="fs-4 text-primary me-2" /> Modifier la
+            catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Nom</Form.Label>
             <Form.Control
-              type='text'
-              placeholder='Saissisez le nom de la catégorie'
-              value={formData?.name || ''}
+              type="text"
+              placeholder="Saissisez le nom de la catégorie"
+              value={formData?.name || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((prev) => ({
                   ...prev,
@@ -572,27 +606,34 @@ export function ModalAddEditCategory({
               required
             />
           </Form.Group>
-          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Icone</Form.Label>
             <Dropdown>
               <Dropdown.Toggle
-                variant='transparente'
-                id='catIcon'
-                className='w-100 text-start border'
+                variant="transparente"
+                id="catIcon"
+                className="w-100 text-start border"
               >
                 {formData.icon && formData.icon.value ? (
                   <>
-                  <DynamicIcon iconKey={formData.icon.value} className='text-primary' size={16} />
-                    <span className='ms-2'>{formData.icon.name}</span>
+                    <DynamicIcon
+                      iconKey={formData.icon.value}
+                      className="text-primary"
+                      size={16}
+                    />
+                    <span className="ms-2">{formData.icon.name}</span>
                   </>
                 ) : (
-                  'Sélectionnez une icone'
+                  "Sélectionnez une icone"
                 )}
               </Dropdown.Toggle>
-              <Dropdown.Menu className='w-100'>
+              <Dropdown.Menu className="w-100">
                 <Dropdown.Item
                   onClick={() =>
-                    setFormData((prev) => ({ ...prev, icon: { name: '', value: '' } }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      icon: { name: "", value: "" },
+                    }))
                   }
                 >
                   Annuler
@@ -602,314 +643,368 @@ export function ModalAddEditCategory({
                     key={icon.name}
                     onClick={() => setFormData((prev) => ({ ...prev, icon }))}
                   >
-                    <DynamicIcon iconKey={icon.value} className='text-primary me-2' size={16} />
+                    <DynamicIcon
+                      iconKey={icon.value}
+                      className="text-primary me-2"
+                      size={16}
+                    />
                     <span style={{ fontSize: 15 }}>{icon.name}</span>
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
             </Dropdown>
           </Form.Group>
-          <Form.Group controlId='formFile' className='mb-3'>
-            <Form.Label className=''>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label className="">
               Image actuelle
-              <span className='bg-secondary ms-2 p-2'>
+              <span className="bg-secondary ms-2 p-2">
                 {formData?.image !== null ? (
-
                   <Image
-                  src={API_URL + formData?.image || 'no-picture'}
-                  alt={formData?.name || 'no-picture'}
-                  width={100}
+                    src={API_URL + formData?.image || "no-picture"}
+                    alt={formData?.name || "no-picture"}
+                    width={100}
                   />
                 ) : (
-                  <span className='text-light'>Aucune image</span>
+                  <span className="text-light">Aucune image</span>
                 )}
               </span>
             </Form.Label>
             <Form.Control
-              type='file'
+              type="file"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 _handleFileChange(e, setFile)
               }
             />
           </Form.Group>
-          <Form.Group controlId='formFile' className='mb-3'>
-            <Form.Label className=''>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label className="">
               Image actuelle (<b>mode réglette</b>)
-              <span className='bg-secondary ms-2 p-2'>
+              <span className="bg-secondary ms-2 p-2">
                 {(() => {
-                  const firstItem = formData?.canvas?.[0]
-                  if (firstItem && firstItem.type === 'header') {
-                    const headerItem = firstItem as HeaderComponentType
+                  const firstItem = formData?.canvas?.[0];
+                  if (firstItem && firstItem.type === "header") {
+                    const headerItem = firstItem as HeaderComponentType;
                     if (headerItem.srcRglt) {
                       return (
                         <Image
                           src={API_URL + headerItem.srcRglt}
-                          alt={formData.name || 'Header Reglette'}
+                          alt={formData.name || "Header Reglette"}
                           width={20}
                         />
-                      )
+                      );
                     }
                   }
-                  return <span className='text-light'>Aucune image réglette</span>
+                  return (
+                    <span className="text-light">Aucune image réglette</span>
+                  );
                 })()}
               </span>
             </Form.Label>
             <Form.Control
-              type='file'
+              type="file"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 _handleFileChange(e, setImgRglt)
               }
             />
           </Form.Group>
-          <Form.Group className='mb-3' controlId='bg-color-header'>
+          <Form.Group className="mb-3" controlId="bg-color-header">
             <Form.Label>Couleur de fond (entête)</Form.Label>
             <Form.Control
-              type='color'
-              className='w-100'
+              type="color"
+              className="w-100"
               value={
                 formData?.canvas?.[0] &&
-                (formData.canvas[0].type === 'header' ||
-                  formData.canvas[0].type === 'background-color')
-                  ? (formData.canvas[0] as HeaderComponentType | BackgroundComponentType)
-                      .backgroundColor
-                  : '#000000'
+                (formData.canvas[0].type === "header" ||
+                  formData.canvas[0].type === "background-color")
+                  ? (
+                      formData.canvas[0] as
+                        | HeaderComponentType
+                        | BackgroundComponentType
+                    ).backgroundColor
+                  : "#000000"
               }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prevData) => {
                   const newCanvas = prevData.canvas.map((item, index) => {
                     if (
                       index === 0 &&
-                      (item.type === 'header' || item.type === 'background-color')
+                      (item.type === "header" ||
+                        item.type === "background-color")
                     ) {
                       return { ...item, backgroundColor: e.target.value } as
                         | HeaderComponentType
-                        | BackgroundComponentType
+                        | BackgroundComponentType;
                     }
-                    return item
-                  })
+                    return item;
+                  });
                   return {
                     ...prevData,
                     canvas: newCanvas,
                     backgroundColorHeader:
-                      prevData.canvas?.[0]?.type === 'header' ||
-                      (prevData.canvas?.[0]?.type === 'background-color' && e.target.value),
-                  }
-                })
+                      prevData.canvas?.[0]?.type === "header" ||
+                      (prevData.canvas?.[0]?.type === "background-color" &&
+                        e.target.value),
+                  };
+                });
               }}
             />
           </Form.Group>
-          <Form.Group className='mb-3' controlId='bg-color-body'>
+          <Form.Group className="mb-3" controlId="bg-color-body">
             <Form.Label>Couleur de fond (corps)</Form.Label>
             <Form.Control
-              type='color'
-              className='w-100'
+              type="color"
+              className="w-100"
               value={
-                formData?.canvas?.[1] && formData.canvas[1].type === 'background-color'
-                  ? (formData.canvas[1] as BackgroundComponentType).backgroundColor
-                  : '#000000'
+                formData?.canvas?.[1] &&
+                formData.canvas[1].type === "background-color"
+                  ? (formData.canvas[1] as BackgroundComponentType)
+                      .backgroundColor
+                  : "#000000"
               }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFormData((prevData) => {
                   const newCanvas = prevData.canvas.map((item, index) => {
-                    if (index === 1 && item.type === 'background-color') {
+                    if (index === 1 && item.type === "background-color") {
                       return {
                         ...item,
                         backgroundColor: e.target.value,
-                      } as BackgroundComponentType
+                      } as BackgroundComponentType;
                     }
-                    return item
-                  })
+                    return item;
+                  });
                   return {
                     ...prevData,
                     canvas: newCanvas,
                     backgroundColorBody:
-                      prevData.canvas?.[1]?.type === 'background-color' && e.target.value,
-                  }
-                })
+                      prevData.canvas?.[1]?.type === "background-color" &&
+                      e.target.value,
+                  };
+                });
               }}
             />
           </Form.Group>
           <Form.Label>Magasins</Form.Label>
           <TagPicker
             data={shopList}
-            value={formData?.shopIds?.map(id => String(id))}
-            style={{ width: '100%' }}
-            placeholder='Sélectionnez le ou les magasins'
+            value={formData?.shopIds?.map((id) => String(id))}
+            style={{ width: "100%" }}
+            placeholder="Sélectionnez le ou les magasins"
             onChange={(value) => {
               // Convertir le tableau de chaînes en tableau de nombres
-              const numericIds = value ? value.map((id: string) => parseInt(id, 10)) : []
-        
+              const numericIds = value
+                ? value.map((id: string) => parseInt(id, 10))
+                : [];
+
               setFormData((prev) => ({
                 ...prev,
                 shopIds: numericIds,
-              }))
+              }));
             }}
           />
         </Modal.Body>
-        <Modal.Body className='pt-0'>
-          <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
-            <RiErrorWarningLine className='fs-5 me-2' />
-            <small>Tous les modèles associés à cette catégorie seront modifiés</small>
+        <Modal.Body className="pt-0">
+          <Alert
+            variant="danger"
+            className="text-danger d-flex align-items-center mb-0"
+          >
+            <RiErrorWarningLine className="fs-5 me-2" />
+            <small>
+              Tous les modèles associés à cette catégorie seront modifiés
+            </small>
           </Alert>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='secondary'
+            variant="secondary"
             onClick={() => {
               setFormData({
-                name: '',
-                icon: { name: '', value: '' },
-                image: '',
-                imageRglt: '',
+                name: "",
+                icon: { name: "", value: "" },
+                image: "",
+                imageRglt: "",
                 shopIds: [],
                 canvasId: 0,
                 canvas: [],
-              })
-              handleCloseAdd()
+              });
+              handleCloseAdd();
             }}
           >
             Annuler
           </Button>
-          <Button variant='success' disabled={feedBackState.isLoading} type='submit'>
+          <Button
+            variant="success"
+            disabled={feedBackState.isLoading}
+            type="submit"
+          >
             {feedBackState.isLoading && (
-              <Spinner size='sm' animation='border' role='status' aria-hidden='true' />
+              <Spinner
+                size="sm"
+                animation="border"
+                role="status"
+                aria-hidden="true"
+              />
             )}
-            &nbsp;{feedBackState.isLoading ? feedBackState.loadingMessage : 'Valider'}
+            &nbsp;
+            {feedBackState.isLoading ? feedBackState.loadingMessage : "Valider"}
           </Button>
         </Modal.Footer>
       </Form>
     </Modal>
-  )
+  );
 }
 
-interface ModalDuplicateCategoryType {
-  showDuplicate: boolean
-  handleCloseDuplicate: () => void
-  selectedCategory: CategoriesType
-  setSelectedCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
-  setAllCategories: React.Dispatch<React.SetStateAction<CategoriesType[]>>
-  // page: number 
-  // limit: number
-}
 export function ModalDuplicateCategory({
   modalDuplicateCategoryProps,
 }: {
-  modalDuplicateCategoryProps: ModalDuplicateCategoryType
+  modalDuplicateCategoryProps: ModalDuplicateCategoryType;
 }) {
-  const { feedBackState, setFeedBackState,  setToastData, toggleShow } = useOutletContext<ContextModalValidateModelType>()
-  const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
-  const {showDuplicate, handleCloseDuplicate, selectedCategory, setSelectedCategory, setAllCategories } = modalDuplicateCategoryProps
-  const [newName, setNewName] = React.useState<string>("")
-  const navigate = useNavigate()
+  const { feedBackState, setFeedBackState, setToastData, toggleShow } =
+    useOutletContext<ContextModalValidateModelType>();
+  const userLogOut = userDataStore((state: UserDataType) => state.authLogout);
+  const {
+    showDuplicate,
+    handleCloseDuplicate,
+    selectedCategory,
+    setSelectedCategory,
+    setAllCategories,
+  } = modalDuplicateCategoryProps;
+  const [newName, setNewName] = React.useState<string>("");
+  const navigate = useNavigate();
 
   const handleDuplicate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const id = selectedCategory.id
-    setFeedBackState((prev)=> ({
+    e.preventDefault();
+    const id = selectedCategory.id;
+    setFeedBackState((prev) => ({
       ...prev,
       isLoading: true,
-      loadingMessage: "chargement..."
-    }))
+      loadingMessage: "chargement...",
+    }));
 
+    try {
+      const response = await categoriesServiceInstance.duplicateCategory(
+        id,
+        newName,
+      );
 
-
-    try{
-      const response = await categoriesServiceInstance.duplicateCategory(id, newName)
-
-      if(response.status === 201){
-        _getCategories(setAllCategories, setToastData, toggleShow, setFeedBackState)
-        handleCloseDuplicate()
+      if (response.status === 201) {
+        _getCategories(
+          setAllCategories,
+          setToastData,
+          toggleShow,
+          setFeedBackState,
+        );
+        handleCloseDuplicate();
         setToastData({
-          bg: 'success',
-          position: 'top-end',
+          bg: "success",
+          position: "top-end",
           delay: 4000,
-          icon: 'fa fa-check-circle',
-          message: response.data.message ? response.data.message : 'Catégorie dupliquée avec succès',
-        })
-        toggleShow()
+          icon: "fa fa-check-circle",
+          message: response.data.message
+            ? response.data.message
+            : "Catégorie dupliquée avec succès",
+        });
+        toggleShow();
       }
-    }catch(error: unknown){
-      console.log(error)
-      if(error instanceof AxiosError){
-        if(error.response && error.response.status === 401 && error.response.data.code === "TOKEN_EXPIRED"){
+    } catch (error: unknown) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        if (
+          error.response &&
+          error.response.status === 401 &&
+          error.response.data.code === "TOKEN_EXPIRED"
+        ) {
           _expiredSession(
-            (success, message, delay) => _showToast(success, message, setToastData, toggleShow, delay),
+            (success, message, delay) =>
+              _showToast(success, message, setToastData, toggleShow, delay),
             userLogOut,
-            navigate
-          )
-        }else{
+            navigate,
+          );
+        } else {
           setToastData({
-          bg: 'danger',
-          position: 'top-end',
-          delay: 7000,
-          icon: 'fa fa-xmark-circle',
-          message: error?.response?.data?.message
-            ? error?.response?.data?.message
-            : error?.message === 'Network Error'
-            ? 'Une erreur serveur est survenue, vérifier votre connexion internet. Si le problème persiste contactez votre administrateur'
-            : 'Une erreur est survenue lors de la duplication',
-          })
-          toggleShow()
+            bg: "danger",
+            position: "top-end",
+            delay: 7000,
+            icon: "fa fa-xmark-circle",
+            message: error?.response?.data?.message
+              ? error?.response?.data?.message
+              : error?.message === "Network Error"
+                ? "Une erreur serveur est survenue, vérifier votre connexion internet. Si le problème persiste contactez votre administrateur"
+                : "Une erreur est survenue lors de la duplication",
+          });
+          toggleShow();
         }
       }
-    }finally{
-      setFeedBackState((prev)=> ({
+    } finally {
+      setFeedBackState((prev) => ({
         ...prev,
         isLoading: false,
-        loadingMessage: ""
-      }))
+        loadingMessage: "",
+      }));
     }
-  }
-
+  };
 
   return (
     <Modal show={showDuplicate} onHide={handleCloseDuplicate}>
       <Form onSubmit={handleDuplicate}>
         <Modal.Header closeButton>
-          <Modal.Title className='text-primary'>
+          <Modal.Title className="text-primary">
             <FaPencil />
             Dupliquez la catégorie
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Nom</Form.Label>
             <Form.Control
-              type='text'
-              placeholder='Saissisez le nouveau nom de la catégorie'
-              value={newName || ''}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)}
+              type="text"
+              placeholder="Saissisez le nouveau nom de la catégorie"
+              value={newName || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setNewName(e.target.value)
+              }
               required
             />
           </Form.Group>
         </Modal.Body>
         {newName === selectedCategory.name && (
-          <Modal.Body className='pt-0'>
-            <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
-              <RiErrorWarningLine className='fs-5 me-2' />
-              <small>Le nom de nouvelle catégorie doit différent de l'ancienne</small>
+          <Modal.Body className="pt-0">
+            <Alert
+              variant="danger"
+              className="text-danger d-flex align-items-center mb-0"
+            >
+              <RiErrorWarningLine className="fs-5 me-2" />
+              <small>
+                Le nom de nouvelle catégorie doit différent de l'ancienne
+              </small>
             </Alert>
           </Modal.Body>
         )}
         <Modal.Footer>
           <Button
-            variant='secondary'
+            variant="secondary"
             onClick={() => {
-              setSelectedCategory({} as CategoriesType)
-              handleCloseDuplicate()
+              setSelectedCategory({} as CategoriesType);
+              handleCloseDuplicate();
             }}
           >
             Annuler
           </Button>
           <Button
-            variant='success'
+            variant="success"
             // disabled={feedBackState.isLoading}
-            disabled={feedBackState.isLoading || newName === selectedCategory.name}
-            type='submit'
+            disabled={
+              feedBackState.isLoading || newName === selectedCategory.name
+            }
+            type="submit"
           >
             {feedBackState.isLoading ? (
               <>
-                <Spinner size='sm' animation='border' role='status' aria-hidden='true' />{' '}
+                <Spinner
+                  size="sm"
+                  animation="border"
+                  role="status"
+                  aria-hidden="true"
+                />{" "}
                 {feedBackState.loadingMessage}
               </>
             ) : (
@@ -919,10 +1014,14 @@ export function ModalDuplicateCategory({
         </Modal.Footer>
       </Form>
     </Modal>
-  )
+  );
 }
 
-export function ModalAddShop({ modalAddShopProps }: { modalAddShopProps: ModalAddShopType }) {
+export function ModalAddShop({
+  modalAddShopProps,
+}: {
+  modalAddShopProps: ModalAddShopType;
+}) {
   const {
     showAdd,
     handleCloseAdd,
@@ -931,24 +1030,24 @@ export function ModalAddShop({ modalAddShopProps }: { modalAddShopProps: ModalAd
     setFormData,
     setFile,
     feedBackState,
-  } = modalAddShopProps
+  } = modalAddShopProps;
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title className='text-primary'>
+          <Modal.Title className="text-primary">
             <FaShop />
             &nbsp;Ajouter un nouveau magasin
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Nom</Form.Label>
             <Form.Control
-              type='text'
-              placeholder='Saissisez le nom du magasin'
-              value={formData?.name || ''}
+              type="text"
+              placeholder="Saissisez le nom du magasin"
+              value={formData?.name || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormData((prev) => ({
                   ...prev,
@@ -959,40 +1058,40 @@ export function ModalAddShop({ modalAddShopProps }: { modalAddShopProps: ModalAd
             />
           </Form.Group>
 
-          <Form.Group controlId='formFile' className='mb-3'>
-            <Form.Label className=''>Ajouter une image</Form.Label>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label className="">Ajouter une image</Form.Label>
             <Form.Control
-              type='file'
+              type="file"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 _handleFileChange(e, setFile)
               }
             />
           </Form.Group>
         </Modal.Body>
-       
+
         <Modal.Footer>
           <Button
-            variant='secondary'
+            variant="secondary"
             onClick={() => {
-              handleCloseAdd()
-              setFile(null)
+              handleCloseAdd();
+              setFile(null);
               setFormData({
-                name: '',
-                image: '',
-              })
+                name: "",
+                image: "",
+              });
             }}
           >
             Annuler
           </Button>
           <Button
-            variant='success'
-            type='submit'
+            variant="success"
+            type="submit"
             disabled={feedBackState.isLoading}
             // onClick={handleSubmit}
           >
             {feedBackState.isLoading ? (
               <>
-                <Spinner size='sm' /> {feedBackState.loadingMessage}
+                <Spinner size="sm" /> {feedBackState.loadingMessage}
               </>
             ) : (
               <span>Ajouter</span>
@@ -1001,91 +1100,102 @@ export function ModalAddShop({ modalAddShopProps }: { modalAddShopProps: ModalAd
         </Modal.Footer>
       </Form>
     </Modal>
-  )
+  );
 }
 
 export function ModalGenericDelete({
   modalGenericDeleteProps,
 }: {
-  modalGenericDeleteProps: ModalGenericDeletePropsType
+  modalGenericDeleteProps: ModalGenericDeletePropsType;
 }) {
   const { show, handleClose, selectedId, handleDelete, title, isLoading } =
-    modalGenericDeleteProps
+    modalGenericDeleteProps;
 
-  
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
-          <FaCircleXmark className='me-2 text-danger' />Supprimer {title}
+          <FaCircleXmark className="me-2 text-danger" />
+          Supprimer {title}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>Etes sûr de vouloir supprimer {title} ?</Modal.Body>
-      {title === 'la catégorie' && (
-        <Modal.Body className='pt-0'>
-          <Alert variant='danger' className='text-danger d-flex align-items-center mb-0'>
-            <RiErrorWarningLine className='fs-5 me-2' />
-            <small>Tous les modèles associés à cette catégorie seront effacés</small>
+      {title === "la catégorie" && (
+        <Modal.Body className="pt-0">
+          <Alert
+            variant="danger"
+            className="text-danger d-flex align-items-center mb-0"
+          >
+            <RiErrorWarningLine className="fs-5 me-2" />
+            <small>
+              Tous les modèles associés à cette catégorie seront effacés
+            </small>
           </Alert>
         </Modal.Body>
       )}
 
       <Modal.Footer>
-        <Button variant='secondary' onClick={handleClose}>
+        <Button variant="secondary" onClick={handleClose}>
           Annuler
         </Button>
         <Button
-          variant='danger'
+          variant="danger"
           onClick={() => {
             if (selectedId) {
-              handleDelete(selectedId)
-              handleClose()
+              handleDelete(selectedId);
+              handleClose();
             }
           }}
           disabled={isLoading}
         >
-          {isLoading ? <Spinner size='sm' animation='border' variant='light' /> : 'Valider'}
+          {isLoading ? (
+            <Spinner size="sm" animation="border" variant="light" />
+          ) : (
+            "Valider"
+          )}
         </Button>
       </Modal.Footer>
     </Modal>
-  )
+  );
 }
-
 
 export function ModalAddPicture({
   modalAddPictureProps,
 }: {
-  modalAddPictureProps: ModalAddPictureType
+  modalAddPictureProps: ModalAddPictureType;
 }) {
   const {
-    showAdd, handleCloseAdd, handleSubmit, imageName, setImageName, setFile, feedBackState
-  } = modalAddPictureProps
-
-
+    showAdd,
+    handleCloseAdd,
+    handleSubmit,
+    imageName,
+    setImageName,
+    setFile,
+    feedBackState,
+  } = modalAddPictureProps;
 
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
-      <Form 
-      // noValidate validated={validated} 
-      onSubmit={handleSubmit}
+      <Form
+        // noValidate validated={validated}
+        onSubmit={handleSubmit}
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            <FaPlusCircle className='fs-1' /> &nbsp;Ajouter une nouvelle
-            image
+            <FaPlusCircle className="fs-1" /> &nbsp;Ajouter une nouvelle image
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className='mb-3' controlId='categoryName'>
+          <Form.Group className="mb-3" controlId="categoryName">
             <Form.Label>
-              Nom<span className='text-danger'>*</span>
+              Nom<span className="text-danger">*</span>
             </Form.Label>
             <Form.Control
-              type='text'
+              type="text"
               placeholder="Saissisez le nom de l'image"
-              value={imageName || ''}
+              value={imageName || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setImageName(e.target.value)
+                setImageName(e.target.value);
                 // validateField('name', e.target.value)
               }}
               // onBlur={(e) => validateField('name', e.target.value)}
@@ -1096,11 +1206,11 @@ export function ModalAddPicture({
               {fieldErrors.name || 'Veuillez saisir un nom de catégorie.'}
             </Form.Control.Feedback> */}
           </Form.Group>
-          <Form.Group controlId='formFile' className='mb-3'>
-            <Form.Label className=''>Ajouter une image(header)</Form.Label>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label className="">Ajouter une image(header)</Form.Label>
             <Form.Control
-              type='file'
-              accept='image/*'
+              type="file"
+              accept="image/*"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 _handleFileChange(e, setFile)
               }
@@ -1110,24 +1220,82 @@ export function ModalAddPicture({
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='secondary'
+            variant="secondary"
             onClick={() => {
-              setImageName("")
-              handleCloseAdd()
+              setImageName("");
+              handleCloseAdd();
             }}
           >
             Annuler
           </Button>
-          <Button variant='success' 
-          disabled={feedBackState.isLoading} 
-          type='submit'>
+          <Button
+            variant="success"
+            disabled={feedBackState.isLoading}
+            type="submit"
+          >
             {feedBackState.isLoading && (
-              <Spinner size='sm' animation='border' role='status' aria-hidden='true' />
+              <Spinner
+                size="sm"
+                animation="border"
+                role="status"
+                aria-hidden="true"
+              />
             )}
-            &nbsp;{feedBackState.isLoading ? feedBackState.loadingMessage : 'Valider'}
+            &nbsp;
+            {feedBackState.isLoading ? feedBackState.loadingMessage : "Valider"}
           </Button>
         </Modal.Footer>
       </Form>
     </Modal>
-  )
+  );
 }
+
+export function ModalDelete({
+  modalDeleteProps,
+}: {
+  modalDeleteProps: ModalDeleteType;
+}) {
+  const {
+    showDelete,
+    handleCloseDelete,
+    selectedIndex,
+    sideBarData,
+    setSideBarData,
+    setToastData,
+    toggleShow,
+    categoryId,
+  } = modalDeleteProps;
+  return (
+    <Modal show={showDelete} onHide={handleCloseDelete}>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          <FaCircleXmark className="me-2 text-danger" />
+          Suppression d'image
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>Etes sûr de vouloir supprimer cette image ?</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseDelete}>
+          Annuler
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() => {
+            _handleDeleteImg(
+              selectedIndex,
+              sideBarData,
+              setSideBarData,
+              setToastData,
+              toggleShow,
+              categoryId,
+            );
+            handleCloseDelete();
+          }}
+        >
+          Valider
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
