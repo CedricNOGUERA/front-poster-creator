@@ -23,9 +23,10 @@ export default function CanvasEditorImproved({
 }: {
   canvasEditorProps: CanvasEditorType
 }) {
+
   const { canvasData, setCanvasData, pageWidth, pageHeight } = canvasEditorProps
 
-  const maxPreviewHeight = pageHeight < 100 ? 150 : 500
+  const maxPreviewHeight = pageHeight < 98 ? 150 : 500
   const scaleFactor = maxPreviewHeight / pageHeight
 
   const updateComponent = (index: number, updates: Partial<ComponentTypeMulti>) => {

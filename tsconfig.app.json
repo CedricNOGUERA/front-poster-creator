@@ -22,11 +22,16 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    
+    "types": ["node"],
 
     /* Alias */
-    "baseUrl": "src",
+    // "baseUrl": "src",
+    // "paths": {
+    //   "@/*": ["*", "src/*"]
+    // },
     "paths": {
-      "@/*": ["*", "src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]
