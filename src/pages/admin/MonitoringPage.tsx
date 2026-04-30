@@ -1,4 +1,5 @@
 import logServiceInstance from "@/services/LogService"
+import { LogType } from "@/types/logType";
 import { _formattedDate, _statusBadge } from "@/utils/functions";
 import React from "react"
 import { Badge, Container, Spinner, Table } from "react-bootstrap";
@@ -6,7 +7,7 @@ import { Badge, Container, Spinner, Table } from "react-bootstrap";
 
 export default function MonitoringPage() {
 
-    const [logs, setLogs]= React.useState<any[]>([]);
+    const [logs, setLogs]= React.useState<LogType[]>([]);
     const [isLoading, setIsLoading]= React.useState<boolean>(false);
     
     React.useEffect(() => {
@@ -24,6 +25,7 @@ export default function MonitoringPage() {
           setIsLoading(false)
         }
     }
+    console.log(logs)
 
     return (
       <Container fluid className="p-0">
@@ -48,7 +50,7 @@ export default function MonitoringPage() {
                   </td>
                 </tr>
               ) : (
-                logs.map((log: any, indx: number) => {
+                logs.map((log, indx: number) => {
                   const userName = log?.user?.split("@")[0];
                   return (
                     <tr key={indx}>

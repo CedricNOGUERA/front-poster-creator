@@ -25,6 +25,8 @@ import {
   ModalAddPictureType,
   ModalEditModelType,
   ModalDuplicateCategoryType,
+  ModalEditTemplateType,
+  ModalDeleteTemplateType,
   // AddShopModalType,
 } from "@/types/ModalType";
 import { ShopType } from "@/types/ShopType";
@@ -55,6 +57,9 @@ import { FaEdit, FaPlusCircle, FaTimesCircle } from "react-icons/fa";
 import DynamicIcon from "./DynamicIcon";
 const API_URL = import.meta.env.VITE_API_URL;
 
+//////////////////////
+//Model
+//////////////////////
 export function ModalValidateModel({
   modalValidateModelProps,
 }: {
@@ -313,6 +318,144 @@ export function ModalAddEditModel({
   );
 }
 
+//////////////////////
+//Template
+//////////////////////
+export function ModalEditTemplate({
+  modalEditemplateProps,
+}: {
+  modalEditemplateProps: ModalEditTemplateType;
+}) {
+  const {
+    showEditModal,
+    handleCloseEditModal,
+    editTemplate,
+    formData,
+    setFormData,
+    isLoading,
+  } = modalEditemplateProps;
+
+  return (
+    <Modal show={showEditModal} onHide={handleCloseEditModal}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          editTemplate();
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Modifier un template</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Etes-vous sûr de vouloir modifier ce template ?
+          <Form.Group className="mb-3" controlId="categoryName">
+            <Form.Label>
+              Nom<span className="text-danger">*</span>
+            </Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Saissisez le nom du template"
+              value={formData.name || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }));
+              }}
+              required
+            />
+            <Form.Control.Feedback type="invalid"></Form.Control.Feedback>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseEditModal}>
+            Annuler
+          </Button>
+          <Button type="submit" variant="success">
+            {isLoading ? (
+              <>
+                <Spinner
+                  size="sm"
+                  animation="border"
+                  role="status"
+                  className="me-2"
+                />
+                <span className="visually-hidden">Chargement...</span>
+              </>
+            ) : (
+              <span>
+                <FaEdit className="me-2" />
+              </span>
+            )}
+            Modifier
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+}
+
+export function ModalDeleteTemplate({
+  modalDeleteTemplateProps,
+}: {
+  modalDeleteTemplateProps: ModalDeleteTemplateType;
+}) {
+  const {
+    showDeleteModal,
+    handleCloseDeleteModal,
+    handleDeleteTemplate,
+    selectedModel,
+    isLoading,
+  } = modalDeleteTemplateProps;
+  return (
+    <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+      <Modal.Header closeButton>
+        <Modal.Title>Supprimer un template</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Etes-vous sûr de vouloir supprimer ce template ?
+        <Alert variant="danger" className="mt-3">
+          ⚠️ Ce template est utilisé par des modèles. Voulez-vous vraiment le
+          supprimer ? (Les modèles associés seront également supprimés)
+        </Alert>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseDeleteModal}>
+          Annuler
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() => {
+            if (selectedModel) {
+              handleDeleteTemplate();
+            }
+          }}
+        >
+          {isLoading ? (
+            <>
+              <Spinner
+                size="sm"
+                animation="border"
+                role="status"
+                className="me-2"
+              />
+              <span className="visually-hidden">Chargement...</span>
+            </>
+          ) : (
+            <span>
+              <FaTimesCircle className="me-2" />
+            </span>
+          )}
+          Supprimer
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
+//////////////////////
+//Category
+//////////////////////
 export function ModalAddCategory({
   modalAddCategoryProps,
 }: {
@@ -1017,6 +1160,9 @@ export function ModalDuplicateCategory({
   );
 }
 
+//////////////////////
+//Shop
+//////////////////////
 export function ModalAddShop({
   modalAddShopProps,
 }: {
@@ -1159,6 +1305,9 @@ export function ModalGenericDelete({
   );
 }
 
+//////////////////////
+//Image
+//////////////////////
 export function ModalAddPicture({
   modalAddPictureProps,
 }: {
@@ -1298,4 +1447,3 @@ export function ModalDelete({
     </Modal>
   );
 }
-
