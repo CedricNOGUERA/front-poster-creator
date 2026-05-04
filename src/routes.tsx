@@ -50,6 +50,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path='/tableau-de-bord/phototheque' element={<PicturesLibraryPage />} />
             <Route path='/tableau-de-bord/utilisateurs' element={<UserManager />} />
             <Route path='/tableau-de-bord/logs' element={<MonitoringPage />} />
+            <Route path='/tableau-de-bord/logs?page=:page&perPage=:perPage&route=:route&level=:level&user=:user' element={<MonitoringPage />} />
             <Route path='/tableau-de-bord/connexions' element={<ConnexionCount />} />
           </Route>
           <Route path='/profile' element={<Account />} />
