@@ -9,3 +9,12 @@ export interface LogType {
     "user": string,
     "meta": string | null
 }
+
+
+export interface LogResultType {
+    "total": number
+    "page": number
+    "perPage": number
+    "offset": number
+    "logs": LogType[]
+}
