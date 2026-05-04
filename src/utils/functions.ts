@@ -12,8 +12,8 @@ import { FormCategoryDataType } from '@/components/step-selector/CategorySelecto
 //test prio
 ////////////////////////////////
 export const _formattedDate = (date: string) => {
-const formattedDate = moment(date).format('DD/MM/YYYY à hh:mm:ss')
-
+// const formattedDate = moment(date).format('DD/MM/YYYY à hh:mm:ss')
+const formattedDate = moment.utc(date).local().format("DD/MM/YYYY à HH:mm")
 return formattedDate
 }
 
