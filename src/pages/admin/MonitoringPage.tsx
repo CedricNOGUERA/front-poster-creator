@@ -4,12 +4,14 @@ import { _formattedDate, _statusBadge } from "@/utils/functions";
 import React from "react";
 import {
   Badge,
+  // Button,
   Container,
   Form,
   Pagination,
   Spinner,
   Table,
 } from "react-bootstrap";
+import { FaX } from "react-icons/fa6";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "rsuite";
 
@@ -41,6 +43,13 @@ export default function MonitoringPage() {
     message,
     createdAt,
   });
+
+  const isFiltering =
+    route === "" &&
+    level === "" &&
+    user === "" &&
+    message === "" &&
+    createdAt === "";
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -84,7 +93,6 @@ export default function MonitoringPage() {
     navigate(`/tableau-de-bord/logs?${params.toString()}`);
   }, [debouncedFilters, navigate]);
 
- 
   const getPaginatedLogs = async (
     page: string,
     perPage: string,
@@ -173,6 +181,7 @@ export default function MonitoringPage() {
     setCreatedAt("");
   };
 
+
   return (
     <Container fluid className="p-0">
       <h3 className="py-3">Gestion des Logs</h3>
@@ -201,7 +210,6 @@ export default function MonitoringPage() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setUser(e.target.value);
                       setPage("1");
-
                     }}
                   />
                 </Form.Group>
@@ -212,10 +220,9 @@ export default function MonitoringPage() {
                     type="text"
                     placeholder="Gravité"
                     value={level}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setLevel(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setLevel(e.target.value);
                       setPage("1");
-
                     }}
                   />
                 </Form.Group>
@@ -226,8 +233,8 @@ export default function MonitoringPage() {
                     type="text"
                     placeholder="Route"
                     value={route}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setRoute(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setRoute(e.target.value);
                       setPage("1");
                     }}
                   />
@@ -239,30 +246,33 @@ export default function MonitoringPage() {
                     type="text"
                     placeholder="Message"
                     value={message}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setMessage(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setMessage(e.target.value);
                       setPage("1");
-
                     }}
                   />
                 </Form.Group>
               </th>
               <th className="py-3">
-                {/* <Form.Group controlId="exampleForm.ControlInput1">
+                 <Form.Group controlId="exampleForm.ControlInput1">
                   <Form.Control
-                    type="text"
+                    type="date"
                     placeholder="Date"
                     value={createdAt}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setCreatedAt(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setCreatedAt(e.target.value);
                       setPage("1");
-
                     }}
                   />
-                </Form.Group> */}
+                </Form.Group>
               </th>
               <th className="py-3">
-                <Button onClick={() => resetForm()}>Réinitialiser</Button>
+                <Button onClick={() => resetForm()} disabled={isFiltering}>
+                  <div className="flex items-center">
+                    <FaX size={10} className="me-1" />
+                    <small>Réinitialiser</small>
+                  </div>
+                </Button>
               </th>
             </tr>
           </thead>
