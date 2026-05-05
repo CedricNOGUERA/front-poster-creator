@@ -6,8 +6,8 @@ export interface LogType {
     "level": Status,
     "message": string,
     "route": string,
-    "user": string,
-    "meta": string | null
+    "user": string | null,
+    "meta": Record<string, string | number | boolean | null> | null
 }
 
 
