@@ -39,7 +39,7 @@ const LoginForm = () => {
       }
     } catch (err) {
       if (err instanceof AxiosError) {
-        console.log(err);
+        console.error(err);
         if (err.response?.data.message) {
           setError(err.response?.data.message);
         } else if (err.response?.data.error) {
@@ -59,37 +59,6 @@ const LoginForm = () => {
     }
   };
 
-  // Vérification simple - appel fréquent
-  // async function isServerUp() {
-  //   try {
-  //     const res = await fetch("http://localhost:8080/api/health", {
-  //       method: "GET",
-  //       // timeout: 5000 // 5 secondes timeout
-  //     });
-  //     if (res.ok) {
-  //       console.log("serveur ok");
-  //     }
-  //     return res.ok; // true si HTTP 200-299
-  //   } catch (error) {
-  //     console.log("serveur hors ligne");
-  //     return false; // serveur coupé, réseau indisponible, etc.
-  //   }
-  // }
-  // async function serverStatus() { 
-  //   try {
-  //     const res = await axios.get("http://localhost:8080/api/server-status", {
-  //       method: "GET",
-  //       // timeout: 5000 // 5 secondes timeout
-  //     });
-  //     if (res) {
-  //       console.log(res.status);
-  //     }
-  //     return res; // true si HTTP 200-299
-  //   } catch (error) {
-  //     console.log(error);
-  //     return false; // serveur coupé, réseau indisponible, etc.
-  //   }
-  // }
 
   /* Render
    *******************************************************************************************/
