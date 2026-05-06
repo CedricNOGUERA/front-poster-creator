@@ -1,3 +1,4 @@
+import { _buildPaginationItems } from "@/components/ui/pagination";
 import logServiceInstance from "@/services/LogService";
 import { LogResultType } from "@/types/logType";
 import { _formattedDate, _statusBadge } from "@/utils/functions";
@@ -10,6 +11,7 @@ import {
   Spinner,
   Table,
 } from "react-bootstrap";
+import { FaX } from "react-icons/fa6";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "rsuite";
 
@@ -42,6 +44,16 @@ export default function MonitoringPage() {
     createdAt,
   });
 
+  const isFiltering =
+    route === "" &&
+    level === "" &&
+    user === "" &&
+    message === "" &&
+    createdAt === "";
+
+  const totalPages = Math.ceil(logs?.total / parseInt(perPage));
+  const currentPage = parseInt(page);
+
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedFilters({
@@ -55,7 +67,7 @@ export default function MonitoringPage() {
       });
     }, 500);
     return () => clearTimeout(timeout);
-  }, [page, perPage, route, level, user, message, createdAt]);
+  }, [page, perPage, route, level, user, message, createdAt, currentPage]);
 
   React.useEffect(() => {
     const params = new URLSearchParams();
@@ -84,7 +96,6 @@ export default function MonitoringPage() {
     navigate(`/tableau-de-bord/logs?${params.toString()}`);
   }, [debouncedFilters, navigate]);
 
- 
   const getPaginatedLogs = async (
     page: string,
     perPage: string,
@@ -113,57 +124,60 @@ export default function MonitoringPage() {
     }
   };
 
-  const totalPages = Math.ceil(logs?.total / logs?.perPage);
-  const currentPage = parseInt(page);
+  // const items = [];
 
-  const items = [];
+  // const maxVisiblePages = 3; // nombre de pages autour de la page actuelle
 
-  const maxVisiblePages = 3; // nombre de pages autour de la page actuelle
+  // const startPage = Math.max(1, currentPage - maxVisiblePages);
+  // const endPage = Math.min(totalPages, currentPage + maxVisiblePages);
 
-  const startPage = Math.max(1, currentPage - maxVisiblePages);
-  const endPage = Math.min(totalPages, currentPage + maxVisiblePages);
+  // // Toujours afficher la première page
+  // if (startPage > 1) {
+  //   items.push(
+  //     <Pagination.Item key={1} onClick={() => setPage("1")}>
+  //       1
+  //     </Pagination.Item>,
+  //   );
 
-  // Toujours afficher la première page
-  if (startPage > 1) {
-    items.push(
-      <Pagination.Item key={1} onClick={() => setPage("1")}>
-        1
-      </Pagination.Item>,
-    );
+  //   if (startPage > 2) {
+  //     items.push(<Pagination.Ellipsis key="start-ellipsis" />);
+  //   }
+  // }
 
-    if (startPage > 2) {
-      items.push(<Pagination.Ellipsis key="start-ellipsis" />);
-    }
-  }
+  // // Pages autour de la page actuelle
+  // for (let number = startPage; number <= endPage; number++) {
+  //   items.push(
+  //     <Pagination.Item
+  //       key={number}
+  //       active={number === currentPage}
+  //       onClick={() => setPage(`${number}`)}
+  //     >
+  //       {number}
+  //     </Pagination.Item>,
+  //   );
+  // }
 
-  // Pages autour de la page actuelle
-  for (let number = startPage; number <= endPage; number++) {
-    items.push(
-      <Pagination.Item
-        key={number}
-        active={number === currentPage}
-        onClick={() => setPage(`${number}`)}
-      >
-        {number}
-      </Pagination.Item>,
-    );
-  }
+  // // Toujours afficher la dernière page
+  // if (endPage < totalPages) {
+  //   if (endPage < totalPages - 1) {
+  //     items.push(<Pagination.Ellipsis key="end-ellipsis" />);
+  //   }
 
-  // Toujours afficher la dernière page
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
-      items.push(<Pagination.Ellipsis key="end-ellipsis" />);
-    }
-
-    items.push(
-      <Pagination.Item
-        key={totalPages}
-        onClick={() => setPage(`${totalPages}`)}
-      >
-        {totalPages}
-      </Pagination.Item>,
-    );
-  }
+  //   items.push(
+  //     <Pagination.Item
+  //       key={totalPages}
+  //       onClick={() => setPage(`${totalPages}`)}
+  //       className="text-warning"
+  //     >
+  //       {totalPages}
+  //     </Pagination.Item>,
+  //   );
+  // }
+  const items = _buildPaginationItems({
+  currentPage,
+  totalPages,
+  onPageChange: (p) => setPage(`${p}`),
+});
 
   const resetForm = () => {
     setRoute("");
@@ -171,6 +185,18 @@ export default function MonitoringPage() {
     setUser("");
     setMessage("");
     setCreatedAt("");
+  };
+
+  const limitedElements = (value: string) => {
+    const newPerPage = parseInt(value ?? "10");
+    const oldPerPage = parseInt(perPage);
+
+    const newPage =
+      Math.floor(((currentPage - 1) * oldPerPage) / newPerPage) + 1;
+
+    setPerPage(`${newPerPage}`);
+    setPage(`${newPage}`);
+    setPerPage(value ?? "10");
   };
 
   return (
@@ -201,7 +227,6 @@ export default function MonitoringPage() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       setUser(e.target.value);
                       setPage("1");
-
                     }}
                   />
                 </Form.Group>
@@ -212,10 +237,9 @@ export default function MonitoringPage() {
                     type="text"
                     placeholder="Gravité"
                     value={level}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setLevel(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setLevel(e.target.value);
                       setPage("1");
-
                     }}
                   />
                 </Form.Group>
@@ -226,8 +250,8 @@ export default function MonitoringPage() {
                     type="text"
                     placeholder="Route"
                     value={route}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setRoute(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setRoute(e.target.value);
                       setPage("1");
                     }}
                   />
@@ -239,30 +263,33 @@ export default function MonitoringPage() {
                     type="text"
                     placeholder="Message"
                     value={message}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setMessage(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setMessage(e.target.value);
                       setPage("1");
-
                     }}
                   />
                 </Form.Group>
               </th>
               <th className="py-3">
-                {/* <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="exampleForm.ControlInput1">
                   <Form.Control
-                    type="text"
+                    type="date"
                     placeholder="Date"
                     value={createdAt}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
-                      setCreatedAt(e.target.value)
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setCreatedAt(e.target.value);
                       setPage("1");
-
                     }}
                   />
-                </Form.Group> */}
+                </Form.Group>
               </th>
               <th className="py-3">
-                <Button onClick={() => resetForm()}>Réinitialiser</Button>
+                <Button onClick={() => resetForm()} disabled={isFiltering}>
+                  <div className="flex items-center">
+                    <FaX size={10} className="me-1" />
+                    <small>Réinitialiser</small>
+                  </div>
+                </Button>
               </th>
             </tr>
           </thead>
@@ -324,7 +351,9 @@ export default function MonitoringPage() {
           <div className="">
             <Form.Select
               aria-label="perPage"
-              onChange={(e) => setPerPage(e.currentTarget.value ?? "10")}
+              onChange={(e) => {
+                limitedElements(e.currentTarget.value);
+              }}
             >
               <option>{perPage}</option>
               <option value="10">10</option>
