@@ -242,7 +242,7 @@ export function ModalAddEditModel({
         toggleShow,
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -1049,7 +1049,7 @@ export function ModalDuplicateCategory({
         toggleShow();
       }
     } catch (error: unknown) {
-      console.log(error);
+      console.error(error);
       if (error instanceof AxiosError) {
         if (
           error.response &&

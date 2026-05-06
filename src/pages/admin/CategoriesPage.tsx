@@ -146,7 +146,6 @@ export default function CategoriesPage() {
       if (error instanceof AxiosError) {
         console.error('Erreur lors de la modification de la catégorie:', error)
         if (error?.response?.data.code === 'TOKEN_EXPIRED' && error.status === 401)
-          console.log('Votre session est expirée')
         _expiredSession(
           (success: boolean, message: string, delay: number) =>
             _showToast(success, message, setToastData, toggleShow, delay),
@@ -192,7 +191,7 @@ export default function CategoriesPage() {
     } catch (error: unknown) {
       console.error("Erreur lors de la suppression de la catégorie:", error);
       if(error instanceof AxiosError){
-        console.log(error.response)
+        console.error(error.response)
         if (error?.response?.data.code === 'TOKEN_EXPIRED' && error.status === 401)
           
         _expiredSession(

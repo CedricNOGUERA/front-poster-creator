@@ -13,7 +13,6 @@ class VariousPicturesServices {
   }
 
   async postPictures(newPicture: FormData) {
-    console.log(newPicture)
     const config = {
       method: 'POST',
       url: `${API_URL}/api/add-various-picture`,
