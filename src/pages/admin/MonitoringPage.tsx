@@ -1,10 +1,10 @@
+import { _buildPaginationItems } from "@/components/ui/pagination";
 import logServiceInstance from "@/services/LogService";
 import { LogResultType } from "@/types/logType";
 import { _formattedDate, _statusBadge } from "@/utils/functions";
 import React from "react";
 import {
   Badge,
-  // Button,
   Container,
   Form,
   Pagination,
@@ -51,6 +51,9 @@ export default function MonitoringPage() {
     message === "" &&
     createdAt === "";
 
+  const totalPages = Math.ceil(logs?.total / parseInt(perPage));
+  const currentPage = parseInt(page);
+
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedFilters({
@@ -64,7 +67,7 @@ export default function MonitoringPage() {
       });
     }, 500);
     return () => clearTimeout(timeout);
-  }, [page, perPage, route, level, user, message, createdAt]);
+  }, [page, perPage, route, level, user, message, createdAt, currentPage]);
 
   React.useEffect(() => {
     const params = new URLSearchParams();
@@ -121,57 +124,60 @@ export default function MonitoringPage() {
     }
   };
 
-  const totalPages = Math.ceil(logs?.total / logs?.perPage);
-  const currentPage = parseInt(page);
+  // const items = [];
 
-  const items = [];
+  // const maxVisiblePages = 3; // nombre de pages autour de la page actuelle
 
-  const maxVisiblePages = 3; // nombre de pages autour de la page actuelle
+  // const startPage = Math.max(1, currentPage - maxVisiblePages);
+  // const endPage = Math.min(totalPages, currentPage + maxVisiblePages);
 
-  const startPage = Math.max(1, currentPage - maxVisiblePages);
-  const endPage = Math.min(totalPages, currentPage + maxVisiblePages);
+  // // Toujours afficher la première page
+  // if (startPage > 1) {
+  //   items.push(
+  //     <Pagination.Item key={1} onClick={() => setPage("1")}>
+  //       1
+  //     </Pagination.Item>,
+  //   );
 
-  // Toujours afficher la première page
-  if (startPage > 1) {
-    items.push(
-      <Pagination.Item key={1} onClick={() => setPage("1")}>
-        1
-      </Pagination.Item>,
-    );
+  //   if (startPage > 2) {
+  //     items.push(<Pagination.Ellipsis key="start-ellipsis" />);
+  //   }
+  // }
 
-    if (startPage > 2) {
-      items.push(<Pagination.Ellipsis key="start-ellipsis" />);
-    }
-  }
+  // // Pages autour de la page actuelle
+  // for (let number = startPage; number <= endPage; number++) {
+  //   items.push(
+  //     <Pagination.Item
+  //       key={number}
+  //       active={number === currentPage}
+  //       onClick={() => setPage(`${number}`)}
+  //     >
+  //       {number}
+  //     </Pagination.Item>,
+  //   );
+  // }
 
-  // Pages autour de la page actuelle
-  for (let number = startPage; number <= endPage; number++) {
-    items.push(
-      <Pagination.Item
-        key={number}
-        active={number === currentPage}
-        onClick={() => setPage(`${number}`)}
-      >
-        {number}
-      </Pagination.Item>,
-    );
-  }
+  // // Toujours afficher la dernière page
+  // if (endPage < totalPages) {
+  //   if (endPage < totalPages - 1) {
+  //     items.push(<Pagination.Ellipsis key="end-ellipsis" />);
+  //   }
 
-  // Toujours afficher la dernière page
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
-      items.push(<Pagination.Ellipsis key="end-ellipsis" />);
-    }
-
-    items.push(
-      <Pagination.Item
-        key={totalPages}
-        onClick={() => setPage(`${totalPages}`)}
-      >
-        {totalPages}
-      </Pagination.Item>,
-    );
-  }
+  //   items.push(
+  //     <Pagination.Item
+  //       key={totalPages}
+  //       onClick={() => setPage(`${totalPages}`)}
+  //       className="text-warning"
+  //     >
+  //       {totalPages}
+  //     </Pagination.Item>,
+  //   );
+  // }
+  const items = _buildPaginationItems({
+  currentPage,
+  totalPages,
+  onPageChange: (p) => setPage(`${p}`),
+});
 
   const resetForm = () => {
     setRoute("");
@@ -181,6 +187,17 @@ export default function MonitoringPage() {
     setCreatedAt("");
   };
 
+  const limitedElements = (value: string) => {
+    const newPerPage = parseInt(value ?? "10");
+    const oldPerPage = parseInt(perPage);
+
+    const newPage =
+      Math.floor(((currentPage - 1) * oldPerPage) / newPerPage) + 1;
+
+    setPerPage(`${newPerPage}`);
+    setPage(`${newPage}`);
+    setPerPage(value ?? "10");
+  };
 
   return (
     <Container fluid className="p-0">
@@ -254,7 +271,7 @@ export default function MonitoringPage() {
                 </Form.Group>
               </th>
               <th className="py-3">
-                 <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="exampleForm.ControlInput1">
                   <Form.Control
                     type="date"
                     placeholder="Date"
@@ -334,7 +351,9 @@ export default function MonitoringPage() {
           <div className="">
             <Form.Select
               aria-label="perPage"
-              onChange={(e) => setPerPage(e.currentTarget.value ?? "10")}
+              onChange={(e) => {
+                limitedElements(e.currentTarget.value);
+              }}
             >
               <option>{perPage}</option>
               <option value="10">10</option>
