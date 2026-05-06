@@ -1,136 +1,139 @@
-import useStoreApp from '@/stores/storeApp'
-import React from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { ToastDataType } from '@/types/DiversType'
-import { CategoriesType } from '@/types/CategoriesType'
-import { _getCategories } from '@/utils/apiFunctions'
-import categoriesServiceInstance from '@/services/CategoriesServices'
-import { ModalAddCategory } from '../ui/Modals'
-import { ComponentTypeMulti } from '@/types/ComponentType'
-import userDataStore from '@/stores/userDataStore'
-import { _expiredSession, _showToast } from '@/utils/notifications'
-import { ShopType } from '@/types/ShopType'
-import { FaPlusCircle } from 'react-icons/fa'
-import DynamicIcon from '../ui/DynamicIcon'
-import { AxiosError } from 'axios'
+import useStoreApp from "@/stores/storeApp";
+import React from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { ToastDataType } from "@/types/DiversType";
+import { CategoriesType } from "@/types/CategoriesType";
+import { _getCategories } from "@/utils/apiFunctions";
+import categoriesServiceInstance from "@/services/CategoriesServices";
+import { ModalAddCategory } from "../ui/Modals";
+import { ComponentTypeMulti } from "@/types/ComponentType";
+import userDataStore from "@/stores/userDataStore";
+import { _expiredSession, _showToast } from "@/utils/notifications";
+import { ShopType } from "@/types/ShopType";
+import { FaPlusCircle } from "react-icons/fa";
+import DynamicIcon from "../ui/DynamicIcon";
+import { AxiosError } from "axios";
 // import { IconType } from 'react-icons';
 
 type Props = {
-  title: string
-}
+  title: string;
+};
 
 export type FormCategoryDataType = {
-  name: string
-  icon: { name: string; value: string }
-  image: string
-  imageRglt: string
-  backgroundColorHeader: string
-  backgroundColorBody: string
-  shopIds: number[]
-  canvas: ComponentTypeMulti[]
-}
+  name: string;
+  icon: { name: string; value: string };
+  image: string;
+  imageRglt: string;
+  backgroundColorHeader: string;
+  backgroundColorBody: string;
+  shopIds: number[];
+  canvas: ComponentTypeMulti[];
+};
 
 interface ContextCategorySelectorDragType {
-  toggleShow: () => void
-  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
-  shops: ShopType[]
+  toggleShow: () => void;
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>;
+  shops: ShopType[];
 }
 
 export default function CategorySelectorDrag({ title }: Props) {
   /* States
    *******************************************************************************************/
-  const { toggleShow, setToastData, shops } = useOutletContext<ContextCategorySelectorDragType>()
-  const storeApp = useStoreApp()
-  const userLogOut = userDataStore((state) => state.authLogout)
-  const navigate = useNavigate()
+  const { toggleShow, setToastData, shops } =
+    useOutletContext<ContextCategorySelectorDragType>();
+  const storeApp = useStoreApp();
+  const userLogOut = userDataStore((state) => state.authLogout);
+  const navigate = useNavigate();
   // const [shopData, setshopData] = React.useState<ShopType[]>([])
-  const [cat, setCat] = React.useState<CategoriesType[]>([])
-  const [file, setFile] = React.useState<File | null>(null)
-  const [imgRglt, setImgRglt] = React.useState<File | null>(null)
+  const [cat, setCat] = React.useState<CategoriesType[]>([]);
+  const [file, setFile] = React.useState<File | null>(null);
+  const [imgRglt, setImgRglt] = React.useState<File | null>(null);
   const [feedBackState, setFeedBackState] = React.useState({
     isLoading: false,
-    loadingMessage: '',
+    loadingMessage: "",
     isError: false,
-    errorMessage: '',
-  })
-  const [validated, setValidated] = React.useState(false)
-  const [fieldErrors, setFieldErrors] = React.useState<{ [key: string]: string }>({})
+    errorMessage: "",
+  });
+  const [validated, setValidated] = React.useState(false);
+  const [fieldErrors, setFieldErrors] = React.useState<{
+    [key: string]: string;
+  }>({});
   const [formData, setFormData] = React.useState<FormCategoryDataType>({
-    name: '',
-    icon: { name: '', value: '' },
-    image: '',
-    imageRglt: '',
-    backgroundColorHeader: '#ff0000',
-    backgroundColorBody: '#ffea00',
+    name: "",
+    icon: { name: "", value: "" },
+    image: "",
+    imageRglt: "",
+    backgroundColorHeader: "#ff0000",
+    backgroundColorBody: "#ffea00",
     shopIds: [],
     canvas: [],
-  })
-  const [showAdd, setShowAdd] = React.useState(false)
+  });
+  const [showAdd, setShowAdd] = React.useState(false);
   const handleCloseAdd = () => {
-    resetForm()
-    setShowAdd(false)
-  }
-  const handleShowAdd = () => setShowAdd(true)
-
+    resetForm();
+    setShowAdd(false);
+  };
+  const handleShowAdd = () => setShowAdd(true);
 
   /* useEffect
    *******************************************************************************************/
   React.useEffect(() => {
-    _getCategories(setCat, setToastData, toggleShow, setFeedBackState)
-  }, [setToastData, toggleShow])
+    _getCategories(setCat, setToastData, toggleShow, setFeedBackState);
+  }, [setToastData, toggleShow]);
 
   /* functions
    *******************************************************************************************/
 
   // Fonction de validation en temps réel
   const validateField = (fieldName: string, value: string) => {
-    const errors = { ...fieldErrors }
-    const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
+    const errors = { ...fieldErrors };
+    const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
 
     switch (fieldName) {
-      case 'name':
+      case "name":
         if (!value.trim()) {
-          errors.name = 'Le nom est requis'
+          errors.name = "Le nom est requis";
         } else if (value.trim().length < 2) {
-          errors.name = 'Le nom doit contenir au moins 2 caractères'
+          errors.name = "Le nom doit contenir au moins 2 caractères";
         } else {
-          delete errors.name
+          delete errors.name;
         }
-        break
-      case 'icon':
+        break;
+      case "icon":
         if (!value.trim()) {
-          errors.icon = "L'icône est requise"
-        } else if (!value.trim().startsWith('fa fa-')) {
-          errors.icon = 'L\'icône doit commencer par "fa fa-"'
+          errors.icon = "L'icône est requise";
+        } else if (!value.trim().startsWith("fa fa-")) {
+          errors.icon = 'L\'icône doit commencer par "fa fa-"';
         } else {
-          delete errors.icon
+          delete errors.icon;
         }
-        break
-      case 'backgroundColorHeader':
-      case 'backgroundColorBody':
+        break;
+      case "backgroundColorHeader":
+      case "backgroundColorBody":
         if (!hexColorRegex.test(value)) {
-          errors[fieldName] = 'Veuillez sélectionner une couleur valide'
+          errors[fieldName] = "Veuillez sélectionner une couleur valide";
         } else {
-          delete errors[fieldName]
+          delete errors[fieldName];
         }
-        break
+        break;
       default:
-        break
+        break;
     }
 
-    setFieldErrors(errors)
-  }
+    setFieldErrors(errors);
+  };
 
   const onHandleCategory = (id: number) => {
     const idCanvas =
-      cat && cat?.find((category: CategoriesType) => category.id === id)?.canvasId
+      cat &&
+      cat?.find((category: CategoriesType) => category.id === id)?.canvasId;
     if (idCanvas) {
-      storeApp.setCanvasId(idCanvas)
+      storeApp.setCanvasId(idCanvas);
     }
-    storeApp.setDimensionId(9)
-    storeApp.setCategoryId(id)
-    storeApp.nextStep()
-  }
+    storeApp.setDimensionId(9);
+    storeApp.setCategoryId(id);
+    storeApp.nextStep();
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -273,7 +276,7 @@ export default function CategorySelectorDrag({ title }: Props) {
       toggleShow();
       handleCloseAdd();
     } catch (error: unknown) {
-      console.log(error);
+      console.error(error);
 
       if (error instanceof AxiosError) {
         if (
@@ -315,27 +318,27 @@ export default function CategorySelectorDrag({ title }: Props) {
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      icon: { name: '', value: '' },
-      image: '',
-      imageRglt: '',
-      backgroundColorHeader: '#ff0000',
-      backgroundColorBody: '#ffea00',
+      name: "",
+      icon: { name: "", value: "" },
+      image: "",
+      imageRglt: "",
+      backgroundColorHeader: "#ff0000",
+      backgroundColorBody: "#ffea00",
       shopIds: [],
       canvas: [],
-    })
-    setFile(null)
-    setImgRglt(null)
-    setValidated(false)
-    setFieldErrors({})
+    });
+    setFile(null);
+    setImgRglt(null);
+    setValidated(false);
+    setFieldErrors({});
     setFeedBackState((prev) => ({
       ...prev,
       isLoading: false,
-      loadingMessage: '',
+      loadingMessage: "",
       isError: false,
-      errorMessage: '',
-    }))
-  }
+      errorMessage: "",
+    }));
+  };
 
   const modalAddCategoryProps = {
     showAdd,
@@ -351,44 +354,51 @@ export default function CategorySelectorDrag({ title }: Props) {
     file,
     fieldErrors,
     validateField,
-  }
-  
+  };
+
   /* render
    *******************************************************************************************/
   return (
     <>
-      <h2 className='fs-4 fw-bold text-primary'>{title}</h2>
-      <div className='d-flex flex-wrap justify-content-center  align-items-center mt-5 mb-5'>
+      <h2 className="fs-4 fw-bold text-primary">{title}</h2>
+      <div className="d-flex flex-wrap justify-content-center  align-items-center mt-5 mb-5">
         {cat &&
           cat.map((category: CategoriesType) => {
             if (category.shopIds.includes(storeApp.shopId)) {
               return (
                 <div
                   key={category.id}
-                  className='hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center'
-                  style={{ width: '200px', height: '183px' }}
+                  className="hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center"
+                  style={{ width: "200px", height: "183px" }}
                   onClick={() => onHandleCategory(category.id as number)}
                 >
-                {category.icon.value !== "" && [
-                  <DynamicIcon key={category.id} iconKey={category.icon.value} size={42} className="text-primary" />
-                ]}
-                  <p className='mt-2 text-center fw-bold fs-5 text-primary'>{category.name}</p>
+                  {category.icon.value !== "" && [
+                    <DynamicIcon
+                      key={category.id}
+                      iconKey={category.icon.value}
+                      size={42}
+                      className="text-primary"
+                    />,
+                  ]}
+                  <p className="mt-2 text-center fw-bold fs-5 text-primary">
+                    {category.name}
+                  </p>
                 </div>
-              )
+              );
             }
           })}
         <div
-          className='hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center'
-          style={{ width: '200px', height: '183px' }}
+          className="hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center"
+          style={{ width: "200px", height: "183px" }}
           onClick={() => handleShowAdd()}
         >
-          <FaPlusCircle className='text-primary fs-1' />
-          <p className='mt-2 text-center fw-bold fs-5 text-primary'>
+          <FaPlusCircle className="text-primary fs-1" />
+          <p className="mt-2 text-center fw-bold fs-5 text-primary">
             N<sup>velle</sup> catégorie
           </p>
         </div>
         <ModalAddCategory modalAddCategoryProps={modalAddCategoryProps} />
       </div>
     </>
-  )
+  );
 }
