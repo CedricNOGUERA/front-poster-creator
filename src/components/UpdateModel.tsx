@@ -597,7 +597,6 @@ const updateModel = async () => {
 
   } catch (error) {
     console.error("❌ Erreur lors de la modification:", error)
-    console.log(error)
     setToastData({
       bg: 'danger',
       position: 'top-end',

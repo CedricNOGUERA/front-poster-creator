@@ -83,8 +83,6 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     });
   };
 
-  
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -107,7 +105,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
       }));
       return;
     }
-    console.log(file);
+
     const shopThumbnailName = file ? _sanitizeString(file.name) : "";
 
     const shopFormData = new FormData();
@@ -123,9 +121,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
     if (file) {
       shopFormData.append("image", file);
     }
-    for (const [key, value] of shopFormData.entries()) {
-      console.log(key, value);
-    }
+  
     setFeedBackState((prev) => ({
       ...prev,
       isLoading: true,
@@ -138,10 +134,12 @@ export const ShopSelectorDrag = ({ title }: Props) => {
         const newShop = {
           id: shops?.length + 1,
           name: formData.name,
-          cover: file ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}` : '',
-        }
+          cover: file
+            ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}`
+            : "",
+        };
 
-        setShops((prev) => [...prev, newShop])
+        setShops((prev) => [...prev, newShop]);
         _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow);
         setToastData({
           bg: "success",
@@ -154,7 +152,7 @@ export const ShopSelectorDrag = ({ title }: Props) => {
         handleCloseAdd();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setToastData({
         bg: "danger",
         position: "top-end",

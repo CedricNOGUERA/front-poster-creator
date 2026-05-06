@@ -5,7 +5,9 @@ import { Container, Spinner, Table } from "react-bootstrap";
 import moment from "moment";
 
 export default function ConnexionCount() {
-  const [connexions, setconnexions] = React.useState<ConnexionStatType>({} as ConnexionStatType);
+  const [connexions, setconnexions] = React.useState<ConnexionStatType>(
+    {} as ConnexionStatType,
+  );
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -14,16 +16,15 @@ export default function ConnexionCount() {
 
   const getAllConnexions = async () => {
     setIsLoading(true);
-    try{
-        const data = await StatServices.getConnexionCount();
-        setconnexions(data);
-    }catch(e){
-        console.log(e)
-    }finally{
-        setIsLoading(false);
+    try {
+      const data = await StatServices.getConnexionCount();
+      setconnexions(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
   return (
     <Container fluid className="p-0">
@@ -38,13 +39,16 @@ export default function ConnexionCount() {
               <th>Compagnie</th>
             </tr>
           </thead>
-         
+
           <tbody>
             {connexions?.connexions?.map(
               (conn: ConnexionType, index: number) => (
                 <tr key={index}>
                   <td>
-                    {moment.utc(conn.dateOfConnexion).local().format("DD/MM/YYYY à HH:mm")}
+                    {moment
+                      .utc(conn.dateOfConnexion)
+                      .local()
+                      .format("DD/MM/YYYY à HH:mm")}
                   </td>
                   <td>{conn.name}</td>
                   <td>{conn.email}</td>
@@ -59,7 +63,7 @@ export default function ConnexionCount() {
                 </td>
               </tr>
             )}
-             {isLoading && (
+            {isLoading && (
               <tr>
                 <td colSpan={4}>
                   <Spinner
@@ -71,7 +75,7 @@ export default function ConnexionCount() {
                   <span className="ms-2">Loading...</span>
                 </td>
               </tr>
-          )}
+            )}
           </tbody>
         </Table>
       </Container>

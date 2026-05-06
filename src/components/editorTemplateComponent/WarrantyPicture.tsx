@@ -90,8 +90,7 @@ export default function WarrantyPicture({
               width: IMAGE_WIDTH,
               src: garantieSrc,
             }
-            console.log(garantieSrc)
-            console.log(garantieComponent)
+
             const filteredCanvas = canvasData.filter(
               (comp) =>
                 !(

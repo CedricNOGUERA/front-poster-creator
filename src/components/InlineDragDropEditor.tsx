@@ -745,9 +745,9 @@ export default function InlineDragDropEditor() {
           );
           templateFormData.append("image", blob, imageName);
 
+          //✅ Template créé avec miniature
           await templatesServiceInstance.postTemplate(templateFormData);
 
-          console.log("✅ Template créé avec miniature");
         }
 
         // 2. Créer le modèle
@@ -791,11 +791,6 @@ export default function InlineDragDropEditor() {
         );
       }
     } finally {
-      // Rafraîchir les données
-      // await Promise.all([
-      //   _getTemplates(setTemplate),
-      //   _getModels(setModels),
-      // ]);
 
       setFeedBackState((prev) => ({
         ...prev,

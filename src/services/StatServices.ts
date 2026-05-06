@@ -15,7 +15,7 @@ class StatServices {
             return response.data
 
         }catch(e){
-            console.log(e)
+            console.error(e)
         }
     }
 
@@ -29,7 +29,7 @@ class StatServices {
             })
             return response.data
         }catch(e){
-            console.log(e)
+            console.error(e)
         }
     }
 
