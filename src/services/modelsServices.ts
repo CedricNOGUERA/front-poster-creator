@@ -19,6 +19,25 @@ class ModelsService {
     return response;
   }
 
+  async getPaginatedModels(page: string, perPage: string,id: string, template: string, dimension: string ) {
+    const params = new URLSearchParams({
+      page: `${page}`,
+      perPage: `${perPage}`,
+      id: `${id}`,
+      template: `${template}`,
+      dimension: `${dimension}`,
+    });
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/models/paginated?${params.toString()}`, 
+  {
+    headers: {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    },
+  }
+)
+  return response.json();
+  }
+
   async putModels(id: number, formData: FormData) {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/api/update-models/${id}`,
