@@ -435,3 +435,18 @@ footer .text-small{
     
 }
 
+.pagination .page-link {
+  color: #535353;
+}
+
+.pagination .page-link:hover {
+  color: rgb(138, 138, 141);
+  /* color: rgb(27, 27, 27); */
+}
+
+.pagination .active .page-link {
+  color: white;
+  /* background-color: black;
+  border-color: black; */
+}
+

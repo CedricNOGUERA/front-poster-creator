@@ -20,7 +20,11 @@ export const _buildPaginationItems = ({
 
   if (startPage > 1) {
     items.push(
-      <Pagination.Item key={1} onClick={() => onPageChange(1)}>
+      <Pagination.Item
+        className="pointer"
+        key={1}
+        onClick={() => onPageChange(1)}
+      >
         1
       </Pagination.Item>,
     );
@@ -33,6 +37,8 @@ export const _buildPaginationItems = ({
   for (let number = startPage; number <= endPage; number++) {
     items.push(
       <Pagination.Item
+        className="pointer"
+        as="p"
         key={number}
         active={number === currentPage}
         onClick={() => onPageChange(number)}
@@ -49,6 +55,8 @@ export const _buildPaginationItems = ({
 
     items.push(
       <Pagination.Item
+        className="pointer"
+        as="p"
         key={totalPages}
         onClick={() => onPageChange(totalPages)}
       >
