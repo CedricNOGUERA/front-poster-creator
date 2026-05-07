@@ -15,3 +15,13 @@ export type ImagemodelType = {
   categoryId: number;
   dimensionId: number;
 };
+
+export type ModelResultType = {
+    "total": 230,
+    "page": 1,
+    "perPage": 10,
+    "offset": 0,
+    "preview": false,
+    "next": false,
+    "models": ModelType[]
+}
