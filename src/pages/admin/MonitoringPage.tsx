@@ -124,55 +124,6 @@ export default function MonitoringPage() {
     }
   };
 
-  // const items = [];
-
-  // const maxVisiblePages = 3; // nombre de pages autour de la page actuelle
-
-  // const startPage = Math.max(1, currentPage - maxVisiblePages);
-  // const endPage = Math.min(totalPages, currentPage + maxVisiblePages);
-
-  // // Toujours afficher la première page
-  // if (startPage > 1) {
-  //   items.push(
-  //     <Pagination.Item key={1} onClick={() => setPage("1")}>
-  //       1
-  //     </Pagination.Item>,
-  //   );
-
-  //   if (startPage > 2) {
-  //     items.push(<Pagination.Ellipsis key="start-ellipsis" />);
-  //   }
-  // }
-
-  // // Pages autour de la page actuelle
-  // for (let number = startPage; number <= endPage; number++) {
-  //   items.push(
-  //     <Pagination.Item
-  //       key={number}
-  //       active={number === currentPage}
-  //       onClick={() => setPage(`${number}`)}
-  //     >
-  //       {number}
-  //     </Pagination.Item>,
-  //   );
-  // }
-
-  // // Toujours afficher la dernière page
-  // if (endPage < totalPages) {
-  //   if (endPage < totalPages - 1) {
-  //     items.push(<Pagination.Ellipsis key="end-ellipsis" />);
-  //   }
-
-  //   items.push(
-  //     <Pagination.Item
-  //       key={totalPages}
-  //       onClick={() => setPage(`${totalPages}`)}
-  //       className="text-warning"
-  //     >
-  //       {totalPages}
-  //     </Pagination.Item>,
-  //   );
-  // }
   const items = _buildPaginationItems({
   currentPage,
   totalPages,
@@ -219,7 +170,7 @@ export default function MonitoringPage() {
             <tr>
               <th className="py-3"></th>
               <th className="py-3">
-                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="user">
                   <Form.Control
                     type="text"
                     placeholder="Utilisateur"
@@ -232,7 +183,7 @@ export default function MonitoringPage() {
                 </Form.Group>
               </th>
               <th className="py-3">
-                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="level">
                   <Form.Control
                     type="text"
                     placeholder="Gravité"
@@ -245,7 +196,7 @@ export default function MonitoringPage() {
                 </Form.Group>
               </th>
               <th className="py-3">
-                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="route">
                   <Form.Control
                     type="text"
                     placeholder="Route"
@@ -258,7 +209,7 @@ export default function MonitoringPage() {
                 </Form.Group>
               </th>
               <th className="py-3">
-                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="message">
                   <Form.Control
                     type="text"
                     placeholder="Message"
@@ -271,7 +222,7 @@ export default function MonitoringPage() {
                 </Form.Group>
               </th>
               <th className="py-3">
-                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="createdAt">
                   <Form.Control
                     type="date"
                     placeholder="Date"

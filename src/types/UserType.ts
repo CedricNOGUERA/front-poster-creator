@@ -22,3 +22,13 @@ export interface UserType {
   role: RoleType
   passwordHash?: string
 }
+
+export interface ResultUserType {
+  "total": number,
+      "page": number,
+      "perPage": number,
+      "offset": number,
+      "preview": boolean,
+      "next": boolean,
+      "users": UserType[]
+}

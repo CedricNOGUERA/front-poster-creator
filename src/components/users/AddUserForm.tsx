@@ -3,7 +3,7 @@ import { ShopType } from '@/types/ShopType'
 import { Alert, Button, Form, InputGroup, Spinner } from 'react-bootstrap'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import authServiceInstance from '@/services/AuthService'
-import { _getAllShops, _getAllUsers } from '@/utils/apiFunctions'
+import { _getAllShops } from '@/utils/apiFunctions'
 import { UserType } from '@/types/UserType'
 import UsersServices from '@/services/UsersServices'
 import userDataStore, { UserDataType } from '@/stores/userDataStore'
@@ -24,12 +24,12 @@ export const AddUserForm = ({
   titleButton,
   handleCloseAdd,
   initialData,
-  setUsers,
+  // setUsers,
 }: {
   titleButton: string
   handleCloseAdd?: () => void
   initialData?: UserType | null
-  setUsers?: React.Dispatch<React.SetStateAction<UserType[]>>
+  // setUsers?: React.Dispatch<React.SetStateAction<UserType[]>>
 }) => {
 /* States
  *******************************************************************************************/
@@ -152,9 +152,9 @@ const storeList = React.useMemo(
       }
     } finally {
       setLoading(false)
-      if(setUsers){
-        _getAllUsers(setUsers, setLoading)
-      }
+      // if(setUsers){
+      //   // _getAllUsers(setUsers, setLoading)
+      // }
     }
   }
 
