@@ -19,7 +19,7 @@ export default function MonitoringPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
-  const [logs, setLogz] = React.useState<LogResultType>({} as LogResultType);
+  const [logs, setLogs] = React.useState<LogResultType>({} as LogResultType);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [page, setPage] = React.useState<string>(params.get("page") || "1");
   const [perPage, setPerPage] = React.useState<string>(
@@ -116,7 +116,7 @@ export default function MonitoringPage() {
         message,
         createdAt,
       );
-      setLogz(response);
+      setLogs(response);
     } catch (error) {
       console.error("Erreur lors de la récupération des logs paginés:", error);
     } finally {
@@ -215,7 +215,7 @@ export default function MonitoringPage() {
               <th className="py-3"></th>
             </tr>
           </thead>
-          <thead className="">
+          <thead>
             <tr>
               <th className="py-3"></th>
               <th className="py-3">
@@ -328,7 +328,7 @@ export default function MonitoringPage() {
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">
-          <Pagination>
+          <Pagination className="text-dark">
             <Pagination.First onClick={() => setPage("1")} />
             <Pagination.Prev
               onClick={() => {
@@ -351,7 +351,7 @@ export default function MonitoringPage() {
           <div className="">
             <Form.Select
               aria-label="perPage"
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 limitedElements(e.currentTarget.value);
               }}
             >
