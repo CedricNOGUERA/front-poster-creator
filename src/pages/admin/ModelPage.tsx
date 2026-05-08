@@ -263,7 +263,6 @@ export default function ModelsPage() {
     setPerPage(value ?? "10");
   };
 
-  // console.log(models)
 
   return (
     <Container fluid className="relative p-0">

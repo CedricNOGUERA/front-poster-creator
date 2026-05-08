@@ -24,6 +24,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import storeData from "@/data/store.json";
+import { FaPlusCircle } from "react-icons/fa";
 
 interface ContextShopSelectorType {
   toggleShow: () => void;
@@ -39,13 +40,11 @@ export default function UserManager() {
   const { shops } = useOutletContext<ContextShopSelectorType>();
   const [params] = useSearchParams();
 
-  // const userLogOut = userDataStore((state: UserDataType) => state.authLogout)
   const userRole = userDataStore((state: UserDataType) => state.role);
   const userCompany = userDataStore((state: UserDataType) => state.company);
   const [paginatedUsers, setPaginatedUsers] = React.useState<ResultUserType>(
     {} as ResultUserType,
   );
-  // const [allUsers, setAllUsers] = React.useState<UserType[]>([]);
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
   const [selectedUser, setSelectedUser] = React.useState<UserType | null>(null);
   const [selectedUserId, setSelectedUserId] = React.useState<number | null>(
@@ -53,7 +52,6 @@ export default function UserManager() {
   );
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [showDelete, setShowDelete] = React.useState<boolean>(false);
-  // const [searchTerm, setSearchTerm] = React.useState<string>("");
 
   const [page, setPage] = React.useState<string>(params.get("page") || "1");
   const [perPage, setPerPage] = React.useState<string>(
@@ -97,28 +95,6 @@ export default function UserManager() {
     }
     // _getAllUsers(setAllUsers, setIsLoading);
   }, [userRole, navigate]);
-
-  // const users = React.useMemo(() => {
-  //   if (searchTerm.trim() === "") {
-  //     return allUsers;
-  //   }
-
-  //   const lowerTerm = searchTerm.toLowerCase().trim();
-
-  //   return allUsers.filter((user) => {
-  //     // const companyMatch = user.company.some((item) =>
-  //     //   item.nameCompany.toLowerCase().includes(lowerTerm))
-  //     const matchUserName = user.name.toLowerCase().includes(lowerTerm);
-  //     const matchUserEmail = user.email.toLowerCase().includes(lowerTerm);
-  //     const matchUserRole = user.role.toLowerCase().includes(lowerTerm);
-
-  //     // const matchesId = model.id.toString().includes(lowerTerm);
-  //     // const matchesTemplateName = templateData?.name.toLowerCase().includes(lowerTerm) || false;
-  //     // const matchesDimension = dimension?.name.toLowerCase().includes(lowerTerm) || false;
-
-  //     return matchUserName || matchUserEmail || matchUserRole;
-  //   });
-  // }, [searchTerm, allUsers]);
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -170,7 +146,6 @@ export default function UserManager() {
     setShowAdd(false);
     setSelectedUser(null);
     getPaginatedUsers(page, perPage, company, store, name, email, role);
-
   };
   const handleShowAdd = () => {
     setSelectedUser(null);
@@ -223,8 +198,8 @@ export default function UserManager() {
       setPaginatedUsers(response);
     } catch (error) {
       console.error(error);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -266,8 +241,16 @@ export default function UserManager() {
   return (
     <Container fluid className="p-0">
       <h3 className="py-3">Gestion des utilisateurs</h3>
-      {/* <SearchBar seachBarProps={{ searchTerm, setSearchTerm, data: users }} /> */}
       <Container>
+        <div className="d-flex justify-content-end mb-3">
+          <Button
+            variant="primary"
+            className="rounded d-flex align-items-center gap-1"
+            onClick={handleShowAdd}
+          >
+            <FaPlusCircle /> <span>un utilisateur</span>
+          </Button>
+        </div>
         <Table striped hover responsive="sm" className="shadow">
           <thead className="sticky-sm-top text-start">
             <tr>
@@ -356,7 +339,7 @@ export default function UserManager() {
                   />
                 </Form.Group>
               </th>
-              <th className="py-3" style={{width: "150px"}}>
+              <th className="py-3" style={{ width: "150px" }}>
                 <Button onClick={() => resetForm()} disabled={isFiltering}>
                   <div className="flex items-center">
                     <FaX size={10} className="me-1" />
@@ -485,13 +468,13 @@ export default function UserManager() {
           </div>
         </div>
       </Container>
-      <Button
+      {/* <Button
         variant="primary"
         className="rounded-pill fab"
         onClick={handleShowAdd}
       >
         <strong>+</strong> <span>Ajouter un utilisateur</span>
-      </Button>
+      </Button> */}
       <ModalAddUser
         showAdd={showAdd}
         handleCloseAdd={handleCloseAdd}

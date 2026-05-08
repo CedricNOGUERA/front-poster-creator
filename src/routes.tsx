@@ -26,6 +26,7 @@ import ModelsPage from './pages/admin/ModelPage'
 import MonitoringPage from './pages/admin/MonitoringPage'
 import TemplatePage from './pages/admin/TemplatePage'
 import ConnexionCount from './pages/admin/ConnexionCount'
+import StorePage from './pages/admin/StorePage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -43,7 +44,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/createur-de-bon-plan' element={<SchemaBuilder />} />
           <Route path='/utilisateurs' element={<UserManager />} />
           <Route path='/tableau-de-bord' element={<DashBoard />}>
-            <Route path='/tableau-de-bord/magasins' element={<ShopPage />} />
+            <Route path='/tableau-de-bord/enseignes' element={<ShopPage />} />
+            <Route path='/tableau-de-bord/magasins' element={<StorePage />} />
             <Route path='/tableau-de-bord/categories' element={<CategoriesPage />} />
             <Route path='/tableau-de-bord/templates' element={<TemplatePage />} />
             <Route path='/tableau-de-bord/modeles' element={<ModelsPage />} />

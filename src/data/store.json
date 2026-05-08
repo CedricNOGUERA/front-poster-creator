@@ -1,58 +1,62 @@
 [
-    {
-       "id": 1,
-        "name": "Carrefour Punaauia"
-    },
-    {
-       "id": 2,
-        "name": "Carrefour Arue"
-    },
-    {
-       "id": 3,
-        "name": "Carrefour Faa'a"
-    },
-    {
-       "id": 4,
-        "name": "Carrefour Taravao"
-    },
-    {
-       "id": 5,
-        "name": "Carrefour Market Raiatea"
-    },
-    {
-       "id": 6,
-        "name": "Champion Paofai"
-    },
-    {
-       "id": 7,
-        "name": "Champion Heiri"
-    },
-    {
-       "id": 8,
-        "name": "Champion Taravao"
-    },
-    {
-       "id": 9,
-        "name": "Champion Mahina"
-    },
-    {
-       "id": 10,
-        "name": "Champion Paea"
-    },
-    {
-       "id": 11,
-        "name": "Champion Moorea"
-    },
-    {
-       "id": 12,
-        "name": "Easy Market Faa'a"
-    },
-    {
-       "id": 13,
-        "name": "Easy Market Prince Hinoi"
-    },
-    {
-       "id": 14,
-        "name": "Easy Go"
-    }
+  {
+    "id": 1,
+    "name": "Carrefour Punaauia",
+    "companyId": 1
+  },
+  {
+    "id": 2,
+    "name": "Carrefour Arue",
+    "companyId": 1
+  },
+  {
+    "id": 3,
+    "name": "Carrefour Faa'a",
+    "companyId": 1
+  },
+  {
+    "id": 4,
+    "name": "Carrefour Taravao",
+    "companyId": 1
+  },
+  {
+    "id": 5,
+    "name": "Carrefour Market Raiatea",
+    "companyId": 4
+  },
+  {
+    "id": 6,
+    "name": "Champion Paofai",
+    "companyId": 3
+  },
+  {
+    "id": 7,
+    "name": "Champion Heiri",
+    "companyId": 3
+  },
+  {
+    "id": 8,
+    "name": "Champion Taravao",
+    "companyId": 3
+  },
+  {
+    "id": 9,
+    "name": "Champion Mahina",
+    "companyId": 3
+  },
+  {
+    "id": 10,
+    "name": "Champion Paea",
+    "companyId": 3
+  },
+  {
+    "id": 11,
+    "name": "Champion Moorea",
+    "companyId": 3
+  },
+  {
+    "id": 12,
+    "name": "Média Nui",
+    "companyId": 2
+  }
 ]

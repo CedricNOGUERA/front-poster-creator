@@ -5,10 +5,18 @@
         "icon": "fas fa-store",
         "display": "shops",
         "role": ["super_admin"],
-        "href": "/tableau-de-bord/magasins"
+        "href": "/tableau-de-bord/enseignes"
     },
     {
         "id": 2,
+        "title": "Magasins",
+        "icon": "fas fa-shopping-basket",
+        "display": "Stores",
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/magasins"
+    },
+    {
+        "id": 3,
         "title": "Catégories",
         "icon": "fas fa-list",
         "display": "categories",
@@ -16,7 +24,7 @@
         "href": "/tableau-de-bord/categories"
     },
     {
-        "id": 6,
+        "id": 4,
         "title": "Templates",
         "icon": "fas fa-folder-open",
         "display": "templates",
@@ -24,7 +32,7 @@
         "href": "/tableau-de-bord/templates"
     },
     {
-        "id": 3,
+        "id": 5,
         "title": "Modèles",
         "icon": "fas fa-file-lines",
         "display": "models",
@@ -32,7 +40,7 @@
         "href": "/tableau-de-bord/modeles"
     },
     {
-        "id": 5,
+        "id": 6,
         "title": "Utilisateurs",
         "icon": "fas fa-users",
         "display": "utilisateurs",
@@ -40,7 +48,7 @@
         "href": "/tableau-de-bord/utilisateurs"
     },
     {
-        "id": 4,
+        "id": 7,
         "title": "Photothèque",
         "icon": "fas fa-images",
         "display": "phototheque",
@@ -48,7 +56,7 @@
         "href": "/tableau-de-bord/phototheque"
     },
     {
-        "id": 7,
+        "id": 8,
         "title": "Stat connexions",
         "icon": "fas fa-sign-in-alt",
         "display": "connexions",

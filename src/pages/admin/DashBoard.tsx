@@ -11,6 +11,7 @@ import ModelsPage from './ModelPage'
 import TemplatePage from './TemplatePage'
 import MonitoringPage from './MonitoringPage'
 import ConnexionCount from './ConnexionCount'
+import StorePage from './StorePage'
 
 interface ContextType {
   setTitleHeader: React.Dispatch<React.SetStateAction<string>>
@@ -21,7 +22,8 @@ const ADMIN_PAGES: Record<string, { path: string; component: React.ReactNode }> 
   categories: { path: '/categories', component: <CategoriesPage /> },
   templates: { path: '/templates', component: <TemplatePage /> },
   phototheque: { path: '/phototheque', component: <PicturesLibraryPage /> },
-  shops: { path: '/shops', component: <ShopPage /> },
+  shops: { path: '/enseignes', component: <ShopPage /> },
+  stores: { path: '/magasins', component: <StorePage /> },
   logs: { path: '/logs', component: <MonitoringPage /> },
   modeles: { path: '/modeles', component: <ModelsPage /> },
   connexions: { path: '/connexions', component: <ConnexionCount /> },
