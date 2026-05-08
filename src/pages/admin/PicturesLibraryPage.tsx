@@ -204,12 +204,10 @@ export default function PicturesLibraryPage() {
         <ButtonGroup>
           <Button
             onClick={handleShowAdd}
-            className="pe-1 border-0 border-end border-light"
+            className="d-flex align-items-center gap-1"
           >
             <FaCirclePlus />
-          </Button>
-          <Button onClick={handleShowAdd} className="ps-1">
-            Ajouter une image
+            une image
           </Button>
         </ButtonGroup>
       </Container>
