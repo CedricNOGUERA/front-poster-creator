@@ -128,6 +128,7 @@ export const ICON_MAP = {
   "fas fa-list": FaList,
   "fas fa-pen-to-square": FaPenToSquare,
   "fas fa-shield-halved": FaShieldHalved,
+  "fas fa-shopping-basket": FaShoppingBag,
   "fas fa-sign-in-alt": FaSignInAlt,
   "fas fa-store": FaStore,
   "fas fa-user": FaUser,
