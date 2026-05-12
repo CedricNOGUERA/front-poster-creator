@@ -66,7 +66,6 @@ const LoginForm = () => {
     <Card className="p-4  border-2 shadow">
       <img src={logo} alt="Logo" className="mb-3 d-block mx-auto" width={90} />
       <h3 className="text-center text-muted mb-0">Générateur</h3>
-      {/* <h2 className="text-center text-muted mb-4">d'affiche</h2> */}
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label></Form.Label>

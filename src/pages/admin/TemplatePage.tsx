@@ -31,7 +31,6 @@ interface ContextType {
 export default function TemplatePage() {
   const { setToastData, toggleShow } = useOutletContext<ContextType>();
   const [allTemplates, setAllTemplates] = React.useState<TemplateType[]>([]);
-  // const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [selectedModel, setSelectedModel] = React.useState<TemplateType>(
     {} as TemplateType,
   );
@@ -42,7 +41,6 @@ export default function TemplatePage() {
 
   React.useEffect(() => {
     _getTemplates(setAllTemplates);
-    // _getTemplates(setTemplates);
   }, []);
 
   const templateData = React.useMemo(() => {

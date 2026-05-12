@@ -76,7 +76,6 @@ export const ShopSelectorDrag = ({ title }: Props) => {
   };
 
   const resetForm = () => {
-    // setFieldErrors({});
     setFormData({
       name: "",
       image: "",

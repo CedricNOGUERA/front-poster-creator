@@ -881,59 +881,58 @@ const updateModel = async () => {
   /* render
    *******************************************************************************************/
   return (
-    <Container fluid className='bg-light px-0'>
-      <div className='d-flex h-screen '>
+    <Container fluid className="bg-light px-0">
+      <div className="d-flex h-screen ">
         {/* Drag 'n Drop éditeur  */}
         <SideBar storeApp={storeApp} selectedCanvas={selectedCategory.canvas} />
         {/* Canvas */}
-        <div className='m-auto'>
-          <Container className=''>
+        <div className="m-auto">
+          <Container className="">
             <h4>Modifier le modèle N°{modelId}</h4>
           </Container>
-          <Container className='px-5 mb-3'>
-            <p>Dimensions {selectedDim?.width}X{selectedDim?.height}</p> 
+          <Container className="px-5 mb-3">
+            <p>
+              Dimensions {selectedDim?.width}X{selectedDim?.height}
+            </p>
           </Container>
           <div
-            id='canvas'
+            id="canvas"
             ref={posterRef}
-            className=' relative bg-gray-50 shadow m-auto m-4 canvas'
+            className=" relative bg-gray-50 shadow m-auto m-4 canvas"
             onDrop={handleDrop}
             onDragOver={_handleDragOver}
             style={{
               width:
                 newTemplateState?.width && dimensionFactor
                   ? `${newTemplateState.width * dimensionFactor}px`
-                  : '500px',
-              height: maxPreviewHeight ? `${maxPreviewHeight}px` : '500px',
+                  : "500px",
+              height: maxPreviewHeight ? `${maxPreviewHeight}px` : "500px",
             }}
           >
             {renderedComponents}
           </div>
-          <div className='p-4 flex gap-2'>
-            <Button variant='secondary' onClick={() => setIsUpdating(false)} className='me-4'>
+          <div className="p-4 flex gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => setIsUpdating(false)}
+              className="me-4"
+            >
               Annuler
             </Button>
             <Button
-              variant='primary'
+              variant="primary"
               onClick={() => _handleExportToPDF(newTemplateState)}
-              className='me-4'
+              className="me-4"
             >
               Visualiser en PDF
             </Button>
-            {/* <Button
-              variant='info'
-              onClick={handleShowPrintOptions}
-              className='me-4'
-            >
-              Options d'impression
-            </Button> */}
+
             <Button
-              variant='success'
+              variant="success"
               onClick={() => {
-                handleShowUpdateModel()
-                // updateModel()
+                handleShowUpdateModel();
               }}
-              className=''
+              className=""
             >
               Enregistrer les modification
             </Button>
@@ -943,12 +942,6 @@ const updateModel = async () => {
         <ComponentEditor ComponentEditorProps={ComponentEditorProps} />
       </div>
       <ModalUpdateModel modalUpdateModelProps={modalUpdateModelProps} />
-      {/* <PrintOptionsModal
-        show={showPrintOptions}
-        onHide={handleClosePrintOptions}
-        templateState={newTemplateState}
-        canvasRef={posterRef}
-      /> */}
     </Container>
-  )
+  );
 }

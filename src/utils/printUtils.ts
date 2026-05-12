@@ -49,41 +49,6 @@ export const PAGE_DIMENSIONS = {
 /**
  * Calcule le layout optimal pour placer plusieurs copies d'une affiche sur une page
  */
-//original
-// export const calculateOptimalLayout = (
-//   posterWidth: number,
-//   posterHeight: number,
-//   pageWidth: number,
-//   pageHeight: number,
-//   maxCopies: number,
-//   spacing: number = 5
-// ): PrintLayout => {
-//   const availableWidth = pageWidth - (spacing * 2)
-//   const availableHeight = pageHeight - (spacing * 2)
-
-//   let bestLayout: PrintLayout = { rows: 1, cols: 1, totalCopies: 1, spacing }
-//   let maxCopiesFound = 1
-
-//   // Essayer différentes configurations
-//   for (let cols = 1; cols <= 20; cols++) {
-//     for (let rows = 1; rows <= 20; rows++) {
-//       const totalCopies = cols * rows
-//       if (totalCopies > maxCopies) continue
-
-//       const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1))
-//       const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1))
-
-//       if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
-//         if (totalCopies > maxCopiesFound) {
-//           maxCopiesFound = totalCopies
-//           bestLayout = { rows, cols, totalCopies, spacing }
-//         }
-//       }
-//     }
-//   }
-
-//   return bestLayout
-// }
 export const calculateOptimalLayout = (
   posterWidth: number,
   posterHeight: number,
@@ -156,76 +121,6 @@ export const calculateOptimalLayout = (
 
   return bestLayout
 }
-
-/**
- * Génère un PDF avec plusieurs copies de la même affiche
- */
-//original
-// export const generateMultipleCopiesPDF = async (
-//   canvasElement: HTMLElement,
-//   templateState: NewTemplateType,
-//   options: PrintOptions,
-//    templateName: string
-// ): Promise<void> => {
-//   if (!templateState.width || !templateState.height) {
-//     throw new Error('Dimensions du template non définies')
-//   }
-
-//   const pageDimensions = getPageDimensions(options)
-
-//   const layout = calculateOptimalLayout(
-//     templateState.width,
-//     templateState.height,
-//     pageDimensions.width,
-//     pageDimensions.height,
-//     options.copiesPerPage || 4,
-//     options.spacing || 5
-//   )
-
-//   // Capturer le canvas avec haute résolution
-//   const canvas = await html2canvas(canvasElement, {
-//     scale: 4,
-//     useCORS: true,
-//     logging: false,
-//     backgroundColor: '#ffffff',
-//     allowTaint: true,
-//     imageTimeout: 0,
-//     removeContainer: false,
-//   })
-
-//   const imgData = canvas.toDataURL('image/png', 1.0)
-//   const posterWidth = templateState.width
-//   const posterHeight = templateState.height
-
-//   // Créer le PDF
-//   const pdf = new jsPDF({
-//     orientation: pageDimensions.height > pageDimensions.width ? 'portrait' : 'landscape',
-//     unit: 'mm',
-//     format: [pageDimensions.width, pageDimensions.height],
-//   })
-
-//   // Ajouter les copies
-//   for (let row = 0; row < layout.rows; row++) {
-//     for (let col = 0; col < layout.cols; col++) {
-//       const x = layout.spacing + (col * (posterWidth + layout.spacing))
-//       const y = layout.spacing + (row * (posterHeight + layout.spacing))
-      
-//       pdf.addImage(
-//         imgData,
-//         'PNG',
-//         x,
-//         y,
-//         posterWidth,
-//         posterHeight,
-//         undefined,
-//         'FAST'
-//       )
-//     }
-//   }
-
-//   const filename = `affiche-multiple-${templateName}-${templateState.width}x${templateState.height}-${layout.totalCopies}-copies.pdf`
-//   pdf.save(filename)
-// }
 
 export const generateMultipleCopiesPDF = async (
   canvasElement: HTMLElement,
@@ -439,38 +334,7 @@ export const generateCombinedPDF = async (
         const originalWidthMm = pdfPage.width * PX_TO_MM
         const originalHeightMm = pdfPage.height * PX_TO_MM
         
-        // switch (options.resizeMode ?? 'original') {
-        //   case 'original':
-            // Conserver les dimensions d'origine (converties en mm)
-            // resizeDimensions = {
-            //   width: originalWidthMm,
-            //   height: originalHeightMm
-            // }
-            // break
-          // case 'fit':
-          //   // Ajuster pour maximiser l'utilisation de l'espace
-          //   resizeDimensions = calculateResizeDimensions(
-          //     originalWidthMm,
-          //     originalHeightMm,
-          //     availableWidth,
-          //     availableHeight
-          //   )
-          //   break
-          // case 'proportional':
-          // default: {
-          //   // Redimensionnement proportionnel intelligent
-          //   const maxAllowedWidth = Math.min(availableWidth, posterWidth) // Ne jamais dépasser la taille de l'affiche
-          //   const maxAllowedHeight = Math.min(availableHeight, posterHeight)
-            
-          //   resizeDimensions = calculateResizeDimensions(
-          //     originalWidthMm,
-          //     originalHeightMm,
-          //     maxAllowedWidth,
-          //     maxAllowedHeight
-          //   )
-          //   break
-          // }
-        // }
+      
     
 
         // Vérifier si l'image rentre dans l'espace disponible
@@ -482,15 +346,12 @@ export const generateCombinedPDF = async (
             currentY,
             originalWidthMm,
             originalHeightMm,
-            // resizeDimensions.width,
-            // resizeDimensions.height,
+         
             undefined,
             'FAST'
           )
           
           currentX += originalWidthMm + spacing
-          // currentX += resizeDimensions.width + spacing
-          // maxHeightInRow = Math.max(maxHeightInRow, resizeDimensions.height)
           maxHeightInRow = Math.max(maxHeightInRow, originalHeightMm)
         } else {
           // L'image ne rentre pas, passer à la ligne suivante

@@ -67,53 +67,6 @@ export default function PositionControls({
       title: "Déplacer vers la droite",
     },
   ];
-
-//   const numericInput = [
-//     {
-//         icon: <FaArrowsUpDown className="me-1" />, 
-//         name: "Vert.",
-//         rangeValue: isPriceOrNumber ? component.bottom || 0 : component.top || 0,
-//         rangeFunction:  updateComponent(
-//                     {
-//                       bottom: value,
-//                     } as Partial<
-//                       NumberComponentType | PrincipalPriceComponentType
-//                     >,
-//                     canvasData,
-//                     setCanvasData,
-//                     index,
-//                   ),
-//         rangeFunction2:  updateComponent(
-//                     {
-//                       top: value,
-//                     } as Partial<TextComponentType>,
-//                     canvasData,
-//                     setCanvasData,
-//                     index,
-//                   ),
-//         inputFunction:  updateComponent(
-//                       { bottom: value } as Partial<
-//                         NumberComponentType | PrincipalPriceComponentType
-//                       >,
-//                       canvasData,
-//                       setCanvasData,
-//                       index,
-//                     ),
-//         inputFunction2: updateComponent(
-//                       {
-//                         top: value,
-//                       } as Partial<TextComponentType>,
-//                       canvasData,
-//                       setCanvasData,
-//                       index,
-//                     )
-        
-
-//     }
-// ]
-
-
-
  
 
   return (
