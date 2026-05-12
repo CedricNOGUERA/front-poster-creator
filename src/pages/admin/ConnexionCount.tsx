@@ -6,7 +6,6 @@ import {
   Container,
   Form,
   Pagination,
-  Spinner,
   Table,
 } from "react-bootstrap";
 import moment from "moment";
@@ -19,6 +18,7 @@ import { _buildPaginationItems } from "@/components/ui/pagination";
 import { FaX } from "react-icons/fa6";
 import { ShopType } from "@/types/ShopType";
 import { ToastDataType } from "@/types/DiversType";
+import TableLoader from "@/components/ui/squeleton/TableLoader";
 
 interface ContextConnexionType {
   shops: ShopType[];
@@ -27,8 +27,7 @@ interface ContextConnexionType {
 }
 
 export default function ConnexionCount() {
-  const { shops } =
-    useOutletContext<ContextConnexionType>();
+  const { shops } = useOutletContext<ContextConnexionType>();
   const [params] = useSearchParams();
   const navigate = useNavigate();
 
@@ -63,7 +62,6 @@ export default function ConnexionCount() {
 
   const totalPages = Math.ceil(connexions?.total / parseInt(perPage));
   const currentPage = parseInt(page);
-
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -227,32 +225,7 @@ export default function ConnexionCount() {
                     ))}
                   </Form.Select>
                 </Form.Group>
-                {/* <Form.Group controlId="company">
-                  <Form.Control
-                    type="text"
-                    placeholder="magasin"
-                    value={company}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setCompany(e.target.value);
-                      setPage("1");
-                    }}
-                  />
-                </Form.Group> */}
               </th>
-
-              {/* <th className="py-3">
-                <Form.Group controlId="createdAt">
-                  <Form.Control
-                    type="date"
-                    placeholder="Date"
-                    value={createdAt}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      setCreatedAt(e.target.value);
-                      setPage("1");
-                    }}
-                  />
-                </Form.Group>
-              </th> */}
               <th className="py-3">
                 <Button onClick={() => resetForm()} disabled={isFiltering}>
                   <div className="flex items-center">
@@ -263,7 +236,6 @@ export default function ConnexionCount() {
               </th>
             </tr>
           </thead>
-
           <tbody>
             {connexions?.connexions?.map(
               (conn: ConnexionType, index: number) => (
@@ -283,24 +255,12 @@ export default function ConnexionCount() {
             )}
             {connexions?.connexions?.length === 0 && (
               <tr>
-                <td colSpan={4} className="text-center">
+                <td colSpan={5} className="text-center">
                   Aucune connexion trouvée.
                 </td>
               </tr>
             )}
-            {isLoading && (
-              <tr>
-                <td colSpan={4}>
-                  <Spinner
-                    variant="primary"
-                    size="sm"
-                    animation="border"
-                    role="status"
-                  />
-                  <span className="ms-2">Loading...</span>
-                </td>
-              </tr>
-            )}
+            {isLoading && <TableLoader lengthTr={5} lengthTd={5} />}
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">

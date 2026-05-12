@@ -434,7 +434,14 @@ export default function StorePage() {
                 </tr>
               );
             })}
-            {isLoadingDisplay && <TableLoader lengthTr={5} lengthTd={4} />}
+             {paginatedStores?.stores?.length === 0 && (
+              <tr>
+                <td colSpan={4} className="text-center">
+                  Aucune connexion trouvée.
+                </td>
+              </tr>
+            )}
+            {!isLoadingDisplay && <TableLoader lengthTr={5} lengthTd={4} />}
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">
