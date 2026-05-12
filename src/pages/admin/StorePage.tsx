@@ -1,14 +1,16 @@
-import { ResultStoreType } from "@/types/StoresType";
+import { ResultStoreType, StoresType } from "@/types/StoresType";
 import React from "react";
 import {
   Button,
   Container,
   Dropdown,
   Form,
+  Modal,
   Pagination,
+  Spinner,
   Table,
 } from "react-bootstrap";
-import { FaPlusCircle } from "react-icons/fa";
+import { FaPlusCircle, FaTrashAlt } from "react-icons/fa";
 import {
   useNavigate,
   useOutletContext,
@@ -19,21 +21,33 @@ import { FaEllipsisVertical, FaPencil, FaTrash, FaX } from "react-icons/fa6";
 import storeServiceInstance from "@/services/StoreServices";
 import { _buildPaginationItems } from "@/components/ui/pagination";
 import TableLoader from "@/components/ui/squeleton/TableLoader";
-// import MenuDrop from "@/components/ui/table/MenuDrop";
+import {
+  _handleCloseDeleteModal,
+  _handleCloseEditModal,
+  _handleShowDeleteModal,
+  _handleShowEditModal,
+} from "@/utils/modalFunction";
+import { ToastDataType } from "@/types/DiversType";
 
 interface ContextStoreType {
   shops: ShopType[];
+  toggleShow: () => void;
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>;
 }
 
 export default function StorePage() {
+  
   const API_URL = import.meta.env.VITE_API_URL;
-  const { shops } = useOutletContext<ContextStoreType>();
+  const { shops, toggleShow, setToastData } = useOutletContext<ContextStoreType>();
   const navigate = useNavigate();
   const [params] = useSearchParams();
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [paginatedStores, setPaginatedStores] = React.useState<ResultStoreType>(
     {} as ResultStoreType,
+  );
+  const [selectedStore, setSelectedStore] = React.useState<StoresType>(
+    {} as StoresType,
   );
   const [page, setPage] = React.useState<string>(params.get("page") || "1");
   const [perPage, setPerPage] = React.useState<string>(
@@ -44,7 +58,6 @@ export default function StorePage() {
   const [company, setCompany] = React.useState<string>(
     params.get("company") || "",
   );
-
   const [debouncedFilters, setDebouncedFilters] = React.useState({
     page,
     perPage,
@@ -52,41 +65,14 @@ export default function StorePage() {
     name,
     company,
   });
-
   const isFiltering = id === "" && company === "" && name === "";
 
   const totalPages = Math.ceil(paginatedStores?.total / parseInt(perPage));
   const currentPage = parseInt(page);
 
-  const getPaginatedStores = async (
-    page: string,
-    perPage: string,
-    id: string,
-    name: string,
-    company: string,
-  ) => {
-    setIsLoading(true);
+  const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
-    try {
-      const response = await storeServiceInstance.paginatedStores(
-        page,
-        perPage,
-        id,
-        name,
-        company,
-      );
-
-      setPaginatedStores(response);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    getPaginatedStores("1", "20", "", "", "");
-  }, []);
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -123,6 +109,32 @@ export default function StorePage() {
     navigate(`/tableau-de-bord/magasins?${params.toString()}`);
   }, [debouncedFilters, navigate]);
 
+  const getPaginatedStores = async (
+    page: string,
+    perPage: string,
+    id: string,
+    name: string,
+    company: string,
+  ) => {
+    setIsLoading(true);
+
+    try {
+      const response = await storeServiceInstance.paginatedStores(
+        page,
+        perPage,
+        id,
+        name,
+        company,
+      );
+
+      setPaginatedStores(response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const items = _buildPaginationItems({
     currentPage,
     totalPages,
@@ -145,6 +157,79 @@ export default function StorePage() {
     setPage(`${newPage}`);
     setPerPage(value ?? "10");
   };
+
+  const updateStore = async (id: number, data: Partial<StoresType>) => {
+    setIsLoading(true);
+    try {
+      const response = await storeServiceInstance.patchStore(id, data);
+      console.log(response);
+      _handleCloseEditModal(setSelectedStore, setShowEditModal);
+      getPaginatedStores(
+        debouncedFilters.page,
+        debouncedFilters.perPage,
+        debouncedFilters.id,
+        debouncedFilters.name,
+        debouncedFilters.company,
+      );
+       setToastData({
+          bg: 'success',
+          position: 'top-end',
+          delay: 3000,
+          icon: 'fa fa-check-circle',
+          message: 'Magasin modifiée avec succès !',
+        })
+        toggleShow()
+    } catch (error) {
+      console.error(error);
+       setToastData({
+          bg: 'danger',
+          position: 'top-end',
+          delay: 6000,
+          icon: 'fa fa-check-circle',
+          message: `Erreur s'est produite lors de la modification du magasin`
+        })
+        toggleShow()
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteStore = async (id: number) => {
+    setIsLoading(true);
+    try {
+      await storeServiceInstance.deleteStore(id);
+
+      _handleCloseDeleteModal(setSelectedStore, setShowDeleteModal);
+      getPaginatedStores(
+        debouncedFilters.page,
+        debouncedFilters.perPage,
+        debouncedFilters.id,
+        debouncedFilters.name,
+        debouncedFilters.company,
+      );
+      setToastData({
+          bg: 'success',
+          position: 'top-end',
+          delay: 3000,
+          icon: 'fa fa-check-circle',
+          message: 'Magasin supprimé avec succès !',
+        })
+        toggleShow()
+    } catch (error) {
+      console.error(error);
+      setToastData({
+          bg: 'danger',
+          position: 'top-end',
+          delay: 6000,
+          icon: 'fa fa-check-circle',
+          message: `Erreur s'est produite lors de la suppression du magasin`
+        })
+        toggleShow()
+    }
+  };
+  // const path = window.location.pathname;
+
+  // const trigger = path.split("/").filter(Boolean).pop();
 
   return (
     <Container fluid className="p-0">
@@ -247,30 +332,37 @@ export default function StorePage() {
                       </Dropdown.Toggle>
                       <Dropdown.Menu align="end">
                         <Dropdown.Item
-                        //  onClick={() => {
-                        //    handleShowEdit(user);
-                        //  }}
+                          onClick={() => {
+                            _handleShowEditModal(
+                              setSelectedStore,
+                              store,
+                              setShowEditModal,
+                            );
+                          }}
                         >
                           <FaPencil className="text-success" /> Modifier
                         </Dropdown.Item>
                         <Dropdown.Item
-                          //  onClick={() => {
-                          //    setSelectedUserId(user.id);
-                          //    handleShowDelete();
-                          //  }}
+                          onClick={() => {
+                            setSelectedStore(store);
+                            _handleShowDeleteModal(
+                              setSelectedStore,
+                              store,
+                              setShowDeleteModal,
+                            );
+                          }}
                           className="text-danger"
                         >
                           <FaTrash /> Supprimer
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
+                    
                   </td>
                 </tr>
               );
             })}
-            {isLoading && (
-              <TableLoader lengthTr={5} lengthTd={4} />
-            )}
+            {isLoading && <TableLoader lengthTr={5} lengthTd={4} />}
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">
@@ -309,6 +401,126 @@ export default function StorePage() {
             </Form.Select>
           </div>
         </div>
+        <Modal
+          show={showEditModal}
+          onHide={() =>
+            _handleCloseEditModal(setSelectedStore, setShowEditModal)
+          }
+        >
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              updateStore(selectedStore.id, {
+                name: selectedStore.name,
+                companyId: selectedStore.companyId,
+              });
+            }}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title className="d-flex align-items-center">
+                <FaPencil className="fs-4 text-success me-2" /> Modifier un
+                magasin
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <Form.Label>Nom</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Modifier le nom"
+                  value={selectedStore.name || ""}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSelectedStore((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <Form.Label>Enseigne</Form.Label>
+                <Form.Group controlId="company">
+                  <Form.Select
+                    value={selectedStore.companyId || ""}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setSelectedStore((prev) => ({
+                      ...prev,
+                      companyId: parseInt(e.target.value, 10),
+                    }))
+                  }
+                  >
+                    <option value="">enseigne...</option>
+                    {shops?.map((comp) => (
+                      <option key={comp.id} value={comp.id}>
+                        {comp.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  _handleCloseEditModal(setSelectedStore, setShowEditModal)
+                }
+              >
+                Annuler
+              </Button>
+              <Button type="submit" className="d-flex align-items-center gap-1">
+                {isLoading && <Spinner size="sm" />}
+                Modifier
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+        <Modal
+          show={showDeleteModal}
+          onHide={() =>
+            _handleCloseDeleteModal(setSelectedStore, setShowDeleteModal)
+          }
+        >
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              deleteStore(selectedStore.id);
+            }}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title className="d-flex align-items-center">
+                <FaTrashAlt className="fs-4 text-danger me-2" /> Supprimer un
+                magasin
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <div className="text-center">
+                  <b>{selectedStore.name}</b>
+                </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  _handleCloseDeleteModal(setSelectedStore, setShowDeleteModal)
+                }
+              >
+                Annuler
+              </Button>
+              <Button variant="danger" type="submit"  className="d-flex align-items-center gap-1">
+                {isLoading && <Spinner size="sm" />}
+                Supprimer
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
       </Container>
     </Container>
   );

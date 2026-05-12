@@ -51,8 +51,9 @@ export default function CategoriesPage() {
   const [showAddEditModal, setShowAddEditModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
-  const trigger = "categories"
-
+  const path = window.location.pathname;
+  const trigger = path.split("/").filter(Boolean).pop();
+  
   useEffect(() => {
     _getCategories(setAllCategories, setToastData, toggleShow, setFeedBackState);
   }, []);

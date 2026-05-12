@@ -11,8 +11,7 @@ import {
   Spinner,
   Table,
 } from "react-bootstrap";
-import { FaEdit } from "react-icons/fa";
-import { FaEllipsisVertical, FaTrash } from "react-icons/fa6";
+import { FaEllipsisVertical, FaPencil, FaTrash } from "react-icons/fa6";
 import { useOutletContext } from "react-router-dom";
 import { _showToast } from "@/utils/notifications";
 import { ToastDataType } from "@/types/DiversType";
@@ -21,6 +20,7 @@ import { AxiosError } from "axios";
 import SearchBar from "@/components/dashBoardComponents/SearchBar";
 import { formattedName } from "@/utils/functions";
 import { ModalDeleteTemplate, ModalEditTemplate } from "@/components/ui/Modals";
+import MenuItem from "@/components/ui/dropdownMenu/MenuItem";
 
 interface ContextType {
   shops: ShopType[];
@@ -212,17 +212,15 @@ export default function TemplatePage() {
                         <Dropdown.Menu align="end">
                           <Dropdown.Item
                             onClick={() => handleShowEditModal(temp)}
-                            className="d-flex align-items-center text-"
+                            className="d-flex align-items-center gap-1"
                           >
-                            <FaEdit className="me-2" size={16} color="green" />
-                            Modifier
+                            <MenuItem icon={FaPencil} title="Modifier" iconColor="success" />
                           </Dropdown.Item>
                           <Dropdown.Item
                             onClick={() => handleShowDeleteModal(temp)}
-                            className="d-flex align-items-center text-danger"
+                            className="d-flex align-items-center text-danger gap-1"
                           >
-                            <FaTrash className="me-2" size={16} />
-                            Supprimer
+                            <MenuItem icon={FaTrash} title="Supprimer" iconColor="danger" />
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>

@@ -34,23 +34,20 @@ export const SideBarMenu = ({
   })
   .map((item, indx) =>{ 
     
-    return(
-      
-    <Container
-    key={indx}
-      className={`dash-menu-link  py-3  rounded-end-3 pointer}`}
-    
-      onClick={() => setDisplay(item.display)}
-    > 
-    <Link to={item.href} className='text-decoration-none'>
-
-      <div className='d-flex align-items-center text-decoration-none text-muted ps-2'>
-        <DynamicIcon iconKey={item.icon} className='me-2' size={22} />
-        {item.title}
-      </div>
-    </Link>
-    </Container>
-  )}
+    return (
+      <Link key={indx} to={item.href} className="text-decoration-none">
+        <Container
+          
+          className={`dash-menu-link  py-3  rounded-end-3 pointer}`}
+          onClick={() => setDisplay(item.display)}
+        >
+          <div className="d-flex align-items-center text-decoration-none text-muted ps-2">
+            <DynamicIcon iconKey={item.icon} className="me-2" size={22} />
+            {item.title}
+          </div>
+        </Container>
+      </Link>
+    );}
 )
 
   return (
