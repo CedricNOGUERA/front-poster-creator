@@ -27,6 +27,9 @@ import {
   ModalDuplicateCategoryType,
   ModalEditTemplateType,
   ModalDeleteTemplateType,
+  ModalAddStoreType,
+  ModalUpdateStoreType,
+  ModalDeleteStoreType,
   // AddShopModalType,
 } from "@/types/ModalType";
 import { ShopType } from "@/types/ShopType";
@@ -49,12 +52,18 @@ import { _expiredSession, _showToast } from "@/utils/notifications";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import {
   FaCircleCheck,
+  FaCirclePlus,
   FaCircleXmark,
   FaPencil,
   FaShop,
 } from "react-icons/fa6";
-import { FaEdit, FaPlusCircle, FaTimesCircle } from "react-icons/fa";
+import { FaEdit, FaPlusCircle, FaTimesCircle, FaTrashAlt } from "react-icons/fa";
 import DynamicIcon from "./DynamicIcon";
+import {
+  _handleCloseAddModal,
+  _handleCloseDeleteModal,
+  _handleCloseEditModal,
+} from "@/utils/modalFunction";
 const API_URL = import.meta.env.VITE_API_URL;
 
 //////////////////////
@@ -1153,6 +1162,235 @@ export function ModalDuplicateCategory({
             ) : (
               <span>valider</span>
             )}
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+}
+
+//////////////////////
+//Store
+//////////////////////
+export function ModalAddStore({
+  modalAddStoreProps,
+}: {
+  modalAddStoreProps: ModalAddStoreType;
+}) {
+  const {
+    showAddModal,
+    setSelectedStore,
+    setShowAddModal,
+    addStore,
+    selectedStore,
+    shops,
+    isLoading,
+  } = modalAddStoreProps;
+
+  return (
+    <Modal
+      show={showAddModal}
+      onHide={() => _handleCloseAddModal(setSelectedStore, setShowAddModal)}
+    >
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          addStore();
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center">
+            <FaCirclePlus className="fs-4 text-success me-2" /> Ajouter un
+            magasin
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="storeName">
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Saisissez le nom"
+              value={selectedStore.name || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSelectedStore((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="company">
+            <Form.Label>Enseigne</Form.Label>
+
+            <Form.Select
+              value={selectedStore.companyId || ""}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setSelectedStore((prev) => ({
+                  ...prev,
+                  companyId: parseInt(e.target.value, 10),
+                }))
+              }
+            >
+              <option value="">Sélectionnez une enseigne</option>
+              {shops?.map((comp) => (
+                <option key={comp.id} value={comp.id}>
+                  {comp.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              _handleCloseAddModal(setSelectedStore, setShowAddModal)
+            }
+          >
+            Annuler
+          </Button>
+          <Button type="submit" className="d-flex align-items-center gap-1">
+            {isLoading && <Spinner size="sm" />}
+            Ajouter
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+}
+
+export function ModalUpdateStore({
+  modalUpdateStoreProps,
+}: {
+  modalUpdateStoreProps: ModalUpdateStoreType;
+}) {
+  const {
+    showEditModal,
+    setSelectedStore,
+    setShowEditModal,
+    updateStore,
+    selectedStore,
+    shops,
+    isLoading,
+  } = modalUpdateStoreProps;
+
+  return (
+    <Modal
+      show={showEditModal}
+      onHide={() => _handleCloseEditModal(setSelectedStore, setShowEditModal)}
+    >
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          updateStore(selectedStore.id, {
+            name: selectedStore.name,
+            companyId: selectedStore.companyId,
+          });
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center">
+            <FaPencil className="fs-4 text-success me-2" /> Modifier un magasin
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="storeName">
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Modifier le nom"
+              value={selectedStore.name || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSelectedStore((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="company">
+            <Form.Label>Enseigne</Form.Label>
+            <Form.Select
+              value={selectedStore.companyId || ""}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setSelectedStore((prev) => ({
+                  ...prev,
+                  companyId: parseInt(e.target.value, 10),
+                }))
+              }
+            >
+              <option value="">enseigne...</option>
+              {shops?.map((comp) => (
+                <option key={comp.id} value={comp.id}>
+                  {comp.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              _handleCloseEditModal(setSelectedStore, setShowEditModal)
+            }
+          >
+            Annuler
+          </Button>
+          <Button type="submit" className="d-flex align-items-center gap-1">
+            {isLoading && <Spinner size="sm" />}
+            Modifier
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+}
+
+export function ModalDeleteStore({modalDeleteStoreProps}: {modalDeleteStoreProps: ModalDeleteStoreType}) {
+  const {showDeleteModal, selectedStore, setSelectedStore, setShowDeleteModal, deleteStore, isLoading} = modalDeleteStoreProps
+  return (
+    <Modal
+      show={showDeleteModal}
+      onHide={() =>
+        _handleCloseDeleteModal(setSelectedStore, setShowDeleteModal)
+      }
+    >
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          deleteStore(selectedStore.id);
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center">
+            <FaTrashAlt className="fs-4 text-danger me-2" /> Supprimer un
+            magasin
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <b>{selectedStore.name}</b>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              _handleCloseDeleteModal(setSelectedStore, setShowDeleteModal)
+            }
+          >
+            Annuler
+          </Button>
+          <Button
+            variant="danger"
+            type="submit"
+            className="d-flex align-items-center gap-1"
+          >
+            {isLoading && <Spinner size="sm" />}
+            Supprimer
           </Button>
         </Modal.Footer>
       </Form>
