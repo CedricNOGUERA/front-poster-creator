@@ -1158,13 +1158,6 @@ export default function InlineDragDropEditor() {
             >
               Exporter en PDF
             </Button>
-            {/* <Button
-              variant='info'
-              onClick={handleShowPrintOptions}
-              className='me-4'
-            >
-              Options d'impression
-            </Button> */}
             <Button
               variant="success"
               onClick={() => {
