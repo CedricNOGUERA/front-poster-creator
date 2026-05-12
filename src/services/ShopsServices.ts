@@ -28,7 +28,7 @@ class ShopsServices {
       method: 'POST',
       body: newShop,
     })
-    return response
+    return response;
   }
 
   async deleteShop(shopId: number) {
