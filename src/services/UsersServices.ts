@@ -1,5 +1,4 @@
 import { UserType } from "@/types/UserType";
-// import { UserDataType } from "@/types/UserType"
 
 const API_URL = import.meta.env.VITE_API_URL;
 

@@ -277,9 +277,7 @@ export default function StorePage() {
       setIsLoading(true);
     }
   };
-  // const path = window.location.pathname;
 
-  // const trigger = path.split("/").filter(Boolean).pop();
 
   const modalAddStoreProps = {
     showAddModal,
@@ -441,7 +439,7 @@ export default function StorePage() {
                 </td>
               </tr>
             )}
-            {!isLoadingDisplay && <TableLoader lengthTr={5} lengthTd={4} />}
+            {isLoadingDisplay && <TableLoader lengthTr={5} lengthTd={4} />}
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">

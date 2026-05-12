@@ -155,7 +155,6 @@ export const _addCanvas = async (
       toggleShow();
       throw new Error(`Erreur HTTP : ${response.status}`);
     }
-    //   const data = await response.json();
 
     setToastData({
       bg: "success",
@@ -208,7 +207,6 @@ export const _uploadPicture = async (
       toggleShow();
       throw new Error(`Erreur HTTP : ${response.status}`);
     }
-    //   const data = await response.json();
 
     setToastData({
       bg: "success",
@@ -523,7 +521,6 @@ export const _getCategoryPictures = async (
   shopId: number,
   setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>,
 ) => {
-  // const API_URL = API_URL;
   setFeedBackState({
     isLoading: true,
     loadingMessage: "",

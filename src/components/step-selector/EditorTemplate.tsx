@@ -6,7 +6,6 @@ import {
 } from '@/types/ComponentType'
 import { ModelType } from '@/types/modelType'
 import { _getModels, 
-  // _getTemplate,
    _getTemplateById } from '@/utils/apiFunctions'
 
 import React, { useRef, useState } from 'react'

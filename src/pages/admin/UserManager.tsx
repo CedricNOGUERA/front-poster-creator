@@ -1,4 +1,3 @@
-// import SearchBar from "@/components/dashBoardComponents/SearchBar";
 import { ModalGenericDelete } from "@/components/ui/Modals";
 import { _buildPaginationItems } from "@/components/ui/pagination";
 import { ModalAddUser } from "@/components/users/ModalUser";
@@ -7,7 +6,6 @@ import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import { ToastDataType } from "@/types/DiversType";
 import { ShopType } from "@/types/ShopType";
 import { ResultUserType, UserType } from "@/types/UserType";
-// import { _getAllUsers } from "@/utils/apiFunctions";
 import React from "react";
 import {
   Button,
@@ -94,7 +92,6 @@ export default function UserManager() {
       navigate("/editeur-de-bon-plan");
       return;
     }
-    // _getAllUsers(setAllUsers, setIsLoading);
   }, [userRole, navigate]);
 
   React.useEffect(() => {
@@ -165,7 +162,6 @@ export default function UserManager() {
       if (response.ok) {
         handleCloseAdd();
         getPaginatedUsers(page, perPage, company, store, name, email, role);
-        // _getAllUsers(setAllUsers, setIsLoading);
       }
     } catch (error) {
       console.error(error);
@@ -386,10 +382,6 @@ export default function UserManager() {
                   user.stores &&
                   user.stores.map((item) => item.name).join(", ");
 
-                // if(user.role !== 'super_admin'){
-                //   return
-                // }
-
                 return (
                   <tr key={user.id}>
                     <td>{companylist}</td>
@@ -477,18 +469,11 @@ export default function UserManager() {
           </div>
         </div>
       </Container>
-      {/* <Button
-        variant="primary"
-        className="rounded-pill fab"
-        onClick={handleShowAdd}
-      >
-        <strong>+</strong> <span>Ajouter un utilisateur</span>
-      </Button> */}
+
       <ModalAddUser
         showAdd={showAdd}
         handleCloseAdd={handleCloseAdd}
         userDataToEdit={selectedUser}
-        // setAllUsers={setAllUsers}
       />
       <ModalGenericDelete modalGenericDeleteProps={modalGenericDeleteProps} />
     </Container>

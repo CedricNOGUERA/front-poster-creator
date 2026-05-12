@@ -88,38 +88,6 @@ export default function ModelsPage() {
     _getAllImagesModels(setImageModels);
   }, []);
 
-  //  const models = React.useMemo(() => {
-  //   if (searchTerm.trim() === "") {
-  //     return paginatedModels?.models;
-  //   }
-
-  //   const lowerTerm = searchTerm.toLowerCase().trim();
-
-  //   return paginatedModels?.models.filter((model) => {
-  //     const templateData = templates.find(
-  //       (temp) =>
-  //         temp.categoryId === model.categoryId &&
-  //         temp.id === model.templateId,
-  //     );
-  //   // return allModels.filter((model) => {
-  //   //   const templateData = templates.find(
-  //   //     (temp) =>
-  //   //       temp.categoryId === model.categoryId &&
-  //   //       temp.id === model.templateId,
-  //   //   );
-
-  //     const dimension = dimensions.find(
-  //       (dim) => dim.id === model.dimensionId,
-  //     );
-
-  //     const matchesId = model.id.toString().includes(lowerTerm);
-  //     const matchesTemplateName = templateData?.name.toLowerCase().includes(lowerTerm) || false;
-  //     const matchesDimension = dimension?.name.toLowerCase().includes(lowerTerm) || false;
-
-  //     return matchesId || matchesTemplateName || matchesDimension;
-  //   });
-  // }, [searchTerm, paginatedModels?.models, templates]);
-
   const handleShowDeleteModal = (model: ModelType) => {
     setSelectedModel(model);
     setShowDeleteModal(true);
@@ -138,7 +106,6 @@ export default function ModelsPage() {
       handleCloseDeleteModal();
 
       // Recharger les données originales après suppression
-      // _getModels(setAllModels);
       _getAllImagesModels(setImageModels);
       getPaginatedModels(page, perPage, id, template, dimension,);
        const params = new URLSearchParams();

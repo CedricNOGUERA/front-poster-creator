@@ -68,18 +68,6 @@ export function TextEditor({
     }
   }
 
-  // const isSuperscriptSelected = () => {
-  //   const textArea = textAreaRef.current
-  //   if (!textArea) return false
-    
-  //   const start = textArea.selectionStart
-  //   const end = textArea.selectionEnd
-  //   const selectedText = text.substring(start, end)
-    
-  //   return selectedText.includes('<sup>') && selectedText.includes('</sup>')
-  // }
-
-
 
   return (
     <div>
