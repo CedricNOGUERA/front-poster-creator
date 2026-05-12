@@ -8,7 +8,6 @@ import {
   Dropdown,
   Image,
   Row,
-  Spinner,
   Table,
 } from "react-bootstrap";
 import { FaEllipsisVertical, FaPencil, FaTrash } from "react-icons/fa6";
@@ -21,6 +20,7 @@ import SearchBar from "@/components/dashBoardComponents/SearchBar";
 import { formattedName } from "@/utils/functions";
 import { ModalDeleteTemplate, ModalEditTemplate } from "@/components/ui/Modals";
 import MenuItem from "@/components/ui/dropdownMenu/MenuItem";
+import TableLoader from "@/components/ui/squeleton/TableLoader";
 
 interface ContextType {
   shops: ShopType[];
@@ -31,7 +31,7 @@ interface ContextType {
 export default function TemplatePage() {
   const { setToastData, toggleShow } = useOutletContext<ContextType>();
   const [allTemplates, setAllTemplates] = React.useState<TemplateType[]>([]);
-  const [templates, setTemplates] = React.useState<TemplateType[]>([]);
+  // const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [selectedModel, setSelectedModel] = React.useState<TemplateType>(
     {} as TemplateType,
   );
@@ -42,7 +42,7 @@ export default function TemplatePage() {
 
   React.useEffect(() => {
     _getTemplates(setAllTemplates);
-    _getTemplates(setTemplates);
+    // _getTemplates(setTemplates);
   }, []);
 
   const templateData = React.useMemo(() => {
@@ -153,6 +153,8 @@ export default function TemplatePage() {
     isLoading,
   };
 
+  console.log(templateData)
+
   return (
     <Container fluid className="relative p-0">
       <Row className="bg-light sticky-top d-flex justify-content-between align-items-center w-100 gx-0 ">
@@ -163,16 +165,9 @@ export default function TemplatePage() {
         <Col xs={2} sm={1}></Col>
       </Row>
       <SearchBar
-        seachBarProps={{ searchTerm, setSearchTerm, data: templates }}
+        seachBarProps={{ searchTerm, setSearchTerm, data: templateData }}
       />
       <Container>
-        {templateData.length === 0 ? (
-          <div className="text-center py-5">
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Chargement...</span>
-            </Spinner>
-          </div>
-        ) : (
           <Table striped hover responsive="sm" className=" shadow">
             <thead className="sticky-sm-top ">
               <tr>
@@ -228,9 +223,17 @@ export default function TemplatePage() {
                   </tr>
                 );
               })}
+              {templateData?.length === 0 && (
+                            <tr>
+                              <td colSpan={4} className="text-center">
+                                Aucune connexion trouvée.
+                              </td>
+                            </tr>
+                          )}
+                          {isLoading && <TableLoader lengthTr={5} lengthTd={4} />}
             </tbody>
           </Table>
-        )}
+        
       </Container>
 
       <ModalEditTemplate modalEditemplateProps={modalEditemplateProps} />

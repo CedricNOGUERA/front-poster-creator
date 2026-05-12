@@ -1,4 +1,5 @@
 import { _buildPaginationItems } from "@/components/ui/pagination";
+import TableLoader from "@/components/ui/squeleton/TableLoader";
 import logServiceInstance from "@/services/LogService";
 import { LogResultType } from "@/types/logType";
 import { _formattedDate, _statusBadge } from "@/utils/functions";
@@ -8,7 +9,6 @@ import {
   Container,
   Form,
   Pagination,
-  Spinner,
   Table,
 } from "react-bootstrap";
 import { FaX } from "react-icons/fa6";
@@ -246,11 +246,7 @@ export default function MonitoringPage() {
           </thead>
           <tbody>
             {isLoading ? (
-              <tr>
-                <td colSpan={6}>
-                  <Spinner size="sm" /> Chargement...
-                </td>
-              </tr>
+             <TableLoader lengthTr={5} lengthTd={7} />
             ) : (
               logs?.logs?.map((log, indx: number) => {
                 const userName = log?.user?.split("@")[0];

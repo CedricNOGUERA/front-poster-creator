@@ -25,6 +25,7 @@ import {
 } from "react-router-dom";
 import storeData from "@/data/store.json";
 import { FaPlusCircle } from "react-icons/fa";
+import TableLoader from "@/components/ui/squeleton/TableLoader";
 
 interface ContextShopSelectorType {
   toggleShow: () => void;
@@ -429,6 +430,14 @@ export default function UserManager() {
                   </tr>
                 );
               })}
+            {paginatedUsers?.users?.length === 0 && (
+              <tr>
+                <td colSpan={6} className="text-center">
+                  Aucune connexion trouvée.
+                </td>
+              </tr>
+            )}
+            {isLoading && <TableLoader lengthTr={5} lengthTd={6} />}
           </tbody>
         </Table>
         <div className="d-flex justify-content-between">
