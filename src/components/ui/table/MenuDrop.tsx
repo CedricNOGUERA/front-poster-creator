@@ -1,8 +1,9 @@
-import { CategoriesType } from '@/types/CategoriesType'
-import { ShopType } from '@/types/ShopType'
-import React from 'react'
-import { Dropdown } from 'react-bootstrap'
-import { FaCopy, FaEllipsisVertical, FaPencil, FaTrash } from 'react-icons/fa6'
+import { CategoriesType } from "@/types/CategoriesType";
+import { ShopType } from "@/types/ShopType";
+import React from "react";
+import { Dropdown } from "react-bootstrap";
+import { FaCopy, FaEllipsisVertical, FaPencil, FaTrash } from "react-icons/fa6";
+import MenuItem from "../dropdownMenu/MenuItem";
 
 export default function MenuDrop<T extends CategoriesType | ShopType>({
   trigger,
@@ -11,45 +12,49 @@ export default function MenuDrop<T extends CategoriesType | ShopType>({
   handleShowDuplicate,
   handleShowDeleteModal,
 }: {
-  trigger: string
-  data: T
-  handleShowEditModal?: (data: T) => void | undefined | null
-  handleShowDuplicate?: (data: T) => void | undefined | null
-  
-  handleShowDeleteModal: (id: number) => void
+  trigger: string | undefined;
+  data: T;
+  handleShowEditModal?: (data: T) => void | undefined | null ;
+  handleShowDuplicate?: (data: T) => void | undefined | null;
+
+  handleShowDeleteModal: (id: number) => void;
 }) {
   return (
     <Dropdown>
       <Dropdown.Toggle
-        variant='transparent'
+        variant="transparent"
         id={`dropdown-category-${data.id}`}
-        className='border-0 no-chevron'
+        className="border-0 no-chevron"
       >
         <b>
           <FaEllipsisVertical />
         </b>
       </Dropdown.Toggle>
-      <Dropdown.Menu align='end'>
-        {trigger === 'categories' && (
-          <React.Fragment>
-            <Dropdown.Item onClick={() => handleShowEditModal && handleShowEditModal(data)}>
-              <FaPencil className='me-2' />
-              Modifier
+      <Dropdown.Menu align="end">
+        {(trigger !== "magasin" && trigger !== "modele") && (
+            <Dropdown.Item
+              className="d-flex align-items-center gap-1"
+              onClick={() => handleShowEditModal && handleShowEditModal(data)}
+            >
+              <MenuItem icon={FaPencil} title="Modifier" iconColor="success" />
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => handleShowDuplicate && handleShowDuplicate(data)}>
-              <FaCopy className='me-2 text-info' />
-              Dupliquer
+        )}
+            {trigger === "categories" && (
+            <Dropdown.Item
+              className="d-flex align-items-center gap-1"
+              onClick={() => handleShowDuplicate && handleShowDuplicate(data)}
+            >
+              <MenuItem icon={FaCopy} title="Dupliquer" iconColor="info" />
             </Dropdown.Item>
-          </React.Fragment>
+          
         )}
         <Dropdown.Item
           onClick={() => handleShowDeleteModal(data.id as number)}
-          className='d-flex align-items-center text-danger'
+          className="d-flex align-items-center text-danger gap-1"
         >
-          <FaTrash className='me-2' />
-          Supprimer
+          <MenuItem icon={FaTrash} title="Supprimer" iconColor="danger" />
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
-  )
+  );
 }
