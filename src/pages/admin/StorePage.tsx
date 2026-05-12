@@ -17,13 +17,15 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { ShopType } from "@/types/ShopType";
-import { FaEllipsisVertical, FaPencil, FaTrash, FaX } from "react-icons/fa6";
+import { FaCirclePlus, FaEllipsisVertical, FaPencil, FaTrash, FaX } from "react-icons/fa6";
 import storeServiceInstance from "@/services/StoreServices";
 import { _buildPaginationItems } from "@/components/ui/pagination";
 import TableLoader from "@/components/ui/squeleton/TableLoader";
 import {
+  _handleCloseAddModal,
   _handleCloseDeleteModal,
   _handleCloseEditModal,
+  _handleShowAddModal,
   _handleShowDeleteModal,
   _handleShowEditModal,
 } from "@/utils/modalFunction";
@@ -36,7 +38,7 @@ interface ContextStoreType {
 }
 
 export default function StorePage() {
-  
+
   const API_URL = import.meta.env.VITE_API_URL;
   const { shops, toggleShow, setToastData } = useOutletContext<ContextStoreType>();
   const navigate = useNavigate();
@@ -70,6 +72,7 @@ export default function StorePage() {
   const totalPages = Math.ceil(paginatedStores?.total / parseInt(perPage));
   const currentPage = parseInt(page);
 
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showEditModal, setShowEditModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
@@ -158,6 +161,56 @@ export default function StorePage() {
     setPerPage(value ?? "10");
   };
 
+  const addStore = async () => {
+    setIsLoading(true);
+    const storeFormData = {
+        name: selectedStore.name,
+        companyId: selectedStore.companyId
+      }
+    // const storeFormData = new FormData();
+    // storeFormData.append(
+    //   "data",
+    //   JSON.stringify({
+    //     name: selectedStore.name,
+    //     companyId: selectedStore.companyId
+    //   })
+    // )
+
+    try {
+      const response = await storeServiceInstance.createStore(storeFormData)
+
+      console.log(response)
+       getPaginatedStores(
+        debouncedFilters.page,
+        debouncedFilters.perPage,
+        debouncedFilters.id,
+        debouncedFilters.name,
+        debouncedFilters.company,
+      );
+       setToastData({
+          bg: 'success',
+          position: 'top-end',
+          delay: 3000,
+          icon: 'fa fa-check-circle',
+          message: 'Magasin créé avec succès !',
+        })
+        toggleShow()
+        _handleCloseAddModal(setSelectedStore, setShowAddModal)
+    } catch (error) {
+      console.error(error)
+      setToastData({
+          bg: 'danger',
+          position: 'top-end',
+          delay: 6000,
+          icon: 'fa fa-circle-xmark',
+          message: "Une erreur s'est produite lors de la création du magasin. Veuillez Réessayer",
+        })
+        toggleShow()
+    }finally{
+      setIsLoading(false)
+    }
+  }
+
   const updateStore = async (id: number, data: Partial<StoresType>) => {
     setIsLoading(true);
     try {
@@ -185,8 +238,8 @@ export default function StorePage() {
           bg: 'danger',
           position: 'top-end',
           delay: 6000,
-          icon: 'fa fa-check-circle',
-          message: `Erreur s'est produite lors de la modification du magasin`
+          icon: 'fa fa-circle-xmark',
+          message: `Une erreur s'est produite lors de la modification du magasin. Veuillez Réessayer`
         })
         toggleShow()
     } finally {
@@ -221,8 +274,8 @@ export default function StorePage() {
           bg: 'danger',
           position: 'top-end',
           delay: 6000,
-          icon: 'fa fa-check-circle',
-          message: `Erreur s'est produite lors de la suppression du magasin`
+          icon: 'fa fa-circle-xmark',
+          message: `Une erreur s'est produite lors de la suppression du magasin`
         })
         toggleShow()
     }
@@ -231,6 +284,7 @@ export default function StorePage() {
 
   // const trigger = path.split("/").filter(Boolean).pop();
 
+  console.log(selectedStore)
   return (
     <Container fluid className="p-0">
       <h3 className="py-3">Gestion des Magasin</h3>
@@ -239,7 +293,7 @@ export default function StorePage() {
           <Button
             variant="primary"
             className="rounded d-flex align-items-center gap-1"
-            // onClick={handleShowAdd}
+            onClick={() => _handleShowAddModal(setShowAddModal)}
           >
             <FaPlusCircle /> <span>un magasin</span>
           </Button>
@@ -357,7 +411,6 @@ export default function StorePage() {
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
-                    
                   </td>
                 </tr>
               );
@@ -401,6 +454,77 @@ export default function StorePage() {
             </Form.Select>
           </div>
         </div>
+
+        <Modal
+          show={showAddModal}
+          onHide={() => _handleCloseAddModal(setSelectedStore, setShowAddModal)}
+        >
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addStore();
+            }}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title className="d-flex align-items-center">
+                <FaCirclePlus className="fs-4 text-success me-2" /> Ajouter un
+                magasin
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form.Group className="mb-3" controlId="storeName">
+                <Form.Label>Nom</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Saisissez le nom"
+                  value={selectedStore.name || ""}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSelectedStore((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="company">
+                <Form.Label>Enseigne</Form.Label>
+
+                <Form.Select
+                  value={selectedStore.companyId || ""}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setSelectedStore((prev) => ({
+                      ...prev,
+                      companyId: parseInt(e.target.value, 10),
+                    }))
+                  }
+                >
+                  <option value="">Sélectionnez une enseigne</option>
+                  {shops?.map((comp) => (
+                    <option key={comp.id} value={comp.id}>
+                      {comp.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  _handleCloseAddModal(setSelectedStore, setShowAddModal)
+                }
+              >
+                Annuler
+              </Button>
+              <Button type="submit" className="d-flex align-items-center gap-1">
+                {isLoading && <Spinner size="sm" />}
+                Ajouter
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal>
+
         <Modal
           show={showEditModal}
           onHide={() =>
@@ -423,10 +547,7 @@ export default function StorePage() {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
+              <Form.Group className="mb-3" controlId="storeName">
                 <Form.Label>Nom</Form.Label>
                 <Form.Control
                   type="text"
@@ -441,29 +562,24 @@ export default function StorePage() {
                   required
                 />
               </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlTextarea1"
-              >
+              <Form.Group className="mb-3" controlId="company">
                 <Form.Label>Enseigne</Form.Label>
-                <Form.Group controlId="company">
-                  <Form.Select
-                    value={selectedStore.companyId || ""}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                <Form.Select
+                  value={selectedStore.companyId || ""}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                     setSelectedStore((prev) => ({
                       ...prev,
                       companyId: parseInt(e.target.value, 10),
                     }))
                   }
-                  >
-                    <option value="">enseigne...</option>
-                    {shops?.map((comp) => (
-                      <option key={comp.id} value={comp.id}>
-                        {comp.name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
+                >
+                  <option value="">enseigne...</option>
+                  {shops?.map((comp) => (
+                    <option key={comp.id} value={comp.id}>
+                      {comp.name}
+                    </option>
+                  ))}
+                </Form.Select>
               </Form.Group>
             </Modal.Body>
             <Modal.Footer>
@@ -482,6 +598,7 @@ export default function StorePage() {
             </Modal.Footer>
           </Form>
         </Modal>
+
         <Modal
           show={showDeleteModal}
           onHide={() =>
@@ -501,9 +618,9 @@ export default function StorePage() {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div className="text-center">
-                  <b>{selectedStore.name}</b>
-                </div>
+              <div className="text-center">
+                <b>{selectedStore.name}</b>
+              </div>
             </Modal.Body>
             <Modal.Footer>
               <Button
@@ -514,7 +631,11 @@ export default function StorePage() {
               >
                 Annuler
               </Button>
-              <Button variant="danger" type="submit"  className="d-flex align-items-center gap-1">
+              <Button
+                variant="danger"
+                type="submit"
+                className="d-flex align-items-center gap-1"
+              >
                 {isLoading && <Spinner size="sm" />}
                 Supprimer
               </Button>

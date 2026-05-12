@@ -9,7 +9,6 @@ class StoreServices {
     id: string,
     name: string,
     company: string,
-    
   ) {
     const params = new URLSearchParams({
       page: `${page}`,
@@ -32,25 +31,35 @@ class StoreServices {
     return response.json();
   }
 
+  async createStore(newStore: {
+  name: string;
+  companyId: number;
+}) {
 
-  async patchStore(id: number, data: Partial<StoresType>){
-
-    const response = await fetch(`${API_URL}/api/stores/${id}`,
-      {
-        method: 'PATCH',
-      body: JSON.stringify(data),
-       headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-     
-    }
-  )
-  return response.json()
+    const response = await fetch(`${API_URL}/api/add-store`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify(newStore),
+    });
+    return response;
   }
 
-  async deleteStore(id: number){
+  async patchStore(id: number, data: Partial<StoresType>) {
+    const response = await fetch(`${API_URL}/api/stores/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return response.json();
+  }
 
+  async deleteStore(id: number) {
     const response = await fetch(`${API_URL}/api/stores/${id}`, {
       method: "DELETE",
       headers: {
@@ -58,9 +67,8 @@ class StoreServices {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-    return response.json()
+    return response.json();
   }
-
 }
 
 const storeServiceInstance = new StoreServices();

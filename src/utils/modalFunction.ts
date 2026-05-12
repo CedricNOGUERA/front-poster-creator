@@ -4,6 +4,15 @@ import React from "react";
 //////////////////////////
 //Store page
 //////////////////////////
+export const _handleShowAddModal = (setShowAddModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+    setShowAddModal(true)
+};
+export const _handleCloseAddModal = (setSelectedItem: React.Dispatch<React.SetStateAction<StoresType>>, setShowAddModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+    setSelectedItem({} as StoresType);
+    setShowAddModal(false)
+};
+
+
 export const _handleShowEditModal = (setSelectedItem: React.Dispatch<React.SetStateAction<StoresType>>, selectedItem: StoresType, setShowEditModal: React.Dispatch<React.SetStateAction<boolean>>) => {
     setSelectedItem(selectedItem);
     setShowEditModal(true);
