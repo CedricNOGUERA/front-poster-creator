@@ -5,6 +5,7 @@ import { UserType } from "./UserType"
 import { SideBarDataType } from "@/components/DragDropComponents/SideBar"
 import { CategoriesType } from "./CategoriesType"
 import { TemplateType } from "./TemplatesType"
+import { StoresType } from "./StoresType"
 
 //Delete categories picture
 export interface ModalDeleteType {
@@ -157,4 +158,38 @@ export interface ModalDeleteTemplateType {
   handleDeleteTemplate: () => Promise<void>
   selectedModel: TemplateType
   isLoading: boolean
+
 }
+///////////////////////////
+//Store
+///////////////////////////
+
+export interface ModalAddStoreType {
+  showAddModal: boolean
+  setSelectedStore: React.Dispatch<React.SetStateAction<StoresType>>
+  setShowAddModal: React.Dispatch<React.SetStateAction<boolean>>
+  addStore: () => void
+  selectedStore: StoresType
+  shops: ShopType[];
+  isLoading: boolean;
+}
+
+export interface ModalUpdateStoreType
+{
+    showEditModal: boolean
+    setSelectedStore: React.Dispatch<React.SetStateAction<StoresType>>
+    setShowEditModal: React.Dispatch<React.SetStateAction<boolean>>
+    updateStore: (id: number, {name, companyId}: {name: string, companyId: number}) => void
+    selectedStore: StoresType
+     shops: ShopType[];
+  isLoading: boolean;
+  }
+
+  export interface ModalDeleteStoreType {
+    showDeleteModal: boolean
+    selectedStore: StoresType
+    setSelectedStore: React.Dispatch<React.SetStateAction<StoresType>>
+    setShowDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
+    deleteStore: (id: number) => void
+    isLoading: boolean
+  }
