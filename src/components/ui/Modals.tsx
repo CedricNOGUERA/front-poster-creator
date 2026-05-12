@@ -30,7 +30,6 @@ import {
   ModalAddStoreType,
   ModalUpdateStoreType,
   ModalDeleteStoreType,
-  // AddShopModalType,
 } from "@/types/ModalType";
 import { ShopType } from "@/types/ShopType";
 import {
@@ -303,15 +302,6 @@ export function ModalAddEditModel({
           <Button
             variant="success"
             type="submit"
-            // onClick={() => {
-            //   const data = {
-            //     name: selectedModel.name,
-            //     image: selectedModel.image,
-            //     categoryId: selectedModel.categoryId,
-            //     shopIds: selectedModel.shopIds,
-            //   }
-            //   _patchTemplate(selectedModel.id, data, setFeedBackState, handleCloseAddEditModal)
-            // }}
           >
             {feedBackState?.isLoading ? (
               <>
@@ -673,17 +663,6 @@ export function ModalAddCategory({
           <Button
             variant="secondary"
             onClick={() => {
-              // setFormData({
-              //   name: '',
-              //   icon: '',
-              //   image: '',
-              //   imageRglt: '',
-              //   backgroundColorHeader: '#ff0000',
-              //   backgroundColorBody: '#ffea00',
-              //   shopIds: [],
-              //   canvas: [],
-              // })
-              // resetForm()
               handleCloseAdd();
             }}
           >
@@ -1143,7 +1122,6 @@ export function ModalDuplicateCategory({
           </Button>
           <Button
             variant="success"
-            // disabled={feedBackState.isLoading}
             disabled={
               feedBackState.isLoading || newName === selectedCategory.name
             }
@@ -1471,7 +1449,6 @@ export function ModalAddShop({
             variant="success"
             type="submit"
             disabled={feedBackState.isLoading}
-            // onClick={handleSubmit}
           >
             {feedBackState.isLoading ? (
               <>
@@ -1564,7 +1541,6 @@ export function ModalAddPicture({
   return (
     <Modal show={showAdd} onHide={handleCloseAdd}>
       <Form
-        // noValidate validated={validated}
         onSubmit={handleSubmit}
       >
         <Modal.Header closeButton>
@@ -1583,15 +1559,10 @@ export function ModalAddPicture({
               value={imageName || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setImageName(e.target.value);
-                // validateField('name', e.target.value)
               }}
-              // onBlur={(e) => validateField('name', e.target.value)}
               required
-              // isInvalid={(validated && !formData.name.trim()) || !!fieldErrors.name}
             />
-            {/* <Form.Control.Feedback type='invalid'>
-              {fieldErrors.name || 'Veuillez saisir un nom de catégorie.'}
-            </Form.Control.Feedback> */}
+     
           </Form.Group>
           <Form.Group controlId="formFile" className="mb-3">
             <Form.Label className="">Ajouter une image(header)</Form.Label>

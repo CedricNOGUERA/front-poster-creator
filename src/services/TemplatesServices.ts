@@ -50,25 +50,6 @@ async postTemplate(newTemplate: FormData) {
   return response;
 }
 
-
-  // async postTemplate(newTemplate: FormData) {
-  //   const response = await fetch(`${API_URL}/api/add-template`, {
-  //     method: 'POST',
-  //     body: newTemplate,
-  //   })
-  //   return response
-  // }
-  // async postTemplate(newTemplate: TemplateType) {
-  //   const response = await fetch(`${API_URL}/api/add-template`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify(newTemplate),
-  //   })
-  //   return response
-  // }
-
   async patchTemplates(id: number | undefined, data: Partial<TemplateType>) {
     const response = await axios.patch(
       `${API_URL}/api/templates/${id}`,
@@ -105,13 +86,7 @@ async postTemplate(newTemplate: FormData) {
 
   async deleteTemplate(templateId: number | undefined) {
     if (!templateId) return
-    // const responseOld = await fetch(`${API_URL}/api/templates/${templateId}`, {
-    //   method: 'DELETE',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Authorization: `Bearer ${localStorage.getItem('token')}`,
-    //   },
-    // })
+   
     const response = await axios.delete(
       `${import.meta.env.VITE_API_URL}/api/templates/${templateId}`,
       {

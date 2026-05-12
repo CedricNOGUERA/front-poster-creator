@@ -62,7 +62,6 @@ export interface ModalAddCategoryType {
   setImgRglt: React.Dispatch<React.SetStateAction<File | null>>
   feedBackState: FeedBackSatateType
   shops: ShopType[]
-  // resetForm: () => void
   validated: boolean
   file: File | null
   fieldErrors: {[key: string]: string}
@@ -126,9 +125,6 @@ export interface ModalAddPictureType {
     isLoading: boolean
     loadingMessage: string
   }
-  // validated: boolean
-  // fieldErrors: {[key: string]: string}
-  // validateField: (fieldName: string, value: string) => void
 }
 
 
@@ -138,8 +134,6 @@ export interface ModalDuplicateCategoryType {
   selectedCategory: CategoriesType
   setSelectedCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
   setAllCategories: React.Dispatch<React.SetStateAction<CategoriesType[]>>
-  // page: number 
-  // limit: number
 }
 
 

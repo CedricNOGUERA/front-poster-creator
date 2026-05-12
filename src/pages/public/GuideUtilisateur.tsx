@@ -46,9 +46,6 @@ const GuideUtilisateur = () => {
               Guide Utilisateur{' '}
               <span className='d-none d-md-inline'>- Générateur de Bon Plan</span>
             </h1>
-            <p className='lead text-muted'>
-              {/* Guide complet pour utiliser l'application selon votre rôle */}
-            </p>
           </div>
         </Col>
       </Row>

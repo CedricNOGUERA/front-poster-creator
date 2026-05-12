@@ -12,7 +12,6 @@ import { FormCategoryDataType } from '@/components/step-selector/CategorySelecto
 //test prio
 ////////////////////////////////
 export const _formattedDate = (date: string) => {
-// const formattedDate = moment(date).format('DD/MM/YYYY à hh:mm:ss')
 const formattedDate = moment.utc(date).local().format("DD/MM/YYYY à HH:mm")
 return formattedDate
 }
@@ -252,7 +251,6 @@ export const _generateInitalComponent2 = (
   setNewTemplateState: React.Dispatch<React.SetStateAction<NewTemplateType>>,
   maxPreviewHeight: number,
   h: number | undefined,
-  // components: ComponentTypeMulti[],
   setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>,
   setDimensionFactor: React.Dispatch<React.SetStateAction<number | null>>,
 

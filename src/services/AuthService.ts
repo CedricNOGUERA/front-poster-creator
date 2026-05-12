@@ -3,7 +3,6 @@ import axios from "axios";
 
 class AuthService {
   async loginUser(credentials: LoginFormDataType) {
-    // await new Promise((resolve) => setTimeout(resolve, 1000))
     const data = JSON.stringify(credentials);
 
     const config = {

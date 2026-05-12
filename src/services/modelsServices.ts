@@ -104,15 +104,7 @@ class ModelsService {
         logging: false, // Désactive les logs de débogage
         removeContainer: true, // Nettoie après le rendu
         imageTimeout: 15000, // Timeout pour le chargement des images
-        // onclone: (clonedDoc) => {
-        //   // ✅ Optionnel : ajuster le style du document cloné si nécessaire
-        //   const clonedElement = clonedDoc.querySelector(
-        //     `[data-canvas-id="${modelId}"]`,
-        //   );
-        //   if (clonedElement) {
-        //     // Ajuster les styles si nécessaire
-        //   }
-        // },
+  
       });
 
       // ✅ Convertir le canvas en blob

@@ -64,90 +64,6 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
     );
   }, [uploadedPDFs, templateState.height]);
 
-  // Calculer le layout optimal pour les copies multiples
-  //original
-  // const calculateLayout = (): PrintLayout => {
-  //   if (!templateState.width || !templateState.height) {
-  //     return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 };
-  //   }
-
-  //   const posterWidth = templateState.width;
-  //   const posterHeight = templateState.height;
-  //   const availableWidth = currentPageDimensions.width - spacing * 2;
-  //   const availableHeight = currentPageDimensions.height - spacing * 2;
-
-  //   let bestLayout = { rows: 1, cols: 1, totalCopies: 1, spacing };
-  //   let maxCopies = 1;
-
-  //   // Essayer différentes configurations
-  //   for (let cols = 1; cols <= 10; cols++) {
-  //     for (let rows = 1; rows <= 10; rows++) {
-  //       const totalCopies = cols * rows;
-  //       if (totalCopies > copiesPerPage) continue;
-
-  //       const requiredWidth = posterWidth * cols + spacing * (cols - 1);
-  //       const requiredHeight = posterHeight * rows + spacing * (rows - 1);
-
-  //       if (
-  //         requiredWidth <= availableWidth &&
-  //         requiredHeight <= availableHeight
-  //       ) {
-  //         if (totalCopies > maxCopies) {
-  //           maxCopies = totalCopies;
-  //           bestLayout = { rows, cols, totalCopies, spacing };
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   return bestLayout;
-  // };
-  
-  //2 good, 3 pas good, 4 good
-//   const calculateLayout = (): PrintLayout => {
-//   if (!templateState.width || !templateState.height) {
-//     return { rows: 1, cols: 1, totalCopies: 1, spacing: 0 };
-//   }
-
-//   const posterWidth = templateState.width;
-//   const posterHeight = templateState.height;
-  
-//   // Marges minimales
-//   const margin = Math.max(spacing, 1); // Au moins 1mm de marge
-//   const availableWidth = currentPageDimensions.width - (margin * 2);
-//   const availableHeight = currentPageDimensions.height - (margin * 2);
-
-//   let bestLayout = { rows: 1, cols: 1, totalCopies: 1, spacing: margin };
-//   let maxCopies = 0;
-
-//   // Calculer le nombre maximum de colonnes et rangées possibles
-//   const maxPossibleCols = Math.floor((availableWidth + spacing) / (posterWidth + spacing));
-//   const maxPossibleRows = Math.floor((availableHeight + spacing) / (posterHeight + spacing));
-
-//   // Essayer différentes configurations
-//   for (let cols = 1; cols <= maxPossibleCols && cols <= 10; cols++) {
-//     for (let rows = 1; rows <= maxPossibleRows && rows <= 10; rows++) {
-//       const totalCopies = cols * rows;
-      
-//       // Ne pas dépasser le nombre demandé
-//       if (totalCopies > copiesPerPage) continue;
-
-//       // Calculer l'espace requis
-//       const requiredWidth = (posterWidth * cols) + (spacing * (cols - 1));
-//       const requiredHeight = (posterHeight * rows) + (spacing * (rows - 1));
-
-//       // Vérifier si ça rentre
-//       if (requiredWidth <= availableWidth && requiredHeight <= availableHeight) {
-//         if (totalCopies > maxCopies) {
-//           maxCopies = totalCopies;
-//           bestLayout = { rows, cols, totalCopies, spacing: margin };
-//         }
-//       }
-//     }
-//   }
-
-//   return bestLayout;
-// };
 
 const calculateLayout = (): PrintLayout => {
   if (!templateState.width || !templateState.height) {
@@ -408,7 +324,6 @@ const calculateLayout = (): PrintLayout => {
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
                       <option value="A3">A3 (297 x 420 mm)</option>
-                      {/* <option value="custom">Personnalisé</option> */}
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -526,7 +441,6 @@ const calculateLayout = (): PrintLayout => {
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
                       <option value="A3">A3 (297 x 420 mm)</option>
-                      {/* <option value="custom">Personnalisé</option> */}
                     </Form.Select>
                   </Form.Group>
                 </Col>

@@ -15,8 +15,6 @@ export default function SearchBar({seachBarProps}: {seachBarProps: SearchBarType
 
     const {searchTerm, setSearchTerm, data} = seachBarProps;
 
-    console.log(data)
-
     return (
       <Container className="d-flex align-items-center">
         <Form.Group className="mb-3 mt-2" controlId="search">

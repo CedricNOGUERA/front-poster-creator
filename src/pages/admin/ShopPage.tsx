@@ -140,7 +140,6 @@ export default function ShopPage() {
       JSON.stringify({
         name: formData?.name,
         cover: file && `uploads/shopMiniatures/${formData?.name}/${file?.name}`,
-        // cover: file && file.name,
       }),
     );
     if (file) {

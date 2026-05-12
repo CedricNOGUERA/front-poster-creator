@@ -231,7 +231,6 @@ export default function InlineDragDropEditor() {
     const left = e.clientX - canvasRect.left;
     const top = e.clientY - canvasRect.top;
     const right = canvasRect.width - left;
-    // const right = type === 'price' ? 0 : canvasRect.width - left
     const bottom = canvasRect.height - top;
 
     let newComponent: ComponentTypeMulti | ComponentTypeMulti[];
@@ -423,7 +422,6 @@ export default function InlineDragDropEditor() {
           updatedComponents[index] = {
             ...comp,
             right: initialRight - deltaX,
-            // right: comp.type === 'price' ? 0 : initialRight - deltaX,
             bottom: initialBottom - deltaY,
           };
           setComponents(updatedComponents);
@@ -499,10 +497,6 @@ export default function InlineDragDropEditor() {
             ).fontWeight,
             color: (comp as PrincipalPriceComponentType | NumberComponentType)
               .color,
-            // width:
-            //   comp.type === 'price'
-            //     ? `${(comp as PrincipalPriceComponentType).width}%`
-            //     : undefined,
             minWidth: "20px",
             minHeight: "10px",
             borderBottom: isSelected ? "1px gray dashed" : "",
@@ -717,7 +711,6 @@ export default function InlineDragDropEditor() {
           }
         }
 
-        // if (responseModel.ok) {
         handleCloseValidateModel();
         _showToast(
           true,
@@ -727,7 +720,6 @@ export default function InlineDragDropEditor() {
           3000,
         );
         setIsErrorModel(false);
-        // }
       } else {
         // ========== MODE CRÉATION ==========
 

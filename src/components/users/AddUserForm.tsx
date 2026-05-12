@@ -24,12 +24,10 @@ export const AddUserForm = ({
   titleButton,
   handleCloseAdd,
   initialData,
-  // setUsers,
 }: {
   titleButton: string
   handleCloseAdd?: () => void
   initialData?: UserType | null
-  // setUsers?: React.Dispatch<React.SetStateAction<UserType[]>>
 }) => {
 /* States
  *******************************************************************************************/
@@ -152,9 +150,7 @@ const storeList = React.useMemo(
       }
     } finally {
       setLoading(false)
-      // if(setUsers){
-      //   // _getAllUsers(setUsers, setLoading)
-      // }
+ 
     }
   }
 

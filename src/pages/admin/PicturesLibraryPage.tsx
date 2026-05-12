@@ -1,7 +1,6 @@
 import { ModalAddPicture, ModalGenericDelete } from "@/components/ui/Modals";
 import VariousPicturesServices from "@/services/VariousPicturesServices";
 import userDataStore from "@/stores/userDataStore";
-// import userDataStore from '@/stores/userDataStore'
 import { PictureType, ToastDataType } from "@/types/DiversType";
 import { _getPictures } from "@/utils/apiFunctions";
 import { _expiredSession, _showToast } from "@/utils/notifications";
@@ -30,7 +29,6 @@ export default function PicturesLibraryPage() {
   const [pictures, setPictures] = React.useState<PictureType[]>([]);
   const [file, setFile] = React.useState<File | null>(null);
   const [imageName, setImageName] = React.useState<string>("");
-  // const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [selectedPicture, setSelectedPicture] = React.useState<PictureType>({
     id: 0,
@@ -62,7 +60,6 @@ export default function PicturesLibraryPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // setIsLoading(false)
     setfeedBackState((prev) => ({
       ...prev,
       isLoading: true,

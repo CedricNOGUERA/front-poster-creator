@@ -82,21 +82,21 @@ export const DimensionSelector = ({ title }: Props) => {
               key={dimension.id}
               className={`dimension-card hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center ${modelAvailable ? "border-primary" : "border-danger"}`}
               onClick={() => {
-                if(modelAvailable){
-                onHandleDimension(dimension.id)
-              }else{
-                alert("Ce modèle n'est pas disponible pour cette dimension")
-              }
-            }
-            }
+                if (modelAvailable) {
+                  onHandleDimension(dimension.id);
+                } else {
+                  alert("Ce modèle n'est pas disponible pour cette dimension");
+                }
+              }}
               style={{
                 width: "300px",
                 minHeight: "220px",
               }}
             >
-              {imagesmodel?.find((img) => img.modelId === modelAvailable?.id)? (
-                  
-                    <div className="d-flex justify-content-center align-items-center mb-2">
+              {imagesmodel?.find(
+                (img) => img.modelId === modelAvailable?.id,
+              ) ? (
+                <div className="d-flex justify-content-center align-items-center mb-2">
                   <img
                     src={`${import.meta.env.VITE_API_URL}/uploads/modelMiniature/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.modelId}/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.name}`}
                     alt="Image du modèle"
@@ -107,53 +107,30 @@ export const DimensionSelector = ({ title }: Props) => {
                     }}
                   />
                 </div>
-                  )
-               :(
-                  <div
-                style={{
-                  width: `${scaledWidth}px`,
-                  height: `${scaledHeight}px`,
-                  border: "2px dashed #aaa",
-                  backgroundColor: "#f8f9fa",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "10px",
-                  transition: "transform 0.3s ease",
-                }}
-              >
-                <span className="fw-semibold">
-                  <FaImage className="text-secondary" />
-                </span>
-              </div>
-        )}
-
-           
-       
-            
-              {/* <div
-                style={{
-                  width: `${scaledWidth}px`,
-                  height: `${scaledHeight}px`,
-                  border: "2px dashed #aaa",
-                  backgroundColor: "#f8f9fa",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "10px",
-                  transition: "transform 0.3s ease",
-                }}
-              >
-                <span className="fw-semibold">
-                  <FaImage className="text-secondary" />
-                </span>
-              </div> */}
+              ) : (
+                <div
+                  style={{
+                    width: `${scaledWidth}px`,
+                    height: `${scaledHeight}px`,
+                    border: "2px dashed #aaa",
+                    backgroundColor: "#f8f9fa",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "10px",
+                    transition: "transform 0.3s ease",
+                  }}
+                >
+                  <span className="fw-semibold">
+                    <FaImage className="text-secondary" />
+                  </span>
+                </div>
+              )}
               <p className="mt-2 text-center fw-bold fs-6">
                 {dimension.helper_dimensions}
               </p>
               <small>{dimension.orientation}</small>
             </div>
-
           );
         })}
       </div>

@@ -1,5 +1,4 @@
 import { Button, ButtonGroup, Col, Row } from 'react-bootstrap'
-// import notFound from '@/assets/images/starry.svg' 
 import notFound from '@/assets/images/404.svg' 
 
 export default function NotFound() {
