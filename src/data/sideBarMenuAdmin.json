@@ -57,7 +57,7 @@
     },
     {
         "id": 8,
-        "title": "Stat connexions",
+        "title": "Connexions",
         "icon": "fas fa-sign-in-alt",
         "display": "connexions",
         "role": ["super_admin"],
