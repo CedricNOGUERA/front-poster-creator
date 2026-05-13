@@ -31,3 +31,13 @@ export interface ResultUserType {
   next: boolean;
   users: UserType[];
 }
+
+export interface DebouncedFilterType {
+  page: string;
+  perPage: string;
+  company: string;
+  store: string;
+  name: string;
+  email: string;
+  role: string;
+}
