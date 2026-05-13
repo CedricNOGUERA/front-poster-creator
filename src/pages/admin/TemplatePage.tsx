@@ -151,7 +151,6 @@ export default function TemplatePage() {
     isLoading,
   };
 
-  console.log(templateData)
 
   return (
     <Container fluid className="relative p-0">
