@@ -1,4 +1,5 @@
 import { ModalAddPicture, ModalGenericDelete } from "@/components/ui/Modals";
+import AddButton from "@/components/ui/table/AddButton";
 import VariousPicturesServices from "@/services/VariousPicturesServices";
 import userDataStore from "@/stores/userDataStore";
 import { PictureType, ToastDataType } from "@/types/DiversType";
@@ -197,16 +198,10 @@ export default function PicturesLibraryPage() {
   return (
     <Container fluid className="p-0">
       <h3 className="py-3">Gestion des images</h3>
-      <Container className="text-end">
-        <ButtonGroup>
-          <Button
-            onClick={handleShowAdd}
-            className="d-flex align-items-center gap-1"
-          >
-            <FaCirclePlus />
-            une image
-          </Button>
-        </ButtonGroup>
+      <Container>
+        <div className="d-flex justify-content-end mb-3">
+         <AddButton handleShowAdd={handleShowAdd} title="une image" />
+        </div>
       </Container>
       <Container className="d-flex flex-wrap align-items-center mt-5 mb-5 gap-4">
         {pictures.map((pict) => (

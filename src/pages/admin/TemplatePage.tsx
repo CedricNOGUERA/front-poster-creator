@@ -230,7 +230,6 @@ export default function TemplatePage() {
                           {isLoading && <TableLoader lengthTr={5} lengthTd={4} />}
             </tbody>
           </Table>
-        
       </Container>
 
       <ModalEditTemplate modalEditemplateProps={modalEditemplateProps} />
