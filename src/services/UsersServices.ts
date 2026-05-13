@@ -8,7 +8,7 @@ class UsersServices {
     return response;
   }
 
-  async getPaginatedUsers(
+  async paginatedUsers(
     page: string,
     perPage: string,
     company: string,
