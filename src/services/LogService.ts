@@ -78,7 +78,6 @@ class LogService {
     try {
       const res = await axios.get(`${API_URL}/api/health`);
 
-      console.info("serveur ok");
       return res.status >= 200 && res.status < 300;
     } catch (error) {
       console.error("serveur hors ligne : ", error);
@@ -89,9 +88,7 @@ class LogService {
   async serverStatus() {
     try {
       const res = await axios.get(`${API_URL}/api/server-status`);
-      if (res) {
-        console.info(res.status);
-      }
+   
       return res.data; // true si HTTP 200-299
     } catch (error) {
       console.error(error);
