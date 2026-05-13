@@ -160,6 +160,7 @@ export default function ConnexionCount() {
         <Table striped hover responsive="sm" className="shadow">
           <thead>
             <tr>
+              {/* <th></th> */}
               <th>Date</th>
               <th>Nom</th>
               <th>email</th>
@@ -169,6 +170,11 @@ export default function ConnexionCount() {
           </thead>
           <thead>
             <tr>
+              {/* <th className="py-3">
+                <Form.Group>
+                  <Form.Check />
+                </Form.Group>
+              </th> */}
               <th className="py-3">
                 <Form.Group controlId="connectedAt">
                   <Form.Control
@@ -240,6 +246,11 @@ export default function ConnexionCount() {
             {connexions?.connexions?.map(
               (conn: ConnexionType, index: number) => (
                 <tr key={index}>
+                  {/* <td>
+                    <Form.Group>
+                      <Form.Check />
+                    </Form.Group>
+                  </td> */}
                   <td>
                     {moment
                       .utc(conn.dateOfConnexion)
