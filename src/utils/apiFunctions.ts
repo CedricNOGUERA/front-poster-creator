@@ -563,7 +563,6 @@ export const _handleUploadFile = async (
   shopId: number,
 ) => {
   if ((file && file?.type === "image/png") || file?.type === "image/jpeg") {
-    console.info("Uploading file...");
 
     const formData = new FormData();
     formData.append("images", file);
