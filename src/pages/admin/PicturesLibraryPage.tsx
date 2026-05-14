@@ -7,8 +7,8 @@ import { _getPictures } from "@/utils/apiFunctions";
 import { _expiredSession, _showToast } from "@/utils/notifications";
 import { AxiosError } from "axios";
 import React from "react";
-import { Badge, Button, ButtonGroup, Card, Container } from "react-bootstrap";
-import { FaCirclePlus, FaXmark } from "react-icons/fa6";
+import { Badge, Card, Container } from "react-bootstrap";
+import { FaXmark } from "react-icons/fa6";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 interface ContextType {

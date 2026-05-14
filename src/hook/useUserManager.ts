@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
@@ -31,9 +32,9 @@ export function useUserManager() {
   const isFiltering = [company, store, name, email, role].every((v) => v === "");
   const totalPages = Math.ceil(paginatedUsers?.total / parseInt(perPage));
 
-  const refreshUsers = () =>
+  const refreshUsers = () => {
     getPaginatedUsers(page, perPage, company, store, name, email, role, setIsLoading, setPaginatedUsers);
-
+}
   // Redirection user
   React.useEffect(() => {
     if (userRole === "user") navigate("/editeur-de-bon-plan");
@@ -44,7 +45,7 @@ export function useUserManager() {
   React.useEffect(() => {
     const timeout = setTimeout(() => setDebouncedFilters(filters), 500);
     return () => clearTimeout(timeout);
-  }, [page, perPage, company, store, name, email, role]);
+  }, [page, perPage, company, store, name, email, role, filters]);
 
   // Fetch
   React.useEffect(() => {

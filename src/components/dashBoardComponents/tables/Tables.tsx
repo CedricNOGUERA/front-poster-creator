@@ -1,10 +1,11 @@
 import TableLoader from "@/components/ui/squeleton/TableLoader";
 import { ShopType } from "@/types/ShopType";
 import { ResultUserType, UserType } from "@/types/UserType";
-import { Button, Dropdown, Form, Table } from "react-bootstrap";
-import { FaEllipsisVertical, FaPencil, FaTrash, FaX } from "react-icons/fa6";
+import { Dropdown, Form, Table } from "react-bootstrap";
+import { FaEllipsisVertical, FaPencil, FaTrash } from "react-icons/fa6";
 import storeData from "@/data/store.json";
 import { createResetForm } from "@/utils/admin/function";
+import ResetFormButton from "@/components/ui/table/ResetFormButton";
 
 interface UserTableType {
   company: string;
@@ -26,13 +27,17 @@ interface UserTableType {
     idCompany: number;
     nameCompany: string;
   }[];
-  handleShowEdit: (user: UserType) => void
-  setSelectedUserId: React.Dispatch<React.SetStateAction<number | null>>
-  handleShowDelete: () => void
-  isLoading: boolean
+  handleShowEdit: (user: UserType) => void;
+  setSelectedUserId: React.Dispatch<React.SetStateAction<number | null>>;
+  handleShowDelete: () => void;
+  isLoading: boolean;
 }
 
-export function UserTable({userTableProps}: {userTableProps: UserTableType}) {
+export function UserTable({
+  userTableProps,
+}: {
+  userTableProps: UserTableType;
+}) {
   const {
     company,
     setCompany,
@@ -56,7 +61,13 @@ export function UserTable({userTableProps}: {userTableProps: UserTableType}) {
     isLoading,
   } = userTableProps;
 
-  const resetForm = createResetForm({ setCompany, setStore, setName, setEmail, setRole })
+  const resetForm = createResetForm({
+    setCompany,
+    setStore,
+    setName,
+    setEmail,
+    setRole,
+  });
   return (
     <Table striped hover responsive="sm" className="shadow">
       <thead className="sticky-sm-top text-start">
@@ -147,12 +158,7 @@ export function UserTable({userTableProps}: {userTableProps: UserTableType}) {
             </Form.Group>
           </th>
           <th className="py-3" style={{ width: "150px" }}>
-            <Button onClick={() => resetForm()} disabled={isFiltering}>
-              <div className="flex items-center">
-                <FaX size={10} className="me-1" />
-                <small>Réinitialiser</small>
-              </div>
-            </Button>
+           <ResetFormButton resetForm={resetForm} isFiltering={isFiltering} />
           </th>
         </tr>
       </thead>
