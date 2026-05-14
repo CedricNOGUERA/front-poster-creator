@@ -15,3 +15,12 @@ export type ConnexionType = {
   };
   dateOfConnexion: string;
 };
+
+export interface DebouncedFilterConnexionType {
+  page: string;
+  perPage: string;
+  name: string;
+  email: string;
+  company: string;
+  connectedAt: string;
+}
