@@ -1,6 +1,5 @@
 import { CategoriesType } from "@/types/CategoriesType";
 import { ShopType } from "@/types/ShopType";
-import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { FaCopy, FaEllipsisVertical, FaPencil, FaTrash } from "react-icons/fa6";
 import MenuItem from "../dropdownMenu/MenuItem";
@@ -31,7 +30,7 @@ export default function MenuDrop<T extends CategoriesType | ShopType>({
         </b>
       </Dropdown.Toggle>
       <Dropdown.Menu align="end">
-        {(trigger !== "magasin" && trigger !== "modele") && (
+        {(trigger !== "magasin" && trigger !== "enseignes" && trigger !== "modele") && (
             <Dropdown.Item
               className="d-flex align-items-center gap-1"
               onClick={() => handleShowEditModal && handleShowEditModal(data)}
