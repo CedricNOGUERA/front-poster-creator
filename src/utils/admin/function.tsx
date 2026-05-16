@@ -1,9 +1,11 @@
 import UsersServices from "@/services/UsersServices";
 import { DebouncedFilterType, ResultUserType } from "@/types/UserType";
+import React from "react";
 import { NavigateFunction } from "react-router-dom";
 
 export const createResetForm = (
-  setters: Record<string, (value: string) => void>,
+  setters: Record<string, React.Dispatch<React.SetStateAction<string>>>,
+  // setters: Record<string, (value: string) => void>,
 ) => {
   return () => {
     Object.values(setters).forEach((setter) => setter(""));

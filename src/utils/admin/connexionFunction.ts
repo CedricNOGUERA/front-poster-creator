@@ -1,7 +1,9 @@
 import StatServices from "@/services/StatServices";
-import { ConnexionStatType, DebouncedFilterConnexionType } from "@/types/ConnextionStatType";
+import {
+  ConnexionStatType,
+  DebouncedFilterConnexionType,
+} from "@/types/ConnextionStatType";
 import { NavigateFunction } from "react-router-dom";
-
 
 export const debouncedConnexionFilterSetter = (
   params: URLSearchParams,
@@ -12,10 +14,9 @@ export const debouncedConnexionFilterSetter = (
   if (debouncedFilters.name) params.set("name", debouncedFilters.name);
   if (debouncedFilters.email) params.set("email", debouncedFilters.email);
   if (debouncedFilters.company) params.set("company", debouncedFilters.company);
-  if (debouncedFilters.connectedAt) params.set("connectedAt", debouncedFilters.connectedAt);
+  if (debouncedFilters.connectedAt)
+    params.set("connectedAt", debouncedFilters.connectedAt);
 };
-
-
 
 export const getPaginatedConnexions = async (
   page: string,
@@ -45,25 +46,24 @@ export const getPaginatedConnexions = async (
   }
 };
 
-
 export const getFilteredConnexionData = (
-    params: URLSearchParams,
-      debouncedFilters: DebouncedFilterConnexionType,
-      navigate: NavigateFunction,
-      setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-      setConnexions: React.Dispatch<React.SetStateAction<ConnexionStatType>>,
+  params: URLSearchParams,
+  debouncedFilters: DebouncedFilterConnexionType,
+  navigate: NavigateFunction,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setConnexions: React.Dispatch<React.SetStateAction<ConnexionStatType>>,
 ) => {
-    debouncedConnexionFilterSetter(params, debouncedFilters);
-    getPaginatedConnexions(
-      debouncedFilters.page,
-      debouncedFilters.perPage,
-      debouncedFilters.name,
-      debouncedFilters.email,
-      debouncedFilters.company,
-      debouncedFilters.connectedAt,
-      setConnexions,
-      setIsLoading,
-    );
+  debouncedConnexionFilterSetter(params, debouncedFilters);
+  getPaginatedConnexions(
+    debouncedFilters.page,
+    debouncedFilters.perPage,
+    debouncedFilters.name,
+    debouncedFilters.email,
+    debouncedFilters.company,
+    debouncedFilters.connectedAt,
+    setConnexions,
+    setIsLoading,
+  );
 
-    navigate(`/tableau-de-bord/connexions?${params.toString()}`)
-}
+  navigate(`/tableau-de-bord/connexions?${params.toString()}`);
+};
