@@ -41,14 +41,5 @@ export interface DebouncedFilterType {
   email: string;
   role: string;
 }
-export interface DebouncedFilterType {
-  page: string;
-  perPage: string;
-  company: string;
-  store: string;
-  name: string;
-  email: string;
-  role: string;
-}
 
 
