@@ -1,16 +1,10 @@
-import { _buildPaginationItems } from "@/components/ui/pagination";
 import TableLoader from "@/components/ui/squeleton/TableLoader";
-import logServiceInstance from "@/services/LogService";
+import TablePagination from "@/components/ui/table/TablePagination";
 import { LogResultType } from "@/types/logType";
+import { getPaginatedLogs } from "@/utils/admin/logsFunction";
 import { _formattedDate, _statusBadge } from "@/utils/functions";
 import React from "react";
-import {
-  Badge,
-  Container,
-  Form,
-  Pagination,
-  Table,
-} from "react-bootstrap";
+import { Badge, Container, Form, Table } from "react-bootstrap";
 import { FaX } from "react-icons/fa6";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "rsuite";
@@ -91,44 +85,48 @@ export default function MonitoringPage() {
       debouncedFilters.user,
       debouncedFilters.message,
       debouncedFilters.createdAt,
+      setIsLoading,
+      setLogs,
     );
 
     navigate(`/tableau-de-bord/logs?${params.toString()}`);
   }, [debouncedFilters, navigate]);
 
-  const getPaginatedLogs = async (
-    page: string,
-    perPage: string,
-    route: string,
-    level: string,
-    user: string,
-    message: string,
-    createdAt: string,
-  ) => {
-    setIsLoading(true);
-    try {
-      const response = await logServiceInstance.getPaginatedLogs(
-        page,
-        perPage,
-        route,
-        level,
-        user,
-        message,
-        createdAt,
-      );
-      setLogs(response);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des logs paginés:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const getPaginatedLogs = async (
+  //   page: string,
+  //   perPage: string,
+  //   route: string,
+  //   level: string,
+  //   user: string,
+  //   message: string,
+  //   createdAt: string,
+  //   setIsLoadingDisplay: React.Dispatch<React.SetStateAction<boolean>>,
+  //   setLogs: React.Dispatch<React.SetStateAction<LogResultType>>
+  // ) => {
+  //   setIsLoadingDisplay(true);
+  //   try {
+  //     const response = await logServiceInstance.paginatedLogs(
+  //       page,
+  //       perPage,
+  //       route,
+  //       level,
+  //       user,
+  //       message,
+  //       createdAt,
+  //     );
+  //     setLogs(response);
+  //   } catch (error) {
+  //     console.error("Erreur lors de la récupération des logs paginés:", error);
+  //   } finally {
+  //     setIsLoadingDisplay(false);
+  //   }
+  // };
 
-  const items = _buildPaginationItems({
-  currentPage,
-  totalPages,
-  onPageChange: (p) => setPage(`${p}`),
-});
+  // const items = _buildPaginationItems({
+  //   currentPage,
+  //   totalPages,
+  //   onPageChange: (p) => setPage(`${p}`),
+  // });
 
   const resetForm = () => {
     setRoute("");
@@ -138,17 +136,17 @@ export default function MonitoringPage() {
     setCreatedAt("");
   };
 
-  const limitedElements = (value: string) => {
-    const newPerPage = parseInt(value ?? "10");
-    const oldPerPage = parseInt(perPage);
+  // const limitedElements = (value: string) => {
+  //   const newPerPage = parseInt(value ?? "10");
+  //   const oldPerPage = parseInt(perPage);
 
-    const newPage =
-      Math.floor(((currentPage - 1) * oldPerPage) / newPerPage) + 1;
+  //   const newPage =
+  //     Math.floor(((currentPage - 1) * oldPerPage) / newPerPage) + 1;
 
-    setPerPage(`${newPerPage}`);
-    setPage(`${newPage}`);
-    setPerPage(value ?? "10");
-  };
+  //   setPerPage(`${newPerPage}`);
+  //   setPage(`${newPage}`);
+  //   setPerPage(value ?? "10");
+  // };
 
   return (
     <Container fluid className="p-0">
@@ -246,7 +244,7 @@ export default function MonitoringPage() {
           </thead>
           <tbody>
             {isLoading ? (
-             <TableLoader lengthTr={5} lengthTd={7} />
+              <TableLoader lengthTr={5} lengthTd={7} />
             ) : (
               logs?.logs?.map((log, indx: number) => {
                 const userName = log?.user?.split("@")[0];
@@ -274,7 +272,23 @@ export default function MonitoringPage() {
             )}
           </tbody>
         </Table>
-        <div className="d-flex justify-content-between">
+        <TablePagination
+          tablePaginationProps={{
+            currentPage: currentPage,
+            totalPages: totalPages,
+            page: page,
+            setPage: setPage,
+            perPage: perPage,
+            setPerPage: setPerPage,
+            // currentPage: useModel.currentPage,
+            // totalPages: useModel.totalPages,
+            // page: useModel.page,
+            // setPage: useModel.setPage,
+            // perPage: useModel.perPage,
+            // setPerPage: useModel.setPerPage,
+          }}
+        />
+        {/* <div className="d-flex justify-content-between">
           <Pagination className="text-dark">
             <Pagination.First onClick={() => setPage("1")} />
             <Pagination.Prev
@@ -309,7 +323,7 @@ export default function MonitoringPage() {
               <option value="100">100</option>
             </Form.Select>
           </div>
-        </div>
+        </div> */}
       </Container>
     </Container>
   );

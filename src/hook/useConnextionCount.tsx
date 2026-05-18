@@ -34,7 +34,7 @@ export function useConnexionCount() {
 
   const filters = { page, perPage, name, email, company, connectedAt };
 
-  const isFiltering = [page, perPage, name, email, company, connectedAt].every(
+  const isFiltering = [name, email, company, connectedAt].every(
     (v) => v === "",
   );
   const totalPages = Math.ceil(connexions?.total / parseInt(perPage));
