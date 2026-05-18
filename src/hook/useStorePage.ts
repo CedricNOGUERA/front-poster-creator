@@ -60,7 +60,7 @@ export function useStorePage() {
   );
   const filters = { page, perPage, id, name, company }
 
-  const isFiltering = [company, id, name, company].every((v) => v === "");
+  const isFiltering = [ id, name, company].every((v) => v === "");
   const totalPages = Math.ceil(paginatedStores?.total / parseInt(perPage));
 
   // Redirection user

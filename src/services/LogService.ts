@@ -3,12 +3,12 @@ import axios from "axios";
 const API_URL = (import.meta.env.VITE_API_URL = import.meta.env.VITE_API_URL);
 
 class LogService {
-  private paginatedLogs = "/api/logs/paginated";
+  private paginatedLog = "/api/logs/paginated";
   private allLogsEndpoint = "/api/logs";
   private status500Endpoint = "/api/logs/errors/500";
   private errorEndpoint = "/api/logs/errors";
 
-  async getPaginatedLogs(
+  async paginatedLogs(
     page: string,
     perPage: string,
     route: string,
@@ -28,7 +28,7 @@ class LogService {
     });
 
     const response = await fetch(
-      `${API_URL}${this.paginatedLogs}?${params.toString()}`,
+      `${API_URL}${this.paginatedLog}?${params.toString()}`,
       {
         headers: {
           "Content-Type": "application/json",
