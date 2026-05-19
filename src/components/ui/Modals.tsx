@@ -9,7 +9,7 @@ import {
   Modal,
   Spinner,
 } from "react-bootstrap";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import {  useOutletContext } from "react-router-dom";
 import { TagPicker } from "rsuite";
 import { RiErrorWarningLine } from "react-icons/ri";
 
@@ -37,7 +37,6 @@ import {
   BackgroundComponentType,
 } from "@/types/ComponentType";
 import {
-  _getCategories,
   _getTemplates,
   _handleDeleteImg,
   _patchTemplate,
@@ -45,10 +44,6 @@ import {
 import fontAwesomeIcons from "../../data/fontAwesomeIcons.json";
 import { TemplateType } from "@/types/TemplatesType";
 import { CategoriesType } from "@/types/CategoriesType";
-import categoriesServiceInstance from "@/services/CategoriesServices";
-import { AxiosError } from "axios";
-import { _expiredSession, _showToast } from "@/utils/notifications";
-import userDataStore, { UserDataType } from "@/stores/userDataStore";
 import {
   FaCircleCheck,
   FaCirclePlus,
@@ -989,94 +984,23 @@ export function ModalDuplicateCategory({
 }: {
   modalDuplicateCategoryProps: ModalDuplicateCategoryType;
 }) {
-  const { feedBackState, setFeedBackState, setToastData, toggleShow } =
+  const { feedBackState } =
     useOutletContext<ContextModalValidateModelType>();
-  const userLogOut = userDataStore((state: UserDataType) => state.authLogout);
   const {
     showDuplicate,
     handleCloseDuplicate,
     selectedCategory,
     setSelectedCategory,
-    setAllCategories,
+    newName,
+    setNewName,
+    handleSubmit,
   } = modalDuplicateCategoryProps;
-  const [newName, setNewName] = React.useState<string>("");
-  const navigate = useNavigate();
 
-  const handleDuplicate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const id = selectedCategory.id;
-    setFeedBackState((prev) => ({
-      ...prev,
-      isLoading: true,
-      loadingMessage: "chargement...",
-    }));
 
-    try {
-      const response = await categoriesServiceInstance.duplicateCategory(
-        id,
-        newName,
-      );
-
-      if (response.status === 201) {
-        _getCategories(
-          setAllCategories,
-          setToastData,
-          toggleShow,
-          setFeedBackState,
-        );
-        handleCloseDuplicate();
-        setToastData({
-          bg: "success",
-          position: "top-end",
-          delay: 4000,
-          icon: "fa fa-check-circle",
-          message: response.data.message
-            ? response.data.message
-            : "Catégorie dupliquée avec succès",
-        });
-        toggleShow();
-      }
-    } catch (error: unknown) {
-      console.error(error);
-      if (error instanceof AxiosError) {
-        if (
-          error.response &&
-          error.response.status === 401 &&
-          error.response.data.code === "TOKEN_EXPIRED"
-        ) {
-          _expiredSession(
-            (success, message, delay) =>
-              _showToast(success, message, setToastData, toggleShow, delay),
-            userLogOut,
-            navigate,
-          );
-        } else {
-          setToastData({
-            bg: "danger",
-            position: "top-end",
-            delay: 7000,
-            icon: "fa fa-xmark-circle",
-            message: error?.response?.data?.message
-              ? error?.response?.data?.message
-              : error?.message === "Network Error"
-                ? "Une erreur serveur est survenue, vérifier votre connexion internet. Si le problème persiste contactez votre administrateur"
-                : "Une erreur est survenue lors de la duplication",
-          });
-          toggleShow();
-        }
-      }
-    } finally {
-      setFeedBackState((prev) => ({
-        ...prev,
-        isLoading: false,
-        loadingMessage: "",
-      }));
-    }
-  };
-
+ 
   return (
     <Modal show={showDuplicate} onHide={handleCloseDuplicate}>
-      <Form onSubmit={handleDuplicate}>
+      <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title className="text-primary">
             <FaPencil />
