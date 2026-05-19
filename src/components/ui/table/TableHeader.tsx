@@ -5,7 +5,7 @@ export default function TableHeader({columnsData}: {columnsData: string[]}) {
         <th key={column}>{column}</th>
     ))
   return (
-    <thead>
+    <thead className="sticky-sm-top">
       <tr>
         {columns}
       </tr>
