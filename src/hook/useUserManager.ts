@@ -45,7 +45,7 @@ export function useUserManager() {
   React.useEffect(() => {
     const timeout = setTimeout(() => setDebouncedFilters(filters), 500);
     return () => clearTimeout(timeout);
-  }, [page, perPage, company, store, name, email, role, filters]);
+  }, [page, perPage, company, store, name, email, role]);
 
   // Fetch
   React.useEffect(() => {
