@@ -37,6 +37,7 @@ export function useStorePage() {
   const { toggleShow, setToastData } =
     useOutletContext<ContextStoreType>();
 
+    const columnsData = ["Id", "Enseigne", "Magasin", "Action"];
     const [paginatedStores, setPaginatedStores] = React.useState<ResultStoreType>(
       {} as ResultStoreType,
     );
@@ -210,7 +211,7 @@ export function useStorePage() {
 
   return {
     //states
-    paginatedStores, isLoadingDisplay, isFiltering,
+    columnsData, paginatedStores, isLoadingDisplay, isFiltering,
     showAddModal, showDeleteModal, showEditModal,
     setShowAddModal, setShowDeleteModal, setShowEditModal,
     selectedStore, setSelectedStore, 
