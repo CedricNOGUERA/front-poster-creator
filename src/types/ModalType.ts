@@ -133,7 +133,9 @@ export interface ModalDuplicateCategoryType {
   handleCloseDuplicate: () => void
   selectedCategory: CategoriesType
   setSelectedCategory: React.Dispatch<React.SetStateAction<CategoriesType>>
-  setAllCategories: React.Dispatch<React.SetStateAction<CategoriesType[]>>
+  newName: string
+  setNewName: React.Dispatch<React.SetStateAction<string>>
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
 }
 
 

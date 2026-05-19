@@ -29,6 +29,26 @@ class CategoriesService {
       setCat(data)
       return response
     }
+
+    async paginatedCategories(page: string, perPage: string, id: string, name: string, store: string) {
+
+      const params = new URLSearchParams({
+      page: `${page}`,
+      perPage: `${perPage}`,
+      id: `${id}`,
+      name: `${name}`,
+      store: `${store}`,
+    });
+
+      const response = await fetch(`${API_URL}/api/categories/paginated?${params.toString()}`, {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+      return await response.json();
+    }
+
     async getCategoriesPaginated(setCat: React.Dispatch<React.SetStateAction<CategoriesPaginatedType>>, page: number, limit: number) {
       const response = await fetch(`${API_URL}/api/categories-paginated?page=${page}&limit=${limit}`)
       if (!response.ok) {
