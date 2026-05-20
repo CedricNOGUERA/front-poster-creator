@@ -1,228 +1,36 @@
-import React from "react";
-import useStoreApp from "@/stores/storeApp";
-import { ShopType } from "@/types/ShopType";
-import { _getAllShops } from "@/utils/apiFunctions";
-import shopServiceInstance from "@/services/ShopsServices";
-import { useOutletContext } from "react-router-dom";
-import { FeedBackSatateType, ToastDataType } from "@/types/DiversType";
-import { _sanitizeString } from "@/utils/functions";
-import userDataStore, { UserDataType } from "@/stores/userDataStore";
-import { useNavigate } from "react-router-dom";
-import { FaPlusCircle } from "react-icons/fa";
 import { ModalAddShop } from "../ui/Modals";
+import useShopSelectorDrag from "@/hook/useShopSelectorDrag";
+import ShopCard from "../DragDropComponents/shop/ShopCard";
+import AddShopButton from "../DragDropComponents/shop/AddShopButton";
 
 type Props = {
   title: string;
 };
-interface ContextCategorySelectorDragType {
-  toggleShow: () => void;
-  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>;
-  feedBackState: FeedBackSatateType;
-  setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>;
-  shops: ShopType[];
-  setShops: React.Dispatch<React.SetStateAction<ShopType[]>>;
-}
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 export const ShopSelectorDrag = ({ title }: Props) => {
-  /* States
-   *******************************************************************************************/
-  const navigate = useNavigate();
-  const {
-    toggleShow,
-    setToastData,
-    feedBackState,
-    setFeedBackState,
-    shops,
-    setShops,
-  } = useOutletContext<ContextCategorySelectorDragType>();
-  const userStoreData = userDataStore((state: UserDataType) => state);
-  const userRole = userDataStore((state: UserDataType) => state.role);
-  const userLogOut = userDataStore((state: UserDataType) => state.authLogout);
 
-  const storeApp = useStoreApp();
-  const [file, setFile] = React.useState<File | null>(null);
-  const [formData, setFormData] = React.useState<{
-    name: string;
-    image: string;
-  }>({
-    name: "",
-    image: "",
-  });
-
-  const [showAdd, setShowAdd] = React.useState(false);
-  const handleCloseAdd = () => {
-    resetForm();
-    setShowAdd(false);
-  };
-  const handleShowAdd = () => setShowAdd(true);
-
-  /* UseEffect
-   *******************************************************************************************/
-  React.useEffect(() => {
-    // Redirection si l'utilisateur a le rôle "user"
-    if (userRole === "user") {
-      navigate("/editeur-de-bon-plan");
-      return;
-    }
-  }, [userRole, navigate]);
-
-  /* Functions
-   *******************************************************************************************/
-  const onHandleShop = (id: number) => {
-    storeApp.setShopId(id);
-    storeApp.nextStep();
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      image: "",
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const form = e.currentTarget;
-
-    // Validation du formulaire
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-      return;
-    }
-
-    if (formData.name.trim() === "") {
-      setFeedBackState((prev) => ({
-        ...prev,
-        isError: true,
-        errorMessage: "Veuillez saisir un nom de magasin",
-        isLoading: false,
-        loadingMessage: "",
-      }));
-      return;
-    }
-
-    const shopThumbnailName = file ? _sanitizeString(file.name) : "";
-
-    const shopFormData = new FormData();
-    shopFormData.append(
-      "data",
-      JSON.stringify({
-        name: formData.name,
-        cover:
-          file &&
-          `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}`,
-      }),
-    );
-    if (file) {
-      shopFormData.append("image", file);
-    }
-  
-    setFeedBackState((prev) => ({
-      ...prev,
-      isLoading: true,
-      loadingMessage: "Chargement",
-    }));
-
-    try {
-      const response = await shopServiceInstance.addShop(shopFormData);
-      if (response.ok) {
-        const newShop = {
-          id: shops?.length + 1,
-          name: formData.name,
-          cover: file
-            ? `uploads/shopMiniatures/${formData.name}/${shopThumbnailName}`
-            : "",
-        };
-
-        setShops((prev) => [...prev, newShop]);
-        _getAllShops(setShops, setToastData, userLogOut, navigate, toggleShow);
-        setToastData({
-          bg: "success",
-          position: "top-end",
-          delay: 3000,
-          icon: "fa fa-check-circle",
-          message: "Nouveau magasin ajouté avec succès",
-        });
-        toggleShow();
-        handleCloseAdd();
-      }
-    } catch (error) {
-      console.error(error);
-      setToastData({
-        bg: "danger",
-        position: "top-end",
-        delay: 3000,
-        icon: "fa fa-x-mark",
-        message: "Une erreur s'est produite lors de l'ajout",
-      });
-      toggleShow();
-    } finally {
-      setFeedBackState((prev) => ({
-        ...prev,
-        isLoading: false,
-        loadingMessage: "",
-      }));
-    }
-  };
+  const useShopSelector = useShopSelectorDrag();
 
   const modalAddShopProps = {
-    showAdd,
-    handleCloseAdd,
-    handleSubmit,
-    formData,
-    setFormData,
-    setFile,
-    feedBackState,
+    showAdd: useShopSelector.showAdd,
+    handleCloseAdd: useShopSelector.handleCloseAdd,
+    handleSubmit: useShopSelector.handleSubmit,
+    formData: useShopSelector.formData,
+    setFormData: useShopSelector.setFormData,
+    setFile: useShopSelector.setFile,
+    feedBackState: useShopSelector.feedBackState,
   };
 
   /* Render
    *******************************************************************************************/
   return (
-    <>
+    <div>
       <h2 className="fs-4 fw-bold text-primary">{title}</h2>
       <div className="d-flex flex-wrap justify-content-center align-items-center mt-5 mb-5">
-        {shops
-          .filter((shop) => {
-            if (userStoreData.role === "super_admin") {
-              return true;
-            } else {
-              userStoreData.company.some((uc) => uc.idCompany === shop.id);
-            }
-          })
-          .map((shop: ShopType) => {
-            return (
-              <div
-                key={shop.id}
-                className="hover-card mb-3 mx-4 border rounded-1 border-primary p-3 px-4"
-                onClick={() => onHandleShop(shop.id)}
-              >
-                <img
-                  src={`${API_URL}/${shop.cover}`}
-                  alt={shop.name}
-                  width={150}
-                  height={150}
-                />
-              </div>
-            );
-          })}
-        {userStoreData.role === "super_admin" && (
-          <div
-            className="hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center"
-            style={{ width: "200px", height: "183px" }}
-            onClick={() => handleShowAdd()}
-          >
-            <FaPlusCircle className="text-primary fs-1" />
-            <p className="mt-2 text-center fw-bold fs-5 text-primary">
-              Magasin
-            </p>
-          </div>
-        )}
+        <ShopCard useShopSelector={useShopSelector} />
+        <AddShopButton useShopSelector={useShopSelector} />
       </div>
       <ModalAddShop modalAddShopProps={modalAddShopProps} />
-    </>
+    </div>
   );
 };
