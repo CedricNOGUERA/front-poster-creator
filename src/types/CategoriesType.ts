@@ -45,6 +45,17 @@ export interface DebouncedFilterCategoriesType {
   store: string;
 }
 
+export type FormCategoryDataType = {
+  name: string;
+  icon: { name: string; value: string };
+  image: string;
+  imageRglt: string;
+  backgroundColorHeader: string;
+  backgroundColorBody: string;
+  shopIds: number[];
+  canvas: ComponentTypeMulti[];
+};
+
 export interface CategoriesHookType {
   userData: UserDataType;
   userRole: "super_admin" | "admin" | "user";
@@ -101,4 +112,29 @@ export interface CategoriesHookType {
     indx: number,
     category: CategoriesType,
   ) => string | undefined;
+}
+
+export interface CategorySelectorHookType {
+  categories: CategoriesType[];
+  formData: FormCategoryDataType;
+  setFormData: React.Dispatch<React.SetStateAction<FormCategoryDataType>>;
+  file: File | null;
+  setFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setImgRglt: React.Dispatch<React.SetStateAction<File | null>>;
+  feedBackState: {
+    isLoading: boolean;
+    loadingMessage: string;
+    isError: boolean;
+    errorMessage: string;
+  };
+  showAdd: boolean;
+  validated: boolean;
+  fieldErrors: {
+    [key: string]: string;
+  };
+  validateField: (fieldName: string, value: string) => void;
+  handleCloseAdd: () => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  onHandleCategory: (id: number) => void;
+  handleShowAdd: () => void;
 }
