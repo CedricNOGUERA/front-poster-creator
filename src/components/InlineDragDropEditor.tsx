@@ -1,1081 +1,256 @@
-import React, { useState } from "react";
-import {
-  BackgroundComponentType,
-  ImageComponentType,
-  ComponentTypeMulti,
-  TextComponentType,
-  NumberComponentType,
-  PrincipalPriceComponentType,
-  HeaderComponentType,
-  HorizontalLineComponentType,
-  VerticalLineComponentType,
-} from "@/types/ComponentType";
+import React from "react";
 import useStoreApp from "@/stores/storeApp";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import dimensions from "@/data/dimensions.json";
 import {
-  FeedBackSatateType,
-  NewTemplateType,
-  ToastDataType,
-} from "@/types/DiversType";
-import {
-  _generateInitalComponent,
-  _handleDeleteComponent,
   _handleDragOver,
   _handleExportToPDF,
-  _thousandSeparator,
 } from "@/utils/functions";
 import SideBar from "./DragDropComponents/SideBar";
 import { DimensionType } from "@/types/DimensionType";
-import {
-  _getCategoryById,
-  _getModels,
-  _getTemplates,
-} from "@/utils/apiFunctions";
-import { useOutletContext } from "react-router-dom";
 import ComponentEditor from "./DragDropComponents/ComponentEditor";
 import { ModalValidateModel } from "./ui/Modals";
-import modelsServiceInstance from "@/services/modelsServices";
-import templatesServiceInstance from "@/services/TemplatesServices";
-import { CategoriesType } from "@/types/CategoriesType";
-import { TemplateType } from "@/types/TemplatesType";
-import { ModelType } from "@/types/modelType";
-import { _showToast } from "@/utils/notifications";
-import { FaXmark } from "react-icons/fa6";
-import html2canvas from "html2canvas";
-import { AxiosError } from "axios";
-
-interface ContextInlineDragDropEditorType {
-  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>;
-  toggleShow: () => void;
-  feedBackState: FeedBackSatateType;
-  setFeedBackState: React.Dispatch<React.SetStateAction<FeedBackSatateType>>;
-  hasModel: boolean;
-  setHasModel: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import useDragDropEditor from "@/hook/useDragDropEditor";
+import { useRenderedComponents } from "./canvas/renderer";
 
 export default function InlineDragDropEditor() {
+  const useDrag = useDragDropEditor();
   /* States
    *******************************************************************************************/
   const API_URL = import.meta.env.VITE_API_URL;
-  const { setToastData, toggleShow, setFeedBackState, hasModel, setHasModel } =
-    useOutletContext<ContextInlineDragDropEditorType>();
 
   const storeApp = useStoreApp();
-  const idTemplate = storeApp.templateId;
-  const [isErrorModel, setIsErrorModel] = useState<boolean>(false);
-  const [components, setComponents] = useState<ComponentTypeMulti[]>([]);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [selectedDimension, setSelectedDimension] = useState<number>(0);
-  const [selectedCategory, setSelectedCategory] = useState<CategoriesType>(
-    {} as CategoriesType,
-  );
-  const [models, setModels] = useState<ModelType[]>([]);
-  const [modelId, setModelId] = useState<number>(0);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [dimensionFactor, setDimensionFactor] = useState<number | null>(null);
-  const [copiedComponent, setCopiedComponent] = useState<ComponentTypeMulti>(
-    {} as ComponentTypeMulti,
-  );
-
-  const [template, setTemplate] = useState<TemplateType[]>([]);
-  const [imageName, setImageName] = React.useState<string>("");
-  const [newTemplateState, setNewTemplateState] =
-    React.useState<NewTemplateType>({
-      idShop: undefined,
-      idCategory: undefined,
-      nameCategory: "",
-      nameTemplate: "",
-      width: 600,
-      height: 600,
-      orientation: "",
-    });
-  const h = newTemplateState.height && newTemplateState.height;
-  const maxPreviewHeight = h && h < 98 ? 150 : 500;
-  const posterRef = React.useRef<HTMLDivElement>(null);
-
-  const [showValidateModel, setShowValidateModel] =
-    React.useState<boolean>(false);
-  const handleCloseValidateModel = () => {
-    setImageName("");
-    setShowValidateModel(false);
-  };
-  const handleShowValidateModel = () => setShowValidateModel(true);
-
-  /* UseEffect
-   *******************************************************************************************/
-  React.useEffect(() => {
-    _getTemplates(setTemplate);
-    _getModels(setModels);
-  }, []);
-
-  React.useEffect(() => {
-    _getCategoryById(storeApp?.categoryId, setSelectedCategory);
-    setSelectedDimension(storeApp?.dimensionId || 0);
-  }, [
-    setToastData,
-    storeApp?.canvasId,
-    storeApp?.dimensionId,
-    toggleShow,
-    storeApp?.categoryId,
-  ]);
-
-  React.useEffect(() => {
-    // copyPaste()
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "c") {
-        // Copier : si un élément est sélectionné
-        if (selectedIndex !== null && components[selectedIndex]) {
-          setCopiedComponent({ ...components[selectedIndex] });
-        }
-      }
-
-      if (e.ctrlKey && e.key === "v") {
-        // Coller
-        if (
-          copiedComponent &&
-          copiedComponent.type !== "background-color" &&
-          copiedComponent.type !== "header"
-        ) {
-          const textComp = copiedComponent as TextComponentType;
-          const numberComp = copiedComponent as NumberComponentType;
-          const newComp = {
-            ...copiedComponent,
-            top: textComp.top !== undefined ? textComp.top + 10 : undefined,
-            left: textComp.left !== undefined ? textComp.left + 10 : undefined,
-            bottom:
-              numberComp.bottom !== undefined ? numberComp.bottom : undefined,
-            right:
-              numberComp.right !== undefined ? numberComp.right : undefined,
-          };
-
-          setComponents((prev) => [...prev, newComp as ComponentTypeMulti]);
-          setSelectedIndex(components.length);
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [components, selectedIndex, copiedComponent]);
-
-  React.useEffect(() => {
-    const hasTemplate = template.find((model) => model.name === imageName);
-    if (hasTemplate) {
-      setHasModel(
-        models.some(
-          (model) =>
-            model.categoryId === storeApp.categoryId &&
-            model.dimensionId === storeApp.dimensionId &&
-            model.templateId === hasTemplate.id,
-        ),
-      );
-    }
-
-    const idModel = models.find(
-      (model) =>
-        model.categoryId === storeApp.categoryId &&
-        model.dimensionId === storeApp.dimensionId &&
-        hasTemplate?.id === model.templateId,
-    )?.id;
-
-    if (idModel) {
-      setModelId(idModel);
-    }
-  }, [imageName, storeApp, models, template, setHasModel]);
-
-  React.useEffect(() => {
-    _generateInitalComponent(
-      selectedCategory.canvas,
-      storeApp,
-      newTemplateState,
-      setNewTemplateState,
-      maxPreviewHeight,
-      h,
-      components,
-      setComponents,
-      setDimensionFactor,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    selectedCategory,
-    storeApp,
-    maxPreviewHeight,
-    h,
-    storeApp,
-    models,
-    selectedDimension,
-  ]);
-
-  /* Functions
-   *******************************************************************************************/
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const type = e.dataTransfer.getData("componentType");
-    const src = e.dataTransfer.getData("componentSrc");
-
-    const canvasElement = posterRef.current;
-
-    if (!canvasElement) {
-      console.error(
-        "Canvas ref (posterRef.current) is null in handleDrop. Drop will not be processed.",
-      );
-      return;
-    }
-
-    const canvasRect = canvasElement.getBoundingClientRect();
-    const left = e.clientX - canvasRect.left;
-    const top = e.clientY - canvasRect.top;
-    const right = canvasRect.width - left;
-    const bottom = canvasRect.height - top;
-
-    let newComponent: ComponentTypeMulti | ComponentTypeMulti[];
-
-    if (type === "group") {
-      const offsetTop = top;
-
-      const multiTexts: ComponentTypeMulti[] = [
-        {
-          type: "text",
-          top: offsetTop + 0,
-          left,
-          text: "Carton Cup Nouilles",
-          fontFamily: "Mulish",
-          fontSize: 19,
-          fontWeight: 900,
-          color: "#000000",
-          rotation: 0,
-        },
-        {
-          type: "text",
-          top: offsetTop + 24,
-          left,
-          text: "NONGHIM",
-          fontFamily: "Mulish",
-          fontSize: 16,
-          fontWeight: 900,
-          color: "#000000",
-          rotation: 0,
-        },
-        {
-          type: "text",
-          top: offsetTop + 43,
-          left,
-          text: "Boeuf",
-          fontFamily: "Mulish",
-          fontSize: 16,
-          fontWeight: 700,
-          color: "#000000",
-          rotation: 0,
-        },
-        {
-          type: "text",
-          top: offsetTop + 64,
-          left: left - 2, // petite variation si tu veux
-          text: "12x175g",
-          fontFamily: "Mulish",
-          fontSize: 16,
-          fontWeight: 400,
-          color: "#000000",
-          rotation: 0,
-        },
-      ];
-
-      setComponents((prev) => [...prev, ...multiTexts]);
-      setSelectedIndex(components.length);
-      return;
-    }
-
-    if (type === "text") {
-      newComponent = {
-        type: "text",
-        top,
-        left,
-        text: "Texte par défaut",
-        fontSize: 16,
-        fontWeight: 900,
-        color: "#000000",
-        rotation: 0,
-      };
-    } else if (type === "enableText") {
-      newComponent = {
-        type: "enableText",
-        top,
-        left,
-        text: "Texte qui ne change pas",
-        fontFamily: "Mulish",
-        fontSize: 16,
-        fontWeight: 700,
-        color: "#000000",
-        rotation: 0,
-      };
-    } else if (type === "number") {
-      newComponent = {
-        type: "number",
-        bottom,
-        right,
-        text: "1000",
-        fontFamily: "Mulish",
-        fontSize: 16,
-        fontWeight: 700,
-        color: "#000000",
-        rotation: 0,
-        textDecoration: "none",
-      };
-    } else if (type === "price") {
-      newComponent = {
-        type: "price",
-        bottom,
-        right,
-        width: 100,
-        text: "1000",
-        fontFamily: "Impact",
-        fontSize: 50,
-        fontWeight: 1000,
-        color: "#000000",
-        rotation: 0,
-        textDecoration: "none",
-      };
-    } else if (type === "image") {
-      newComponent = {
-        type: "image",
-        top,
-        left,
-        width: 150,
-        height: "auto",
-        src: src,
-      };
-    } else if (type === "horizontalLine") {
-      newComponent = {
-        type: "horizontalLine",
-        top,
-        left,
-        width: 200,
-        color: "#000000",
-        thickness: 2,
-      };
-    } else if (type === "verticalLine") {
-      newComponent = {
-        type: "verticalLine",
-        top,
-        left,
-        height: 200,
-        color: "#000000",
-        thickness: 2,
-      };
-    } else {
-      console.error("Unknown component type dropped:", type);
-      return;
-    }
-
-    setComponents((prev: ComponentTypeMulti[]) => [
-      ...prev,
-      newComponent as ComponentTypeMulti,
-    ]);
-    setSelectedIndex(components.length);
-  };
-
-  const handleDragOnCanvas = React.useCallback(
-    (
-      e: React.MouseEvent<HTMLDivElement | HTMLImageElement, MouseEvent>,
-      index: number,
-    ) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const startX = e.clientX;
-      const startY = e.clientY;
-
-      const comp = components[index] as ComponentTypeMulti;
-      // Initialiser les positions différemment selon le type
-      let initialLeft: number | string = 0;
-      let initialTop: number | string = 0;
-      let initialRight = 0;
-      let initialBottom = 0;
-
-      if (comp.type === "number") {
-        const compNumber = comp as NumberComponentType;
-        initialRight = compNumber.right || 0;
-        initialBottom = compNumber.bottom || 0;
-      } else if (comp.type === "price") {
-        const compPrice = comp as PrincipalPriceComponentType;
-        initialRight = compPrice.right || 0;
-        initialBottom = compPrice.bottom || 0;
-      } else {
-        initialLeft =
-          (comp as Exclude<ComponentTypeMulti, NumberComponentType>).left || 0;
-        initialTop =
-          (comp as Exclude<ComponentTypeMulti, NumberComponentType>).top || 0;
-      }
-
-      const onMouseMove = (moveEvent: MouseEvent) => {
-        const deltaX: number = moveEvent.clientX - startX;
-        const deltaY: number = moveEvent.clientY - startY;
-
-        if (comp.type === "number" || comp.type === "price") {
-          const updatedComponents = [...components];
-
-          updatedComponents[index] = {
-            ...comp,
-            right: initialRight - deltaX,
-            bottom: initialBottom - deltaY,
-          };
-          setComponents(updatedComponents);
-        } else {
-          const updatedComponents = [...components];
-
-          updatedComponents[index] = {
-            ...comp,
-            left: initialLeft + deltaX,
-            top: initialTop + deltaY,
-          };
-          setComponents(updatedComponents);
-        }
-      };
-
-      const onMouseUp = () => {
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
-    },
-    [components],
-  );
-
-  const updateComponent = React.useCallback(
-    (updatedFields: Partial<ComponentTypeMulti>) => {
-      if (selectedIndex === null) return;
-
-      setComponents((prevComponents) => {
-        const updated = [...prevComponents];
-        if (updated[selectedIndex]) {
-          updated[selectedIndex] = {
-            ...updated[selectedIndex],
-            ...updatedFields,
-          };
-        }
-        return updated;
-      });
-    },
-    [selectedIndex, setComponents],
-  );
-
-  const getStyleFromComponent = React.useCallback(
-    (comp: ComponentTypeMulti, isSelected: boolean) => {
-      const baseStyle: React.CSSProperties = {
-        position: "absolute",
-        wordBreak: "break-word",
-      };
-
-      switch (comp.type) {
-        case "price":
-        case "number":
-          return {
-            ...baseStyle,
-            bottom: `${
-              (comp as PrincipalPriceComponentType | NumberComponentType)
-                .bottom ?? 0
-            }px`,
-            right: `${
-              (comp as PrincipalPriceComponentType | NumberComponentType)
-                .right ?? 0
-            }px`,
-            fontFamily:
-              (comp as PrincipalPriceComponentType | NumberComponentType)
-                .fontFamily || "Impact",
-            fontSize: (
-              comp as PrincipalPriceComponentType | NumberComponentType
-            ).fontSize,
-            fontWeight: (
-              comp as PrincipalPriceComponentType | NumberComponentType
-            ).fontWeight,
-            color: (comp as PrincipalPriceComponentType | NumberComponentType)
-              .color,
-            minWidth: "20px",
-            minHeight: "10px",
-            borderBottom: isSelected ? "1px gray dashed" : "",
-            cursor: "move",
-          };
-        case "text":
-        case "enableText":
-          return {
-            ...baseStyle,
-            top: `${(comp as TextComponentType).top ?? 0}px`,
-            left: `${(comp as TextComponentType).left ?? 0}px`,
-            fontFamily: "Mulish",
-            fontSize: (comp as TextComponentType).fontSize,
-            fontWeight: (comp as TextComponentType).fontWeight,
-            transform: `rotate(${(comp as TextComponentType).rotation ?? 0}deg)`,
-            color: (comp as TextComponentType).color,
-            minWidth: "20px",
-            minHeight: "10px",
-            borderBottom: isSelected ? "1px gray dashed" : "",
-            cursor: "move",
-            lineHeight: `${(comp as TextComponentType).fontSize}px`,
-          };
-        case "background-color":
-          return {
-            ...baseStyle,
-            top: `${(comp as BackgroundComponentType).top ?? 0}px`,
-            left: `${(comp as BackgroundComponentType).left ?? 0}px`,
-            width: (comp as BackgroundComponentType).width,
-            height: (comp as BackgroundComponentType).height,
-            backgroundColor: (comp as BackgroundComponentType).backgroundColor,
-          };
-        case "header":
-          return {
-            ...baseStyle,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            top: `${(comp as BackgroundComponentType).top ?? 0}px`,
-            left: `${(comp as BackgroundComponentType).left ?? 0}px`,
-            width: (comp as BackgroundComponentType).width,
-            height: (comp as BackgroundComponentType).height,
-            backgroundColor: (comp as BackgroundComponentType).backgroundColor,
-            padding:
-              newTemplateState?.width &&
-              newTemplateState?.height &&
-              newTemplateState?.width < newTemplateState?.height
-                ? "5%"
-                : "1%",
-          };
-        case "image":
-          return {
-            ...baseStyle,
-            top: `${(comp as ImageComponentType).top ?? 0}px`,
-            left: `${(comp as ImageComponentType).left ?? 0}px`,
-            width: `${(comp as ImageComponentType).width}px`,
-            height: "auto",
-            border: isSelected ? "1px gray dashed" : "",
-            cursor: "move",
-          };
-        case "horizontalLine":
-          return {
-            ...baseStyle,
-            top: `${(comp as HorizontalLineComponentType).top ?? 0}px`,
-            left: `${(comp as HorizontalLineComponentType).left ?? 0}px`,
-            width: `${(comp as HorizontalLineComponentType).width}px`,
-            height: `${(comp as HorizontalLineComponentType).thickness}px`,
-            backgroundColor: (comp as HorizontalLineComponentType).color,
-            border: isSelected ? "1px gray dashed" : "",
-            cursor: "move",
-          };
-        case "verticalLine":
-          return {
-            ...baseStyle,
-            top: `${(comp as VerticalLineComponentType).top ?? 0}px`,
-            left: `${(comp as VerticalLineComponentType).left ?? 0}px`,
-            height: `${(comp as VerticalLineComponentType).height}px`,
-            width: `${(comp as VerticalLineComponentType).thickness}px`,
-            backgroundColor: (comp as VerticalLineComponentType).color,
-            border: isSelected ? "1px gray dashed" : "",
-            cursor: "move",
-          };
-        default:
-          return baseStyle;
-      }
-    },
-    [newTemplateState?.width, newTemplateState?.height],
-  );
-
-  const addModel = async (name: string) => {
-    if (name === "") {
-      setIsErrorModel(true);
-      return;
-    }
-
-    setFeedBackState((prev) => ({
-      ...prev,
-      isLoading: true,
-      loadingMessage: "Chargement",
-    }));
-
-    // Formattage du nom de l'image
-    const imageName = modelsServiceInstance.formattedModelPicture(name);
-
-    try {
-      const canvasElement = posterRef.current;
-      if (!canvasElement) {
-        console.error("Élément canvas non trouvé");
-        return;
-      }
-
-      // ✅ Utiliser html2canvas pour capturer l'affiche
-      const canvas = await html2canvas(canvasElement, {
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: null,
-        scale: 2,
-        logging: false,
-        removeContainer: true,
-        imageTimeout: 15000,
-        onclone: (clonedDoc) => {
-          const clonedElement = clonedDoc.querySelector(
-            `[data-canvas-id="${modelId}"]`,
-          );
-          if (clonedElement) {
-            // Ajuster les styles si nécessaire
-          }
-        },
-      });
-
-      // ✅ Convertir le canvas en blob
-      const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(
-          (blob) => {
-            resolve(blob);
-          },
-          "image/png",
-          1.0,
-        );
-      });
-
-      if (!blob) {
-        console.error("Erreur de génération de l'image");
-        return;
-      }
-
-      // Vérifier l'existence d'une miniature pour ce template
-      const imageExists = template.some(
-        (img: TemplateType) => img.image === imageName.trim(),
-      );
-
-      const tempData = template.find(
-        (img: TemplateType) => img.image === imageName.trim(),
-      );
-      const imageModel = tempData?.image || imageName;
-
-      // Préparer les données du modèle
-      const newModelData = {
-        image: imageModel,
-        categoryId: storeApp.categoryId,
-        dimensionId: storeApp.dimensionId,
-        canvas: components,
-      };
-
-      // Préparer le FormData pour le modèle
-      const modelFormData = new FormData();
-      modelFormData.append("image", blob, imageName);
-      modelFormData.append("data", JSON.stringify(newModelData));
-
-      if (hasModel && imageExists) {
-        // ========== MODE ÉDITION ==========
-
-        // FormData pour le patch du modèle
-        const patchFormData = new FormData();
-        patchFormData.append("image", blob, imageModel);
-        patchFormData.append("data", JSON.stringify(components));
-
-        const responseModel = await modelsServiceInstance.patchModel(
-          modelId,
-          patchFormData,
-        );
-
-        if (responseModel.status === 200) {
-          _showToast(
-            true,
-            "Model modifiée avec succès !",
-            setToastData,
-            toggleShow,
-            3000,
-          );
-        }
-
-        // Mettre à jour la miniature du template si nécessaire
-        if (storeApp.dimensionId === 9) {
-          const thumbnailFormData = new FormData();
-          thumbnailFormData.append("image", blob, imageName);
-
-          const responseThumbnail =
-            await templatesServiceInstance.patchImageTemplate(
-              storeApp.categoryId,
-              imageName,
-              thumbnailFormData,
-            );
-
-          if (responseThumbnail?.ok) {
-            _showToast(
-              true,
-              "Miniature modifiée avec succès !",
-              setToastData,
-              toggleShow,
-              3000,
-            );
-          }
-        }
-
-        handleCloseValidateModel();
-        _showToast(
-          true,
-          "Modèle modifié avec succès !",
-          setToastData,
-          toggleShow,
-          3000,
-        );
-        setIsErrorModel(false);
-      } else {
-        // ========== MODE CRÉATION ==========
-
-        // 1. Créer le template avec miniature (si nouveau)
-        if (!imageExists) {
-          const templateFormData = new FormData();
-          templateFormData.append(
-            "data",
-            JSON.stringify({
-              name: name,
-              image: imageName,
-              categoryId: storeApp.categoryId,
-              shopIds: selectedCategory.shopIds,
-            }),
-          );
-          templateFormData.append("image", blob, imageName);
-
-          //✅ Template créé avec miniature
-          await templatesServiceInstance.postTemplate(templateFormData);
-
-        }
-
-        // 2. Créer le modèle
-        const responseModel =
-          await modelsServiceInstance.postModel(modelFormData);
-
-        if (responseModel.ok) {
-          handleCloseValidateModel();
-
-          // Rafraîchir les données
-          await Promise.all([
-            _getTemplates(setTemplate),
-            _getModels(setModels),
-          ]);
-
-          _showToast(
-            true,
-            "Modèle ajouté avec succès !",
-            setToastData,
-            toggleShow,
-            3000,
-          );
-
-          setIsErrorModel(false);
-        } else {
-          const err = await responseModel.json();
-          throw new Error(err?.error || "Erreur serveur");
-        }
-      }
-    } catch (error: unknown) {
-      console.error("Error adding model:", error);
-      if (error instanceof AxiosError) {
-        _showToast(
-          false,
-          error instanceof Error
-            ? error.response?.data.error
-            : "Une erreur est survenue lors de la validation du modèle.",
-          setToastData,
-          toggleShow,
-          3000,
-        );
-      }
-    } finally {
-
-      setFeedBackState((prev) => ({
-        ...prev,
-        isLoading: false,
-        loadingMessage: "",
-      }));
-    }
-  };
 
   /* UseMemo
    *******************************************************************************************/
-  const renderedComponents = React.useMemo(() => {
-    return components.map((comp, index) => {
-      const isSelected = index === selectedIndex;
-      const isHovered = index === hoveredIndex;
-      const isEditing = index === editingIndex;
-      let commonProps;
+  // const renderedComponents = React.useMemo(() => {
+  //   return useDrag.components.map((comp, index) => {
+  //     const isSelected = index === useDrag.selectedIndex;
+  //     const isHovered = index === useDrag.hoveredIndex;
+  //     const isEditing = index === useDrag.editingIndex;
+  //     let commonProps;
 
-      if (comp.type === "background-color" || comp.type === "header") {
-        commonProps = {
-          className: `absolute cursor-move pointer`,
-          onClick: (e: React.MouseEvent) => {
-            e.stopPropagation();
-            setSelectedIndex(index);
-            setEditingIndex(null);
-          },
-          onMouseEnter: () => setHoveredIndex(index),
-          onMouseLeave: () => setHoveredIndex(null),
-          style: getStyleFromComponent(comp, isSelected),
-        };
-      } else {
-        commonProps = {
-          className: `absolute cursor-move pointer`,
-          onMouseDown: (
-            e: React.MouseEvent<HTMLDivElement | HTMLImageElement>,
-          ) => {
-            if (!isEditing) {
-              handleDragOnCanvas(e, index);
-            }
-          },
-          onDoubleClick: (e: React.MouseEvent) => {
-            e.stopPropagation();
-            setSelectedIndex(index);
-            if (
-              comp.type === "text" ||
-              comp.type === "enableText" ||
-              comp.type === "number" ||
-              comp.type === "price"
-            ) {
-              if (isEditing) {
-                setEditingIndex(null);
-              } else {
-                setEditingIndex(index);
-              }
-            } else {
-              setEditingIndex(null);
-            }
-          },
-          onMouseEnter: () => setHoveredIndex(index),
-          onMouseLeave: () => setHoveredIndex(null),
-          style: getStyleFromComponent(comp, isSelected),
-        };
-      }
+  //     if (comp.type === "background-color" || comp.type === "header") {
+  //       commonProps = {
+  //         className: `absolute cursor-move pointer`,
+  //         onClick: (e: React.MouseEvent) => {
+  //           e.stopPropagation();
+  //           useDrag.setSelectedIndex(index);
+  //           useDrag.setEditingIndex(null);
+  //         },
+  //         onMouseEnter: () => useDrag.setHoveredIndex(index),
+  //         onMouseLeave: () => useDrag.setHoveredIndex(null),
+  //         style: useDrag.getStyleFromComponent(comp, isSelected),
+  //       };
+  //     } else {
+  //       commonProps = {
+  //         className: `absolute cursor-move pointer`,
+  //         onMouseDown: (
+  //           e: React.MouseEvent<HTMLDivElement | HTMLImageElement>,
+  //         ) => {
+  //           if (!isEditing) {
+  //             useDrag.handleDragOnCanvas(e, index);
+  //           }
+  //         },
+  //         onDoubleClick: (e: React.MouseEvent) => {
+  //           e.stopPropagation();
+  //           useDrag.setSelectedIndex(index);
+  //           if (
+  //             comp.type === "text" ||
+  //             comp.type === "enableText" ||
+  //             comp.type === "number" ||
+  //             comp.type === "price"
+  //           ) {
+  //             if (isEditing) {
+  //               useDrag.setEditingIndex(null);
+  //             } else {
+  //               useDrag.setEditingIndex(index);
+  //             }
+  //           } else {
+  //             useDrag.setEditingIndex(null);
+  //           }
+  //         },
+  //         onMouseEnter: () => useDrag.setHoveredIndex(index),
+  //         onMouseLeave: () => useDrag.setHoveredIndex(null),
+  //         style: useDrag.getStyleFromComponent(comp, isSelected),
+  //       };
+  //     }
 
-      const deleteButton = isHovered && !isEditing && (
-        <Button
-          variant="light"
-          className="rounded-circle"
-          style={{
-            position: "absolute",
-            top: comp.type === "price" ? "5px" : "-10px",
-            right: "-15px",
-            zIndex: 20,
-            width: "20px",
-            height: "20px",
-            padding: "0",
-            lineHeight: "1",
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            _handleDeleteComponent(index, setComponents, setSelectedIndex);
-          }}
-          title="Supprimer"
-        >
-          <FaXmark />
-        </Button>
-      );
+  //      const deleteButton = <CanvasDeleteButton
+  //       visible={isHovered && !isEditing}
+  //       comp={comp}
+  //       index={index}
+  //       setComponents={useDrag.setComponents}
+  //       setSelectedIndex={useDrag.setSelectedIndex}
+  //     />;
+      
 
-      if (comp.type === "price" || comp.type === "number") {
-        const typedComp = comp as
-          | PrincipalPriceComponentType
-          | NumberComponentType;
-        if (isEditing) {
-          return (
-            <div
-              key={index}
-              {...commonProps}
-              style={{
-                ...getStyleFromComponent(comp, isSelected),
-                border: "1px dashed blue",
-                overflow: "visible",
-                display: "inline-flex",
-                alignItems: "center",
-                minWidth: "20px",
-                width: "auto",
-              }}
-            >
-              <input
-                type="text"
-                value={typedComp.text}
-                onChange={(e) => updateComponent({ text: e.target.value })}
-                onBlur={() => setEditingIndex(null)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === "Escape") {
-                    setEditingIndex(null);
-                  }
-                }}
-                style={{
-                  fontSize: typedComp.fontSize,
-                  fontWeight: typedComp.fontWeight,
-                  color: typedComp.color,
-                  fontFamily: typedComp.fontFamily || "Impact",
-                  border: "none",
-                  outline: "none",
-                  background: "transparent",
-                  textAlign: "end",
-                  width: `${typedComp.text.length + 1}ch`, // largeur auto selon texte
-                  minWidth: "20px",
-                  padding: 0,
-                  margin: 0,
-                }}
-                autoFocus
-              />
-              <sup style={{ fontSize: "0.6em", marginLeft: "1px" }}>F</sup>
-            </div>
-          );
-        }
-        return (
-          <div key={index} {...commonProps}>
-            <div style={{ whiteSpace: "nowrap" }}>
-              <span
-                style={{ textDecoration: typedComp.textDecoration ?? "none" }}
-                dangerouslySetInnerHTML={{
-                  __html: _thousandSeparator(parseInt(typedComp.text)),
-                }}
-              />
-              <sup style={{ fontSize: "0.6em", marginLeft: "1px" }}>F</sup>
-            </div>
-            {deleteButton}
-          </div>
-        );
-      }
+  //     if (comp.type === "price" || comp.type === "number") {
+  //       const typedComp = comp as
+  //         | PrincipalPriceComponentType
+  //         | NumberComponentType;
 
-      if (comp.type === "text" || comp.type === "enableText") {
-        const textComp = comp as TextComponentType;
-        if (isEditing) {
-          return (
-            <foreignObject
-              key={index}
-              x={textComp.left}
-              y={textComp.top}
-              width={150}
-              height={50}
-              style={{
-                ...getStyleFromComponent(comp, isSelected),
+  //       if (isEditing) {
+  //         return (
+  //          <PriceEditingRenderer 
+  //          priceEditingRendererProps={{index, commonProps, typedComp, useDrag, isSelected}}
+  //          />
+  //         );
+  //       }
+  //       return (
+  //         <PriceRenderer
+  //           PriceRendererProps={{index, commonProps, typedComp, isEditing, isHovered, deleteButton}} />
+     
+  //       );
+  //     }
 
-                border: "1px dashed blue",
-                overflow: "visible",
-              }}
-            >
-              <textarea
-                // type='text'
-                value={textComp.text}
-                onChange={(e) => updateComponent({ text: e.target.value })}
-                onBlur={() => setEditingIndex(null)}
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") {
-                    setEditingIndex(null);
-                  }
-                }}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  fontFamily: textComp.fontFamily,
-                  fontSize: textComp.fontSize,
-                  fontWeight: textComp.fontWeight,
-                  color: textComp.color,
-                  border: "none",
-                  outline: "none",
-                  background: "transparent",
-                  transform: `rotate(${textComp.rotation ?? 0}deg)`,
-                }}
-                autoFocus
-              />
-            </foreignObject>
-          );
-        }
-        return (
-          <div key={index} {...commonProps} className="text-start">
-            <span
-              style={{
-                fontFamily: textComp.fontFamily,
-                textDecoration: textComp.textDecoration ?? "none",
-                whiteSpace: "pre-line",
-              }}
-              dangerouslySetInnerHTML={{ __html: textComp.text }}
-            />
-            {deleteButton}
-          </div>
-        );
-      }
+  //     if (comp.type === "text" || comp.type === "enableText") {
+  //       const textComp = comp as TextComponentType;
+  //       if (isEditing) {
+  //         return (
+  //           <foreignObject
+  //             key={index}
+  //             x={textComp.left}
+  //             y={textComp.top}
+  //             width={150}
+  //             height={50}
+  //             style={{
+  //               ...useDrag.getStyleFromComponent(comp, isSelected),
 
-      if (comp.type === "background-color") {
-        return <div key={index} {...commonProps}></div>;
-      }
+  //               border: "1px dashed blue",
+  //               overflow: "visible",
+  //             }}
+  //           >
+  //             <textarea
+  //               // type='text'
+  //               value={textComp.text}
+  //               onChange={(e) =>
+  //                 useDrag.updateComponent({ text: e.target.value })
+  //               }
+  //               onBlur={() => useDrag.setEditingIndex(null)}
+  //               onKeyDown={(e) => {
+  //                 if (e.key === "Escape") {
+  //                   useDrag.setEditingIndex(null);
+  //                 }
+  //               }}
+  //               style={{
+  //                 width: "100%",
+  //                 height: "100%",
+  //                 fontFamily: textComp.fontFamily,
+  //                 fontSize: textComp.fontSize,
+  //                 fontWeight: textComp.fontWeight,
+  //                 color: textComp.color,
+  //                 border: "none",
+  //                 outline: "none",
+  //                 background: "transparent",
+  //                 transform: `rotate(${textComp.rotation ?? 0}deg)`,
+  //               }}
+  //               autoFocus
+  //             />
+  //           </foreignObject>
+  //         );
+  //       }
+  //       return (
+  //         <div key={index} {...commonProps} className="text-start">
+  //           <span
+  //             style={{
+  //               fontFamily: textComp.fontFamily,
+  //               textDecoration: textComp.textDecoration ?? "none",
+  //               whiteSpace: "pre-line",
+  //             }}
+  //             dangerouslySetInnerHTML={{ __html: textComp.text }}
+  //           />
+  //           {deleteButton}
+  //         </div>
+  //       );
+  //     }
 
-      if (comp.type === "header") {
-        const headerComp = comp as HeaderComponentType;
-        return (
-          <div key={index} {...commonProps}>
-            {headerComp.src !== null && (
-              <img
-                src={API_URL + headerComp.src}
-                alt=""
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                }}
-              />
-            )}
-          </div>
-        );
-      }
+  //     if (comp.type === "background-color") {
+  //       return <div key={index} {...commonProps}></div>;
+  //     }
 
-      if (comp.type === "image") {
-        const imgComp = comp as ImageComponentType;
-        return (
-          <div key={index} {...commonProps}>
-            <img
-              src={API_URL + imgComp.src}
-              alt=""
-              width={imgComp.width}
-              height={imgComp.height}
-              style={{ width: "100%", height: "100%" }}
-            />
-            {deleteButton}
-          </div>
-        );
-      }
+  //     if (comp.type === "header") {
+  //       const headerComp = comp as HeaderComponentType;
+  //       return (
+  //         <div key={index} {...commonProps}>
+  //           {headerComp.src !== null && (
+  //             <img
+  //               src={API_URL + headerComp.src}
+  //               alt=""
+  //               style={{
+  //                 maxWidth: "100%",
+  //                 maxHeight: "100%",
+  //               }}
+  //             />
+  //           )}
+  //         </div>
+  //       );
+  //     }
 
-      if (comp.type === "horizontalLine") {
-        return (
-          <div key={index} {...commonProps}>
-            {deleteButton}
-          </div>
-        );
-      }
+  //     if (comp.type === "image") {
+  //       const imgComp = comp as ImageComponentType;
+  //       return (
+  //         <div key={index} {...commonProps}>
+  //           <img
+  //             src={API_URL + imgComp.src}
+  //             alt=""
+  //             width={imgComp.width}
+  //             height={imgComp.height}
+  //             style={{ width: "100%", height: "100%" }}
+  //           />
+  //           {deleteButton}
+  //         </div>
+  //       );
+  //     }
 
-      if (comp.type === "verticalLine") {
-        return (
-          <div key={index} {...commonProps}>
-            {deleteButton}
-          </div>
-        );
-      }
+  //     if (comp.type === "horizontalLine") {
+  //       return (
+  //         <div key={index} {...commonProps}>
+  //           {deleteButton}
+  //         </div>
+  //       );
+  //     }
 
-      return null;
-    });
-  }, [
-    components,
-    selectedIndex,
-    hoveredIndex,
-    editingIndex,
-    handleDragOnCanvas,
-    getStyleFromComponent,
-    updateComponent,
-    API_URL,
-  ]);
+  //     if (comp.type === "verticalLine") {
+  //       return (
+  //         <div key={index} {...commonProps}>
+  //           {deleteButton}
+  //         </div>
+  //       );
+  //     }
+
+  //     return null;
+  //   });
+  // }, [
+  //   useDrag.components,
+  //   useDrag.selectedIndex,
+  //   useDrag.hoveredIndex,
+  //   useDrag.editingIndex,
+  //   useDrag.handleDragOnCanvas,
+  //   useDrag.getStyleFromComponent,
+  //   useDrag.updateComponent,
+  //   API_URL,
+  // ]);
+  const renderedComponents = useRenderedComponents({useDrag, API_URL});
 
   /* component props
    *******************************************************************************************/
-  const ComponentEditorProps = { components, selectedIndex, updateComponent };
+  const ComponentEditorProps = {
+    components: useDrag.components,
+    selectedIndex: useDrag.selectedIndex,
+    updateComponent: useDrag.updateComponent,
+  };
   const modalValidateModelProps = {
-    showValidateModel,
-    handleCloseValidateModel,
-    addModel,
-    imageName,
-    setImageName,
-    idTemplate,
-    template,
-    setTemplate,
-    isErrorModel,
-    hasModel,
+    showValidateModel: useDrag.showValidateModel,
+    handleCloseValidateModel: useDrag.handleCloseValidateModel,
+    addModel: useDrag.addModel,
+    imageName: useDrag.imageName,
+    setImageName: useDrag.setImageName,
+    idTemplate: useDrag.idTemplate,
+    template: useDrag.template,
+    setTemplate: useDrag.setTemplate,
+    isErrorModel: useDrag.isErrorModel,
+    hasModel: useDrag.hasModel,
   };
 
   /* render
@@ -1084,7 +259,10 @@ export default function InlineDragDropEditor() {
     <Container fluid className="bg-light px-0">
       <div className="d-flex h-screen ">
         {/* Drag 'n Drop éditeur  */}
-        <SideBar storeApp={storeApp} selectedCanvas={selectedCategory.canvas} />
+        <SideBar
+          storeApp={storeApp}
+          selectedCanvas={useDrag.selectedCategory.canvas}
+        />
         {/* Canvas */}
         <div className="m-auto">
           <Container className="px-5 mb-3">
@@ -1096,16 +274,16 @@ export default function InlineDragDropEditor() {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Select
-                    value={selectedDimension || ""}
+                    value={useDrag.selectedDimension || ""}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                       const dimensionId = parseInt(e.target.value);
-                      setSelectedDimension(dimensionId);
+                      useDrag.setSelectedDimension(dimensionId);
                       storeApp.setDimensionId(dimensionId);
                       const selectedDim = dimensions.find(
                         (d) => d.id === dimensionId,
                       );
                       if (selectedDim) {
-                        setNewTemplateState((prev) => ({
+                        useDrag.setNewTemplateState((prev) => ({
                           ...prev,
                           width: selectedDim.width,
                           height: selectedDim.height,
@@ -1128,16 +306,18 @@ export default function InlineDragDropEditor() {
           </Container>
           <div
             id="canvas"
-            ref={posterRef}
+            ref={useDrag.posterRef}
             className=" relative bg-gray-50 shadow m-auto m-4 canvas"
-            onDrop={handleDrop}
+            onDrop={useDrag.handleDrop}
             onDragOver={_handleDragOver}
             style={{
               width:
-                newTemplateState?.width && dimensionFactor
-                  ? `${newTemplateState.width * dimensionFactor}px`
+                useDrag.newTemplateState?.width && useDrag.dimensionFactor
+                  ? `${useDrag.newTemplateState.width * useDrag.dimensionFactor}px`
                   : "500px",
-              height: maxPreviewHeight ? `${maxPreviewHeight}px` : "500px",
+              height: useDrag.maxPreviewHeight
+                ? `${useDrag.maxPreviewHeight}px`
+                : "500px",
             }}
           >
             {renderedComponents}
@@ -1145,7 +325,7 @@ export default function InlineDragDropEditor() {
           <div className="p-4 flex gap-2">
             <Button
               variant="primary"
-              onClick={() => _handleExportToPDF(newTemplateState)}
+              onClick={() => _handleExportToPDF(useDrag.newTemplateState)}
               className="me-4"
             >
               Exporter en PDF
@@ -1153,7 +333,7 @@ export default function InlineDragDropEditor() {
             <Button
               variant="success"
               onClick={() => {
-                handleShowValidateModel();
+                useDrag.handleShowValidateModel();
               }}
               className=""
             >
