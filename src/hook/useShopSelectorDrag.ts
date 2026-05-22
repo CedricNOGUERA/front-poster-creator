@@ -5,7 +5,6 @@ import { FeedBackSatateType, ToastDataType } from "@/types/DiversType";
 import { ShopType } from "@/types/ShopType";
 import { _getAllShops } from "@/utils/apiFunctions";
 import { createShopFormData, validateForm } from "@/utils/form/addShopFunction";
-import { _sanitizeString } from "@/utils/functions";
 import React from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
