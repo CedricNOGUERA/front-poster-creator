@@ -1,65 +1,32 @@
-import { ComponentTypeMulti } from "@/types/ComponentType"
-import { Button } from "react-bootstrap"
-import { FaXmark } from "react-icons/fa6"
+import { DragDropHookType } from "@/types/DragDropEditor";
+import { _handleDragOver } from "@/utils/functions";
+import { JSX } from "react";
 
-export const CanvasComponent = ({
-    index,
-    isSelected,
-    hoveredIndex,
-    style,
-    children,
-    handleDragOnCanvas,
-    setSelectedIndex,
-    setHoveredIndex,
-    _handleDeleteComponent,
-    setComponents,
-  }: {
-    index: number
-    isSelected: boolean
-    hoveredIndex: number | null
-    style: React.CSSProperties
-    children: React.ReactNode
-    handleDragOnCanvas: (e: React.MouseEvent<HTMLDivElement | HTMLImageElement>, index: number) => void
-    setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>
-    setHoveredIndex: (index: number | null) => void
-    _handleDeleteComponent: (indexToDelete: number, setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>, setSelectedIndex: React.Dispatch<React.SetStateAction<number | null>>) => void
-    setComponents: React.Dispatch<React.SetStateAction<ComponentTypeMulti[]>>
-  }) => (
+export default function CanvasComponent({
+  useDrag,
+  renderedComponents,
+}: {
+  useDrag: DragDropHookType;
+  renderedComponents: (JSX.Element | null)[];
+}) {
+  return (
     <div
-      key={index}
-      className={`absolute cursor-move pointer ${isSelected ? 'ring-1 ring-blue-400' : ''}`}
-      onMouseDown={(e) => handleDragOnCanvas(e, index)}
-      onClick={(e) => {
-        e.stopPropagation()
-        setSelectedIndex(index)
+      id="canvas"
+      ref={useDrag.posterRef}
+      className=" relative bg-gray-50 shadow m-auto m-4 canvas"
+      onDrop={useDrag.handleDrop}
+      onDragOver={_handleDragOver}
+      style={{
+        width:
+          useDrag.newTemplateState?.width && useDrag.dimensionFactor
+            ? `${useDrag.newTemplateState.width * useDrag.dimensionFactor}px`
+            : "500px",
+        height: useDrag.maxPreviewHeight
+          ? `${useDrag.maxPreviewHeight}px`
+          : "500px",
       }}
-      onMouseEnter={() => setHoveredIndex(index)}
-      onMouseLeave={() => setHoveredIndex(null)}
-      style={style}
     >
-      {children}
-      {hoveredIndex === index && (
-        <Button
-          variant="light"
-          className="rounded-circle"
-          style={{
-            position: 'absolute',
-            top: '-10px',
-            right: '-10px',
-            zIndex: 20,
-            width: '20px',
-            height: '20px',
-            padding: '0',
-            lineHeight: '1',
-          }}
-          onClick={(e) => {
-            e.stopPropagation()
-            _handleDeleteComponent(index, setComponents, setSelectedIndex)
-          }}
-          title="Supprimer"
-        >
-          <FaXmark />
-        </Button>
-      )}
+      {renderedComponents}
     </div>
-  )
+  );
+}
