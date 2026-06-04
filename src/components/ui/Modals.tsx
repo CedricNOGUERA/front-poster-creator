@@ -103,7 +103,7 @@ export function ModalValidateModel({
       <Modal.Body>
         <Form.Group className="border rounded py-2 px-3 mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>
-            {hasModel ? "Nom du modèle" : "Créer un nouveau template"}
+            {hasModel ? "Nom du template" : "Créer un nouveau template"}
           </Form.Label>
           <Form.Control
             type="text"
