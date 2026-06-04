@@ -97,14 +97,13 @@ export function ModalValidateModel({
       <Modal.Header closeButton>
         <Modal.Title className="d-flex align-items-center">
           <FaCircleCheck className="me-2 text-success" />
-          Validation du model
+          Validation du modèle
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Voulez-vous {hasModel ? "modifier" : "valider"} ce model ?
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Group className="border rounded py-2 px-3 mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>
-            {hasModel ? "Nom du modèle" : "Ajouter un nom au model"}
+            {hasModel ? "Nom du modèle" : "Créer un nouveau template"}
           </Form.Label>
           <Form.Control
             type="text"
@@ -113,10 +112,14 @@ export function ModalValidateModel({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setImageName(e.target.value)
             }
-          />
+            />
+          <Alert variant="warning" className="d-flex align-items-center px-2 p-1 mt-2 ">
+           <small className="d-flex  align-items-center gap-2"><RiErrorWarningLine />  Création d'un nouveau template et son premier modèle.</small>
+          </Alert>
         </Form.Group>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Model existant</Form.Label>
+        <Form.Group className="border rounded py-2 px-3 mb-3" controlId="exampleForm.ControlInput1">
+            {/* Voulez-vous {hasModel ? "modifier" : "valider"} ce model ? */}
+          <Form.Label>Templates existant</Form.Label>
           <Form.Select
             value={imageName || ""}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -124,13 +127,16 @@ export function ModalValidateModel({
               setImageName(templateName);
             }}
           >
-            <option value="">Sélectionnez un model existant</option>
+            <option value="">Sélectionnez un template existant</option>
             {template.map((template: TemplateType, index: number) => (
               <option key={index} value={template.name}>
                 {template.name}
               </option>
             ))}
           </Form.Select>
+          <Alert variant="warning" className="d-flex align-items-center px-2 p-1 mt-2 ">
+           <small className="d-flex  align-items-center gap-2"><RiErrorWarningLine />  Rattacher le modèle à un template existant.</small>
+          </Alert>
         </Form.Group>
         {isErrorModel && (
           <Alert variant="danger">
