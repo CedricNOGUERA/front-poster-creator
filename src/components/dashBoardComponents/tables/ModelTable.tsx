@@ -1,9 +1,10 @@
 import TableLoader from "@/components/ui/squeleton/TableLoader";
 import { Button, Dropdown, Form, Image, Table } from "react-bootstrap";
-import { FaEllipsisVertical, FaTrash, FaX } from "react-icons/fa6";
+import { FaCheck, FaEllipsisVertical, FaTrash, FaX } from "react-icons/fa6";
 import dimensions from "@/data/dimensions.json";
 import { ModelHookType } from "@/types/modelType";
 import { createResetForm } from "@/utils/admin/function";
+import { FaTimes } from "react-icons/fa";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -12,6 +13,7 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
     setId: useModel.setId,
     setTemplate: useModel.setTemplate,
     setDimension: useModel.setDimension,
+    setStatus: useModel.setStatus
   });
   return (
     <Table striped hover responsive="sm" className="shadow">
@@ -20,6 +22,7 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
           <th className="py-3">Id</th>
           <th className="py-3">Template</th>
           <th className="py-3">Dimension</th>
+          <th className="py-3">Etat</th>
           <th className="py-3">Miniature</th>
           <th className="py-3">Actions</th>
         </tr>
@@ -77,6 +80,25 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
               </Form.Select>
             </Form.Group>
           </th>
+          <th className="py-3">
+            <Form.Group controlId="status">
+              <Form.Select
+                aria-label="status"
+                value={useModel.status}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  useModel.setStatus(e.target.value);
+                  useModel.setPage("1");
+                }}
+              >
+                <option value="">état...</option>
+                {[{name:"Activer", value: "true"}, {name:"Désactiver", value: "false"}]?.map((status) => (
+                  <option key={status.name} value={status.value}>
+                    {status.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </th>
 
           <th className="py-3"></th>
 
@@ -109,11 +131,19 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
           const factor = dimension && 120 / dimension?.width;
           const baseSlug = `${API_URL}/uploads/modelMiniature/`;
 
+
           return (
             <tr key={indx} className="align-middle">
               <td>{model.id}</td>
               <td>{templateData?.name}</td>
               <td>{dimension?.name}</td>
+              <td>
+                {model.activated ? (
+                  <FaCheck className="me-2" size={20} color="#38c42b" />
+                ) : (
+                  <FaTimes className="me-2" size={20} color="#ff002b" />
+                )}
+              </td>
               <td>
                 <Image
                   loading="lazy"
@@ -135,6 +165,23 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
                     </b>
                   </Dropdown.Toggle>
                   <Dropdown.Menu align="end">
+                    {model.activated ? (
+                      <Dropdown.Item
+                        onClick={() => useModel.handleShowActivatedModal(model)}
+                        className="d-flex align-items-center text-warning"
+                      >
+                        <FaTimes className="me-2" size={16} />
+                        Désactiver
+                      </Dropdown.Item>
+                    ) : (
+                      <Dropdown.Item
+                        onClick={() => useModel.handleShowActivatedModal(model)}
+                        className="d-flex align-items-center text-success"
+                      >
+                        <FaCheck className="me-2" size={16} />
+                        Activer
+                      </Dropdown.Item>
+                    )}
                     <Dropdown.Item
                       onClick={() => useModel.handleShowDeleteModal(model)}
                       className="d-flex align-items-center text-danger"

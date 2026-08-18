@@ -6,6 +6,11 @@ import { ImagemodelType, ModelType } from "@/types/modelType";
 import React from "react";
 import { TemplateType } from "@/types/TemplatesType";
 import { FaImage } from "react-icons/fa6";
+// import {
+//   Button,
+//   Form,
+//   Modal
+// } from "react-bootstrap";
 
 type Props = {
   title: string;
@@ -18,9 +23,21 @@ export const DimensionSelector = ({ title }: Props) => {
   const maxWidth = Math.max(...dimensions.map((d) => d.width));
   const maxHeight = Math.max(...dimensions.map((d) => d.height));
   const [model, setModel] = React.useState<ModelType[]>([]);
+  const [selectedModel, setSelectedModel] = React.useState<ModelType>({} as ModelType);
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
   const [imagesmodel, setImagesModel] = React.useState<ImagemodelType[]>([])
+
+  const [show, setShow] = React.useState(false);
+
+  const handleClose = () => {
+    setShow(false)
+    setTimeout(() => {
+
+      setSelectedModel({} as ModelType)
+    }, 2000)
+  };
+  const handleShow = () => setShow(true);
 
   // Contrainte d'affichage
   const maxDisplayWidth = 260;
@@ -52,6 +69,7 @@ export const DimensionSelector = ({ title }: Props) => {
     storeApp.nextStep();
   };
 
+  
 
   /* Render
    *******************************************************************************************/
@@ -59,6 +77,7 @@ export const DimensionSelector = ({ title }: Props) => {
     <>
       <h2 className="fs-4 fw-bold text-primary">{title}</h2>
       <small>({selectedTemplate?.name})</small>
+
       <div className="list-dimension d-flex flex-wrap justify-content-center align-items-center mt-5 mb-5">
         {dimensions.map((dimension) => {
           let scaledWidth = dimension.width * baseScale;
@@ -75,65 +94,129 @@ export const DimensionSelector = ({ title }: Props) => {
             scaledWidth *= zoomFactor;
             scaledHeight *= zoomFactor;
           }
-          const modelAvailable = model && model.find((model) => model.dimensionId === dimension.id && model.templateId === storeApp.templateId  && model.categoryId === storeApp.categoryId)
+          // if(model.find((models) => models.activated === false)){
+          //   return false
+          // }
+          const modelAvailable =
+            model &&
+            model.find(
+              (model) =>
+                model.dimensionId === dimension.id &&
+                model.templateId === storeApp.templateId &&
+                model.categoryId === storeApp.categoryId 
+                &&
+                model.activated,
+            );
+
+          // const isActivated =  model &&
+          //   model.some(
+          //     (model) =>
+          //       model.dimensionId === dimension.id &&
+          //       model.templateId === storeApp.templateId &&
+          //       model.categoryId === storeApp.categoryId &&
+          //       model.activated,
+          //   );
+
 
           return (
-            <div
-              key={dimension.id}
-              className={`dimension-card hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center ${modelAvailable ? "border-primary" : "border-danger"}`}
-              onClick={() => {
-                if (modelAvailable) {
-                  onHandleDimension(dimension.id);
-                } else {
-                  alert("Ce modèle n'est pas disponible pour cette dimension");
-                }
-              }}
-              style={{
-                width: "300px",
-                minHeight: "220px",
-              }}
-            >
-              {imagesmodel?.find(
-                (img) => img.modelId === modelAvailable?.id,
-              ) ? (
-                <div className="d-flex justify-content-center align-items-center mb-2">
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}/uploads/modelMiniature/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.modelId}/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.name}`}
-                    alt="Image du modèle"
+            <div>
+              <div
+                key={dimension.id}
+                className={`dimension-card hover-card mb-5 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center ${modelAvailable ? "border-primary" : "border-danger"}`}
+                onClick={() => {
+                  if (modelAvailable) {
+                    onHandleDimension(dimension.id);
+                  } else {
+                    alert(
+                      "Ce modèle n'est pas disponible pour cette dimension",
+                    );
+                  }
+                }}
+                style={{
+                  width: "300px",
+                  minHeight: "300px",
+                }}
+              >
+                {imagesmodel?.find(
+                  (img) => img.modelId === modelAvailable?.id,
+                ) ? (
+                  <div className="d-flex justify-content-center align-items-center mb-2">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/uploads/modelMiniature/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.modelId}/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.name}`}
+                      alt="Image du modèle"
+                      style={{
+                        width: `${scaledWidth}px`,
+                        height: `${scaledHeight}px`,
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div
                     style={{
                       width: `${scaledWidth}px`,
                       height: `${scaledHeight}px`,
-                      objectFit: "cover",
+                      border: "2px dashed #aaa",
+                      backgroundColor: "#f8f9fa",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "10px",
+                      transition: "transform 0.3s ease",
                     }}
+                  >
+                    <span className="fw-semibold">
+                      <FaImage className="text-secondary" />
+                    </span>
+                  </div>
+                )}
+                <p className="mt-2 text-center fw-bold fs-6">
+                  {dimension.helper_dimensions}
+                </p>
+                <small>{dimension.orientation}</small>
+              </div>
+              {/* <div className="d-flex justify-content-center">
+                <Form.Group controlId={`${dimension.id}`} className="w-50">
+                  <Form.Check
+                    disabled={modelAvailable && !isActivated}
+                    type="checkbox"
+                    label="activer"
+                    checked={modelAvailable && modelAvailable?.activated}
+                    onClick={() => {
+                      if(modelAvailable){
+
+                        handleShow()
+                        if (modelAvailable) {
+                          setSelectedModel(modelAvailable);
+                        }
+                      }
+                    }}
+             
                   />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    width: `${scaledWidth}px`,
-                    height: `${scaledHeight}px`,
-                    border: "2px dashed #aaa",
-                    backgroundColor: "#f8f9fa",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "10px",
-                    transition: "transform 0.3s ease",
-                  }}
-                >
-                  <span className="fw-semibold">
-                    <FaImage className="text-secondary" />
-                  </span>
-                </div>
-              )}
-              <p className="mt-2 text-center fw-bold fs-6">
-                {dimension.helper_dimensions}
-              </p>
-              <small>{dimension.orientation}</small>
+                </Form.Group>
+              </div> */}
             </div>
           );
         })}
       </div>
+      {/* <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{selectedModel.activated ? "Désactiver" : "Activer"} le model {selectedModel.id}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Etes-vous sûr de vouloir {selectedModel.activated ? "désactiver" : "activer"} </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => {
+
+            handleClose()
+          }
+            }>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
     </>
   );
 };
