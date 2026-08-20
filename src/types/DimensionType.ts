@@ -5,4 +5,5 @@ export interface DimensionType {
   width: number;
   helper_dimensions: string;
   orientation: string | null;
+  status: boolean;
 }

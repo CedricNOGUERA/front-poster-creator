@@ -3,7 +3,6 @@ import TablePagination from "@/components/ui/table/TablePagination";
 import { useModelPage } from "@/hook/useModelPage";
 import ModelTable from "@/components/dashBoardComponents/tables/ModelTable";
 import { ModalGenericDelete } from "@/components/ui/Modals";
-import { changeStatusModel, getPaginatedModels } from "@/utils/admin/modelFunction";
 
 export default function ModelsPage() {
   const useModel = useModelPage();

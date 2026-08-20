@@ -189,3 +189,41 @@ export interface ModalUpdateStoreType
     deleteStore: (id: number) => void
     isLoading: boolean
   }
+
+///////////////////////////
+//Dimension
+///////////////////////////
+
+export interface ModalAddDimensionType {
+  isLoading: boolean
+  showAddModal: boolean
+  handleCloseAddModal: () => void
+  dimensionFormData: {
+    name: string;
+    width: string;
+    height: string;
+    orientation: string;
+  }
+  setDimensionFormData: React.Dispatch<React.SetStateAction<{
+    name: string;
+    width: string;
+    height: string;
+    orientation: string;
+  }>>
+  handleAddDimension: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>
+}
+
+export interface ModalStatusDimensionType {
+  isLoading: boolean
+  showStatusModal: boolean
+  handleCloseStatusModal: () => void
+  selectedStatus: boolean | null
+  handleStatusDimension: () => void | Promise<void>
+}
+
+export interface ModalDeleteDimensionType {
+  isLoading: boolean
+  showDeleteModal: boolean
+  handleCloseDeleteModal: () => void
+  handleDeleteDimension: () => void | Promise<void>
+}

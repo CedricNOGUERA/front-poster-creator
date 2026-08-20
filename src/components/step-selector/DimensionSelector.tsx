@@ -6,11 +6,6 @@ import { ImagemodelType, ModelType } from "@/types/modelType";
 import React from "react";
 import { TemplateType } from "@/types/TemplatesType";
 import { FaImage } from "react-icons/fa6";
-// import {
-//   Button,
-//   Form,
-//   Modal
-// } from "react-bootstrap";
 
 type Props = {
   title: string;
@@ -23,21 +18,10 @@ export const DimensionSelector = ({ title }: Props) => {
   const maxWidth = Math.max(...dimensions.map((d) => d.width));
   const maxHeight = Math.max(...dimensions.map((d) => d.height));
   const [model, setModel] = React.useState<ModelType[]>([]);
-  const [selectedModel, setSelectedModel] = React.useState<ModelType>({} as ModelType);
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
   const [imagesmodel, setImagesModel] = React.useState<ImagemodelType[]>([])
 
-  const [show, setShow] = React.useState(false);
-
-  const handleClose = () => {
-    setShow(false)
-    setTimeout(() => {
-
-      setSelectedModel({} as ModelType)
-    }, 2000)
-  };
-  const handleShow = () => setShow(true);
 
   // Contrainte d'affichage
   const maxDisplayWidth = 260;
@@ -80,6 +64,7 @@ export const DimensionSelector = ({ title }: Props) => {
 
       <div className="list-dimension d-flex flex-wrap justify-content-center align-items-center mt-5 mb-5">
         {dimensions.map((dimension) => {
+          if (!dimension.status) return null;
           let scaledWidth = dimension.width * baseScale;
           let scaledHeight = dimension.height * baseScale;
 
@@ -94,9 +79,6 @@ export const DimensionSelector = ({ title }: Props) => {
             scaledWidth *= zoomFactor;
             scaledHeight *= zoomFactor;
           }
-          // if(model.find((models) => models.activated === false)){
-          //   return false
-          // }
           const modelAvailable =
             model &&
             model.find(
@@ -107,16 +89,6 @@ export const DimensionSelector = ({ title }: Props) => {
                 &&
                 model.activated,
             );
-
-          // const isActivated =  model &&
-          //   model.some(
-          //     (model) =>
-          //       model.dimensionId === dimension.id &&
-          //       model.templateId === storeApp.templateId &&
-          //       model.categoryId === storeApp.categoryId &&
-          //       model.activated,
-          //   );
-
 
           return (
             <div>
@@ -175,48 +147,10 @@ export const DimensionSelector = ({ title }: Props) => {
                 </p>
                 <small>{dimension.orientation}</small>
               </div>
-              {/* <div className="d-flex justify-content-center">
-                <Form.Group controlId={`${dimension.id}`} className="w-50">
-                  <Form.Check
-                    disabled={modelAvailable && !isActivated}
-                    type="checkbox"
-                    label="activer"
-                    checked={modelAvailable && modelAvailable?.activated}
-                    onClick={() => {
-                      if(modelAvailable){
-
-                        handleShow()
-                        if (modelAvailable) {
-                          setSelectedModel(modelAvailable);
-                        }
-                      }
-                    }}
-             
-                  />
-                </Form.Group>
-              </div> */}
             </div>
           );
         })}
       </div>
-      {/* <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedModel.activated ? "Désactiver" : "Activer"} le model {selectedModel.id}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Etes-vous sûr de vouloir {selectedModel.activated ? "désactiver" : "activer"} </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => {
-
-            handleClose()
-          }
-            }>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
     </>
   );
 };

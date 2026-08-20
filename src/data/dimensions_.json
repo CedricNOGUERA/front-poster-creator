@@ -5,7 +5,6 @@
     "height": 150,
     "width": 100,
     "helper_dimensions": "petit(100x150)",
-    "status": true,
     "orientation": "portrait"
   },
   {
@@ -14,7 +13,6 @@
     "height": 100,
     "width": 150,
     "helper_dimensions": "petit(150x100)",
-    "status": true,
     "orientation": "paysage"
   },
   {
@@ -23,16 +21,14 @@
     "height": 150,
     "width": 150,
     "helper_dimensions": "petit_carre(150x150)",
-    "status": true,
     "orientation": null
-  },
+  }, 
   {
     "id": 13,
     "name": "180x98",
     "height": 98,
     "width": 180,
     "helper_dimensions": "petite_reglette(180x98)",
-    "status": true,
     "orientation": null
   },
   {
@@ -41,7 +37,6 @@
     "height": 200,
     "width": 200,
     "helper_dimensions": "moyen_carre(200x200)",
-    "status": true,
     "orientation": null
   },
   {
@@ -50,7 +45,6 @@
     "height": 40,
     "width": 200,
     "helper_dimensions": "reglette(200x40)",
-    "status": true,
     "orientation": null
   },
   {
@@ -59,7 +53,6 @@
     "height": 420,
     "width": 297,
     "helper_dimensions": "A4_A3(297x420)",
-    "status": true,
     "orientation": "portrait"
   },
   {
@@ -67,8 +60,7 @@
     "name": "420x297",
     "height": 297,
     "width": 420,
-    "helper_dimensions": "A4_A3(420x297)",
-    "status": true,
+    "helper_dimensions": "A4_A3(297x420)",
     "orientation": "paysage"
   },
   {
@@ -77,7 +69,6 @@
     "height": 600,
     "width": 600,
     "helper_dimensions": "grand_carre(600x600)",
-    "status": true,
     "orientation": null
   },
   {
@@ -86,7 +77,6 @@
     "height": 1200,
     "width": 600,
     "helper_dimensions": "grand(600x1200)",
-    "status": false,
     "orientation": null
   },
   {
@@ -95,7 +85,6 @@
     "height": 1200,
     "width": 800,
     "helper_dimensions": "(800x1200)",
-    "status": false,
     "orientation": null
   },
   {
@@ -104,25 +93,6 @@
     "height": 1200,
     "width": 1200,
     "helper_dimensions": "tres_grand_carre(1200x1200)",
-    "status": false,
     "orientation": null
-  },
-  {
-    "id": 15,
-    "name": "420x594",
-    "height": 594,
-    "width": 420,
-    "helper_dimensions": "A2 (420x594)",
-    "status": true,
-    "orientation": "portrait"
-  },
-  {
-    "id": 16,
-    "name": "594x420",
-    "height": 420,
-    "width": 594,
-    "helper_dimensions": "A2 (594x420)",
-    "status": true,
-    "orientation": "paysage"
   }
-]
+  ]
