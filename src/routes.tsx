@@ -27,6 +27,7 @@ import MonitoringPage from './pages/admin/MonitoringPage'
 import TemplatePage from './pages/admin/TemplatePage'
 import ConnexionCount from './pages/admin/ConnexionCount'
 import StorePage from './pages/admin/StorePage'
+import DimensionPage from './pages/admin/DimensionPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -54,6 +55,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path='/tableau-de-bord/logs' element={<MonitoringPage />} />
             <Route path='/tableau-de-bord/logs?page=:page&perPage=:perPage&route=:route&level=:level&user=:user' element={<MonitoringPage />} />
             <Route path='/tableau-de-bord/connexions' element={<ConnexionCount />} />
+            <Route path='/tableau-de-bord/dimensions' element={<DimensionPage />} />
           </Route>
           <Route path='/profile' element={<Account />} />
           <Route path='/guide-plv' element={<GuideUtilisateur />} />

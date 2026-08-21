@@ -12,6 +12,7 @@ import TemplatePage from './TemplatePage'
 import MonitoringPage from './MonitoringPage'
 import ConnexionCount from './ConnexionCount'
 import StorePage from './StorePage'
+import DimensionPage from './DimensionPage'
 
 interface ContextType {
   setTitleHeader: React.Dispatch<React.SetStateAction<string>>
@@ -27,6 +28,7 @@ const ADMIN_PAGES: Record<string, { path: string; component: React.ReactNode }> 
   logs: { path: '/logs', component: <MonitoringPage /> },
   modeles: { path: '/modeles', component: <ModelsPage /> },
   connexions: { path: '/connexions', component: <ConnexionCount /> },
+  dimensions: { path: '/dimensions', component: <DimensionPage /> },
 };
 
 const DashBoard = () => {

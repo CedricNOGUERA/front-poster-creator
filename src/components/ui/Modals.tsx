@@ -30,6 +30,9 @@ import {
   ModalAddStoreType,
   ModalUpdateStoreType,
   ModalDeleteStoreType,
+  ModalAddDimensionType,
+  ModalStatusDimensionType,
+  ModalDeleteDimensionType,
 } from "@/types/ModalType";
 import { ShopType } from "@/types/ShopType";
 import {
@@ -50,6 +53,7 @@ import {
   FaCircleXmark,
   FaPencil,
   FaShop,
+  FaTrash,
 } from "react-icons/fa6";
 import { FaEdit, FaPlusCircle, FaTimesCircle, FaTrashAlt } from "react-icons/fa";
 import DynamicIcon from "./DynamicIcon";
@@ -58,6 +62,7 @@ import {
   _handleCloseDeleteModal,
   _handleCloseEditModal,
 } from "@/utils/modalFunction";
+import { TbDimensions } from "react-icons/tb";
 const API_URL = import.meta.env.VITE_API_URL;
 
 //////////////////////
@@ -1315,6 +1320,7 @@ export function ModalAddShop({
   modalAddShopProps: ModalAddShopType;
 }) {
   const {
+
     showAdd,
     handleCloseAdd,
     handleSubmit,
@@ -1586,3 +1592,237 @@ export function ModalDelete({
     </Modal>
   );
 }
+
+//////////////////////
+//Dimension
+//////////////////////
+
+
+export function ModalAddDimension({
+  modalAddDimensionProps,
+}: {
+  modalAddDimensionProps: ModalAddDimensionType;
+}) {
+  const {
+    isLoading,
+    showAddModal,
+    handleCloseAddModal,
+    dimensionFormData,
+    setDimensionFormData,
+    handleAddDimension,
+  } = modalAddDimensionProps;
+
+  return (
+    <Modal show={showAddModal} onHide={handleCloseAddModal}>
+      <Form
+       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+          handleAddDimension()
+        }
+      }
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center gap-2 text-primary">
+            <TbDimensions size={36} />
+            <span>Ajouter un nouvelle dimension</span>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="name">
+            <Form.Label>Nom</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Saissisez un nom"
+              value={dimensionFormData?.name || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setDimensionFormData((prev) => ({
+                  ...prev,
+                  name: e.target.value,
+                }))
+              }
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="Largeur">
+            <Form.Label>Largeur</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Saissisez la largeur"
+              value={dimensionFormData?.width || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setDimensionFormData((prev) => ({
+                  ...prev,
+                  width: e.target.value,
+                }))
+              }
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="Hauteur">
+            <Form.Label>Hauteur</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Saissisez la hauteur"
+              value={dimensionFormData?.height || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setDimensionFormData((prev) => ({
+                  ...prev,
+                  height: e.target.value,
+                  // dimension: `${dimensionFormData.width}x${dimensionFormData.height}`
+                }))
+              }
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="orientation">
+            <Form.Label>Orientation</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Saissisez l'orientation"
+              value={dimensionFormData?.orientation || ""}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setDimensionFormData((prev) => ({
+                  ...prev,
+                  orientation: e.target.value,
+                }))
+              }
+            />
+          </Form.Group>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              handleCloseAddModal();
+              setDimensionFormData({
+                name: "",
+                width: "",
+                height: "",
+                dimension: "",
+                orientation: "",
+              });
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant="success"
+            type="submit"
+            className="d-flex align-items-center gap-2"
+            disabled={isLoading}
+          >
+            {isLoading && (
+              <>
+                <Spinner size="sm" />
+              </>
+            )}
+            <span>Ajouter</span>
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
+  );
+}
+export function ModalStatusDimension({
+  modalStatusDimensionProps,
+}: {
+  modalStatusDimensionProps: ModalStatusDimensionType;
+}) {
+  const { isLoading, showStatusModal, handleCloseStatusModal, selectedStatus, handleStatusDimension } =
+    modalStatusDimensionProps;
+
+  const title = selectedStatus ? "Désactiver" : "Activer";
+  const text = selectedStatus ? "désactiver" : "activer";
+  const color = selectedStatus ? "warning" : "success";
+
+  return (
+    <Modal show={showStatusModal} onHide={handleCloseStatusModal}>
+     
+        <Modal.Header closeButton>
+          <Modal.Title className={`d-flex align-items-center gap-2 text-${color}`}>
+            <TbDimensions size={36} />
+            <span>{title} une dimension</span>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Êtes vous sûr de vouloir {text} cette dimension ?
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              handleCloseStatusModal();
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant={color}
+            type="submit"
+            className="d-flex align-items-center gap-2"
+            disabled={isLoading}
+            onClick={handleStatusDimension}
+          >
+            {isLoading && (
+              <>
+                <Spinner size="sm" />
+              </>
+            )}
+            <span>{title}</span>
+          </Button>
+        </Modal.Footer>
+    </Modal>
+  );
+}
+export function ModalDeleteDimension({
+  modalDeleteDimensionProps,
+}: {
+  modalDeleteDimensionProps: ModalDeleteDimensionType;
+}) {
+  const { isLoading, showDeleteModal, handleCloseDeleteModal, handleDeleteDimension } =
+    modalDeleteDimensionProps;
+
+  return (
+    <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+    
+        <Modal.Header closeButton>
+          <Modal.Title className="d-flex align-items-center gap-2 text-danger">
+            <FaTrash size={36} />
+            <span>Supprimer une dimension</span>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Êtes vous sûr de vouloir supprimer cette dimension ?
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              handleCloseDeleteModal();
+            }}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant="danger"
+            type="submit"
+            className="d-flex align-items-center gap-2"
+            disabled={isLoading}
+            onClick={handleDeleteDimension}
+          >
+            {isLoading && (
+              <>
+                <Spinner size="sm" />
+              </>
+            )}
+            <span>Supprimer</span>
+          </Button>
+        </Modal.Footer>
+    </Modal>
+  );
+}
+
