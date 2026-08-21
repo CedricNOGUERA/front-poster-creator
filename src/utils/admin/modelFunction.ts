@@ -27,6 +27,7 @@ export const getPaginatedModels = async (
   id: string,
   template: string,
   dimension: string,
+  status: string,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setPaginatedModels: React.Dispatch<React.SetStateAction<ModelResultType>>,
 ) => {
@@ -38,6 +39,7 @@ export const getPaginatedModels = async (
       id,
       template,
       dimension,
+      status
     );
     setPaginatedModels(response);
   } catch (error) {
@@ -61,8 +63,23 @@ export const getFilteredModelData = (
     debouncedFilters.id,
     debouncedFilters.template,
     debouncedFilters.dimension,
+    debouncedFilters.status,
     setIsLoadingDisplay,
     setPaginatedModels,
   );
   navigate(`/tableau-de-bord/modeles?${params.toString()}`);
 };
+
+
+export const changeStatusModel = async (id: number, status: boolean | undefined, closeModal: ()=> void) => {
+
+  try{
+    const response = await modelsServiceInstance.patchStatusModel(id, !status)
+
+    console.warn(response)
+    closeModal()
+
+  }catch(error){
+    console.error(error)
+  }
+}

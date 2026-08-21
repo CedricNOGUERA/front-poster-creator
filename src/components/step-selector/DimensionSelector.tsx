@@ -22,6 +22,7 @@ export const DimensionSelector = ({ title }: Props) => {
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>({} as TemplateType);
   const [imagesmodel, setImagesModel] = React.useState<ImagemodelType[]>([])
 
+
   // Contrainte d'affichage
   const maxDisplayWidth = 260;
   const maxDisplayHeight = 180;
@@ -52,6 +53,7 @@ export const DimensionSelector = ({ title }: Props) => {
     storeApp.nextStep();
   };
 
+  
 
   /* Render
    *******************************************************************************************/
@@ -59,8 +61,10 @@ export const DimensionSelector = ({ title }: Props) => {
     <>
       <h2 className="fs-4 fw-bold text-primary">{title}</h2>
       <small>({selectedTemplate?.name})</small>
+
       <div className="list-dimension d-flex flex-wrap justify-content-center align-items-center mt-5 mb-5">
         {dimensions.map((dimension) => {
+          if (!dimension.status) return null;
           let scaledWidth = dimension.width * baseScale;
           let scaledHeight = dimension.height * baseScale;
 
@@ -75,61 +79,74 @@ export const DimensionSelector = ({ title }: Props) => {
             scaledWidth *= zoomFactor;
             scaledHeight *= zoomFactor;
           }
-          const modelAvailable = model && model.find((model) => model.dimensionId === dimension.id && model.templateId === storeApp.templateId  && model.categoryId === storeApp.categoryId)
+          const modelAvailable =
+            model &&
+            model.find(
+              (model) =>
+                model.dimensionId === dimension.id &&
+                model.templateId === storeApp.templateId &&
+                model.categoryId === storeApp.categoryId 
+                &&
+                model.activated,
+            );
 
           return (
-            <div
-              key={dimension.id}
-              className={`dimension-card hover-card mb-3 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center ${modelAvailable ? "border-primary" : "border-danger"}`}
-              onClick={() => {
-                if (modelAvailable) {
-                  onHandleDimension(dimension.id);
-                } else {
-                  alert("Ce modèle n'est pas disponible pour cette dimension");
-                }
-              }}
-              style={{
-                width: "300px",
-                minHeight: "220px",
-              }}
-            >
-              {imagesmodel?.find(
-                (img) => img.modelId === modelAvailable?.id,
-              ) ? (
-                <div className="d-flex justify-content-center align-items-center mb-2">
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}/uploads/modelMiniature/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.modelId}/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.name}`}
-                    alt="Image du modèle"
+            <div>
+              <div
+                key={dimension.id}
+                className={`dimension-card hover-card mb-5 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center ${modelAvailable ? "border-primary" : "border-danger"}`}
+                onClick={() => {
+                  if (modelAvailable) {
+                    onHandleDimension(dimension.id);
+                  } else {
+                    alert(
+                      "Ce modèle n'est pas disponible pour cette dimension",
+                    );
+                  }
+                }}
+                style={{
+                  width: "300px",
+                  minHeight: "300px",
+                }}
+              >
+                {imagesmodel?.find(
+                  (img) => img.modelId === modelAvailable?.id,
+                ) ? (
+                  <div className="d-flex justify-content-center align-items-center mb-2">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/uploads/modelMiniature/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.modelId}/${imagesmodel.find((img) => img.modelId === modelAvailable?.id)?.name}`}
+                      alt="Image du modèle"
+                      style={{
+                        width: `${scaledWidth}px`,
+                        height: `${scaledHeight}px`,
+                        objectFit: "cover",
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div
                     style={{
                       width: `${scaledWidth}px`,
                       height: `${scaledHeight}px`,
-                      objectFit: "cover",
+                      border: "2px dashed #aaa",
+                      backgroundColor: "#f8f9fa",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "10px",
+                      transition: "transform 0.3s ease",
                     }}
-                  />
-                </div>
-              ) : (
-                <div
-                  style={{
-                    width: `${scaledWidth}px`,
-                    height: `${scaledHeight}px`,
-                    border: "2px dashed #aaa",
-                    backgroundColor: "#f8f9fa",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "10px",
-                    transition: "transform 0.3s ease",
-                  }}
-                >
-                  <span className="fw-semibold">
-                    <FaImage className="text-secondary" />
-                  </span>
-                </div>
-              )}
-              <p className="mt-2 text-center fw-bold fs-6">
-                {dimension.helper_dimensions}
-              </p>
-              <small>{dimension.orientation}</small>
+                  >
+                    <span className="fw-semibold">
+                      <FaImage className="text-secondary" />
+                    </span>
+                  </div>
+                )}
+                <p className="mt-2 text-center fw-bold fs-6">
+                  {dimension.helper_dimensions}
+                </p>
+                <small>{dimension.orientation}</small>
+              </div>
             </div>
           );
         })}

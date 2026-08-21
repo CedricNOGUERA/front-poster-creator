@@ -18,7 +18,7 @@ export interface PageDimensions {
 
 export interface PrintOptions {
   mode: 'single' | 'multiple' | 'combine'
-  pageFormat: 'A4' | 'A3' | 'custom'
+  pageFormat: 'A4' | 'A3' | 'A2' | 'custom'
   customDimensions?: PageDimensions
   copiesPerPage?: number
   spacing?: number
@@ -31,8 +31,8 @@ const getPageDimensions = (opts: PrintOptions): PageDimensions => {
   if (opts.pageFormat === 'custom' && opts.customDimensions) {
     return opts.customDimensions
   }
-  // Cast restreint car PrintOptions ne propose que 'A4' | 'A3' en plus de 'custom'
-  const key = opts.pageFormat as 'A4' | 'A3'
+  // Cast restreint car PrintOptions ne propose que 'A4' | 'A3' | 'A2' en plus de 'custom'
+  const key = opts.pageFormat as 'A4' | 'A3' | 'A2'
   return PAGE_DIMENSIONS[key]
 }
 

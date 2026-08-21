@@ -66,6 +66,7 @@ import {
   FaUserShield,
 } from "react-icons/fa6";
 import { RiErrorWarningFill, RiUserAddLine, RiUserSettingsLine } from "react-icons/ri";
+import { TbDimensions } from "react-icons/tb";
 
 export const ICON_MAP = {
   "fa fa-apple": FaAppleAlt,
@@ -137,4 +138,5 @@ export const ICON_MAP = {
   "ri-user-add-line": RiUserAddLine,
   "ri-user-settings-line": RiUserSettingsLine,
   "ri-error-warning": RiErrorWarningFill,
+  "tb-dimensions": TbDimensions,
 };
