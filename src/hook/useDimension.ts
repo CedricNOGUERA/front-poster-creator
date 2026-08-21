@@ -1,22 +1,27 @@
 import React from "react";
 import { DimensionType } from "@/types/DimensionType";
+import dimensionsServiceInstance from "@/services/DimensionsService";
+import { DimensionFormDataType } from "@/types/ModalType";
+import { ToastDataType } from "@/types/DiversType";
+import { useOutletContext } from "react-router-dom";
+import { _showToast } from "@/utils/notifications";
 
-export interface DimensionFormDataType {
-    name: string;
-    width: string;
-    height: string;
-    orientation: string;
+interface ContextType {
+  setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>;
+  toggleShow: () => void;
 }
 
 export default function useDimension() {
 
+    const { setToastData, toggleShow } = useOutletContext<ContextType>();
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const columnsData = ["ID", "Nom", "Dimension", "Orientation", "Etat", "Actions"];
+    const columnsData = ["ID", "Nom", "Dimensions", "Orientation", "Etat", "Actions"];
     const [dimensions, setDimensions] = React.useState<DimensionType[]>([]);
     const [dimensionFormData, setDimensionFormData] = React.useState<DimensionFormDataType>({
         name: "",
         width: "",
         height: "",
+        dimension: "",
         orientation: "",
     });
     const [selectedIdDimension, setSelectedIdDimension] = React.useState<number | null>(null);
@@ -57,11 +62,7 @@ export default function useDimension() {
     const getDimensions = async () => {
         setIsLoading(true);
         try {
-            // Simulate fetching dimensions from an API
-            console.log("Fetching dimensions...");
-            const response = await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log(response)
-            // Assuming the API returns an array of dimensions
+            const response = await dimensionsServiceInstance.getDimensions();
             setDimensions(response as DimensionType[]);
         } catch (error) {
             console.error("Erreur lors de la récupération des dimensions :", error);
@@ -70,24 +71,44 @@ export default function useDimension() {
         }
     }
 
-    const handleAddDimension = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleAddDimension = async () => {
         setIsLoading(true);
+    
+        const newData = {...dimensionFormData, dimension: `${dimensionFormData.width}x${dimensionFormData.height}`}
         try{
-            handleCloseAddModal();
+
+           const response = await dimensionsServiceInstance.postDimension(newData);
+
+               getDimensions();
+               handleCloseAddModal();
+               setDimensionFormData({
+                   name: "",
+                   width: "",
+                   height: "",
+                   dimension: "",
+                   orientation: "",
+                });
+                _showToast(true, response.message , setToastData, toggleShow, 3000);
         }catch(error){
+            _showToast(false, error instanceof Error ? error.message : "Erreur lors de l'ajout de la dimension", setToastData, toggleShow, 3000);
             console.error("Erreur lors de l'ajout de la dimension :", error);
         }finally{
             setIsLoading(false);
         }
     };
 
-    const handleStatusDimension = () => {
+    const handleStatusDimension = async() => {
         setIsLoading(true);
         try{
-            handleCloseStatusModal();
-            setSelectedIdDimension(null);
-            setSelectedStatus(null);
+
+            if (selectedIdDimension !== null && selectedStatus !== null) {
+                const response = await dimensionsServiceInstance.patchDimsensionStatus(selectedIdDimension, !selectedStatus);
+                _showToast(true, response.message, setToastData, toggleShow, 3000);
+                getDimensions();
+                handleCloseStatusModal();
+                setSelectedIdDimension(null);
+                setSelectedStatus(null);
+            }
         }catch(error){
             console.error("Erreur lors de la mise à jour de la dimension :", error);
         }finally{
@@ -106,32 +127,42 @@ export default function useDimension() {
             setIsLoading(false);
         }
     };
+    console.log(dimensionFormData)
 
-    console.log(dimensions)
-       
+    const addModalProps = {
+      showAddModal,
+      handleCloseAddModal,
+      dimensionFormData,
+      setDimensionFormData,
+      handleAddDimension,
+    };
+
+    const statusModalProps = {
+      showStatusModal,
+      handleCloseStatusModal,
+      selectedStatus,
+      handleStatusDimension,
+    };
+
+    const deleteModalProps = {
+      showDeleteModal,
+      handleCloseDeleteModal,
+      handleDeleteDimension,
+    };
+
     return {
       isLoading,
       columnsData,
-      dimensionFormData,
-      setDimensionFormData,
-      selectedIdDimension,
-      selectedStatus,
-
-      handleAddDimension,
-      handleStatusDimension,
-      handleDeleteDimension,
-
-      showAddModal,
-      setShowAddModal,
-      showStatusModal,
-      setShowStatusModal,
-      showDeleteModal,
-      setShowDeleteModal,
+      addModalProps,
+        statusModalProps,
+        deleteModalProps,
+      dimensions,
+   
       handleShowAddModal,
-      handleCloseAddModal,
+    //   handleCloseAddModal,
       handleShowStatusModal,
-      handleCloseStatusModal,
-      handleShowDeleteModal,
-      handleCloseDeleteModal,
+    //   handleCloseStatusModal,
+    //   handleShowDeleteModal,
+    //   handleCloseDeleteModal,
     };
 }

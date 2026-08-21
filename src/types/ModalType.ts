@@ -194,23 +194,21 @@ export interface ModalUpdateStoreType
 //Dimension
 ///////////////////////////
 
+export interface DimensionFormDataType {
+    name: string;
+    width: string;
+    height: string;
+    dimension: string;
+    orientation: string | null;
+}
+
 export interface ModalAddDimensionType {
   isLoading: boolean
   showAddModal: boolean
   handleCloseAddModal: () => void
-  dimensionFormData: {
-    name: string;
-    width: string;
-    height: string;
-    orientation: string;
-  }
-  setDimensionFormData: React.Dispatch<React.SetStateAction<{
-    name: string;
-    width: string;
-    height: string;
-    orientation: string;
-  }>>
-  handleAddDimension: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>
+  dimensionFormData: DimensionFormDataType
+  setDimensionFormData: React.Dispatch<React.SetStateAction<DimensionFormDataType>>
+  handleAddDimension: () => void | Promise<void>
 }
 
 export interface ModalStatusDimensionType {
