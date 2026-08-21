@@ -7,63 +7,42 @@ import AddButton from "@/components/ui/table/AddButton";
 import useDimension from "@/hook/useDimension";
 import TableHeader from "@/components/ui/table/TableHeader";
 import { Container, Dropdown, Table } from "react-bootstrap";
-import dimensions from "@/data/dimensions.json";
 import { DimensionType } from "@/types/DimensionType";
-import { FaCheck, FaEllipsisVertical, FaTrash } from "react-icons/fa6";
+import { FaCheck, FaEllipsisVertical } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
 
 export default function DimensionPage() {
   const {
     isLoading,
     columnsData,
-    dimensionFormData,
-    setDimensionFormData,
-    selectedStatus,
-
-    handleAddDimension,
-    handleStatusDimension,
-    handleDeleteDimension,
-
-    showAddModal,
-    showStatusModal,
-    showDeleteModal,
+    addModalProps,
+    statusModalProps,
+    deleteModalProps,
+    dimensions,
     handleShowAddModal,
-    handleCloseAddModal,
     handleShowStatusModal,
-    handleCloseStatusModal,
-    handleShowDeleteModal,
-    handleCloseDeleteModal,
   } = useDimension();
 
   const modalAddDimensionProps = {
     isLoading,
-    showAddModal,
-    handleCloseAddModal,
-    dimensionFormData,
-    setDimensionFormData,
-    handleAddDimension,
+    ...addModalProps,
   };
 
   const modalStatusDimensionProps = {
     isLoading,
-    showStatusModal,
-    handleCloseStatusModal,
-    selectedStatus,
-    handleStatusDimension,
+    ...statusModalProps,
   };
   const modalDeleteDimensionProps = {
     isLoading,
-    showDeleteModal,
-    handleCloseDeleteModal,
-    handleDeleteDimension,
+    ...deleteModalProps,
   };
 
   const dimensionDisplay = (dimensions: DimensionType[]) => {
     return dimensions.map((dimension) => (
       <tr key={dimension.id} className="align-middle">
         <td>{dimension.id}</td>
-        <td>{dimension?.helper_dimensions}</td>
         <td>{dimension?.name}</td>
+        <td>{dimension?.dimension}</td>
         <td>{dimension?.orientation}</td>
         <td>
           {dimension?.status ? (
@@ -105,13 +84,13 @@ export default function DimensionPage() {
                   Activer
                 </Dropdown.Item>
               )}
-              <Dropdown.Item
+              {/* <Dropdown.Item
                 onClick={() => handleShowDeleteModal(dimension.id)}
                 className="d-flex align-items-center text-danger"
               >
                 <FaTrash className="me-2" size={16} />
                 Supprimer
-              </Dropdown.Item>
+              </Dropdown.Item> */}
             </Dropdown.Menu>
           </Dropdown>
         </td>

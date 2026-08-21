@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import dimensions from "@/data/dimensions.json";
 import useStoreApp from "@/stores/storeApp";
 import { _getImagesModels, _getModels, _getTemplates } from "@/utils/apiFunctions";
 import { ImagemodelType, ModelType } from "@/types/modelType";
 import React from "react";
 import { TemplateType } from "@/types/TemplatesType";
 import { FaImage } from "react-icons/fa6";
+import { DimensionType } from "@/types/DimensionType";
+import dimensionsServiceInstance from "@/services/DimensionsService";
 
 type Props = {
   title: string;
@@ -14,6 +15,7 @@ type Props = {
 export const DimensionSelector = ({ title }: Props) => {
   /* Variables / States
    *******************************************************************************************/
+  const [dimensions, setDimensions] = React.useState<DimensionType[]>([]);
   const storeApp = useStoreApp();
   const maxWidth = Math.max(...dimensions.map((d) => d.width));
   const maxHeight = Math.max(...dimensions.map((d) => d.height));
@@ -39,7 +41,9 @@ export const DimensionSelector = ({ title }: Props) => {
     _getModels(setModel)
     _getTemplates(setTemplates)
     _getImagesModels(storeApp.categoryId, setImagesModel)
+    getDimensions()
   }, [])
+  
   React.useEffect(() => {
     const filteredTemplate = templates.filter((temp) => temp.id === storeApp.templateId)[0]
     setSelectedTemplate(filteredTemplate)
@@ -52,6 +56,15 @@ export const DimensionSelector = ({ title }: Props) => {
     storeApp.setDimensionId(id);
     storeApp.nextStep();
   };
+
+   const getDimensions = async () => {
+        try {
+            const response = await dimensionsServiceInstance.getDimensions();
+            setDimensions(response as DimensionType[]);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des dimensions :", error);
+        }
+    }
 
   
 
@@ -143,7 +156,8 @@ export const DimensionSelector = ({ title }: Props) => {
                   </div>
                 )}
                 <p className="mt-2 text-center fw-bold fs-6">
-                  {dimension.helper_dimensions}
+                  {dimension.name} - 
+                 ({dimension.dimension})
                 </p>
                 <small>{dimension.orientation}</small>
               </div>

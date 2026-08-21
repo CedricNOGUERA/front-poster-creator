@@ -1615,7 +1615,11 @@ export function ModalAddDimension({
   return (
     <Modal show={showAddModal} onHide={handleCloseAddModal}>
       <Form
-       onSubmit={handleAddDimension}
+       onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+          handleAddDimension()
+        }
+      }
       >
         <Modal.Header closeButton>
           <Modal.Title className="d-flex align-items-center gap-2 text-primary">
@@ -1665,6 +1669,7 @@ export function ModalAddDimension({
                 setDimensionFormData((prev) => ({
                   ...prev,
                   height: e.target.value,
+                  // dimension: `${dimensionFormData.width}x${dimensionFormData.height}`
                 }))
               }
               required
@@ -1682,7 +1687,6 @@ export function ModalAddDimension({
                   orientation: e.target.value,
                 }))
               }
-              required
             />
           </Form.Group>
         </Modal.Body>
@@ -1696,6 +1700,7 @@ export function ModalAddDimension({
                 name: "",
                 width: "",
                 height: "",
+                dimension: "",
                 orientation: "",
               });
             }}
