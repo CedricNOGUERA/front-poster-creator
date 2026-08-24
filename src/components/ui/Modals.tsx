@@ -1647,7 +1647,7 @@ export function ModalAddDimension({
           <Form.Group className="mb-3" controlId="Largeur">
             <Form.Label>Largeur</Form.Label>
             <Form.Control
-              type="text"
+              type="number"
               placeholder="Saissisez la largeur"
               value={dimensionFormData?.width || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -1662,7 +1662,7 @@ export function ModalAddDimension({
           <Form.Group className="mb-3" controlId="Hauteur">
             <Form.Label>Hauteur</Form.Label>
             <Form.Control
-              type="text"
+              type="number"
               placeholder="Saissisez la hauteur"
               value={dimensionFormData?.height || ""}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -1675,9 +1675,11 @@ export function ModalAddDimension({
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="orientation">
+          {dimensionFormData?.height !== dimensionFormData?.width && (
+
+            <Form.Group className="mb-3" controlId="orientation">
             <Form.Label>Orientation</Form.Label>
-            <Form.Control
+            {/* <Form.Control
               type="text"
               placeholder="Saissisez l'orientation"
               value={dimensionFormData?.orientation || ""}
@@ -1687,8 +1689,25 @@ export function ModalAddDimension({
                   orientation: e.target.value,
                 }))
               }
-            />
+            /> */}
+            <Form.Select
+              value={dimensionFormData?.orientation || ""}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setDimensionFormData((prev) => ({
+                  ...prev,
+                  orientation: e.target.value,
+                }))
+              }
+              >
+              <option value="">Sélectionnez une orientaion</option>
+              {["portrait", "paysage"]?.map((comp) => (
+                <option key={comp} value={comp}>
+                  {comp}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
+                )}
         </Modal.Body>
 
         <Modal.Footer>
@@ -1701,7 +1720,7 @@ export function ModalAddDimension({
                 width: "",
                 height: "",
                 dimension: "",
-                orientation: "",
+                orientation: null,
               });
             }}
           >
@@ -1812,7 +1831,7 @@ export function ModalDeleteDimension({
             type="submit"
             className="d-flex align-items-center gap-2"
             disabled={isLoading}
-            onClick={handleDeleteDimension}
+            onClick={() => handleDeleteDimension()}
           >
             {isLoading && (
               <>

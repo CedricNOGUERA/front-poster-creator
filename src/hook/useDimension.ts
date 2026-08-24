@@ -22,7 +22,7 @@ export default function useDimension() {
         width: "",
         height: "",
         dimension: "",
-        orientation: "",
+        orientation: null,
     });
     const [selectedIdDimension, setSelectedIdDimension] = React.useState<number | null>(null);
     const [selectedStatus, setSelectedStatus] = React.useState<boolean | null>(null);   
@@ -116,18 +116,22 @@ export default function useDimension() {
         }
     };
 
-    const handleDeleteDimension = () => {
+    const handleDeleteDimension = async() => {
         setIsLoading(true);
         try{
-            handleCloseDeleteModal();
-            setSelectedIdDimension(null);
+            if(selectedIdDimension){
+                const response = await dimensionsServiceInstance.deleteDimension(selectedIdDimension)
+                _showToast(true, response.message, setToastData, toggleShow, 3000);
+                getDimensions();
+                handleCloseDeleteModal();
+                setSelectedIdDimension(null);
+            } 
         }catch(error){
             console.error("Erreur lors de la suppression de la dimension :", error);
         }finally{
             setIsLoading(false);
         }
     };
-    console.log(dimensionFormData)
 
     const addModalProps = {
       showAddModal,
@@ -162,7 +166,7 @@ export default function useDimension() {
     //   handleCloseAddModal,
       handleShowStatusModal,
     //   handleCloseStatusModal,
-    //   handleShowDeleteModal,
+      handleShowDeleteModal,
     //   handleCloseDeleteModal,
     };
 }

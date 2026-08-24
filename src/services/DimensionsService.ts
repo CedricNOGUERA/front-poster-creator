@@ -50,6 +50,23 @@ class DimensionsService {
         return response.json();
     }
 
+    async deleteDimension(id: number) {
+        const response = await fetch(`${api_url}/api/dimensions/${id}`, {
+            method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        })
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Erreur s'est produite lors de la suppression de la dimension");
+        }
+
+        return response.json();
+    }
+
 }
 
 const dimensionsServiceInstance = new DimensionsService();
