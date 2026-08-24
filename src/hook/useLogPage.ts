@@ -9,7 +9,7 @@ export default function() {
       const [params] = useSearchParams();
       const navigate = useNavigate();
     
-      const columnsData = ["Id", "Utilisateur", "Gravité", "Route", "Message", "Date"];
+      const columnsData = ["Id", "Utilisateur", "Gravité", "Route", "Message", "Date", ""];
       const [logs, setLogs] = React.useState<LogResultType>({} as LogResultType);
       const [isLoading, setIsLoading] = React.useState<boolean>(false);
       const [page, setPage] = React.useState<string>(params.get("page") || "1");
@@ -53,6 +53,8 @@ export default function() {
             setLogs,
           );
         }, [debouncedFilters, navigate]);
+
+        console.log(level)
     
     return{
 

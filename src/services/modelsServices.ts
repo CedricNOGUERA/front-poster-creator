@@ -65,12 +65,21 @@ class ModelsService {
   }
 
   async patchModel(modelId: number, formData: FormData) {
-    const response = await axios.patch(
+
+     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/api/patch-models/${modelId}`,
-      formData,
+      {
+        method: "PATCH",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
     );
 
     return response;
+
+    // return response;
   }
 
   async patchStatusModel(id: number, activated: boolean) {
