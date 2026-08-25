@@ -1698,6 +1698,7 @@ export function ModalAddDimension({
                   orientation: e.target.value,
                 }))
               }
+              required
               >
               <option value="">Sélectionnez une orientaion</option>
               {["portrait", "paysage"]?.map((comp) => (

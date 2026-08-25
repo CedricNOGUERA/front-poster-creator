@@ -35,6 +35,13 @@ export default function useDimension() {
     };
     const handleCloseAddModal = () => {
         setShowAddModal(false);
+        setDimensionFormData({
+            name: "",
+            width: "",
+            height: "",
+            dimension: "",
+            orientation: null,
+        })
     };
     const handleShowStatusModal = (id: number, status: boolean) => {
         setSelectedIdDimension(id);
