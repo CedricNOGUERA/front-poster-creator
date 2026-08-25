@@ -43,7 +43,7 @@ const PrintOptionsModal: React.FC<PrintOptionsModalProps> = ({
     "single",
   );
   const [copiesPerPage, setCopiesPerPage] = useState(4);
-  const [pageFormat, setPageFormat] = useState<"A4" | "A3" | "custom">("A4");
+  const [pageFormat, setPageFormat] = useState<"A4" | "A3" | "A2" | "custom">("A4");
   const [customWidth, setCustomWidth] = useState(210);
   const [customHeight, setCustomHeight] = useState(297);
   const [spacing, setSpacing] = useState(1);
@@ -319,7 +319,7 @@ const calculateLayout = (): PrintLayout => {
                     <Form.Select
                       value={pageFormat}
                       onChange={(e) =>
-                        setPageFormat(e.target.value as "A4" | "A3" | "custom")
+                        setPageFormat(e.target.value as "A4" | "A3" | "A2" | "custom")
                       }
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>
@@ -436,7 +436,7 @@ const calculateLayout = (): PrintLayout => {
                     <Form.Select
                       value={pageFormat}
                       onChange={(e) =>
-                        setPageFormat(e.target.value as "A4" | "A3" | "custom")
+                        setPageFormat(e.target.value as "A4" | "A3" | "A2" | "custom")
                       }
                     >
                       <option value="A4">A4 (210 x 297 mm)</option>

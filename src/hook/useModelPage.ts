@@ -42,6 +42,7 @@ export function useModelPage() {
   const [selectedModel, setSelectedModel] = React.useState<ModelType>(
     {} as ModelType,
   );
+  const [showActivatedModal, setShowActivatedModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isLoadingDisplay, setIsLoadingDisplay] =
@@ -58,9 +59,12 @@ export function useModelPage() {
   const [dimension, setDimension] = React.useState<string>(
     params.get("dimension") || "",
   );
-  const filters = { page, perPage, id, template, dimension };
+  const [status, setStatus] = React.useState<string>(
+    params.get("status") || "",
+  );
+  const filters = { page, perPage, id, template, dimension, status };
 
-  const isFiltering = [id, template, dimension].every((v) => v === "");
+  const isFiltering = [id, template, dimension, status].every((v) => v === "");
 
   const totalPages = Math.ceil(paginatedModels?.total / parseInt(perPage));
   const currentPage = parseInt(page);
@@ -78,7 +82,7 @@ export function useModelPage() {
   React.useEffect(() => {
     const timeout = setTimeout(() => setDebouncedFilters(filters), 500);
     return () => clearTimeout(timeout);
-  }, [page, perPage, id, template, dimension]);
+  }, [page, perPage, id, template, dimension, status]);
 
   // Fetch
   React.useEffect(() => {
@@ -92,6 +96,15 @@ export function useModelPage() {
     );
   }, [debouncedFilters, navigate]);
 
+  const handleShowActivatedModal = (model: ModelType) => {
+    setSelectedModel(model);
+    setShowActivatedModal(true);
+  };
+
+  const handleCloseActivatedModal = () => {
+    setSelectedModel({} as ModelType);
+    setShowActivatedModal(false);
+  };
   const handleShowDeleteModal = (model: ModelType) => {
     setSelectedModel(model);
     setShowDeleteModal(true);
@@ -117,6 +130,7 @@ export function useModelPage() {
         id,
         template,
         dimension,
+        status,
         setIsLoadingDisplay,
         setPaginatedModels,
       );
@@ -153,6 +167,28 @@ export function useModelPage() {
     }
   };
 
+  const changeStatusModel = async (id: number, status: boolean | undefined, closeModal: ()=> void) => {
+ const params = new URLSearchParams();
+   
+  try{
+    const response = await modelsServiceInstance.patchStatusModel(id, !status)
+
+    console.warn(response)
+    closeModal()
+     getFilteredModelData(
+      params,
+      debouncedFilters,
+      navigate,
+      setIsLoading,
+      setPaginatedModels,
+    );
+
+  }catch(error){
+    console.error(error)
+  }
+}
+  
+
   return {
     //states
     paginatedModels,
@@ -176,9 +212,16 @@ export function useModelPage() {
     setTemplate,
     dimension,
     setDimension,
+    status,
+    setStatus,
     //handlers
     handleCloseDeleteModal,
     handleShowDeleteModal,
     handleDeleteModel,
+    handleShowActivatedModal,
+    handleCloseActivatedModal,
+    showActivatedModal,
+    setShowActivatedModal,
+    changeStatusModel
   };
 }

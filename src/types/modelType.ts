@@ -6,6 +6,7 @@ export type ModelType = {
   templateId: number;
   categoryId: number;
   dimensionId: number;
+  activated?: boolean;
   canvas: ComponentTypeMulti[];
 };
 
@@ -34,6 +35,7 @@ export type DebouncedFilterModelType = {
     id: string;
     template: string;
     dimension: string;
+    status: string;
 }
 
 export type ModelHookType = {
@@ -58,8 +60,12 @@ export type ModelHookType = {
     setTemplate: React.Dispatch<React.SetStateAction<string>>;
     dimension: string;
     setDimension: React.Dispatch<React.SetStateAction<string>>;
+    status: string;
+    setStatus: React.Dispatch<React.SetStateAction<string>>;
     //handlers
     handleCloseDeleteModal: () => void;
     handleShowDeleteModal: (model: ModelType) => void;
     handleDeleteModel: (id: number) => Promise<void>;
+    handleCloseActivatedModal: () => void;
+    handleShowActivatedModal: (model: ModelType) => void;
 }

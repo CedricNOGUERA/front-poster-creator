@@ -29,10 +29,16 @@ export default function LogTable({ useLog }: { useLog: LogHookType }) {
       },
     },
     {
-      type: "text",
+      type: "select",
       controlId: "level",
       placeholder: "Gravité",
       value: useLog.level,
+      options: [
+        { id: "info", name: "info" },
+        { id: "success", name: "success" },
+        { id: "warning", name: "warning" },
+        { id: "Erreur", name: "Erreur" },
+      ],
       onChange: (v: string) => {
         useLog.setLevel(v);
         useLog.setPage("1");

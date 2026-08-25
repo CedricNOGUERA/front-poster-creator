@@ -41,7 +41,7 @@ export const _statusBadge = (status: Status): BadgeColor => {
     succes: 'success',
     error: 'danger',
     warning: 'warning',
-    pending: 'info',
+    info: 'info',
   };
   
   return colorMap[status] ?? 'primary';

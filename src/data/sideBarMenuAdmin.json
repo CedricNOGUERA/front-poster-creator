@@ -62,7 +62,14 @@
         "display": "connexions",
         "role": ["super_admin"],
         "href": "/tableau-de-bord/connexions"
-    
+    },
+    {
+        "id": 9,
+        "title": "Dimensions",
+        "icon": "tb-dimensions",
+        "display": "dimensions",
+        "role": ["super_admin"],
+        "href": "/tableau-de-bord/dimensions"
     }
     
 ]
