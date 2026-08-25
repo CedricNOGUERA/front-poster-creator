@@ -8,7 +8,7 @@ import useDimension from "@/hook/useDimension";
 import TableHeader from "@/components/ui/table/TableHeader";
 import { Container, Dropdown, Table } from "react-bootstrap";
 import { DimensionType } from "@/types/DimensionType";
-import { FaCheck, FaEllipsisVertical } from "react-icons/fa6";
+import { FaCheck, FaEllipsisVertical, FaTrash } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
 
 export default function DimensionPage() {
@@ -21,6 +21,7 @@ export default function DimensionPage() {
     dimensions,
     handleShowAddModal,
     handleShowStatusModal,
+    handleShowDeleteModal
   } = useDimension();
 
   const modalAddDimensionProps = {
@@ -84,13 +85,13 @@ export default function DimensionPage() {
                   Activer
                 </Dropdown.Item>
               )}
-              {/* <Dropdown.Item
+              <Dropdown.Item
                 onClick={() => handleShowDeleteModal(dimension.id)}
                 className="d-flex align-items-center text-danger"
               >
                 <FaTrash className="me-2" size={16} />
                 Supprimer
-              </Dropdown.Item> */}
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </td>

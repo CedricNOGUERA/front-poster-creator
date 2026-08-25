@@ -39,5 +39,5 @@ export type ResetConfig = {
   [step: number]: ResetKey[];
 };
 
-export type Status = 'succes' | 'error' | 'warning' | 'pending';
+export type Status = 'succes' | 'error' | 'warning' | 'info';
 export type BadgeColor = 'success' | 'danger' | 'warning' | 'info' | 'primary';
