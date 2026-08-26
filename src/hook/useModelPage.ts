@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import modelsServiceInstance from "@/services/modelsServices";
 import userDataStore, { UserDataType } from "@/stores/userDataStore";
+import { DimensionType } from "@/types/DimensionType";
 import { ToastDataType } from "@/types/DiversType";
 import {
   DebouncedFilterModelType,
@@ -14,7 +15,7 @@ import {
   getFilteredModelData,
   getPaginatedModels,
 } from "@/utils/admin/modelFunction";
-import { _getAllImagesModels, _getTemplates } from "@/utils/apiFunctions";
+import { _getAllImagesModels, _getDimensions, _getTemplates } from "@/utils/apiFunctions";
 import { _expiredSession, _showToast } from "@/utils/notifications";
 import { AxiosError } from "axios";
 import React from "react";
@@ -35,6 +36,7 @@ export function useModelPage() {
   const navigate = useNavigate();
   const { setToastData, toggleShow } = useOutletContext<ContextType>();
   const [templates, setTemplates] = React.useState<TemplateType[]>([]);
+  const [dimensions, setDimensions] = React.useState<DimensionType[]>([]);
   const [paginatedModels, setPaginatedModels] = React.useState<ModelResultType>(
     {} as ModelResultType,
   );
@@ -73,6 +75,7 @@ export function useModelPage() {
   React.useEffect(() => {
     _getTemplates(setTemplates);
     _getAllImagesModels(setImageModels);
+    _getDimensions(setDimensions)
   }, []);
 
   // Debounce
@@ -201,6 +204,7 @@ export function useModelPage() {
     showDeleteModal,
     isLoading,
     isLoadingDisplay,
+    dimensions,
     //Filtres
     page,
     setPage,
