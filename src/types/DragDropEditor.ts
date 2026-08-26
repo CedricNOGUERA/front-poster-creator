@@ -1,5 +1,6 @@
 import { CategoriesType } from "./CategoriesType";
 import { ComponentTypeMulti } from "./ComponentType";
+import { DimensionType } from "./DimensionType";
 import { NewTemplateType } from "./DiversType";
 import { TemplateType } from "./TemplatesType";
 
@@ -28,6 +29,7 @@ export interface DragDropHookType {
   newTemplateState: NewTemplateType;
   setNewTemplateState: React.Dispatch<React.SetStateAction<NewTemplateType>>;
   maxPreviewHeight: number;
+  dimensions: DimensionType[];
   //Handlers
   handleDragOnCanvas: (e: React.MouseEvent<HTMLDivElement | HTMLImageElement, MouseEvent>, index: number) => void;
   getStyleFromComponent: (comp: ComponentTypeMulti, isSelected: boolean) => React.CSSProperties;

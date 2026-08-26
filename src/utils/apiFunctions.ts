@@ -24,6 +24,8 @@ import React from "react";
 import { _expiredSession, _showToast } from "./notifications";
 import { NavigateOptions, To } from "react-router-dom";
 import VariousPicturesServices from "@/services/VariousPicturesServices";
+import dimensionsServiceInstance from "@/services/DimensionsService";
+import { DimensionType } from "@/types/DimensionType";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -716,3 +718,17 @@ export const _getPictures = async (
     console.error(error);
   }
 };
+
+
+////////////////////////
+//Dimensions
+////////////////////////
+
+export const _getDimensions = async (setDimensions: React.Dispatch<React.SetStateAction<DimensionType[]>>) => {
+        try {
+            const response = await dimensionsServiceInstance.getDimensions();
+            setDimensions(response);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des dimensions :", error);
+        }
+    }
