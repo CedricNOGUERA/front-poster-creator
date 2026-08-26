@@ -1,7 +1,6 @@
 import TableLoader from "@/components/ui/squeleton/TableLoader";
 import { Button, Dropdown, Form, Image, Table } from "react-bootstrap";
 import { FaCheck, FaEllipsisVertical, FaTrash, FaX } from "react-icons/fa6";
-import dimensions from "@/data/dimensions.json";
 import { ModelHookType } from "@/types/modelType";
 import { createResetForm } from "@/utils/admin/function";
 import { FaTimes } from "react-icons/fa";
@@ -72,9 +71,9 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
                 }}
               >
                 <option value="">dimension...</option>
-                {dimensions?.map((dimension) => (
+                {useModel.dimensions?.map((dimension) => (
                   <option key={dimension.id} value={dimension.id}>
-                    {dimension.name}
+                    {dimension.dimension}
                   </option>
                 ))}
               </Form.Select>
@@ -125,7 +124,7 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
             (img) =>
               img.modelId === model.id && img.categoryId === model.categoryId,
           );
-          const dimension = dimensions.find(
+          const dimension = useModel.dimensions.find(
             (dim) => dim.id === model.dimensionId,
           );
           const factor = dimension && 120 / dimension?.width;
@@ -136,7 +135,7 @@ export default function ModelTable({ useModel }: { useModel: ModelHookType }) {
             <tr key={indx} className="align-middle">
               <td>{model.id}</td>
               <td>{templateData?.name}</td>
-              <td>{dimension?.name}</td>
+              <td>{dimension?.dimension}</td>
               <td>
                 {model.activated ? (
                   <FaCheck className="me-2" size={20} color="#38c42b" />

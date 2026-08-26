@@ -13,7 +13,6 @@ import {
 } from '@/types/ComponentType'
 import useStoreApp from '@/stores/storeApp'
 import { Button, Container } from 'react-bootstrap'
-import dimensions from '@/data/dimensions.json'
 import { FeedBackSatateType, NewTemplateType, ToastDataType } from '@/types/DiversType'
 import {
   _generateInitalComponent,
@@ -23,7 +22,7 @@ import {
   _thousandSeparator,
 } from '@/utils/functions'
 import SideBar from './DragDropComponents/SideBar'
-import { _getCategoryById, _getModels, _getTemplate } from '@/utils/apiFunctions'
+import { _getCategoryById, _getDimensions, _getModels, _getTemplate } from '@/utils/apiFunctions'
 import { useOutletContext } from 'react-router-dom'
 import ComponentEditor from './DragDropComponents/ComponentEditor'
 import { ModalUpdateModel } from './ui/Modals'
@@ -35,6 +34,7 @@ import { FaXmark } from 'react-icons/fa6'
 import { TemplateType } from '@/types/TemplatesType'
 // import PrintOptionsModal from './PrintOptionsModal'
   import html2canvas from 'html2canvas'
+import { DimensionType } from '@/types/DimensionType'
 
 interface ContextInlineDragDropEditorType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>
@@ -79,6 +79,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
   const [copiedComponent, setCopiedComponent] = useState<ComponentTypeMulti>(
     {} as ComponentTypeMulti
   )
+    const [dimensions, setDimensions] = React.useState<DimensionType[]>([]);
   const [dimensionFactor, setDimensionFactor] = useState<number | null>(null)
   const [imageName, setImageName] = React.useState<string>('')
   const [newTemplateState, setNewTemplateState] = React.useState<NewTemplateType>({
@@ -117,6 +118,7 @@ export default function UpdateModel({updateModelProps}: {updateModelProps: Updat
     _getCategoryById(storeApp?.categoryId, setSelectedCategory)
     setSelectedDimension(storeApp?.dimensionId || 0)
     _getTemplate(setTemplates, storeApp.categoryId)
+    _getDimensions(setDimensions)
   }, [setToastData, storeApp?.canvasId, storeApp?.dimensionId, toggleShow])
 
 
