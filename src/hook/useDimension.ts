@@ -5,6 +5,7 @@ import { DimensionFormDataType } from "@/types/ModalType";
 import { ToastDataType } from "@/types/DiversType";
 import { useOutletContext } from "react-router-dom";
 import { _showToast } from "@/utils/notifications";
+import { _getDimensions } from "@/utils/apiFunctions";
 
 interface ContextType {
   setToastData: React.Dispatch<React.SetStateAction<ToastDataType>>;
@@ -63,20 +64,8 @@ export default function useDimension() {
     };
 
     React.useEffect(() => {
-        getDimensions();
+        _getDimensions(setDimensions);
     }, [])
-
-    const getDimensions = async () => {
-        setIsLoading(true);
-        try {
-            const response = await dimensionsServiceInstance.getDimensions();
-            setDimensions(response as DimensionType[]);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des dimensions :", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }
 
     const handleAddDimension = async () => {
         setIsLoading(true);
@@ -86,7 +75,7 @@ export default function useDimension() {
 
            const response = await dimensionsServiceInstance.postDimension(newData);
 
-               getDimensions();
+               _getDimensions(setDimensions);
                handleCloseAddModal();
                setDimensionFormData({
                    name: "",
@@ -111,7 +100,7 @@ export default function useDimension() {
             if (selectedIdDimension !== null && selectedStatus !== null) {
                 const response = await dimensionsServiceInstance.patchDimsensionStatus(selectedIdDimension, !selectedStatus);
                 _showToast(true, response.message, setToastData, toggleShow, 3000);
-                getDimensions();
+                _getDimensions(setDimensions);
                 handleCloseStatusModal();
                 setSelectedIdDimension(null);
                 setSelectedStatus(null);
@@ -129,7 +118,7 @@ export default function useDimension() {
             if(selectedIdDimension){
                 const response = await dimensionsServiceInstance.deleteDimension(selectedIdDimension)
                 _showToast(true, response.message, setToastData, toggleShow, 3000);
-                getDimensions();
+                _getDimensions(setDimensions);
                 handleCloseDeleteModal();
                 setSelectedIdDimension(null);
             } 
