@@ -3,6 +3,7 @@ import {
   createGroupTexts,
 } from "@/helpers/DragDropEditor/createGroupText";
 import { getDropPosition } from "@/helpers/DragDropEditor/getDropPosition";
+import dimensionsServiceInstance from "@/services/DimensionsService";
 import modelsServiceInstance from "@/services/modelsServices";
 import templatesServiceInstance from "@/services/TemplatesServices";
 import useStoreApp from "@/stores/storeApp";
@@ -17,6 +18,7 @@ import {
   TextComponentType,
   VerticalLineComponentType,
 } from "@/types/ComponentType";
+import { DimensionType } from "@/types/DimensionType";
 import {
   FeedBackSatateType,
   NewTemplateType,
@@ -57,6 +59,7 @@ export default function useDragDropEditor() {
   const [components, setComponents] = React.useState<ComponentTypeMulti[]>([]);
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
   const [editingIndex, setEditingIndex] = React.useState<number | null>(null);
+  const [dimensions, setDimensions] = React.useState<DimensionType[]>([]);
   const [selectedDimension, setSelectedDimension] = React.useState<number>(0);
   const [selectedCategory, setSelectedCategory] =
     React.useState<CategoriesType>({} as CategoriesType);
@@ -98,6 +101,7 @@ export default function useDragDropEditor() {
   React.useEffect(() => {
     _getTemplates(setTemplate);
     _getModels(setModels);
+    getDimensions();
   }, []);
 
   React.useEffect(() => {
@@ -246,47 +250,7 @@ export default function useDragDropEditor() {
 
     setSelectedIndex(components.length);
   };
-  //   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-  //     e.preventDefault();
-  //     const type = e.dataTransfer.getData("componentType");
-  //     const src = e.dataTransfer.getData("componentSrc");
 
-  //     const canvasElement = posterRef.current;
-
-  //     if (!canvasElement) {
-  //       console.error(
-  //         "Canvas ref (posterRef.current) is null in handleDrop. Drop will not be processed.",
-  //       );
-  //       return;
-  //     }
-
-  //     const { top, left, right, bottom } = getDropPosition(e, canvasElement);
-
-  //     if (type === "group") {
-
-  //       const multiTexts: ComponentTypeMulti[] = createGroupTexts(top, left,);
-
-  //       setComponents((prev) => [...prev, ...multiTexts]);
-  //       setSelectedIndex(components.length);
-  //       return;
-  //     }
-
-  //     const newComponent = createComponent({ type, src, top, left, right, bottom });
-
-  //      if (!newComponent) {
-  //     console.error(
-  //       "Unknown component:",
-  //       type
-  //     );
-  //     return;
-  //   }
-
-  //     setComponents((prev: ComponentTypeMulti[]) => [
-  //       ...prev,
-  //       newComponent as ComponentTypeMulti,
-  //     ]);
-  //     setSelectedIndex(components.length);
-  //   };
 
   const handleDragOnCanvas = React.useCallback(
     (
@@ -723,6 +687,15 @@ export default function useDragDropEditor() {
     }
   };
 
+  const getDimensions = async () => {
+        try {
+            const response = await dimensionsServiceInstance.getDimensions();
+            setDimensions(response as DimensionType[]);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des dimensions :", error);
+        }
+  }
+
   /* UseMemo
    *******************************************************************************************/
 
@@ -751,6 +724,7 @@ export default function useDragDropEditor() {
     newTemplateState,
     setNewTemplateState,
     maxPreviewHeight,
+    dimensions,
     //Handlers
     handleDragOnCanvas,
     getStyleFromComponent,
