@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import dimensions from '@/data/dimensions.json'
 import useStoreApp from '@/stores/storeApp'
 import {
   ComponentTypeMulti
 } from '@/types/ComponentType'
 import { ModelType } from '@/types/modelType'
-import { _getModels, 
+import { _getDimensions, _getModels, 
    _getTemplateById } from '@/utils/apiFunctions'
 
 import React, { useRef, useState } from 'react'
@@ -17,12 +16,12 @@ import PrintOptionsModal from '../PrintOptionsModal'
 import PictureAdder from '../editorTemplateComponent/PictureAdder'
 import { TemplateType } from '@/types/TemplatesType'
 import { _renderCanvasDisplay } from '@/utils/utils'
+import { DimensionType } from '@/types/DimensionType'
 
 export const EditorTemplate = () => {
   /* States / Hooks
    *******************************************************************************************/
   const storeApp = useStoreApp()
-  const adminRole = userDataStore((state) => state.role) === 'admin'
   const superAdminRole = userDataStore((state) => state.role) === 'super_admin'
   const printRef = useRef(null)
   const [canvasData, setCanvasData] = useState<ComponentTypeMulti[]>([])
@@ -38,6 +37,7 @@ export const EditorTemplate = () => {
     top: 0,
     left: 0,
   });
+  const [dimensions, setDimensions] = React.useState<DimensionType[]>([])
 
   
   const [previewStyle, setPreviewStyle] = useState<React.CSSProperties>({
@@ -65,9 +65,10 @@ export const EditorTemplate = () => {
     }
     init()
   }, [storeApp, storeApp.dimensionId, pageWidth, pageHeight, models])
-
+  
   React.useEffect(() => {
     _getModels(setModels)
+    _getDimensions(setDimensions)
   }, [])
   
   /* Functions
@@ -158,37 +159,49 @@ export const EditorTemplate = () => {
   return (
     <>
       {!isUpdating ? (
-        <Container fluid className='bg-light px-0 height-container'>
-          <Row className='gx-0 d-flex h-100'>
+        <Container fluid className="bg-light px-0 height-container">
+          <Row className="gx-0 d-flex h-100">
             <Col
               xs={9}
-              className='d-flex flex-column justify-content-center align-items-center p-4 bg-body-secondary'
+              className="d-flex flex-column justify-content-center align-items-center p-4 bg-body-secondary"
             >
               <h4>Aperçu</h4>
               <small>Modèle : #{modelId}</small>
-              <div id='canvas' className='canvas mt-4' ref={printRef} style={previewStyle}>
+              <div
+                id="canvas"
+                className="canvas mt-4"
+                ref={printRef}
+                style={previewStyle}
+              >
                 {canvasDisplay}
               </div>
             </Col>
-            <Col xs={3} className='bg-white border-start border-bottom p-4 d-flex flex-column' style={{ height: '100vh', overflowY: 'auto' }}>
-              <h4 className='mb-4'>Formulaire d'édition</h4>
-              <div className='flex-grow-1'>
+            <Col
+              xs={3}
+              className="bg-white border-start border-bottom p-4 d-flex flex-column"
+              style={{ height: "100vh", overflowY: "auto" }}
+            >
+              <h4 className="mb-4">Formulaire d'édition</h4>
+              <div className="flex-grow-1">
                 <CanvasEditorImproved canvasEditorProps={canvasEditorProps} />
-                  <PictureAdder warrantyPictureProps={warrantyPictureProps} />
+                <PictureAdder warrantyPictureProps={warrantyPictureProps} />
               </div>
-              <Container className='d-flex flex-column flex-xl-row justify-content-between align-items-center mt-4'>
-                {adminRole ||
-                  (superAdminRole && (
-                    <Button
-                      variant='outline-secondary'
-                      onClick={() => setIsUpdating(true)}
-                      className='mt-4 me-2'
-                    >
-                      Modifier le modèle
-                    </Button>
-                  ))}
-                
-                <Button variant='info' onClick={() => setShowPrintOptions(true)} className='text-muted mt-4'>
+              <Container className="d-flex flex-column flex-xl-row justify-content-between align-items-center mt-4">
+                {superAdminRole && (
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setIsUpdating(true)}
+                    className="mt-4 me-2"
+                  >
+                    Modifier le modèle
+                  </Button>
+                )}
+
+                <Button
+                  variant="info"
+                  onClick={() => setShowPrintOptions(true)}
+                  className="text-muted mt-4"
+                >
                   Options d'impression
                 </Button>
               </Container>
@@ -205,11 +218,11 @@ export const EditorTemplate = () => {
           width: pageWidth,
           height: pageHeight,
           idShop: storeApp.shopId,
-          idCategory: storeApp.categoryId
+          idCategory: storeApp.categoryId,
         }}
         canvasRef={printRef}
         templateName={currentTemplate.name}
       />
     </>
-  )
+  );
 }

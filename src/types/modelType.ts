@@ -1,4 +1,5 @@
 import { ComponentTypeMulti } from "./ComponentType";
+import { DimensionType } from "./DimensionType";
 import { TemplateType } from "./TemplatesType";
 
 export type ModelType = {
@@ -50,6 +51,7 @@ export type ModelHookType = {
     showDeleteModal: boolean;
     isLoading: boolean;
     isLoadingDisplay: boolean;
+    dimensions: DimensionType[];
     page: string;
     setPage: React.Dispatch<React.SetStateAction<string>>;
     perPage: string;
