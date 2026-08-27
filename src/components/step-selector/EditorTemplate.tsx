@@ -1,35 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import useStoreApp from '@/stores/storeApp'
-import {
-  ComponentTypeMulti
-} from '@/types/ComponentType'
-import { ModelType } from '@/types/modelType'
-import { _getDimensions, _getModels, 
-   _getTemplateById } from '@/utils/apiFunctions'
+import useStoreApp from "@/stores/storeApp";
+import { ComponentTypeMulti } from "@/types/ComponentType";
+import { ModelType } from "@/types/modelType";
+import { _getModels, _getTemplateById } from "@/utils/apiFunctions";
 
-import React, { useRef, useState } from 'react'
-import { Button, Col, Container, Row } from 'react-bootstrap'
-import UpdateModel from '../UpdateModel'
-import userDataStore from '@/stores/userDataStore'
-import CanvasEditorImproved from '../editorTemplateComponent/CanvasEditorImproved'
-import PrintOptionsModal from '../PrintOptionsModal'
-import PictureAdder from '../editorTemplateComponent/PictureAdder'
-import { TemplateType } from '@/types/TemplatesType'
-import { _renderCanvasDisplay } from '@/utils/utils'
-import { DimensionType } from '@/types/DimensionType'
+import React, { useRef, useState } from "react";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
+import UpdateModel from "../UpdateModel";
+import userDataStore from "@/stores/userDataStore";
+import CanvasEditorImproved from "../editorTemplateComponent/CanvasEditorImproved";
+import PrintOptionsModal from "../PrintOptionsModal";
+import PictureAdder from "../editorTemplateComponent/PictureAdder";
+import { TemplateType } from "@/types/TemplatesType";
+import { _renderCanvasDisplay } from "@/utils/utils";
+import { DimensionType } from "@/types/DimensionType";
+import dimensionsServiceInstance from "@/services/DimensionsService";
 
 export const EditorTemplate = () => {
   /* States / Hooks
    *******************************************************************************************/
-  const storeApp = useStoreApp()
-  const superAdminRole = userDataStore((state) => state.role) === 'super_admin'
-  const printRef = useRef(null)
-  const [canvasData, setCanvasData] = useState<ComponentTypeMulti[]>([])
-  const [currentTemplate, setCurrentTemplate] = React.useState<TemplateType>({} as TemplateType)
-  const [models, setModels] = React.useState<ModelType[]>([])
-  const [modelId, setModelId] = useState<number>(0)
-  const [pageWidth, setPageWidth] = useState<number>(0)
-  const [pageHeight, setPageHeight] = useState(0)
+  const storeApp = useStoreApp();
+  const superAdminRole = userDataStore((state) => state.role) === "super_admin";
+  const printRef = useRef(null);
+  const [canvasData, setCanvasData] = useState<ComponentTypeMulti[]>([]);
+  const [currentTemplate, setCurrentTemplate] = React.useState<TemplateType>(
+    {} as TemplateType,
+  );
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [models, setModels] = React.useState<ModelType[]>([]);
+  const [modelId, setModelId] = useState<number>(0);
+  const [pageWidth, setPageWidth] = useState<number>(0);
+  const [pageHeight, setPageHeight] = useState(0);
   const [selectedGarantie, setSelectedGarantie] = useState<string>("aucune");
   const [showGarantieSettings, setShowGarantieSettings] = useState(false);
   const [garantieImageParams, setGarantieImageParams] = useState({
@@ -37,62 +38,76 @@ export const EditorTemplate = () => {
     top: 0,
     left: 0,
   });
-  const [dimensions, setDimensions] = React.useState<DimensionType[]>([])
+  const [dimensions, setDimensions] = React.useState<DimensionType[]>([]);
 
-  
   const [previewStyle, setPreviewStyle] = useState<React.CSSProperties>({
-    width: '100%',
-    height: '100%',
-    border: '2px dashed #ccc',
-    position: 'relative',
-    background: 'white',
-    boxShadow: '0 0 5px rgba(0,0,0,0.2)',
-    margin: 'auto',
-  })
-  
-  const [isUpdating, setIsUpdating] = useState<boolean>(false)
-  const [showPrintOptions, setShowPrintOptions] = useState(false)
-  
+    width: "100%",
+    height: "100%",
+    border: "2px dashed #ccc",
+    position: "relative",
+    background: "white",
+    boxShadow: "0 0 5px rgba(0,0,0,0.2)",
+    margin: "auto",
+  });
+
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [showPrintOptions, setShowPrintOptions] = useState(false);
+
   /* UseEffect
-  *******************************************************************************************/
- React.useEffect(() => {
-   const init = async () => {
-     await getCanvasData()
-     await getPageDimensions()
-     await setPageForPrint()
-     await setPageForPreview()
-     await _getTemplateById(setCurrentTemplate, storeApp.templateId)
-    }
-    init()
-  }, [storeApp, storeApp.dimensionId, pageWidth, pageHeight, models])
-  
+   *******************************************************************************************/
   React.useEffect(() => {
-    _getModels(setModels)
-    _getDimensions(setDimensions)
-  }, [])
-  
+    const init = async () => {
+      setIsLoading(true)
+      await getCanvasData();
+      await getPageDimensions();
+      await setPageForPrint();
+      await setPageForPreview();
+      await _getTemplateById(setCurrentTemplate, storeApp.templateId);
+      setTimeout(()=> {
+        setIsLoading(false)
+      }, 100)
+    };
+    init();
+  }, [
+    storeApp,
+    storeApp.dimensionId,
+    pageWidth,
+    pageHeight,
+    models,
+    dimensions,
+  ]);
+
+  React.useEffect(() => {
+    _getModels(setModels);
+    getDimensions();
+  }, []);
+
   /* Functions
-  *******************************************************************************************/
- const getCanvasData = async () => {
+   *******************************************************************************************/
+  const getCanvasData = async () => {
     const selectedSchema = models.find(
       (p) =>
         p.dimensionId === storeApp.dimensionId &&
         p.templateId === storeApp.templateId &&
-        p.categoryId === storeApp.categoryId
-    )
-    
-    setCanvasData(selectedSchema?.canvas as ComponentTypeMulti[])
-    setModelId(selectedSchema?.id ?? 0)
-  }
-  
+        p.categoryId === storeApp.categoryId,
+    );
+
+    setCanvasData(
+      (selectedSchema?.canvas as ComponentTypeMulti[] | undefined) ?? [],
+    );
+    setModelId(selectedSchema?.id ?? 0);
+  };
+
   const getPageDimensions = async () => {
-    const selectedDimension = dimensions.find((d) => d.id === storeApp.dimensionId)
-    setPageHeight(selectedDimension?.height ?? 0)
-    setPageWidth(selectedDimension?.width ?? 0)
-  }
+    const selectedDimension = dimensions.find(
+      (d) => d.id === storeApp.dimensionId,
+    );
+    setPageHeight(selectedDimension?.height ?? 0);
+    setPageWidth(selectedDimension?.width ?? 0);
+  };
 
   const setPageForPrint = async () => {
-    const style = document.createElement('style')
+    const style = document.createElement("style");
     style.innerHTML = `
       @media print {
         @page {
@@ -104,41 +119,60 @@ export const EditorTemplate = () => {
             left: 0 !important;
         }
       }
-    `
-    document.head.appendChild(style)
+    `;
+    document.head.appendChild(style);
 
     return () => {
-      document.head.removeChild(style)
-    }
-  }
+      document.head.removeChild(style);
+    };
+  };
 
   const setPageForPreview = async () => {
-    const maxPreviewHeight = pageHeight < 98 ? 150 : 500 // en pixels
-    const scaleFactor = maxPreviewHeight / pageHeight
+    if (pageWidth <= 0 || pageHeight <= 0) {
+      return;
+    }
+
+    const maxPreviewHeight = pageHeight < 98 ? 150 : 500; // en pixels
+    const scaleFactor = maxPreviewHeight / pageHeight;
 
     setPreviewStyle({
       width: `${pageWidth * scaleFactor}px`,
       height: `${pageHeight * scaleFactor}px`,
-      border: canvasData?.length < 0 ? '2px dashed #ccc' : 'none',
-      position: 'relative',
-      background: 'white',
-      boxShadow: canvasData?.length < 0 ? '0 0 5px rgba(0,0,0,0.2)' : 'none',
-      margin: 'auto',
-    })
-  }
+      border: canvasData.length === 0 ? "2px dashed #ccc" : "none",
+      position: "relative",
+      background: "white",
+      boxShadow: canvasData.length === 0 ? "0 0 5px rgba(0,0,0,0.2)" : "none",
+      margin: "auto",
+    });
+  };
 
-
+  const getDimensions = async () => {
+    try {
+      const response = await dimensionsServiceInstance.getDimensions();
+      setDimensions(response as DimensionType[]);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des dimensions :", error);
+    }
+  };
 
   const updateModelProps = {
-    canvasData, setIsUpdating, previewStyle, modelId, setModels
-  }
+    canvasData,
+    setIsUpdating,
+    previewStyle,
+    modelId,
+    setModels,
+  };
 
-  const API_URL = import.meta.env.VITE_API_URL
+  const API_URL = import.meta.env.VITE_API_URL;
 
+  const canvasDisplay = _renderCanvasDisplay(canvasData, API_URL);
 
-  const canvasDisplay = _renderCanvasDisplay(canvasData, API_URL)
-
-  const canvasEditorProps = {canvasData, setCanvasData, pageWidth, pageHeight} 
+  const canvasEditorProps = {
+    canvasData,
+    setCanvasData,
+    pageWidth,
+    pageHeight,
+  };
   const warrantyPictureProps = {
     selectedGarantie,
     setSelectedGarantie,
@@ -152,7 +186,7 @@ export const EditorTemplate = () => {
     showGarantieSettings,
     setShowGarantieSettings,
     // setGarantieSrc,
-  }
+  };
 
   /* Render
    *******************************************************************************************/
@@ -173,7 +207,13 @@ export const EditorTemplate = () => {
                 ref={printRef}
                 style={previewStyle}
               >
-                {canvasDisplay}
+                {isLoading ? (
+                  <div className="d-flex justify-content-center align-items-center gap-2 h-100 text-primary">
+                    <Spinner /> Chargement
+                  </div>
+                ) : (
+                  canvasDisplay
+                )}
               </div>
             </Col>
             <Col
@@ -225,4 +265,4 @@ export const EditorTemplate = () => {
       />
     </>
   );
-}
+};
