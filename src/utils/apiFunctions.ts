@@ -568,7 +568,6 @@ export const _handleUploadFile = async (
 
     const formData = new FormData();
     formData.append("images", file);
-
     try {
       const result = await categoriesServiceInstance.uploadPicture(
         formData,
@@ -601,7 +600,7 @@ export const _handleUploadFile = async (
         {
           idShop: shopId,
           category: categoryId,
-          image: `/uploads/categories/images/${categoryId}/${file?.name}`,
+          image: `/uploads/categories/images/${categoryId}/${encodeURIComponent(file.name)}`,
         },
       ]);
     } catch (error) {
@@ -639,10 +638,11 @@ export const _handleDeleteImg = async (
   toggleShow: () => void,
   categoryId: number,
 ) => {
-  const imageUrl = API_URL + sideBarData[index!].image;
+
+  const imageUrl = sideBarData[index!].image;
   try {
-    const url = new URL(imageUrl);
-    const pathnameParts = url.pathname.split("/");
+  
+    const pathnameParts = imageUrl.split("/");
     const pictureName = pathnameParts[pathnameParts.length - 1];
     const result = await categoriesServiceInstance.deletePictureCategory(
       categoryId,
