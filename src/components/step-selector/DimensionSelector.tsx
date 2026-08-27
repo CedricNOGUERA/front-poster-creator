@@ -104,9 +104,8 @@ export const DimensionSelector = ({ title }: Props) => {
             );
 
           return (
-            <div>
+            <div key={dimension.id}>
               <div
-                key={dimension.id}
                 className={`dimension-card hover-card mb-5 mx-4 border rounded-1 border-primary p-3 d-flex flex-column justify-content-center align-items-center ${modelAvailable ? "border-primary" : "border-danger"}`}
                 onClick={() => {
                   if (modelAvailable) {
